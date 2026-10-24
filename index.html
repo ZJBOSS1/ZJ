@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ZJ WEBSITE — Dashboard</title>
-<link rel="manifest" href="data:application/json,{}">
 <style>
   :root {
     --cyan:      #00eaff;
@@ -65,7 +64,6 @@
   .orb3 { width: 340px; height: 340px; background: var(--silver); top: 45%; left: 48%; opacity: 0.07; animation-delay: -9s; }
   @keyframes float { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(40px,-50px) scale(1.1); } }
 
-  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .orb, .status-dot, .slides { animation: none !important; }
     * { transition-duration: 0.01ms !important; }
@@ -129,6 +127,7 @@
     text-shadow: 0 0 12px var(--cyan-glow); letter-spacing: 1.5px;
     padding: 6px 14px; border-radius: 8px; background: rgba(0,6,10,0.8); border: 1px solid #1a3038;
     box-shadow: inset 0 1px 4px rgba(0,0,0,0.9); }
+  body.light-theme .clock { background: #fff; border-color: #c4d0d8; }
   .theme-toggle { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
     color: var(--silver); padding: 8px 12px; border-radius: 8px; cursor: pointer;
     font-size: 14px; font-family: inherit; transition: all 0.15s ease; }
@@ -204,14 +203,18 @@
   .card-title.gold   .dot { background: var(--gold);   box-shadow: 0 0 10px var(--gold); }
   .card-title.cyan   .dot { background: var(--cyan);   box-shadow: 0 0 10px var(--cyan); }
 
-  /* Card action buttons (history + clear) */
-  .card-actions { display: flex; align-items: center; gap: 6px; }
-  .card-action-btn { background: rgba(255,255,255,0.06); border: 1px solid #2a3038;
-    color: var(--silver-mid); padding: 4px 9px; border-radius: 6px; cursor: pointer;
-    font-size: 9px; font-weight: 700; letter-spacing: 1.2px; font-family: inherit;
-    transition: all 0.15s ease; }
-  .card-action-btn:hover { color: var(--cyan); border-color: var(--cyan); background: rgba(0,234,255,0.08); }
-  .card-action-btn.danger:hover { color: #ff5c5c; border-color: #ff5c5c; background: rgba(255,92,92,0.08); }
+  /* --- Small round history icon button (calculator header) --- */
+  .icon-btn { width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(145deg, #1a2228, #0a0f14);
+    border: 1px solid var(--silver-mid); color: var(--silver);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.18s ease;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 2px 6px rgba(0,0,0,0.5); }
+  body.light-theme .icon-btn { background: linear-gradient(145deg, #ffffff, #e8eef2); color: #2a3038; }
+  .icon-btn:hover { color: var(--gold); border-color: var(--gold);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 0 14px var(--gold-glow); transform: scale(1.08); }
+  .icon-btn:active { transform: scale(0.94); }
+  .icon-btn svg { width: 14px; height: 14px; }
 
   /* CALCULATOR */
   .calc { background: linear-gradient(145deg, #1a1a1a, #0d0d0d); padding: 0;
@@ -220,24 +223,11 @@
   .calc-body { padding: 12px 15px 15px; display:flex; flex-direction:column; flex:1; }
   .calc-display { width: 100%; height: 65px; background: #000; color: #fff;
     border: 1px solid #00eaff; border-radius: 10px; font-size: 26px;
-    text-align: right; padding: 10px 12px; box-sizing: border-box; margin-bottom: 8px;
+    text-align: right; padding: 10px 12px; box-sizing: border-box; margin-bottom: 12px;
     font-family: 'Courier New', monospace; font-weight: 600;
     box-shadow: inset 0 3px 12px rgba(0,0,0,0.95), 0 0 20px rgba(0,234,255,0.1);
     text-shadow: 0 0 10px rgba(0,234,255,0.6); outline: none; }
-  .calc-history { height: 60px; overflow-y: auto; margin-bottom: 10px; padding: 4px 8px;
-    background: rgba(0,0,0,0.5); border: 1px solid #1a2025; border-radius: 8px;
-    font-family: 'Courier New', monospace; font-size: 11.5px; color: #7a9aa4;
-    text-align: right; line-height: 1.5; scrollbar-width: thin; scrollbar-color: #00eaff #000; }
-  .calc-history::-webkit-scrollbar { width: 4px; }
-  .calc-history::-webkit-scrollbar-thumb { background: #00eaff; border-radius: 2px; }
-  .calc-history .h-item { padding: 2px 0; border-bottom: 1px dashed rgba(0,234,255,0.08);
-    cursor: pointer; transition: color 0.15s ease; }
-  .calc-history .h-item:last-child { border-bottom: none; }
-  .calc-history .h-item:hover { color: #7af5ff; }
-  .calc-history .empty-hint { color: #3a5560; font-style: italic; }
-  .calc-history .h-label { color: #4a5560; font-size: 9px; letter-spacing: 2px;
-    text-transform: uppercase; margin-bottom: 3px; text-align: left;
-    font-family: 'Inter', sans-serif; font-style: normal; }
+  body.light-theme .calc-display { background: #0a1014; }
   .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; flex: 1; }
   .calc button { border-radius: 10px; border: 1px solid #c0c0c0; font-size: 17px; font-weight: 600;
     cursor: pointer; font-family: inherit; transition: all 0.08s ease; }
@@ -331,7 +321,7 @@
     -webkit-mask-image: radial-gradient(ellipse at center, #000 20%, transparent 75%);
     pointer-events: none; }
   .chat-head { position: relative; z-index: 2; padding: 18px 34px;
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
     border-bottom: 1px solid #1a2025;
     background: linear-gradient(180deg, rgba(10,14,18,0.9), rgba(0,0,0,0.85));
     backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
@@ -348,39 +338,67 @@
   .chat-sub { font-size: 12px; color: var(--cyan); display: flex; align-items: center; gap: 6px; margin-top: 2px; letter-spacing: 0.5px; }
   body.light-theme .chat-sub { color: #0077cc; }
 
+  /* --- Chat action buttons (New Chat / History / Clear) --- */
   .chat-head-actions { display: flex; align-items: center; gap: 10px; }
-  .chat-action-btn { background: rgba(0,234,255,0.05); border: 1px solid rgba(0,234,255,0.3);
-    color: var(--cyan-lite); padding: 9px 14px; border-radius: 10px; cursor: pointer;
-    font-size: 12px; font-weight: 600; letter-spacing: 1px; font-family: inherit;
-    display: flex; align-items: center; gap: 6px; transition: all 0.15s ease; }
-  body.light-theme .chat-action-btn { color: #0077cc; }
-  .chat-action-btn:hover { color: #fff; border-color: #00eaff; background: rgba(0,234,255,0.15); box-shadow: 0 0 16px rgba(0,234,255,0.25); }
-  .chat-action-btn svg { width: 14px; height: 14px; }
 
-  .chat-close { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
-    color: var(--silver); padding: 10px 18px; border-radius: 10px; cursor: pointer;
-    font-size: 13px; font-weight: 600; letter-spacing: 1.5px; font-family: inherit;
-    display: flex; align-items: center; gap: 8px; transition: all 0.15s ease; }
+  .chat-action-btn {
+    display: flex; align-items: center; gap: 7px;
+    padding: 9px 14px; border-radius: 10px;
+    font-size: 12px; font-weight: 700; letter-spacing: 1px;
+    cursor: pointer; font-family: inherit;
+    border: 1px solid rgba(0,234,255,0.35);
+    background: linear-gradient(180deg, rgba(0,234,255,0.10), rgba(0,234,255,0.02));
+    color: var(--cyan-lite);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 2px 8px rgba(0,0,0,0.4);
+    transition: all 0.18s ease;
+  }
+  .chat-action-btn:hover {
+    color: #fff;
+    border-color: var(--cyan);
+    background: linear-gradient(180deg, rgba(0,234,255,0.22), rgba(0,234,255,0.08));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 0 18px rgba(0,234,255,0.45);
+    transform: translateY(-1px);
+  }
+  .chat-action-btn:active { transform: translateY(0) scale(0.98); }
+  .chat-action-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* Gold-accented New Chat button */
+  .chat-action-btn.gold {
+    border-color: rgba(255,215,0,0.45);
+    background: linear-gradient(180deg, rgba(255,215,0,0.14), rgba(255,215,0,0.02));
+    color: var(--gold-lite);
+  }
+  .chat-action-btn.gold:hover {
+    color: #fff; border-color: var(--gold);
+    background: linear-gradient(180deg, rgba(255,215,0,0.28), rgba(255,215,0,0.08));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 0 18px var(--gold-glow);
+  }
+
+  /* Red-accented Clear button */
+  .chat-action-btn.danger {
+    border-color: rgba(255,92,92,0.4);
+    background: linear-gradient(180deg, rgba(255,92,92,0.12), rgba(255,92,92,0.02));
+    color: #ff9a9a;
+    padding: 9px 10px;
+  }
+  .chat-action-btn.danger:hover {
+    color: #fff; border-color: #ff5c5c;
+    background: linear-gradient(180deg, rgba(255,92,92,0.28), rgba(255,92,92,0.08));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 0 18px rgba(255,92,92,0.5);
+  }
+
+  .chat-close {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 18px; border-radius: 10px; cursor: pointer;
+    font-size: 13px; font-weight: 700; letter-spacing: 1.5px; font-family: inherit;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--silver);
+    transition: all 0.15s ease;
+  }
   body.light-theme .chat-close { color: #2a3038; border-color: #c4d0d8; }
   .chat-close:hover { color: #ffffff; border-color: var(--gold); background: rgba(255,215,0,0.1); box-shadow: 0 0 20px rgba(255,215,0,0.3); }
   body.light-theme .chat-close:hover { color: #0a1014; }
-
-  /* OPTIONS MENU */
-  .chat-menu-wrap { position: relative; }
-  .chat-menu { position: absolute; top: calc(100% + 8px); right: 0; min-width: 220px;
-    background: linear-gradient(180deg, #0a1418, #030608); border: 1px solid #104a58; border-radius: 12px;
-    padding: 6px; box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 20px rgba(0,234,255,0.1);
-    opacity: 0; transform: translateY(-6px); pointer-events: none; transition: all 0.18s ease; z-index: 5; }
-  body.light-theme .chat-menu { background: linear-gradient(180deg, #ffffff, #f4f7fa); border-color: #c4d0d8; }
-  .chat-menu.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
-  .chat-menu button { width: 100%; text-align: left; padding: 10px 14px;
-    background: transparent; border: none; color: #d8f6ff; font-size: 13px;
-    cursor: pointer; border-radius: 8px; font-family: inherit;
-    display: flex; align-items: center; gap: 10px; transition: all 0.15s ease; }
-  body.light-theme .chat-menu button { color: #2a3038; }
-  .chat-menu button:hover { background: rgba(0,234,255,0.12); color: #7af5ff; }
-  body.light-theme .chat-menu button:hover { color: #0077cc; }
-  .chat-menu svg { width: 15px; height: 15px; flex-shrink: 0; }
 
   .chat-window { flex: 1; overflow-y: auto; padding: 30px max(34px, calc((100vw - 900px) / 2));
     display: flex; flex-direction: column; gap: 14px; position: relative; z-index: 2;
@@ -457,6 +475,10 @@
     color: #001418; font-weight: 800; letter-spacing: 1.5px; font-size: 13px;
     border: none; cursor: pointer; font-family: inherit;
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 3px 16px rgba(0,234,255,0.4); }
+  .modal-new-btn.danger {
+    background: linear-gradient(180deg, #ff9a9a, #ff5c5c 55%, #a02020);
+    color: #2a0000; box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 3px 16px rgba(255,92,92,0.4);
+  }
   .modal-empty { padding: 40px 20px; text-align: center; color: #5a7a84; font-size: 13px; }
 
   /* SR-only */
@@ -476,9 +498,10 @@
     .frame { width: 100%; max-width: 340px; }
     .chat-fab { right: 16px; bottom: 70px; }
     .chat-head { padding: 14px 18px; flex-wrap: wrap; gap: 10px; }
-    .chat-head-actions { gap: 6px; }
+    .chat-head-actions { gap: 6px; flex-wrap: wrap; }
     .chat-action-btn { padding: 8px 10px; font-size: 11px; }
     .chat-action-btn span { display: none; }
+    .chat-action-btn.danger { padding: 8px 9px; }
     .chat-window { padding: 20px 16px; }
     .chat-input-area { padding: 14px 16px 20px; }
     .msg { max-width: 85%; }
@@ -524,7 +547,7 @@
   </button>
   <div class="sidebar-footer">
     <span class="status-dot"></span>Systems online<br>
-    <span style="color:#4a5560;font-size:10px;letter-spacing:1px;">v6.2 · FIXED</span>
+    <span style="color:#4a5560;font-size:10px;letter-spacing:1px;">v6.3 · FIXED</span>
   </div>
 </aside>
 
@@ -536,7 +559,7 @@
   </div>
   <div class="topbar-right">
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme">🌙</button>
-    <div class="clock" id="clock" aria-live="off">--:--:--</div>
+    <div class="clock" id="clock">--:--:--</div>
     <div class="avatar" aria-label="User avatar">ZJ</div>
   </div>
 </header>
@@ -559,17 +582,15 @@
       <div class="frame calc" id="calcCard">
         <div class="card-head">
           <div class="card-title silver"><span class="dot"></span>Calculator</div>
-          <div class="card-actions">
-            <button class="card-action-btn" onclick="openCalcHistory()" title="View full history" aria-label="View calculator history">HISTORY</button>
-            <button class="card-action-btn danger" onclick="clearCalcHistory()" title="Clear history" aria-label="Clear calculator history">CLEAR ↺</button>
-          </div>
+          <button class="icon-btn" onclick="openCalcHistory()" title="View history" aria-label="View calculator history">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/>
+              <polyline points="12 7 12 12 15.5 14"/>
+            </svg>
+          </button>
         </div>
         <div class="calc-body">
           <input type="text" id="calcDisplay" class="calc-display" readonly value="0" aria-label="Calculator display">
-          <div class="calc-history" id="calcHistory" role="log" aria-label="Recent calculations">
-            <div class="h-label">History</div>
-            <div class="empty-hint" id="calcHistoryEmpty">No calculations yet</div>
-          </div>
           <div class="calc-grid" role="group" aria-label="Calculator keypad">
             <button class="btn-silver" onclick="clearCalc()" aria-label="All clear">AC</button>
             <button class="btn-silver" onclick="delChar()" aria-label="Delete last character">DEL</button>
@@ -651,35 +672,33 @@
         <div class="chat-sub"><span class="status-dot"></span>Online · Ready</div>
       </div>
     </div>
+
     <div class="chat-head-actions">
-      <div class="chat-menu-wrap">
-        <button class="chat-action-btn" onclick="toggleChatMenu(event)" title="Options" aria-haspopup="true" aria-expanded="false" id="chatOptionsBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
-          </svg>
-          <span>OPTIONS</span>
-        </button>
-        <div class="chat-menu" id="chatMenu" role="menu">
-          <button onclick="newChat()" role="menuitem">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            New Chat
-          </button>
-          <button onclick="showHistory()" role="menuitem">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-            </svg>
-            Chat History
-          </button>
-          <button onclick="clearChat()" role="menuitem">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-            </svg>
-            Clear Chat
-          </button>
-        </div>
-      </div>
+      <!-- NEW CHAT -->
+      <button class="chat-action-btn gold" onclick="newChat()" title="Start a new chat" aria-label="New chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        <span>NEW CHAT</span>
+      </button>
+
+      <!-- CHAT HISTORY -->
+      <button class="chat-action-btn" onclick="showHistory()" title="View past chats" aria-label="Chat history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span>HISTORY</span>
+      </button>
+
+      <!-- CLEAR CHAT -->
+      <button class="chat-action-btn danger" onclick="clearChat()" title="Clear this chat" aria-label="Clear chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        </svg>
+      </button>
+
+      <!-- CLOSE -->
       <button class="chat-close" onclick="closeChat()" aria-label="Close chat">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
           <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -728,50 +747,41 @@ function tickClock(){
 }
 setInterval(tickClock, 1000); tickClock();
 
-/* ============ SAFE CALCULATOR (no eval) ============ */
+/* ============ SAFE CALCULATOR ============ */
 const display = document.getElementById('calcDisplay');
 let calcHistory = JSON.parse(localStorage.getItem('zj_calc_history') || '[]');
 
 function saveCalcHistory(){
   localStorage.setItem('zj_calc_history', JSON.stringify(calcHistory.slice(-50)));
 }
-
 function appendChar(c){
   const v = display.value;
   if (v === '0' && c !== '.') display.value = c;
-  else if (c === '.' && v.slice(-1) === '.') return;
   else if (c === '.' && /\.\d*$/.test(v)) return;
   else display.value = v + c;
 }
 function clearCalc(){ display.value = '0'; }
 function delChar(){ display.value = display.value.slice(0,-1) || '0'; }
 
-/* Safe tokenizer + shunting-yard evaluator — NO eval() */
+/* Safe evaluator — no eval() */
 function safeEval(input){
-  // Allow only digits, operators, decimal, %, parens, spaces
   if (!/^[\d+\-*/().%\s]+$/.test(input)) throw new Error('Invalid characters');
   const expr = input.replace(/%/g, '/100');
   const tokens = expr.match(/\d+\.?\d*|[+\-*/()]/g);
   if (!tokens) throw new Error('Empty expression');
 
-  // Shunting-yard → RPN
   const prec = { '+':1, '-':1, '*':2, '/':2 };
   const out = [], ops = [];
   let prev = null;
   for (const t of tokens) {
-    if (/^\d/.test(t)) {
-      out.push(parseFloat(t));
-    } else if (t === '(') {
-      ops.push(t);
-    } else if (t === ')') {
+    if (/^\d/.test(t)) out.push(parseFloat(t));
+    else if (t === '(') ops.push(t);
+    else if (t === ')') {
       while (ops.length && ops[ops.length-1] !== '(') out.push(ops.pop());
       if (!ops.length) throw new Error('Mismatched parens');
       ops.pop();
     } else {
-      // unary minus support
-      if (t === '-' && (prev === null || prev === '(' || prec[prev])) {
-        out.push(0);
-      }
+      if (t === '-' && (prev === null || prev === '(' || prec[prev])) out.push(0);
       while (ops.length && prec[ops[ops.length-1]] >= prec[t]) out.push(ops.pop());
       ops.push(t);
     }
@@ -782,8 +792,6 @@ function safeEval(input){
     if (op === '(') throw new Error('Mismatched parens');
     out.push(op);
   }
-
-  // Evaluate RPN
   const stack = [];
   for (const t of out) {
     if (typeof t === 'number') { stack.push(t); continue; }
@@ -803,7 +811,6 @@ function safeEval(input){
   if (stack.length !== 1) throw new Error('Bad expression');
   const result = stack[0];
   if (!isFinite(result)) throw new Error('Math error');
-  // Round floating noise
   return Math.round(result * 1e12) / 1e12;
 }
 
@@ -823,33 +830,15 @@ function addCalcHistory(expr, result){
   calcHistory.push({ expr, result, ts: Date.now() });
   if (calcHistory.length > 50) calcHistory.shift();
   saveCalcHistory();
-  renderCalcHistory();
-}
-function renderCalcHistory(){
-  const box = document.getElementById('calcHistory');
-  box.innerHTML = '<div class="h-label">History</div>';
-  if (calcHistory.length === 0) {
-    box.innerHTML += '<div class="empty-hint">No calculations yet</div>';
-    return;
-  }
-  calcHistory.slice().reverse().forEach(h => {
-    const div = document.createElement('div');
-    div.className = 'h-item';
-    div.textContent = `${h.expr} = ${h.result}`;
-    div.title = 'Click to reuse';
-    div.onclick = () => { display.value = String(h.result); };
-    box.appendChild(div);
-  });
 }
 function clearCalcHistory(){
   if (calcHistory.length === 0) return;
   if (!confirm('Clear all calculator history?')) return;
   calcHistory = [];
   saveCalcHistory();
-  renderCalcHistory();
 }
 
-/* Full calculator history modal */
+/* Calculator history modal — opened by the small clock button */
 function openCalcHistory(){
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
@@ -887,25 +876,26 @@ function openCalcHistory(){
   }
   box.appendChild(list);
 
-  const footer = document.createElement('div');
-  footer.className = 'modal-footer';
-  const clearBtn = document.createElement('button');
-  clearBtn.className = 'modal-new-btn';
-  clearBtn.textContent = 'Clear All History';
-  clearBtn.onclick = () => {
-    if (calcHistory.length === 0) return;
-    if (!confirm('Clear all calculator history?')) return;
-    calcHistory = []; saveCalcHistory(); renderCalcHistory(); overlay.remove();
-  };
-  footer.appendChild(clearBtn);
-  box.appendChild(footer);
+  if (calcHistory.length > 0) {
+    const footer = document.createElement('div');
+    footer.className = 'modal-footer';
+    const clearBtn = document.createElement('button');
+    clearBtn.className = 'modal-new-btn danger';
+    clearBtn.textContent = 'Clear All History';
+    clearBtn.onclick = () => {
+      if (!confirm('Clear all calculator history?')) return;
+      calcHistory = []; saveCalcHistory(); overlay.remove();
+    };
+    footer.appendChild(clearBtn);
+    box.appendChild(footer);
+  }
 
   overlay.appendChild(box);
   document.body.appendChild(overlay);
 }
 
-/* ============ WEATHER (with cache + error UI) ============ */
-const WEATHER_CACHE_TTL = 10 * 60 * 1000; // 10 min
+/* ============ WEATHER ============ */
+const WEATHER_CACHE_TTL = 10 * 60 * 1000;
 const weatherCache = {};
 let weatherAbort = null;
 
@@ -916,7 +906,6 @@ async function getWeather(){
   const detEl = document.getElementById('wDetails');
   const btn = document.getElementById('weatherBtn');
 
-  // Cache hit
   const cached = weatherCache[city.toLowerCase()];
   if (cached && Date.now() - cached.ts < WEATHER_CACHE_TTL) {
     renderWeather(cached.data, city);
@@ -925,6 +914,7 @@ async function getWeather(){
 
   btn.disabled = true;
   tempEl.textContent = '...';
+  detEl.className = 'w-info';
   detEl.innerHTML = '<span class="w-skeleton"></span><br><br><span class="w-skeleton"></span>';
 
   if (weatherAbort) weatherAbort.abort();
@@ -948,7 +938,6 @@ async function getWeather(){
     btn.disabled = false;
   }
 }
-
 function renderWeather(data, city){
   const curr = data.current_condition[0];
   const tempEl = document.getElementById('temp');
@@ -966,33 +955,26 @@ const chatWindow = document.getElementById('chatWindow');
 const chatInput  = document.getElementById('chatInput');
 const chatPanel  = document.getElementById('chatPanel');
 const chatFab    = document.getElementById('chatFab');
-const chatMenu   = document.getElementById('chatMenu');
 const BOT_API    = '/chat';
-
 const WELCOME_MSG = "Hi! I'm ZJ Bot 👋 Ask me anything.";
 
-// Persist sessions
 let chatSessions  = JSON.parse(localStorage.getItem('zj_chat_sessions') || '[]');
 let currentChatId = localStorage.getItem('zj_current_chat') || null;
 
-// Make sure a valid current session exists
 if (chatSessions.length > 0 && !chatSessions.find(s => s.id === currentChatId)) {
   currentChatId = chatSessions[0].id;
 }
-
 function persistChats(){
   localStorage.setItem('zj_chat_sessions', JSON.stringify(chatSessions));
   localStorage.setItem('zj_current_chat', currentChatId || '');
 }
-
 function getCurrentSession(){
   return chatSessions.find(s => s.id === currentChatId) || null;
 }
 function createNewSession(){
   const id = 'chat_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
   const session = {
-    id,
-    title: 'New Chat',
+    id, title: 'New Chat',
     messages: [{ sender: 'bot', text: WELCOME_MSG }]
   };
   chatSessions.unshift(session);
@@ -1037,7 +1019,6 @@ function closeChat(){
   chatPanel.classList.remove('open');
   chatFab.style.display = 'flex';
   document.body.style.overflow = '';
-  closeChatMenu();
 }
 async function sendMessage(){
   const text = chatInput.value.trim();
@@ -1075,29 +1056,14 @@ async function sendMessage(){
   }
 }
 
-/* OPTIONS MENU */
-function toggleChatMenu(e){
-  e.stopPropagation();
-  const open = chatMenu.classList.toggle('open');
-  document.getElementById('chatOptionsBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
-}
-function closeChatMenu(){
-  chatMenu.classList.remove('open');
-  document.getElementById('chatOptionsBtn').setAttribute('aria-expanded', 'false');
-}
-document.addEventListener('click', (e) => {
-  if (!chatMenu.contains(e.target) && !e.target.closest('.chat-action-btn')) {
-    closeChatMenu();
-  }
-});
-
+/* New Chat */
 function newChat(){
   createNewSession();
   renderChat();
-  closeChatMenu();
 }
+
+/* Clear current chat */
 function clearChat(){
-  closeChatMenu();
   const session = getCurrentSession();
   if (!session) return;
   if (!confirm('Clear all messages in this chat?')) return;
@@ -1107,9 +1073,8 @@ function clearChat(){
   renderChat();
 }
 
-/* CHAT HISTORY MODAL */
+/* Chat history modal */
 function showHistory(){
-  closeChatMenu();
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
   overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
@@ -1175,20 +1140,12 @@ function showHistory(){
 /* ESC key */
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (chatMenu.classList.contains('open')) closeChatMenu();
-    else if (chatPanel.classList.contains('open')) closeChat();
+    if (chatPanel.classList.contains('open')) closeChat();
   }
 });
 
 /* ============ INIT ============ */
-renderCalcHistory();
 getWeather();
-
-/* PWA: register empty SW for future caching (optional) */
-if ('serviceWorker' in navigator) {
-  // Kept as no-op for now; uncomment when sw.js is added.
-  // navigator.serviceWorker.register('sw.js').catch(() => {});
-}
 </script>
 </body>
 </html>
