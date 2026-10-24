@@ -3,16 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
-<meta name="theme-color" content="#00a3cc">
+<meta name="theme-color" content="#000000">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<title>ZJ Website — Dashboard</title>
+<!-- Security Fix: CSP (allows inline for this single-file architecture) -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://api.open-meteo.com https://geocoding-api.open-meteo.com; img-src 'self' data: https://picsum.photos;">
+<title>ZJ Dashboard</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2300a3cc'/%3E%3Ctext x='50' y='68' font-size='50' font-family='Georgia' font-weight='900' text-anchor='middle' fill='white'%3EZJ%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
 <style>
-  /* ===== VARIABLES ===== */
+  /* ===== VARIABLES & SEMANTICS ===== */
+  /* 
+    Cyan = Interactive / Primary
+    Gold = Result / Highlight
+    Silver = Neutral / Utility
+    Danger = Destructive
+    Success = Confirm
+  */
   :root {
     --cyan: #00a3cc; --cyan-lite: #33c2e8; --cyan-deep: #0077cc;
     --cyan-glow: rgba(0,163,204,0.2);
@@ -20,16 +29,20 @@
     --gold-glow: rgba(255,215,0,0.2);
     --silver: #e8eef2; --silver-mid: #b8c4cc; --silver-dark: #6a7a84;
     --danger: #ef4444; --success: #10b981;
+
+    /* Fixed Contrast: muted color updated for AA compliance */
+    --bg-0: #000000; --bg-1: #0a0e12; --bg-2: #121820;
+    --border: #1f262c; --text: #f0f6fa; --muted: #909fa8;
+    
     --metal-1: #1a1e24; --metal-2: #0d1014; --metal-3: #2a3038;
     --metal-shadow: inset 0 2px 5px rgba(255,255,255,0.1), inset 0 -2px 5px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3);
+
     --sidebar-w: 220px;
-    --bg-0: #000000; --bg-1: #0a0e12; --bg-2: #121820;
-    --border: #1f262c; --text: #f0f6fa; --muted: #7a8a94;
     --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
   body.light-theme {
     --bg-0: #F1F5F9; --bg-1: #FFFFFF; --bg-2: #F8FAFC;
-    --border: #CBD5E1; --text: #0F172A; --muted: #64748B;
+    --border: #CBD5E1; --text: #0F172A; --muted: #5A6878; /* Fixed light theme contrast */
     --cyan: #0284C7; --cyan-lite: #38BDF8; --cyan-deep: #075985;
     --cyan-glow: rgba(2,132,199,0.15);
     --gold: #B45309; --gold-lite: #F59E0B; --gold-deep: #78350F;
@@ -42,10 +55,8 @@
   /* ===== RESET ===== */
   *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body {
-    margin: 0; padding: 0;
-    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-    background: var(--bg-0); color: var(--text);
-    min-height: 100vh; overflow-x: hidden;
+    margin: 0; padding: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg-0); color: var(--text); min-height: 100vh; overflow-x: hidden;
     transition: background 0.3s ease, color 0.3s ease;
   }
   button, input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
@@ -88,6 +99,8 @@
   .nav-item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; margin-bottom: 4px; border-radius: 8px; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent; background: transparent; text-align: left; width: 100%; transition: all 0.2s ease; }
   .nav-item:hover { color: var(--text); background: var(--bg-2); }
   .nav-item.active { color: var(--cyan); background: var(--bg-2); border-color: var(--cyan); }
+  .nav-import-label { cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 12px 14px; margin-bottom: 4px; border-radius: 8px; color: var(--muted); font-size: 13px; font-weight: 600; border: 1px solid transparent; transition: all 0.2s; }
+  .nav-import-label:hover { color: var(--text); background: var(--bg-2); }
 
   /* ===== TOPBAR ===== */
   .topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: 60px; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: var(--bg-1); border-bottom: 1px solid var(--border); transition: left 0.35s ease; }
@@ -97,9 +110,8 @@
   .cmd-btn { background: var(--bg-2); border: 1px solid var(--border); color: var(--muted); padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
   .cmd-btn span { font-size: 10px; background: var(--border); padding: 2px 6px; border-radius: 4px; }
 
-  /* ===== MAIN ===== */
+  /* ===== MAIN & HERO ===== */
   .main { position: relative; z-index: 2; margin-left: var(--sidebar-w); padding: 85px 20px 80px; transition: margin-left 0.35s ease; max-width: 1160px; margin-right: auto; }
-  
   .hero { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; gap: 6px; }
   .hero-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; justify-content: center; }
   .hero h1 { margin: 0; font-size: 28px; font-weight: 900; color: var(--text); }
@@ -108,9 +120,8 @@
 
   .main-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
 
-  /* ===== CARD (FRAMES) ===== */
+  /* ===== CARDS & FRAMES ===== */
   .frame { background: var(--bg-1); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); min-height: 320px; }
-  body.light-theme .frame { box-shadow: 0 4px 20px rgba(15,23,42,0.05); }
   .card-head { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent); }
   .card-title { font-size: 12px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
   .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
@@ -121,7 +132,7 @@
   .icon-btn { width: 44px; height: 44px; border-radius: 8px; background: var(--bg-2); border: 1px solid var(--border); color: var(--muted); display: flex; align-items: center; justify-content: center; padding: 0; transition: all 0.2s; }
   .icon-btn:hover { color: var(--cyan); border-color: var(--cyan); }
 
-  /* ===== CALCULATOR (SIMPLE) ===== */
+  /* ===== SIMPLE CALCULATOR ===== */
   .calc-body { padding: 16px; display: flex; flex-direction: column; flex: 1; gap: 8px; }
   .calc-display { width: 100%; height: 56px; background: var(--bg-0); color: var(--text); border: 1px solid var(--border); border-radius: 10px; font-size: 24px; text-align: right; padding: 8px 12px; font-family: 'Share Tech Mono', monospace; font-weight: 700; outline: none; box-shadow: inset 0 3px 8px rgba(0,0,0,0.4); }
   .calc-tape { height: 50px; overflow-y: auto; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; padding: 4px 8px; font-family: 'Share Tech Mono', monospace; font-size: 12px; display: flex; flex-direction: column; gap: 4px; }
@@ -160,11 +171,13 @@
   .w-updated { font-size: 10px; color: var(--muted); text-align: center; margin-top: 4px; }
 
   /* ===== GALLERY ===== */
-  .slider-wrap { flex: 1; overflow: hidden; background: var(--bg-0); min-height: 260px; }
+  .slider-wrap { flex: 1; overflow: hidden; background: var(--bg-0); min-height: 260px; position: relative; }
   .slides { display: flex; width: max-content; height: 100%; animation: slideRight 20s linear infinite; }
+  .slides.paused { animation-play-state: paused; }
   .slides:hover, .slides:focus-within { animation-play-state: paused; }
   .slides img { width: 280px; height: 100%; object-fit: cover; flex-shrink: 0; cursor: pointer; }
   @keyframes slideRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
+  .carousel-btn { position: absolute; bottom: 10px; right: 10px; z-index: 10; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
   .lightbox { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; }
   .lightbox.open { display: flex; }
   .lightbox img { max-width: 88vw; max-height: 84vh; object-fit: contain; border-radius: 8px; }
@@ -174,7 +187,7 @@
   .lb-next { right: 20px; top: 50%; transform: translateY(-50%); }
   .lb-close:hover, .lb-prev:hover, .lb-next:hover { background: rgba(255,255,255,0.25); }
 
-  /* ===== FULL SCREEN WINDOWS (Apps) ===== */
+  /* ===== APP WINDOWS ===== */
   .app-window { position: fixed; inset: 0; z-index: 100; height: 100dvh; display: flex; flex-direction: column; background: var(--bg-0); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
   .app-window.open { opacity: 1; pointer-events: auto; }
   .app-head { padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; box-shadow: var(--metal-shadow); }
@@ -196,6 +209,7 @@
   .sci-grid .btn-equal { background: linear-gradient(180deg, var(--gold-lite), var(--gold-deep)); color: #1a1400; border-color: var(--gold); font-weight: 900; }
   .sci-grid .btn-action { background: linear-gradient(180deg, #475569, #1e293b); color: #fff; }
   .sci-grid .btn-func { background: rgba(0,163,204,0.1); color: var(--cyan); border-color: rgba(0,163,204,0.3); font-size: 13px; }
+  .rad-deg-toggle { background: var(--bg-2); border: 1px solid var(--border); color: var(--cyan); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; cursor: pointer; margin-left: auto; }
 
   /* ===== NOTES / TODO ===== */
   .metal-input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-0); color: var(--text); font-size: 15px; outline: none; box-shadow: inset 0 3px 8px rgba(0,0,0,0.4); }
@@ -248,7 +262,10 @@
   .chat-name { font-weight: 800; font-size: 15px; }
   .chat-sub { color: var(--cyan); font-size: 12px; font-weight: 600; }
   .chat-head-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .chat-action-btn { display: inline-flex; align-items: center; gap: 4px; padding: 10px 14px; border-radius: 6px; font-size: 12px; font-weight: 800; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); transition: all 0.2s; cursor: pointer; min-height: 44px; }
+  
+  /* Fix: Mobile chat buttons display */
+  .chat-action-btn { display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 10px 14px; border-radius: 6px; font-size: 12px; font-weight: 800; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); transition: all 0.2s; cursor: pointer; min-height: 44px; }
+  .chat-action-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
   .chat-action-btn:hover { border-color: var(--cyan); color: var(--cyan); }
   .chat-action-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
   
@@ -261,24 +278,23 @@
   body.light-theme .msg.bot { background: linear-gradient(145deg, #e0f2fe, #bae6fd); border-color: #7dd3fc; color: #0c4a6e; }
   .msg.user { background: linear-gradient(180deg, var(--cyan), var(--cyan-deep)); color: #fff; border-bottom-right-radius: 4px; font-weight: 500; box-shadow: 0 4px 15px var(--cyan-glow); }
   
-  /* Code Blocks */
-  .msg pre { background: var(--bg-0); padding: 12px; border-radius: 8px; overflow-x: auto; margin: 8px 0; border: 1px solid #104a58; }
+  .msg pre { background: var(--bg-0); padding: 12px; border-radius: 8px; overflow-x: auto; margin: 8px 0; border: 1px solid #104a58; position: relative; }
   .msg code { font-family: 'Courier New', monospace; font-size: 13px; color: var(--cyan); }
   .copy-code-btn { position: absolute; top: 8px; right: 8px; background: var(--cyan-deep); color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; }
   
   .chat-input-area { padding: 16px 20px calc(16px + var(--safe-bottom)); background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); border-top: 1px solid var(--border); box-shadow: inset 0 1px 0 rgba(255,255,255,0.1); }
   .chat-input-row { display: flex; gap: 12px; max-width: 900px; margin: 0 auto; position: relative; }
-  .chat-input-row input { flex: 1; min-width: 0; padding: 14px 50px 14px 20px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-0); color: var(--text); font-size: 15px; outline: none; box-shadow: inset 0 3px 8px rgba(0,0,0,0.5); }
+  /* Fix: Mic overlap padding */
+  .chat-input-row input { flex: 1; min-width: 0; padding: 14px 110px 14px 20px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-0); color: var(--text); font-size: 15px; outline: none; box-shadow: inset 0 3px 8px rgba(0,0,0,0.5); }
   .mic-btn { position: absolute; right: 90px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--muted); cursor: pointer; padding: 8px; }
   .mic-btn:hover { color: var(--cyan); }
   .mic-btn.recording { color: var(--danger); animation: pulse 1s infinite; }
   .chat-send { padding: 0 24px; border-radius: 10px; background: linear-gradient(180deg, var(--cyan-lite), var(--cyan-deep)); color: #fff; font-weight: 800; border: none; font-size: 15px; cursor: pointer; box-shadow: 0 4px 10px var(--cyan-glow); }
   .chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
-
   .scroll-bottom-btn { position: absolute; bottom: 90px; right: 20px; width: 44px; height: 44px; border-radius: 50%; background: var(--bg-1); border: 1px solid var(--border); color: var(--text); display: none; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 10; cursor: pointer; }
   .scroll-bottom-btn.visible { display: flex; }
 
-  /* ===== MODAL (Custom Popups) ===== */
+  /* ===== MODAL ===== */
   .custom-modal-overlay { position: fixed; inset: 0; z-index: 9000; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
   .custom-modal-overlay.open { opacity: 1; pointer-events: auto; }
   .custom-modal { background: var(--bg-1); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: scale(0.95) translateY(10px); transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); overflow: hidden; }
@@ -306,7 +322,7 @@
   .cmd-item:hover, .cmd-item.selected { background: var(--bg-2); color: var(--cyan); }
 
   /* ===== RESPONSIVE ===== */
-  @media (max-width: 960px) {
+  @media (max-width: 1100px) { /* Fixed breakpoint from 960 */
     :root { --sidebar-w: 0px; }
     .sidebar { transform: translateX(-100%); width: 260px; }
     .sidebar.open { transform: translateX(0); }
@@ -316,7 +332,7 @@
     .main-layout { grid-template-columns: 1fr; gap: 14px; }
     .hero h1 { font-size: 22px; }
     .digital-clock { font-size: 18px; padding: 2px 8px; }
-    .chat-action-btn span { display: none; }
+    .chat-action-btn span { display: none; } /* Hides text on mobile, icons remain */
     .chat-action-btn { padding: 10px; }
     .chat-window { padding: 14px; }
     .msg-wrapper { max-width: 88%; }
@@ -350,15 +366,16 @@
   <div class="nav-label" style="margin-top:20px;">Professional Apps</div>
   <button class="nav-item" onclick="openWindow('notesWin', this)">Notes</button>
   <button class="nav-item" onclick="openWindow('todoWin', this)">Todo List</button>
-  <button class="nav-item" onclick="openWindow('pomoWin', this)">Pomodoro Timer</button>
+  <button class="nav-item" onclick="openWindow('pomoWin', this)">Pomodoro</button>
   <button class="nav-item" onclick="openWindow('convWin', this)">Unit Converter</button>
   <button class="nav-item" onclick="openChat(this)">Chatbot</button>
 
   <div class="nav-label" style="margin-top:20px;">Data</div>
   <button class="nav-item" onclick="exportData()">Export Backup</button>
-  <label class="nav-item" style="cursor:pointer;">
+  <!-- Accessibility Fix: Added tabindex/role/keydown to import label -->
+  <label class="nav-import-label" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')document.getElementById('importFile').click()">
     Import Backup
-    <input type="file" accept=".json" onchange="importData(event)" style="display:none;">
+    <input type="file" id="importFile" accept=".json" onchange="importData(event)" style="display:none;">
   </label>
 </aside>
 
@@ -378,10 +395,11 @@
 <main class="main">
   <div class="hero">
     <div class="hero-row">
-      <h1>Welcome to My Website</h1>
+      <!-- Visual Polish Fix: Hero Copy -->
+      <h1>Your All-in-One Dashboard</h1>
       <div class="digital-clock" id="liveClock">00:00:00</div>
     </div>
-    <h2>This is "ZJ WEBSITE"</h2>
+    <h2>Stay productive, informed, and connected.</h2>
   </div>
 
   <div class="main-layout" id="dashboard">
@@ -391,34 +409,34 @@
       <div class="card-head">
         <div class="card-title"><span class="dot silver"></span>Calculator</div>
         <div class="card-tools">
-          <button class="icon-btn" onclick="openWindow('sciCalcWin', this)" title="Scientific Mode">
+          <button class="icon-btn" onclick="openWindow('sciCalcWin', this)" title="Scientific Mode" aria-label="Open scientific calculator">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 3H4v18h5"/><path d="M15 3h5v18h-5"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
           </button>
         </div>
       </div>
       <div class="calc-body">
         <div class="calc-tape" id="calcTape"></div>
-        <input type="text" id="calcDisplay" class="calc-display" readonly value="0" aria-label="Calculator display">
+        <input type="text" id="calcDisplay" class="calc-display" readonly value="0" aria-label="Calculator display" tabindex="-1">
         <div class="calc-grid">
-          <button class="btn-silver" onclick="appendCalc('AC')">AC</button>
-          <button class="btn-silver" onclick="appendCalc('DEL')">DEL</button>
-          <button class="btn-silver" onclick="appendCalc('%')">%</button>
-          <button class="btn-op" onclick="appendCalc('÷')">÷</button>
+          <button class="btn-silver" onclick="appendCalc('AC')" aria-label="Clear">AC</button>
+          <button class="btn-silver" onclick="appendCalc('DEL')" aria-label="Delete">DEL</button>
+          <button class="btn-silver" onclick="appendCalc('%')" aria-label="Percent">%</button>
+          <button class="btn-op" onclick="appendCalc('÷')" aria-label="Divide">÷</button>
           <button class="btn-num" onclick="appendCalc('7')">7</button>
           <button class="btn-num" onclick="appendCalc('8')">8</button>
           <button class="btn-num" onclick="appendCalc('9')">9</button>
-          <button class="btn-op" onclick="appendCalc('×')">×</button>
+          <button class="btn-op" onclick="appendCalc('×')" aria-label="Multiply">×</button>
           <button class="btn-num" onclick="appendCalc('4')">4</button>
           <button class="btn-num" onclick="appendCalc('5')">5</button>
           <button class="btn-num" onclick="appendCalc('6')">6</button>
-          <button class="btn-op" onclick="appendCalc('-')">−</button>
+          <button class="btn-op" onclick="appendCalc('-')" aria-label="Subtract">−</button>
           <button class="btn-num" onclick="appendCalc('1')">1</button>
           <button class="btn-num" onclick="appendCalc('2')">2</button>
           <button class="btn-num" onclick="appendCalc('3')">3</button>
-          <button class="btn-op" onclick="appendCalc('+')">+</button>
+          <button class="btn-op" onclick="appendCalc('+')" aria-label="Add">+</button>
           <button class="btn-num" onclick="appendCalc('0')">0</button>
           <button class="btn-num" onclick="appendCalc('.')">.</button>
-          <button class="btn-equal" onclick="calcEquals()">=</button>
+          <button class="btn-equal" onclick="calcEquals()" aria-label="Equals">=</button>
         </div>
       </div>
     </section>
@@ -427,28 +445,31 @@
     <section class="frame" id="weatherCard" aria-label="Weather">
       <div class="card-head">
         <div class="card-title"><span class="dot cyan"></span>Weather</div>
-        <button class="icon-btn" onclick="getLocationWeather()" title="Use My Location">
+        <button class="icon-btn" onclick="getLocationWeather()" title="Use My Location" aria-label="Use my location">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2a8 8 0 0 0-8 8c0 5.4 8 12 8 12s8-6.6 8-12a8 8 0 0 0-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
         </button>
       </div>
       <div class="weather-inner">
         <div class="weather-search">
-          <input type="text" id="cityInput" placeholder="City (e.g. Hyderabad)" onkeydown="if(event.key==='Enter') searchWeather()">
-          <button onclick="searchWeather()">🔍</button>
+          <input type="text" id="cityInput" placeholder="City (e.g. Hyderabad)" aria-label="City name" onkeydown="if(event.key==='Enter') searchWeather()">
+          <button onclick="searchWeather()" aria-label="Search weather">🔍</button>
         </div>
         <div class="weather-main" id="weatherMain">
           <div class="weather-icon-large" id="wIcon">--</div>
-          <div class="temp" id="temp">--° <span class="temp-toggle" onclick="toggleTempUnit()" id="tempUnitToggle">°C</span></div>
+          <div class="temp" id="temp">--° <span class="temp-toggle" onclick="toggleTempUnit()" id="tempUnitToggle" role="button" tabindex="0" aria-label="Toggle Celsius Fahrenheit">°C</span></div>
           <div class="w-desc" id="wDesc">Loading...</div>
           <div class="w-loc" id="wLoc">Detecting...</div>
         </div>
         <div class="weather-stats">
-          <div class="stat-box">Rain <strong id="wRain">--%</strong></div>
+          <div class="stat-box">Rain chance <strong id="wRain">--%</strong></div>
           <div class="stat-box">UV <strong id="wUv">--</strong></div>
           <div class="stat-box">Humidity <strong id="wHum">--%</strong></div>
           <div class="stat-box">Wind <strong id="wWind">-- km/h</strong></div>
         </div>
-        <div class="forecast" id="wForecast"></div>
+        <!-- Visual Polish: Forecast Placeholder -->
+        <div class="forecast" id="wForecast">
+          <div style="grid-column:1/-1; text-align:center; color:var(--muted); font-size:11px;">Loading forecast...</div>
+        </div>
         <div class="w-updated" id="wUpdated"></div>
       </div>
     </section>
@@ -463,6 +484,8 @@
           <img src="ZJPP.jpeg" alt="ZJ" data-gallery onclick="openLightbox(this)" loading="lazy" onerror="this.src='https://picsum.photos/400/600?random=1'">
           <img src="bmw.jpeg" alt="BMW" data-gallery onclick="openLightbox(this)" loading="lazy" onerror="this.src='https://picsum.photos/400/600?random=2'">
         </div>
+        <!-- Accessibility: Carousel Pause Control -->
+        <button class="carousel-btn" id="carouselBtn" onclick="toggleCarousel()">⏸ Pause</button>
       </div>
     </section>
   </div>
@@ -471,10 +494,10 @@
 <!-- ===== APP WINDOWS ===== -->
 
 <!-- NOTES -->
-<div class="app-window" id="notesWin" role="dialog" aria-label="Notes">
+<div class="app-window" id="notesWin" role="dialog" aria-modal="true" aria-label="Notes">
   <div class="app-head">
     <div class="app-title"><span class="dot silver"></span>Notes</div>
-    <button class="app-btn" onclick="closeWindow('notesWin')">Close</button>
+    <button class="app-btn" onclick="closeWindow('notesWin')" aria-label="Close Notes">Close</button>
   </div>
   <div class="app-body">
     <textarea id="noteInput" class="metal-input" placeholder="Write a note..." rows="4" style="resize:vertical; min-height:100px;"></textarea>
@@ -484,10 +507,10 @@
 </div>
 
 <!-- TODO -->
-<div class="app-window" id="todoWin" role="dialog" aria-label="Todo list">
+<div class="app-window" id="todoWin" role="dialog" aria-modal="true" aria-label="Todo list">
   <div class="app-head">
     <div class="app-title"><span class="dot cyan"></span>Todo List</div>
-    <button class="app-btn" onclick="closeWindow('todoWin')">Close</button>
+    <button class="app-btn" onclick="closeWindow('todoWin')" aria-label="Close Todo List">Close</button>
   </div>
   <div class="app-body">
     <div style="display:flex; gap:10px; margin-bottom:20px;">
@@ -505,10 +528,10 @@
 </div>
 
 <!-- POMODORO -->
-<div class="app-window" id="pomoWin" role="dialog" aria-label="Pomodoro timer">
+<div class="app-window" id="pomoWin" role="dialog" aria-modal="true" aria-label="Pomodoro timer">
   <div class="app-head">
     <div class="app-title"><span class="dot gold"></span>Pomodoro Timer</div>
-    <button class="app-btn" onclick="closeWindow('pomoWin')">Close</button>
+    <button class="app-btn" onclick="closeWindow('pomoWin')" aria-label="Close Pomodoro">Close</button>
   </div>
   <div class="app-body pomo-body">
     <div class="pomo-modes">
@@ -527,10 +550,10 @@
 </div>
 
 <!-- CONVERTER -->
-<div class="app-window" id="convWin" role="dialog" aria-label="Unit converter">
+<div class="app-window" id="convWin" role="dialog" aria-modal="true" aria-label="Unit converter">
   <div class="app-head">
     <div class="app-title"><span class="dot cyan"></span>Unit Converter</div>
-    <button class="app-btn" onclick="closeWindow('convWin')">Close</button>
+    <button class="app-btn" onclick="closeWindow('convWin')" aria-label="Close Converter">Close</button>
   </div>
   <div class="app-body conv-body">
     <select class="conv-cat metal-input" id="convCat" onchange="updateConvUnits()">
@@ -545,7 +568,7 @@
       <input type="number" id="convInput" value="1" oninput="doConvert()">
       <select id="convFrom" onchange="doConvert()"></select>
     </div>
-    <div class="conv-swap"><button onclick="swapConv()">⇅</button></div>
+    <div class="conv-swap"><button onclick="swapConv()" aria-label="Swap units">⇅</button></div>
     <div class="conv-row">
       <input type="text" id="convOutput" readonly>
       <select id="convTo" onchange="doConvert()"></select>
@@ -554,15 +577,18 @@
 </div>
 
 <!-- SCIENTIFIC CALCULATOR -->
-<div class="app-window" id="sciCalcWin" role="dialog" aria-label="Scientific Calculator">
+<div class="app-window" id="sciCalcWin" role="dialog" aria-modal="true" aria-label="Scientific Calculator">
   <div class="app-head">
     <div class="app-title"><span class="dot silver"></span>Scientific Calculator</div>
-    <button class="app-btn" onclick="closeWindow('sciCalcWin')">Close</button>
+    <!-- UX Fix: Rad/Deg toggle -->
+    <button class="rad-deg-toggle" id="radDegToggle" onclick="toggleRadDeg()">RAD</button>
+    <button class="app-btn" onclick="closeWindow('sciCalcWin')" aria-label="Close Scientific Calculator">Close</button>
   </div>
   <div class="app-body">
     <div class="sci-calc-container">
       <div class="calc-tape" id="sciCalcTape"></div>
-      <input type="text" id="sciDisplay" class="sci-display" readonly value="0">
+      <input type="text" id="sciDisplay" class="sci-display" readonly value="0" aria-label="Scientific calculator display" tabindex="-1">
+      <!-- UX Fix: Standard Layout -->
       <div class="sci-grid">
         <button class="btn-func" onclick="sciAppend('sin(')">sin</button>
         <button class="btn-func" onclick="sciAppend('cos(')">cos</button>
@@ -574,26 +600,31 @@
         <button class="btn-func" onclick="sciAppend('^')">x^y</button>
         <button class="btn-func" onclick="sciAppend('π')">π</button>
         <button class="btn-func" onclick="sciAppend('e')">e</button>
+
         <button class="btn-action" onclick="sciAppend('AC')">AC</button>
         <button class="btn-action" onclick="sciAppend('DEL')">DEL</button>
         <button class="btn-action" onclick="sciAppend('(')">(</button>
         <button class="btn-action" onclick="sciAppend(')')">)</button>
         <button class="btn-op" onclick="sciAppend('÷')">÷</button>
+
         <button class="btn-num" onclick="sciAppend('7')">7</button>
         <button class="btn-num" onclick="sciAppend('8')">8</button>
         <button class="btn-num" onclick="sciAppend('9')">9</button>
         <button class="btn-op" onclick="sciAppend('×')">×</button>
         <button class="btn-num" onclick="sciAppend('%')">%</button>
+
         <button class="btn-num" onclick="sciAppend('4')">4</button>
         <button class="btn-num" onclick="sciAppend('5')">5</button>
         <button class="btn-num" onclick="sciAppend('6')">6</button>
         <button class="btn-op" onclick="sciAppend('-')">−</button>
         <button class="btn-num" onclick="sciAppend('0')">0</button>
+
         <button class="btn-num" onclick="sciAppend('1')">1</button>
         <button class="btn-num" onclick="sciAppend('2')">2</button>
         <button class="btn-num" onclick="sciAppend('3')">3</button>
         <button class="btn-op" onclick="sciAppend('+')">+</button>
         <button class="btn-num" onclick="sciAppend('.')">.</button>
+
         <button class="btn-equal" style="grid-column: span 5;" onclick="sciEquals()">=</button>
       </div>
     </div>
@@ -601,23 +632,23 @@
 </div>
 
 <!-- CHATBOT -->
-<button class="chat-fab" id="chatFab" onclick="openChat(this)">
+<button class="chat-fab" id="chatFab" onclick="openChat(this)" aria-label="Open chat">
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
 </button>
 
-<div class="chat-panel" id="chatPanel" role="dialog" aria-modal="true">
+<div class="chat-panel" id="chatPanel" role="dialog" aria-modal="true" aria-label="Chat">
   <div class="chat-head">
     <div class="chat-head-info">
       <div class="chat-avatar">ZJ</div>
       <div><div class="chat-name">ZJ Chatbot</div><div class="chat-sub" id="chatSub">Online</div></div>
     </div>
     <div class="chat-head-actions">
-      <button class="chat-action-btn" onclick="newChat()"><span>NEW</span></button>
-      <button class="chat-action-btn" onclick="showChatHistory()"><span>HISTORY</span></button>
-      <button class="chat-action-btn danger" onclick="clearChat()"><span>CLEAR</span></button>
-      <button class="chat-action-btn" id="retryBtn" onclick="retryMessage()" style="display:none; border-color:var(--gold); color:var(--gold);">RETRY</button>
-      <button class="chat-action-btn" id="stopGenBtn" onclick="stopGeneration()" style="display:none; border-color:var(--danger); color:var(--danger);">STOP</button>
-      <button class="chat-action-btn" onclick="closeChat()"><span>CLOSE</span></button>
+      <button class="chat-action-btn" onclick="newChat()" aria-label="New Chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>NEW</span></button>
+      <button class="chat-action-btn" onclick="showChatHistory()" aria-label="Chat History"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>HISTORY</span></button>
+      <button class="chat-action-btn danger" onclick="clearChat()" aria-label="Clear Chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+      <button class="chat-action-btn" id="retryBtn" onclick="retryMessage()" style="display:none; border-color:var(--gold); color:var(--gold);" aria-label="Retry">↻</button>
+      <button class="chat-action-btn" id="stopGenBtn" onclick="stopGeneration()" style="display:none; border-color:var(--danger); color:var(--danger);" aria-label="Stop">⏹</button>
+      <button class="chat-action-btn" onclick="closeChat()" aria-label="Close Chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>CLOSE</span></button>
     </div>
   </div>
   <div class="chat-window" id="chatWindow" onscroll="handleChatScroll()"></div>
@@ -626,8 +657,8 @@
   </button>
   <div class="chat-input-area">
     <div class="chat-input-row">
-      <input type="text" id="chatInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendMessage();}">
-      <button class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Voice Input">
+      <input type="text" id="chatInput" placeholder="Type a message..." aria-label="Message to chatbot" onkeydown="if(event.key==='Enter'){event.preventDefault();sendMessage();}">
+      <button class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" aria-label="Voice input">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
       </button>
       <button class="chat-send" id="chatSendBtn" onclick="sendMessage()">Send</button>
@@ -637,10 +668,10 @@
 
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
-  <button class="lb-close" onclick="closeLightbox()">×</button>
-  <button class="lb-prev" onclick="lbNav(-1)">‹</button>
+  <button class="lb-close" onclick="closeLightbox()" aria-label="Close Lightbox">×</button>
+  <button class="lb-prev" onclick="lbNav(-1)" aria-label="Previous Image">‹</button>
   <img id="lightboxImg" src="" alt="">
-  <button class="lb-next" onclick="lbNav(1)">›</button>
+  <button class="lb-next" onclick="lbNav(1)" aria-label="Next Image">›</button>
 </div>
 
 <!-- COMMAND PALETTE -->
@@ -664,40 +695,108 @@ function showToast(msg, type = 'success') {
   const t = document.createElement('div'); t.className = 'toast ' + type; t.textContent = msg;
   c.appendChild(t); setTimeout(() => t.remove(), 3100);
 }
-function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
-/* OVERLAY COUNTER */
-let overlayCount = 0;
-function lockScroll() { overlayCount++; document.body.style.overflow = 'hidden'; }
-function unlockScroll() { overlayCount = Math.max(0, overlayCount - 1); if (overlayCount === 0) document.body.style.overflow = ''; }
+/* CRITICAL FIX: Missing Notification & Beep functions */
+function playBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine'; osc.frequency.setValueAtTime(880, ctx.currentTime);
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+    osc.start(); osc.stop(ctx.currentTime + 0.5);
+  } catch(e) {}
+}
+function showNotification(msg) {
+  if (!("Notification" in window)) return;
+  if (Notification.permission === "granted") {
+    new Notification("ZJ Dashboard", { body: msg });
+  } else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then(p => { if (p === "granted") new Notification("ZJ Dashboard", { body: msg }); });
+  }
+}
+
+/* MODAL STACK (Replaces overlayCount) */
+let modalStack = [];
+function pushModal(id) { modalStack.push(id); document.body.style.overflow = 'hidden'; }
+function popModal(id) { modalStack = modalStack.filter(m => m !== id); if (modalStack.length === 0) document.body.style.overflow = ''; }
 
 /* THEME & CLOCK */
 function toggleTheme() {
   const isLight = document.body.classList.toggle('light-theme');
   store('theme', isLight ? 'light' : 'dark');
   $('#themeToggle').textContent = isLight ? '☀️' : '🌙';
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', isLight ? '#F1F5F9' : '#000000');
 }
-if (load('theme', 'dark') === 'light') { document.body.classList.add('light-theme'); $('#themeToggle').textContent = '☀️'; }
+if (load('theme', 'dark') === 'light') { 
+  document.body.classList.add('light-theme'); 
+  $('#themeToggle').textContent = '☀️'; 
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', '#F1F5F9');
+}
 
-setInterval(() => {
+let clockInterval = setInterval(() => {
   const d = new Date(); const pad = n => String(n).padStart(2, '0');
   $('#liveClock').textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
 }, 1000);
 
-/* NAVIGATION & WINDOWS */
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { clearInterval(clockInterval); }
+  else { clockInterval = setInterval(() => { const d = new Date(); const pad = n => String(n).padStart(2, '0'); $('#liveClock').textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()); }, 1000); }
+});
+
+/* HISTORY / BACK BUTTON */
+function pushState(id) { history.pushState({ windowId: id }, '', '#' + id); }
+function popStateBack() { if (modalStack.length > 0) history.back(); }
+
+window.addEventListener('popstate', (e) => {
+  if (modalStack.length > 0) {
+    const top = modalStack[modalStack.length - 1];
+    if (top === 'chatPanel') closeChat(true);
+    else closeWindow(top, true);
+  }
+});
+
+/* NAVIGATION */
 function toggleSidebar() { $('#sidebar').classList.toggle('open'); $('#sidebarBackdrop').classList.toggle('open'); }
 function closeSidebar() { $('#sidebar').classList.remove('open'); $('#sidebarBackdrop').classList.remove('open'); }
 function setActiveNav(btn) { if (!btn) return; $$('.nav-item').forEach(el => el.classList.remove('active')); btn.classList.add('active'); }
-function scrollToCard(id, btn) { setActiveNav(btn); const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); closeSidebar(); }
-function openWindow(id, btn) { setActiveNav(btn); closeSidebar(); const win = document.getElementById(id); if (win) { win.classList.add('open'); lockScroll(); } }
-function closeWindow(id) { const win = document.getElementById(id); if (win) { win.classList.remove('open'); unlockScroll(); } }
+function scrollToCard(id, btn) { 
+  setActiveNav(btn); 
+  const el = document.getElementById(id); 
+  if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.setAttribute('tabindex', '-1'); el.focus(); }
+  closeSidebar(); 
+}
+function openWindow(id, btn) { 
+  setActiveNav(btn); 
+  closeSidebar(); 
+  const win = document.getElementById(id); 
+  if (win) { 
+    win.classList.add('open'); 
+    pushModal(id);
+    pushState(id);
+    const focusable = win.querySelector('button, input, select, textarea');
+    if (focusable) setTimeout(() => focusable.focus(), 100);
+  } 
+}
+function closeWindow(id, fromPopState = false) { 
+  const win = document.getElementById(id); 
+  if (win) { 
+    win.classList.remove('open'); 
+    popModal(id);
+    if (id === 'pomoWin') document.title = 'ZJ Dashboard';
+    if (!fromPopState) popStateBack();
+  } 
+}
 
-/* EXPORT / IMPORT DATA */
+/* EXPORT / IMPORT */
 function exportData() {
   const data = {
     notes: load('notes', []), todos: load('todos', []),
     chats: load('chat_sessions', []), calcTape: load('calc_tape', []), sciTape: load('sci_tape', [])
   };
+  if (!data.notes.length && !data.todos.length && !data.chats.length) return showToast('Nothing to export', 'error');
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href = url; a.download = `zj-backup-${Date.now()}.json`;
@@ -712,8 +811,6 @@ function importData(event) {
       if (data.notes) store('notes', data.notes);
       if (data.todos) store('todos', data.todos);
       if (data.chats) store('chat_sessions', data.chats);
-      if (data.calcTape) store('calc_tape', data.calcTape);
-      if (data.sciTape) store('sci_tape', data.sciTape);
       showToast('Backup restored! Reloading...');
       setTimeout(() => location.reload(), 1500);
     } catch (err) { showToast('Invalid backup file', 'error'); }
@@ -722,10 +819,27 @@ function importData(event) {
 }
 
 /* SAFE MATH EVALUATOR */
+let isRad = false;
+function toggleRadDeg() {
+  isRad = !isRad;
+  $('#radDegToggle').textContent = isRad ? 'RAD' : 'DEG';
+}
 function preprocess(expr) {
-  return String(expr).replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-').replace(/√/g, 'sqrt')
-    .replace(/π/g, '(3.141592653589793)').replace(/(?<![0-9.])e(?![0-9.+-])/g, '(2.718281828459045)') // Fixed scientific 1e5
+  // CRITICAL FIX: Handle A + B% as A + (A * B / 100)
+  let cleaned = String(expr).replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-').replace(/√/g, 'sqrt')
+    .replace(/(?<![0-9.])e(?![0-9.+-])/g, '(2.718281828459045)')
+    .replace(/(\d+(?:\.\d+)?)\s*\+\s*(\d+(?:\.\d+)?)%/g, '$1 + ($1 * $2 / 100)')
+    .replace(/(\d+(?:\.\d+)?)\s*\-\s*(\d+(?:\.\d+)?)%/g, '$1 - ($1 * $2 / 100)')
+    .replace(/π/g, '(3.141592653589793)')
     .replace(/(\d|\))%(?![0-9])/g, '$1/100');
+    
+  if (!isRad) {
+    // Basic DEG to RAD conversion for standalone sin/cos/tan
+    cleaned = cleaned.replace(/sin\(([^)]+)\)/g, (m, p1) => `sin((${p1}) * Math.PI / 180)`);
+    cleaned = cleaned.replace(/cos\(([^)]+)\)/g, (m, p1) => `cos((${p1}) * Math.PI / 180)`);
+    cleaned = cleaned.replace(/tan\(([^)]+)\)/g, (m, p1) => `tan((${p1}) * Math.PI / 180)`);
+  }
+  return cleaned;
 }
 function tokenize(expr) {
   const tokens = []; let i = 0;
@@ -754,7 +868,7 @@ function toRPN(tokens) {
     else if (t.value === '(') ops.push(t);
     else if (t.value === ')') {
       while (ops.length && ops[ops.length - 1].value !== '(') out.push(ops.pop());
-      if (!ops.length) throw new Error('Mismatched');
+      if (!ops.length) throw new Error('Mismatched ( )');
       ops.pop(); if (ops.length && ops[ops.length - 1].type === 'func') out.push(ops.pop());
     } else {
       if (t.value === '-' && (prev === null || (prev.type === 'op' && prev.value !== ')') || prev.type === 'func')) out.push({ type: 'num', value: 0 });
@@ -768,7 +882,7 @@ function toRPN(tokens) {
     }
     prev = t;
   }
-  while (ops.length) { const op = ops.pop(); if (op.value === '(') throw new Error('Mismatched'); out.push(op); }
+  while (ops.length) { const op = ops.pop(); if (op.value === '(') throw new Error('Mismatched ( )'); out.push(op); }
   return out;
 }
 function evalRPN(rpn) {
@@ -777,14 +891,14 @@ function evalRPN(rpn) {
     if (t.type === 'num') { stack.push(t.value); continue; }
     if (t.type === 'func') {
       const a = stack.pop(); let r;
-      switch (t.value) { case 'sin': r = Math.sin(a); break; case 'cos': r = Math.cos(a); break; case 'tan': r = Math.tan(a); break; case 'sqrt': r = Math.sqrt(a); break; case 'log': r = Math.log10(a); break; case 'ln': r = Math.log(a); break; default: throw new Error('Unknown'); }
+      switch (t.value) { case 'sin': r = Math.sin(a); break; case 'cos': r = Math.cos(a); break; case 'tan': r = Math.tan(a); break; case 'sqrt': r = Math.sqrt(a); break; case 'log': r = Math.log10(a); break; case 'ln': r = Math.log(a); break; default: throw new Error('Unknown function'); }
       stack.push(r); continue;
     }
     const b = stack.pop(), a = stack.pop();
     switch (t.value) {
       case '+': stack.push(a + b); break; case '-': stack.push(a - b); break; case '*': stack.push(a * b); break;
-      case '/': if (b === 0) throw new Error('Div by 0'); stack.push(a / b); break;
-      case '%': if (b === 0) throw new Error('Div by 0'); stack.push(a % b); break;
+      case '/': if (b === 0) throw new Error('Div by zero'); stack.push(a / b); break;
+      case '%': if (b === 0) throw new Error('Div by zero'); stack.push(a % b); break;
       case '^': stack.push(Math.pow(a, b)); break;
     }
   }
@@ -821,7 +935,7 @@ function calcEquals() {
     calcTapeData.push({ expr: calcExpr, result: res }); if (calcTapeData.length > 20) calcTapeData.shift();
     store('calc_tape', calcTapeData);
     calcExpr = String(res); updateCalcDisplay(); renderCalcTape();
-  } catch (e) { $('#calcDisplay').value = 'Error'; setTimeout(() => { calcExpr = '0'; updateCalcDisplay(); }, 1200); }
+  } catch (e) { $('#calcDisplay').value = e.message; setTimeout(() => { calcExpr = '0'; updateCalcDisplay(); }, 1500); }
 }
 
 let sciExpr = '0';
@@ -851,25 +965,29 @@ function sciEquals() {
     sciTapeData.push({ expr: sciExpr, result: res }); if (sciTapeData.length > 20) sciTapeData.shift();
     store('sci_tape', sciTapeData);
     sciExpr = String(res); updateSciDisplay(); renderSciTape();
-  } catch (e) { $('#sciDisplay').value = 'Error'; setTimeout(() => { sciExpr = '0'; updateSciDisplay(); }, 1200); }
+  } catch (e) { $('#sciDisplay').value = e.message; setTimeout(() => { sciExpr = '0'; updateSciDisplay(); }, 1500); }
 }
 
-/* GLOBAL KEYBOARD FOR CALCULATOR */
+/* GLOBAL KEYBOARD */
 document.addEventListener('keydown', e => {
   const tag = document.activeElement.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || document.activeElement.isContentEditable) return;
-  if ($('.custom-modal-overlay') || $('#chatPanel').classList.contains('open') || $('#cmdPalette').classList.contains('open')) return;
-
-  const key = e.key;
-  if (/^[0-9.]$/.test(key)) { appendCalc(key); e.preventDefault(); }
-  else if (key === '+') { appendCalc('+'); e.preventDefault(); }
-  else if (key === '-') { appendCalc('-'); e.preventDefault(); }
-  else if (key === '*') { appendCalc('×'); e.preventDefault(); }
-  else if (key === '/') { appendCalc('÷'); e.preventDefault(); }
-  else if (key === '%') { appendCalc('%'); e.preventDefault(); }
-  else if (key === 'Enter' || key === '=') { calcEquals(); e.preventDefault(); }
-  else if (key === 'Backspace') { appendCalc('DEL'); e.preventDefault(); }
-  else if (key === 'Escape') { appendCalc('AC'); e.preventDefault(); }
+  if (modalStack.length > 0 || $('#chatPanel').classList.contains('open') || $('#cmdPalette').classList.contains('open')) return;
+  
+  // Fix: Only capture keys if calc card is visible
+  const rect = $('#calcCard').getBoundingClientRect();
+  if (rect.top < window.innerHeight && rect.bottom > 0) {
+    const key = e.key;
+    if (/^[0-9.]$/.test(key)) { appendCalc(key); e.preventDefault(); }
+    else if (key === '+') { appendCalc('+'); e.preventDefault(); }
+    else if (key === '-') { appendCalc('-'); e.preventDefault(); }
+    else if (key === '*') { appendCalc('×'); e.preventDefault(); }
+    else if (key === '/') { appendCalc('÷'); e.preventDefault(); }
+    else if (key === '%') { appendCalc('%'); e.preventDefault(); }
+    else if (key === 'Enter' || key === '=') { calcEquals(); e.preventDefault(); }
+    else if (key === 'Backspace') { appendCalc('DEL'); e.preventDefault(); }
+    else if (key === 'Escape') { appendCalc('AC'); e.preventDefault(); }
+  }
 });
 
 /* WEATHER */
@@ -878,7 +996,6 @@ function getWeatherIcon(code, isNight) { const c = WMO[code] || { icon: '❓', d
 
 let isCelsius = true;
 let lastWeatherData = null;
-let weatherDebounce = null;
 
 function toggleTempUnit() {
   isCelsius = !isCelsius;
@@ -894,7 +1011,7 @@ function updateWeatherUI() {
   $('#wIcon').textContent = getWeatherIcon(cur.weathercode, isNight);
   const tempC = cur.temperature;
   const temp = isCelsius ? tempC : (tempC * 9/5) + 32;
-  $('#temp').innerHTML = `${Math.round(temp)}° <span class="temp-toggle" onclick="toggleTempUnit()">${isCelsius ? '°C' : '°F'}</span>`;
+  $('#temp').innerHTML = `${Math.round(temp)}° <span class="temp-toggle" onclick="toggleTempUnit()" role="button" tabindex="0" aria-label="Toggle Celsius Fahrenheit">${isCelsius ? '°C' : '°F'}</span>`;
   $('#wDesc').textContent = (WMO[cur.weathercode]?.desc || 'Unknown') + (isNight ? ' (Night)' : '');
   
   let humidity = '--';
@@ -925,11 +1042,15 @@ function updateWeatherUI() {
 
 async function fetchWeatherData(lat, lon, name) {
   $('#temp').innerHTML = '<span class="skeleton" style="display:inline-block; width:60px; height:30px; background:var(--border); border-radius:8px; animation:pulse 1s infinite;"></span>';
-  $('#wIcon').textContent = '⏳'; $('#wDesc').textContent = 'Fetching...'; $('#wLoc').textContent = name;
+  $('#wIcon').textContent = '⏳'; $('#wDesc').textContent = 'Fetching...';
   try {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&hourly=relative_humidity_2m&timezone=auto&forecast_days=7`;
-    const res = await fetch(url); const data = await res.json();
+    // Fix: Add timeout
+    const res = await fetch(url, { signal: AbortSignal.timeout(8000) }); 
+    const data = await res.json();
     lastWeatherData = data;
+    // Fix: Only update location after success
+    $('#wLoc').textContent = name;
     updateWeatherUI();
     store('lastWeather', { lat, lon, name, data, ts: Date.now() });
   } catch (e) {
@@ -940,25 +1061,24 @@ async function fetchWeatherData(lat, lon, name) {
 function searchWeather() {
   const city = $('#cityInput').value.trim();
   if (!city) return;
-  clearTimeout(weatherDebounce);
-  weatherDebounce = setTimeout(async () => {
-    $('#temp').innerHTML = '<span class="skeleton" style="display:inline-block; width:60px; height:30px; background:var(--border); border-radius:8px; animation:pulse 1s infinite;"></span>';
-    $('#wIcon').textContent = '🔍'; $('#wDesc').textContent = 'Searching...';
-    try {
-      const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=5&language=en&format=json`);
-      const data = await res.json();
-      if (!data.results || data.results.length === 0) { showToast('City not found', 'error'); $('#wDesc').textContent = 'Not found'; $('#wIcon').textContent = '⚠️'; return; }
-      if (data.results.length === 1) { const r = data.results[0]; fetchWeatherData(r.latitude, r.longitude, `${r.name}, ${r.country_code}`); }
-      else { showCityChooser(data.results); }
-    } catch (e) { showToast('Network error', 'error'); }
-  }, 500);
+  $('#temp').innerHTML = '<span class="skeleton" style="display:inline-block; width:60px; height:30px; background:var(--border); border-radius:8px; animation:pulse 1s infinite;"></span>';
+  $('#wIcon').textContent = '🔍'; $('#wDesc').textContent = 'Searching...';
+  try {
+    fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=5&language=en&format=json`, { signal: AbortSignal.timeout(8000) })
+      .then(res => res.json())
+      .then(data => {
+        if (!data.results || data.results.length === 0) { showToast('City not found', 'error'); $('#wDesc').textContent = 'Not found'; $('#wIcon').textContent = '⚠️'; return; }
+        if (data.results.length === 1) { const r = data.results[0]; fetchWeatherData(r.latitude, r.longitude, `${r.name}, ${r.country_code}`); }
+        else { showCityChooser(data.results); }
+      });
+  } catch (e) { showToast('Network error', 'error'); }
 }
 
 function showCityChooser(results) {
   const overlay = document.createElement('div'); overlay.className = 'custom-modal-overlay open';
   let listHtml = results.map((r, i) => `
     <button class="cm-btn" data-index="${i}" style="width:100%; justify-content:space-between; margin-bottom:8px; text-align:left;">
-      <span>${r.name}</span><span style="color:var(--muted); font-size:12px;">${r.admin1 ? r.admin1 + ', ' : ''}${r.country}</span>
+      <span>${escapeHtml(r.name)}</span><span style="color:var(--muted); font-size:12px;">${r.admin1 ? escapeHtml(r.admin1) + ', ' : ''}${escapeHtml(r.country)}</span>
     </button>
   `).join('');
   overlay.innerHTML = `
@@ -968,10 +1088,10 @@ function showCityChooser(results) {
       <div style="padding: 0 20px 20px; max-height: 300px; overflow-y:auto;" id="cityListContainer">${listHtml}</div>
       <div class="cm-footer"><button class="cm-btn cancel">Cancel</button></div>
     </div>`;
-  document.body.appendChild(overlay); lockScroll();
-  overlay.querySelector('.cancel').onclick = () => { overlay.remove(); unlockScroll(); };
+  document.body.appendChild(overlay); pushModal('cityChooser');
+  overlay.querySelector('.cancel').onclick = () => { overlay.remove(); popModal('cityChooser'); };
   overlay.querySelectorAll('[data-index]').forEach(btn => {
-    btn.onclick = () => { const r = results[parseInt(btn.getAttribute('data-index'))]; overlay.remove(); unlockScroll(); fetchWeatherData(r.latitude, r.longitude, `${r.name}, ${r.country_code || r.country}`); };
+    btn.onclick = () => { const r = results[parseInt(btn.getAttribute('data-index'))]; overlay.remove(); popModal('cityChooser'); fetchWeatherData(r.latitude, r.longitude, `${r.name}, ${r.country_code || r.country}`); };
   });
 }
 
@@ -989,9 +1109,28 @@ function getLocationWeather() {
 const savedWeather = load('lastWeather', null);
 if (savedWeather) {
   lastWeatherData = savedWeather.data;
+  $('#wLoc').textContent = savedWeather.name;
   updateWeatherUI();
-  if (Date.now() - savedWeather.ts > 600000) fetchWeatherData(savedWeather.lat, savedWeather.lon, savedWeather.name); // 10 min cache
+  if (Date.now() - savedWeather.ts > 600000) fetchWeatherData(savedWeather.lat, savedWeather.lon, savedWeather.name); 
 } else { getLocationWeather(); }
+
+// Fix: Refresh forecast "Today" on visibility change (midnight rollover)
+document.addEventListener('visibilitychange', () => { if (!document.hidden && lastWeatherData) updateWeatherUI(); });
+
+/* CAROUSEL */
+function toggleCarousel() {
+  const slides = $('.slides');
+  slides.classList.toggle('paused');
+  $('#carouselBtn').textContent = slides.classList.contains('paused') ? '▶ Play' : '⏸ Pause';
+}
+
+/* GALLERY & LIGHTBOX */
+let lbImages = []; let lbIndex = 0; let touchStartX = 0;
+function openLightbox(img) { lbImages = $$('img[data-gallery]').map(i => i.src); lbIndex = lbImages.indexOf(img.src); if (lbIndex < 0) lbIndex = 0; const lb = $('#lightbox'); $('#lightboxImg').src = lbImages[lbIndex]; lb.classList.add('open'); pushModal('lightbox'); }
+function closeLightbox() { $('#lightbox').classList.remove('open'); popModal('lightbox'); }
+function lbNav(dir) { if (!lbImages.length) return; lbIndex = (lbIndex + dir + lbImages.length) % lbImages.length; $('#lightboxImg').src = lbImages[lbIndex]; }
+$('#lightbox').addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, {passive:true});
+$('#lightbox').addEventListener('touchend', e => { const diff = e.changedTouches[0].screenX - touchStartX; if (Math.abs(diff) > 50) lbNav(diff > 0 ? -1 : 1); }, {passive:true});
 
 /* NOTES */
 let notes = load('notes', []);
@@ -1006,10 +1145,10 @@ function renderNotes() {
     const metaEl = document.createElement('div'); metaEl.className = 'note-meta'; metaEl.textContent = new Date(n.ts).toLocaleString();
     textWrap.appendChild(textEl); textWrap.appendChild(metaEl);
     const btnWrap = document.createElement('div'); btnWrap.style.display = 'flex';
-    const editBtn = document.createElement('button'); editBtn.className = 'edit-btn'; editBtn.textContent = '✎';
+    const editBtn = document.createElement('button'); editBtn.className = 'edit-btn'; editBtn.textContent = '✎'; editBtn.setAttribute('aria-label', 'Edit note');
     editBtn.onclick = () => editNote(n.id);
-    const delBtn = document.createElement('button'); delBtn.className = 'del-btn'; delBtn.textContent = '×';
-    delBtn.onclick = () => delNote(n.id);
+    const delBtn = document.createElement('button'); delBtn.className = 'del-btn'; delBtn.textContent = '×'; delBtn.setAttribute('aria-label', 'Delete note');
+    delBtn.onclick = () => confirmDelete('Note', () => { notes = notes.filter(x => x.id !== n.id); store('notes', notes); renderNotes(); });
     btnWrap.appendChild(editBtn); btnWrap.appendChild(delBtn);
     div.appendChild(textWrap); div.appendChild(btnWrap);
     fragment.appendChild(div);
@@ -1023,13 +1162,13 @@ function addNote() {
 function editNote(id) {
   const n = notes.find(x => x.id === id); if (!n) return;
   showCustomModal({
-    title: 'Edit Note', message: 'Update your note:', iconType: 'cyan', input: true, inputValue: n.text,
+    title: 'Edit Note', message: 'Update your note:', iconType: 'cyan', 
+    input: true, inputValue: n.text, isTextarea: true, // Fix: Textarea for multi-line
     confirmText: 'Save', onConfirm: (val) => {
       if (val && val.trim()) { n.text = val.trim(); store('notes', notes); renderNotes(); showToast('Note updated'); }
     }
   });
 }
-function delNote(id) { notes = notes.filter(x => x.id !== id); store('notes', notes); renderNotes(); }
 renderNotes();
 
 /* TODO */
@@ -1057,10 +1196,10 @@ function renderTodos() {
     cb.onchange = () => toggleTodo(t.id);
     const textEl = document.createElement('div'); textEl.className = 'todo-text'; textEl.textContent = t.text;
     const btnWrap = document.createElement('div'); btnWrap.style.display = 'flex';
-    const editBtn = document.createElement('button'); editBtn.className = 'edit-btn'; editBtn.textContent = '✎';
+    const editBtn = document.createElement('button'); editBtn.className = 'edit-btn'; editBtn.textContent = '✎'; editBtn.setAttribute('aria-label', 'Edit task');
     editBtn.onclick = () => editTodo(t.id);
-    const delBtn = document.createElement('button'); delBtn.className = 'del-btn'; delBtn.textContent = '×';
-    delBtn.onclick = () => delTodo(t.id);
+    const delBtn = document.createElement('button'); delBtn.className = 'del-btn'; delBtn.textContent = '×'; delBtn.setAttribute('aria-label', 'Delete task');
+    delBtn.onclick = () => confirmDelete('Task', () => { todos = todos.filter(x => x.id !== t.id); store('todos', todos); renderTodos(); });
     btnWrap.appendChild(editBtn); btnWrap.appendChild(delBtn);
     div.appendChild(cb); div.appendChild(textEl); div.appendChild(btnWrap);
     fragment.appendChild(div);
@@ -1081,12 +1220,12 @@ function editTodo(id) {
     }
   });
 }
-function delTodo(id) { todos = todos.filter(x => x.id !== id); store('todos', todos); renderTodos(); }
 function clearCompletedTodos() { todos = todos.filter(t => !t.done); store('todos', todos); renderTodos(); }
 renderTodos();
 
 /* POMODORO */
 let pomo = load('pomo_state', { minutes: 25, remaining: 25 * 60, running: false, mode: 'Focus' });
+let pomoEndTime = null;
 let pomoInterval = null;
 
 function savePomo() { store('pomo_state', { minutes: pomo.minutes, remaining: pomo.remaining, running: pomo.running, mode: pomo.mode }); }
@@ -1116,15 +1255,19 @@ function resetPomo() {
 }
 function togglePomo() {
   const btn = $('#pomoToggle');
-  if (pomo.running) { clearInterval(pomoInterval); pomo.running = false; btn.textContent = 'Resume'; savePomo(); }
-  else {
+  if (pomo.running) { 
+    clearInterval(pomoInterval); pomo.running = false; btn.textContent = 'Resume'; savePomo(); 
+  } else {
     pomo.running = true; btn.textContent = 'Pause';
+    pomoEndTime = Date.now() + pomo.remaining * 1000;
     pomoInterval = setInterval(() => {
-      pomo.remaining--; savePomo(); updatePomoDisplay();
+      const now = Date.now();
+      pomo.remaining = Math.max(0, Math.floor((pomoEndTime - now) / 1000));
+      savePomo(); updatePomoDisplay();
       document.title = `${fmtTime(pomo.remaining)} - ZJ Website`;
       if (pomo.remaining <= 0) {
         clearInterval(pomoInterval); pomo.running = false; pomo.remaining = 0; updatePomoDisplay(); btn.textContent = 'Start';
-        document.title = 'ZJ Website — Dashboard';
+        document.title = 'ZJ Dashboard';
         playBeep(); showNotification(`${pomo.mode} session complete!`);
         if (pomo.mode === 'Focus') { setPomoMode($$('.pomo-modes button')[1], 5, 'Short'); setTimeout(togglePomo, 1000); }
         else { setPomoMode($$('.pomo-modes button')[0], 25, 'Focus'); }
@@ -1134,8 +1277,7 @@ function togglePomo() {
   }
 }
 function fmtTime(sec) { return String(Math.floor(sec / 60)).padStart(2, '0') + ':' + String(sec % 60).padStart(2, '0'); }
-
-if (pomo.running) { pomo.running = false; } // Reset running state on reload to prevent ghost timers
+if (pomo.running) { pomo.running = false; }
 updatePomoDisplay();
 
 /* CONVERTER */
@@ -1144,7 +1286,7 @@ const UNITS = {
   mass: { kg: 'Kilograms', g: 'Grams', mg: 'Milligrams', t: 'Tons', lb: 'Pounds', oz: 'Ounces' },
   temp: { C: 'Celsius', F: 'Fahrenheit', K: 'Kelvin' },
   area: { 'm²': 'Sq Meters', 'km²': 'Sq Kilometers', 'cm²': 'Sq Centimeters', ha: 'Hectares', acre: 'Acres', 'ft²': 'Sq Feet', 'in²': 'Sq Inches' },
-  volume: { L: 'Liters', mL: 'Milliliters', 'm³': 'Cubic Meters', gal: 'Gallons', qt: 'Quarts', pt: 'Pints', cup: 'Cups', floz: 'Fluid Ounces' },
+  volume: { L: 'Liters', mL: 'Milliliters', 'm³': 'Cubic Meters', gal: 'Gallons (US)', qt: 'Quarts (US)', pt: 'Pints (US)', cup: 'Cups (US)', floz: 'Fluid Ounces (US)' },
   speed: { 'm/s': 'Meters/sec', 'km/h': 'Km/hour', mph: 'Miles/hour', knot: 'Knots' }
 };
 const UNIT_VALUES = {
@@ -1154,7 +1296,6 @@ const UNIT_VALUES = {
   volume: { L: 1, mL: 0.001, 'm³': 1000, gal: 3.785411784, qt: 0.946352946, pt: 0.473176473, cup: 0.2365882365, floz: 0.0295735296 },
   speed: { 'm/s': 1, 'km/h': 1/3.6, mph: 0.44704, knot: 0.514444 }
 };
-
 function populateConvUnits() {
   const cat = $('#convCat').value; const units = Object.keys(UNITS[cat]);
   const from = $('#convFrom'), to = $('#convTo'); from.innerHTML = ''; to.innerHTML = '';
@@ -1236,20 +1377,35 @@ function renderChat() {
 
 function pushMessage(sender, text) {
   let session = getCurrentSession(); if (!session) session = createNewSession();
-  session.messages.push({ sender: sender, text: text }); persistChats(); renderChat();
+  session.messages.push({ sender: sender, text: text }); persistChats();
+  
+  // Fix: Append incrementally instead of full rebuild
+  const chatWindow = $('#chatWindow');
+  const wrapper = document.createElement('div'); wrapper.className = 'msg-wrapper ' + sender;
+  const msgDiv = document.createElement('div'); msgDiv.className = 'msg ' + sender;
+  if (sender === 'bot') msgDiv.innerHTML = formatMarkdown(text); else msgDiv.textContent = text;
+  wrapper.appendChild(msgDiv);
+  chatWindow.appendChild(wrapper);
+  scrollToBottomChat();
 }
 
 function openChat(btn) {
   setActiveNav(btn);
   if (!currentChatId) createNewSession();
-  $('#chatPanel').classList.add('open'); $('#chatFab').classList.add('hidden'); lockScroll();
-  renderChat(); setTimeout(() => { $('#chatInput').focus(); }, 300);
+  $('#chatPanel').classList.add('open'); $('#chatFab').classList.add('hidden'); 
+  pushModal('chatPanel');
+  pushState('chatPanel');
+  renderChat(); 
+  setTimeout(() => { $('#chatInput').focus(); }, 300);
 }
-function closeChat() {
-  $('#chatPanel').classList.remove('open'); $('#chatFab').classList.remove('hidden'); unlockScroll();
+function closeChat(fromPopState = false) {
+  $('#chatPanel').classList.remove('open'); $('#chatFab').classList.remove('hidden'); 
+  popModal('chatPanel');
+  if (!fromPopState) popStateBack();
 }
 
 let lastUserMessage = '';
+let lastUserMessageFailed = false;
 const JOKES = ["Why don't scientists trust atoms? Because they make up everything. 😄", "Why did the developer go broke? Because he used up all his cache. 💸", "Why do programmers prefer dark mode? Because light attracts bugs. 🐛"];
 function localBotReply(text) {
   const t = text.toLowerCase().trim();
@@ -1267,12 +1423,12 @@ function localBotReply(text) {
 async function tryServer(text) {
   try {
     abortController = new AbortController();
-    const timer = setTimeout(() => abortController.abort(), 3000);
+    const timer = setTimeout(() => abortController.abort(), 20000); // Bumped to 20s
     const res = await fetch(BOT_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text }), signal: abortController.signal });
     clearTimeout(timer); if (!res.ok) throw new Error();
-    const data = await res.json(); if (data && data.reply) return data.reply;
+    const data = await res.json(); if (data && data.reply) { $('#chatSub').textContent = 'Online'; return data.reply; }
     throw new Error();
-  } catch (e) { return null; }
+  } catch (e) { $('#chatSub').textContent = 'Demo mode'; return null; }
 }
 
 function stopGeneration() {
@@ -1281,17 +1437,19 @@ function stopGeneration() {
     $('#stopGenBtn').style.display = 'none';
     $('#chatSendBtn').disabled = false;
     $('#chatInput').disabled = false;
-    pushMessage('bot', '⚠️ Generation stopped by user.');
+    pushMessage('bot', '⚠️ Generation stopped.');
+    lastUserMessageFailed = true;
+    $('#retryBtn').style.display = 'inline-flex';
   }
 }
 
 function retryMessage() {
-  if (!lastUserMessage) return;
+  if (!lastUserMessage || !lastUserMessageFailed) return;
   $('#retryBtn').style.display = 'none';
   const session = getCurrentSession();
-  if (session.messages.length > 0 && session.messages[session.messages.length - 1].text.includes('Network error')) {
+  if (session.messages.length > 0) {
     session.messages.pop(); // Remove error message
-    persistChats();
+    persistChats(); renderChat();
     $('#chatInput').value = lastUserMessage;
     sendMessage();
   }
@@ -1302,7 +1460,7 @@ async function sendMessage() {
   const text = chatInput.value.trim(); if (!text) return;
   if (!currentChatId) createNewSession();
   
-  lastUserMessage = text;
+  lastUserMessage = text; lastUserMessageFailed = false;
   pushMessage('user', text); chatInput.value = '';
   $('#chatSendBtn').disabled = true; chatInput.disabled = true;
   $('#stopGenBtn').style.display = 'inline-flex'; $('#retryBtn').style.display = 'none';
@@ -1319,7 +1477,11 @@ async function sendMessage() {
     typingWrap.remove(); pushMessage('bot', reply);
   } catch (e) {
     typingWrap.remove(); 
-    if (e.name !== 'AbortError') { pushMessage('bot', '⚠️ Network error. Click RETRY to try again.'); $('#retryBtn').style.display = 'inline-flex'; }
+    if (e.name !== 'AbortError') { 
+      pushMessage('bot', '⚠️ Network error. Click RETRY to try again.'); 
+      $('#retryBtn').style.display = 'inline-flex';
+      lastUserMessageFailed = true;
+    }
   } finally {
     $('#chatSendBtn').disabled = false; chatInput.disabled = false; chatInput.focus();
     $('#stopGenBtn').style.display = 'none';
@@ -1341,7 +1503,7 @@ if (SpeechRecognition) {
   recognition.onend = () => { $('#micBtn').classList.remove('recording'); };
 }
 function toggleVoiceInput() {
-  if (!recognition) { showToast('Voice input not supported in this browser', 'error'); return; }
+  if (!recognition) { showToast('Voice input not supported', 'error'); return; }
   if ($('#micBtn').classList.contains('recording')) recognition.stop();
   else recognition.start();
 }
@@ -1365,10 +1527,10 @@ function showChatHistory() {
   let listHtml = chatSessions.map(s => `
     <div style="display:flex; gap:8px; margin-bottom:8px;">
       <button class="cm-btn" style="flex:1; justify-content:space-between; border-color: ${s.id === currentChatId ? 'var(--cyan)' : 'var(--border)'}" onclick="loadChatSession('${s.id}')">
-        <span style="font-weight:800; color:var(--text); text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:120px;">${s.title}</span>
+        <span style="font-weight:800; color:var(--text); text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:120px;">${escapeHtml(s.title)}</span>
         <span style="font-size:11px; color:var(--muted);">${s.messages.length} msgs</span>
       </button>
-      <button class="cm-btn danger" onclick="deleteChatSession('${s.id}')" style="width:44px; padding:0;">✕</button>
+      <button class="cm-btn danger" onclick="deleteChatSession('${s.id}', this)" style="width:44px; padding:0;">✕</button>
     </div>
   `).join('');
   
@@ -1376,13 +1538,19 @@ function showChatHistory() {
     <div class="custom-modal">
       <div class="cm-head"><div class="cm-icon cyan">💬</div><div class="cm-title">Chat History</div></div>
       <div style="padding: 0 20px 20px; max-height: 300px; overflow-y:auto;">${listHtml || 'No history.'}</div>
-      <div class="cm-footer"><button class="cm-btn cancel" onclick="this.closest('.custom-modal-overlay').remove(); unlockScroll();">Close</button></div>
+      <div class="cm-footer"><button class="cm-btn cancel" onclick="this.closest('.custom-modal-overlay').remove(); popModal('history');">Close</button></div>
     </div>`;
-  document.body.appendChild(overlay); lockScroll();
+  document.body.appendChild(overlay); pushModal('history');
 }
 
-function loadChatSession(id) { currentChatId = id; persistChats(); renderChat(); document.querySelector('.custom-modal-overlay').remove(); unlockScroll(); }
-function deleteChatSession(id) {
+function loadChatSession(id) { 
+  currentChatId = id; persistChats(); renderChat(); 
+  document.querySelector('.custom-modal-overlay').remove(); popModal('history'); 
+}
+
+function deleteChatSession(id, btn) {
+  // Fix: Capture specific overlay before opening new modal
+  const historyOverlay = btn.closest('.custom-modal-overlay');
   showCustomModal({
     title: 'Delete Chat', message: 'Permanently delete this chat?', iconType: 'danger',
     iconHtml: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
@@ -1390,15 +1558,20 @@ function deleteChatSession(id) {
       chatSessions = chatSessions.filter(s => s.id !== id);
       if (currentChatId === id) currentChatId = chatSessions.length ? chatSessions[0].id : null;
       persistChats(); renderChat();
-      document.querySelector('.custom-modal-overlay').remove(); unlockScroll(); showToast('Chat deleted');
+      if (historyOverlay) { historyOverlay.remove(); popModal('history'); }
+      showToast('Chat deleted');
     }
   });
 }
 
-/* CORE MODAL WITH FOCUS TRAP */
-function showCustomModal({ title, message, iconHtml, iconType, confirmText, input, inputValue, onConfirm }) {
+/* CORE MODAL WITH DYNAMIC FOCUS TRAP */
+function showCustomModal({ title, message, iconHtml, iconType, confirmText, input, inputValue, isTextarea, onConfirm }) {
   const overlay = document.createElement('div'); overlay.className = 'custom-modal-overlay';
-  let inputHtml = input ? `<input type="text" class="metal-input" id="cmInput" value="${inputValue || ''}" style="margin-top:12px;">` : '';
+  let inputHtml = '';
+  if (input) {
+    if (isTextarea) inputHtml = `<textarea class="metal-input" id="cmInput" style="margin-top:12px; min-height:100px;">${escapeHtml(inputValue || '')}</textarea>`;
+    else inputHtml = `<input type="text" class="metal-input" id="cmInput" value="${escapeHtml(inputValue || '')}" style="margin-top:12px;">`;
+  }
   
   overlay.innerHTML = `
     <div class="custom-modal">
@@ -1409,14 +1582,14 @@ function showCustomModal({ title, message, iconHtml, iconType, confirmText, inpu
         <button class="cm-btn confirm ${iconType === 'danger' ? 'danger' : ''}">${confirmText}</button>
       </div>
     </div>`;
-  document.body.appendChild(overlay); requestAnimationFrame(() => overlay.classList.add('open')); lockScroll();
+  document.body.appendChild(overlay); requestAnimationFrame(() => overlay.classList.add('open')); pushModal('dialog');
   
   if (input) setTimeout(() => { const el = overlay.querySelector('#cmInput'); if (el) el.focus(); }, 100);
 
   const btnCancel = overlay.querySelector('.cancel');
   const btnConfirm = overlay.querySelector('.confirm');
   
-  const closeModal = () => { overlay.classList.remove('open'); setTimeout(() => overlay.remove(), 200); unlockScroll(); };
+  const closeModal = () => { overlay.classList.remove('open'); setTimeout(() => overlay.remove(), 200); popModal('dialog'); };
   
   btnCancel.onclick = closeModal;
   btnConfirm.onclick = () => {
@@ -1424,22 +1597,24 @@ function showCustomModal({ title, message, iconHtml, iconType, confirmText, inpu
     onConfirm(val); closeModal();
   };
   
-  // Focus Trap
+  // Dynamic Focus Trap
   overlay.addEventListener('keydown', e => {
     if (e.key === 'Tab') {
-      if (e.shiftKey && document.activeElement === btnCancel) { e.preventDefault(); btnConfirm.focus(); }
-      else if (!e.shiftKey && document.activeElement === btnConfirm) { e.preventDefault(); btnCancel.focus(); }
+      const focusables = Array.from(overlay.querySelectorAll('button, input, textarea, select')).filter(el => !el.disabled);
+      const first = focusables[0]; const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     }
   });
 }
 
-/* GALLERY & LIGHTBOX SWIPE */
-let lbImages = []; let lbIndex = 0; let touchStartX = 0;
-function openLightbox(img) { lbImages = $$('img[data-gallery]').map(i => i.src); lbIndex = lbImages.indexOf(img.src); if (lbIndex < 0) lbIndex = 0; const lb = $('#lightbox'); $('#lightboxImg').src = lbImages[lbIndex]; lb.classList.add('open'); lockScroll(); }
-function closeLightbox() { $('#lightbox').classList.remove('open'); unlockScroll(); }
-function lbNav(dir) { if (!lbImages.length) return; lbIndex = (lbIndex + dir + lbImages.length) % lbImages.length; $('#lightboxImg').src = lbImages[lbIndex]; }
-$('#lightbox').addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, {passive:true});
-$('#lightbox').addEventListener('touchend', e => { const diff = e.changedTouches[0].screenX - touchStartX; if (Math.abs(diff) > 50) lbNav(diff > 0 ? -1 : 1); }, {passive:true});
+function confirmDelete(itemName, callback) {
+  showCustomModal({
+    title: `Delete ${itemName}`, message: `Are you sure you want to delete this ${itemName.toLowerCase()}?`, iconType: 'danger',
+    iconHtml: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+    confirmText: 'Delete', onConfirm: callback
+  });
+}
 
 /* COMMAND PALETTE */
 const CMD_ACTIONS = [
@@ -1457,8 +1632,8 @@ const CMD_ACTIONS = [
 
 function toggleCmdPalette() {
   const cp = $('#cmdPalette');
-  if (cp.classList.contains('open')) { cp.classList.remove('open'); unlockScroll(); }
-  else { cp.classList.add('open'); lockScroll(); $('#cmdInput').value = ''; filterCmd(); $('#cmdInput').focus(); }
+  if (cp.classList.contains('open')) { cp.classList.remove('open'); popModal('cmd'); }
+  else { cp.classList.add('open'); pushModal('cmd'); $('#cmdInput').value = ''; filterCmd(); $('#cmdInput').focus(); }
 }
 function filterCmd() {
   const q = $('#cmdInput').value.toLowerCase();
@@ -1475,13 +1650,15 @@ function handleCmdNav(e) {
   if (e.key === 'Enter') { const first = $('.cmd-item'); if (first) first.click(); }
 }
 
+/* GLOBAL ESCAPE */
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); toggleCmdPalette(); }
   if (e.key === 'Escape') {
     if ($('#cmdPalette').classList.contains('open')) toggleCmdPalette();
     else if ($('#lightbox').classList.contains('open')) closeLightbox();
     else if ($('.custom-modal-overlay')) $('.custom-modal-overlay').querySelector('.cancel').click();
-    else if ($('#chatPanel').classList.contains('open')) closeChat();
+    else if (modalStack.includes('chatPanel')) closeChat();
+    else if (modalStack.length > 0) closeWindow(modalStack[modalStack.length - 1]);
   }
 });
 </script>
