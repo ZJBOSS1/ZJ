@@ -8,7 +8,6 @@
 <meta name="description" content="ZJ Dashboard - All-in-one productivity app.">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>ZJ Dashboard</title>
-<link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2300A3CC'/%3E%3Ctext x='50' y='68' font-size='50' font-family='Georgia' font-weight='900' text-anchor='middle' fill='white'%3EZJ%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -133,8 +132,6 @@
 
   /* ===== CALCULATOR ===== */
   .calc-body { padding: 16px; display: flex; flex-direction: column; flex: 1; gap: 10px; }
-  .calc-tape { height: 52px; overflow-y: auto; background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-family: 'Share Tech Mono', monospace; font-size: 12px; display: flex; flex-direction: column; gap: 4px; }
-  .tape-item { color: var(--text-tertiary); cursor: pointer; text-align: right; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 3px; }
   .calc-display { width: 100%; height: 60px; background: var(--bg-0); color: var(--text); border: 1px solid var(--border); border-radius: 10px; font-size: 26px; text-align: right; padding: 8px 14px; font-family: 'Share Tech Mono', monospace; font-weight: 700; outline: none; }
   .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; flex: 1; }
   .calc-grid button { border-radius: 10px; border: 1px solid transparent; font-size: 18px; font-weight: 700; transition: all 90ms; display: flex; align-items: center; justify-content: center; }
@@ -512,6 +509,8 @@
     </div>
     <div style="display:flex; gap:6px;">
       <button class="icon-btn" onclick="newChat()" data-tooltip="New Chat"><i data-lucide="plus"></i></button>
+      <button class="icon-btn" onclick="showChatHistory()" data-tooltip="Chat History"><i data-lucide="history"></i></button>
+      <button class="icon-btn" onclick="clearChat()" data-tooltip="Clear Chat"><i data-lucide="trash-2"></i></button>
       <button class="icon-btn" onclick="closeChat()" data-tooltip="Close"><i data-lucide="x"></i></button>
     </div>
   </div>
@@ -818,11 +817,161 @@ function addTodo() { const text = $('#todoInput').value.trim(); if (!text) retur
 function toggleTodo(id) { const t = todos.find(x => x.id === id); if (t) t.done = !t.done; DB.set('todos', todos); renderTodos(); }
 function delTodo(id) { todos = todos.filter(x => x.id !== id); DB.set('todos', todos); renderTodos(); }
 
-/* ===== POMODORO / CONVERTER / CHAT ===== */
+/* ===== REAL CHATBOT LOGIC ===== */
+const BOT_API = '/chat';
+const WELCOME_MSG = "Hi! I'm ZJ Bot 👋 How can I help you today?";
+let chatSessions = [];
+let currentChatId = null;
+
+DB.get('chat_sessions', []).then(d => { chatSessions = d; });
+DB.get('current_chat', null).then(id => { currentChatId = id; });
+
+function persistChats() { 
+  DB.set('chat_sessions', chatSessions); 
+  DB.set('current_chat', currentChatId || ''); 
+}
+function getCurrentSession() { return chatSessions.find(s => s.id === currentChatId) || null; }
+
+function createNewSession() { 
+  const id = 'chat_' + Date.now(); 
+  const session = { id: id, title: 'New Chat', messages: [{ sender: 'bot', text: WELCOME_MSG }] }; 
+  chatSessions.unshift(session); 
+  currentChatId = id; 
+  persistChats(); 
+  return session; 
+}
+
+function formatMarkdown(text) {
+  let s = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/(^|[^*])\*([^*]+)\*/g, '$1<em>$2</em>')
+       .replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\n/g, '<br>');
+  return s;
+}
+
+function renderChat() {
+  const chatWindow = $('#chatWindow'); chatWindow.innerHTML = ''; 
+  const session = getCurrentSession(); if (!session) return;
+  
+  session.messages.forEach(m => {
+    const wrapper = document.createElement('div'); wrapper.className = 'msg-wrapper ' + m.sender;
+    const msgDiv = document.createElement('div'); msgDiv.className = 'msg ' + m.sender;
+    if (m.sender === 'bot') msgDiv.innerHTML = formatMarkdown(m.text); else msgDiv.textContent = m.text;
+    wrapper.appendChild(msgDiv); chatWindow.appendChild(wrapper);
+  });
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+function pushMessage(sender, text) {
+  let session = getCurrentSession(); if (!session) session = createNewSession();
+  session.messages.push({ sender: sender, text: text }); persistChats();
+  
+  const chatWindow = $('#chatWindow');
+  const wrapper = document.createElement('div'); wrapper.className = 'msg-wrapper ' + sender;
+  const msgDiv = document.createElement('div'); msgDiv.className = 'msg ' + sender;
+  if (sender === 'bot') msgDiv.innerHTML = formatMarkdown(text); else msgDiv.textContent = text;
+  wrapper.appendChild(msgDiv); chatWindow.appendChild(wrapper);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+function openChat() { 
+  if (!currentChatId) createNewSession(); 
+  $('#chatPanel').classList.add('open'); 
+  document.body.style.overflow = 'hidden'; 
+  renderChat(); 
+  setTimeout(() => $('#chatInput').focus(), 300);
+}
+
+function closeChat() { 
+  $('#chatPanel').classList.remove('open'); 
+  document.body.style.overflow = ''; 
+}
+
+function newChat() { createNewSession(); renderChat(); showToast('New chat started'); }
+
+function clearChat() {
+  const session = getCurrentSession(); if (!session) return;
+  if (!confirm('Clear all messages in this chat?')) return;
+  session.messages = [{ sender: 'bot', text: WELCOME_MSG }];
+  session.title = 'New Chat'; persistChats(); renderChat();
+}
+
+function showChatHistory() {
+  if (chatSessions.length === 0) return showToast('No history yet.', 'info');
+  const titles = chatSessions.map((s, i) => `${i + 1}. ${s.title} (${s.messages.length} msgs)`).join('\n');
+  const choice = prompt(`Chat History:\n\n${titles}\n\nEnter number to load, or type "del X" to delete:`, "1");
+  
+  if (!choice) return;
+  if (choice.startsWith('del ')) {
+    const idx = parseInt(choice.replace('del ', '')) - 1;
+    if (chatSessions[idx]) {
+      chatSessions.splice(idx, 1);
+      persistChats();
+      if (currentChatId === chatSessions[idx]?.id) currentChatId = null;
+      renderChat();
+      showToast('Chat deleted');
+    }
+    return;
+  }
+  const idx = parseInt(choice) - 1;
+  if (chatSessions[idx]) {
+    currentChatId = chatSessions[idx].id;
+    persistChats();
+    renderChat();
+  }
+}
+
+async function sendMessage() {
+  const chatInput = $('#chatInput'); 
+  const text = chatInput.value.trim(); if (!text) return;
+  if (!currentChatId) createNewSession();
+  
+  pushMessage('user', text); 
+  chatInput.value = '';
+  const btn = $('#chatSendBtn');
+  btn.disabled = true;
+  
+  const session = getCurrentSession();
+  if (session && session.title === 'New Chat') { session.title = text.slice(0, 24); persistChats(); }
+  
+  const typingWrap = document.createElement('div'); 
+  typingWrap.className = 'msg-wrapper bot'; 
+  typingWrap.innerHTML = '<div class="msg bot typing">ZJ is typing...</div>';
+  $('#chatWindow').appendChild(typingWrap); 
+  $('#chatWindow').scrollTop = $('#chatWindow').scrollHeight;
+
+  try {
+    const res = await fetch(BOT_API, { 
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' }, 
+      body: JSON.stringify({ message: text }) 
+    });
+    if (!res.ok) throw new Error('Server error');
+    const data = await res.json(); 
+    typingWrap.remove(); 
+    pushMessage('bot', data.reply || 'No response');
+  } catch (e) {
+    typingWrap.remove(); 
+    pushMessage('bot', '⚠️ Cannot reach chatbot server. Check your API key on Vercel.');
+  } finally {
+    btn.disabled = false; 
+    chatInput.focus();
+  }
+}
+
+/* ===== POMODORO / CONVERTER ===== */
 function updatePomoDisplay() { $('#pomoTime').textContent = '25:00'; }
-function openChat() { $('#chatPanel').classList.add('open'); document.body.style.overflow = 'hidden'; }
-function closeChat() { $('#chatPanel').classList.remove('open'); document.body.style.overflow = ''; }
-function sendMessage() { showToast('Chat is functional in the full version.', 'info'); $('#chatInput').value = ''; }
+function setPomoMode(btn, min, mode) { 
+  document.querySelectorAll('.pomo-btn').forEach(b => { b.style.background = 'transparent'; b.style.color = 'var(--text-tertiary)'; }); 
+  btn.style.background = 'linear-gradient(180deg,var(--cyan-400),var(--cyan-600))'; 
+  btn.style.color = '#fff'; 
+}
+function editPomoTime() { showToast('Edit timer clicked', 'info'); }
+function togglePomo() { showToast('Pomodoro started', 'success'); }
+function resetPomo() { showToast('Pomodoro reset', 'info'); }
+
+function updateConvUnits() {}
+function doConvert() {}
+function swapConv() {}
 
 /* ===== GLOBAL KEYBOARD ===== */
 document.addEventListener('keydown', e => {
