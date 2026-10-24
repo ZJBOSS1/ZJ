@@ -9,10 +9,11 @@
 <style>
   :root {
     /* Dark Theme */
-    --cyan: #00eaff; --cyan-lite: #7af5ff; --cyan-deep: #0077cc;
-    --cyan-glow: rgba(0,234,255,0.4);
+    --cyan: #00a3cc; /* Toned down from neon */
+    --cyan-lite: #33c2e8; --cyan-deep: #0077cc;
+    --cyan-glow: rgba(0,163,204,0.2);
     --gold: #ffd700; --gold-lite: #ffe680; --gold-deep: #8a6f00;
-    --gold-glow: rgba(255,215,0,0.4);
+    --gold-glow: rgba(255,215,0,0.2);
     --silver: #e8eef2; --silver-mid: #b8c4cc; --silver-dark: #6a7a84;
     
     --sidebar-w: 220px;
@@ -46,22 +47,22 @@
   /* BACKGROUND */
   .bg { position: fixed; inset: 0; z-index: 0; background: radial-gradient(ellipse at top left, #06222a 0%, transparent 50%), radial-gradient(ellipse at bottom right, #1a1400 0%, transparent 50%), var(--bg-0); }
   body.light-theme .bg { background: radial-gradient(ellipse at top left, #E0F2FE 0%, transparent 50%), radial-gradient(ellipse at bottom right, #FEF3C7 0%, transparent 50%), var(--bg-0); }
-  .grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(0,234,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0,234,255,0.02) 1px, transparent 1px); background-size: 40px 40px; }
+  .grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(0,163,204,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0,163,204,0.02) 1px, transparent 1px); background-size: 40px 40px; }
   body.light-theme .grid { opacity: 0.3; }
   .orb { position: absolute; border-radius: 50%; filter: blur(90px); animation: float 20s infinite ease-in-out; }
-  .orb1 { width: 400px; height: 400px; background: var(--cyan); top: -100px; left: -100px; opacity: 0.12; }
-  .orb2 { width: 500px; height: 500px; background: var(--gold); bottom: -150px; right: -100px; opacity: 0.1; }
+  .orb1 { width: 400px; height: 400px; background: var(--cyan); top: -100px; left: -100px; opacity: 0.1; }
+  .orb2 { width: 500px; height: 500px; background: var(--gold); bottom: -150px; right: -100px; opacity: 0.08; }
   @keyframes float { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(20px,-30px) scale(1.05); } }
 
   /* TOAST */
   .toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
-  .toast { background: var(--bg-1); border: 1px solid var(--border); color: var(--text); padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 600; box-shadow: 0 8px 30px rgba(0,0,0,0.3); animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), toastOut 0.3s ease 2.7s forwards; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(10px); }
+  .toast { background: var(--bg-1); border: 1px solid var(--border); color: var(--text); padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 600; box-shadow: 0 8px 30px rgba(0,0,0,0.3); animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), toastOut 0.3s ease 2.7s forwards; display: flex; align-items: center; gap: 8px; }
   .toast.success { border-color: #10B981; color: #10B981; }
   @keyframes toastIn { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
   @keyframes toastOut { to { opacity: 0; transform: translateY(20px) scale(0.9); } }
 
   /* SIDEBAR & BACKDROP */
-  .sidebar-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 45; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  .sidebar-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 45; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
   .sidebar-backdrop.open { opacity: 1; pointer-events: auto; }
   
   .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 50; padding: 20px 14px; display: flex; flex-direction: column; background: var(--bg-1); border-right: 1px solid var(--border); transition: transform 0.35s ease; }
@@ -89,7 +90,7 @@
   .main-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
 
   /* CARDS */
-  .frame { background: var(--bg-1); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2); height: 480px; }
+  .frame { background: var(--bg-1); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); height: 480px; }
   body.light-theme .frame { box-shadow: 0 4px 20px rgba(15,23,42,0.05); }
   .card-head { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
   .card-title { font-size: 12px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
@@ -114,7 +115,7 @@
   .slides:hover { animation-play-state: paused; }
   .slides img { width: 300px; height: 100%; object-fit: cover; flex-shrink: 0; cursor: pointer; }
   @keyframes slideRight { 0%{transform:translateX(-50%)} 100%{transform:translateX(0)} }
-  .lightbox { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; }
+  .lightbox { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.95); display: none; align-items: center; justify-content: center; }
   .lightbox.open { display: flex; }
   .lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 8px; }
   .lightbox-close { position: absolute; top: 20px; right: 24px; font-size: 32px; color: #fff; cursor: pointer; background: none; border: none; }
@@ -136,7 +137,7 @@
   .stat-box strong { color: var(--text); font-size: 13px; margin-top: 2px; }
 
   /* CHAT FAB & PANEL */
-  .chat-fab { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%; border: none; cursor: pointer; z-index: 40; background: var(--cyan); display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 4px 20px var(--cyan-glow); transition: transform 0.2s; }
+  .chat-fab { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%; border: none; cursor: pointer; z-index: 40; background: var(--cyan); display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: transform 0.2s; }
   .chat-fab:hover { transform: scale(1.08); }
 
   .chat-panel { position: fixed; inset: 0; height: 100dvh; z-index: 100; display: flex; flex-direction: column; background: var(--bg-0); opacity: 0; pointer-events: none; transition: opacity 0.2s; }
@@ -161,11 +162,10 @@
   .msg { padding: 12px 16px; border-radius: 16px; font-size: 14.5px; line-height: 1.45; word-wrap: break-word; }
   
   /* BOT = CYAN BACKGROUND, WHITE TEXT */
-  .msg.bot { background: var(--cyan); color: #FFFFFF; border-bottom-left-radius: 4px; }
+  .msg.bot { background: #0099cc; color: #ffffff; border-bottom-left-radius: 4px; }
   
-  /* USER = WHITE BACKGROUND, BLACK TEXT (Forced across both themes for exact request) */
-  .msg.user { background: #FFFFFF; color: #000000; border: 1px solid #E2E8F0; border-bottom-right-radius: 4px; font-weight: 500; }
-  body.light-theme .msg.user { background: #FFFFFF; color: #000000; border-color: #CBD5E1; }
+  /* USER = WHITE BACKGROUND, BLACK TEXT */
+  .msg.user { background: #ffffff; color: #000000; border: 1px solid #E2E8F0; border-bottom-right-radius: 4px; font-weight: 500; }
   
   .msg code { background: rgba(0,0,0,0.15); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 13px; }
   
@@ -189,7 +189,7 @@
   .scroll-bottom-btn.visible { display: flex; }
 
   /* MODALS */
-  .modal-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; padding: 20px; }
   .modal-box { width: 100%; max-width: 440px; max-height: 80vh; background: var(--bg-1); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; }
   .modal-head { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
   .modal-title { font-size: 13px; font-weight: 800; color: var(--text); }
@@ -225,7 +225,7 @@
 
 <div class="bg"><div class="grid"></div><div class="orb orb1"></div><div class="orb orb2"></div></div>
 <div class="toast-container" id="toastContainer"></div>
-<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 
 <aside class="sidebar" id="sidebar">
   <div class="brand">
@@ -233,10 +233,10 @@
     <div class="brand-name">ZJ WEBSITE</div>
   </div>
   <div class="nav-label">Menu</div>
-  <button class="nav-item active" onclick="scrollToSection()">Dashboard</button>
-  <button class="nav-item" onclick="toggleSidebar(); focusCalc();">Calculator</button>
-  <button class="nav-item" onclick="openChat()">Chatbot</button>
-  <button class="nav-item" onclick="toggleSidebar(); focusWeather();">Weather</button>
+  <button class="nav-item active" onclick="scrollToSection(); closeSidebar();">Dashboard</button>
+  <button class="nav-item" onclick="focusCalc(); closeSidebar();">Calculator</button>
+  <button class="nav-item" onclick="openChat(); closeSidebar();">Chatbot</button>
+  <button class="nav-item" onclick="focusWeather(); closeSidebar();">Weather</button>
 </aside>
 
 <header class="topbar">
@@ -380,6 +380,10 @@ function toggleSidebar() {
   const isOpen = s.classList.toggle('open');
   b.classList.toggle('open', isOpen);
 }
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarBackdrop').classList.remove('open');
+}
 
 function scrollToSection(){ window.scrollTo({ top: 0, behavior: 'smooth' }); }
 function focusCalc(){ document.getElementById('calcCard').scrollIntoView({behavior:'smooth', block:'center'}); }
@@ -460,9 +464,10 @@ function calculate(){
   } catch { display.value = 'Error'; setTimeout(() => { if (display.value === 'Error') display.value = '0'; }, 1200); }
 }
 document.addEventListener('keydown', (e) => {
-  if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+  if (e.target.id === 'chatInput') return;
   if (document.getElementById('chatPanel').classList.contains('open')) return;
   if (document.querySelector('.modal-overlay')) return;
+  
   const key = e.key;
   if (/^[0-9.]$/.test(key)) { appendChar(key); e.preventDefault(); }
   else if (key === '+') { appendChar('+'); e.preventDefault(); }
