@@ -8,7 +8,7 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2300a3cc'/%3E%3Ctext x='50' y='68' font-size='50' font-family='Georgia' font-weight='900' text-anchor='middle' fill='white'%3EZJ%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
 <style>
   /* ===== VARIABLES ===== */
@@ -19,6 +19,10 @@
     --gold-glow: rgba(255,215,0,0.2);
     --silver: #e8eef2; --silver-mid: #b8c4cc; --silver-dark: #6a7a84;
     --danger: #ef4444; --success: #10b981;
+
+    /* Metallic Theme Colors */
+    --metal-1: #1a1e24; --metal-2: #0d1014; --metal-3: #2a3038;
+    --metal-shadow: inset 0 2px 5px rgba(255,255,255,0.1), inset 0 -2px 5px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3);
 
     --sidebar-w: 220px;
     --bg-0: #000000; --bg-1: #0a0e12; --bg-2: #121820;
@@ -33,13 +37,16 @@
     --gold: #B45309; --gold-lite: #F59E0B; --gold-deep: #78350F;
     --gold-glow: rgba(245,158,11,0.15);
     --silver: #475569; --silver-mid: #94A3B8; --silver-dark: #64748B;
+    
+    --metal-1: #e2e8f0; --metal-2: #cbd5e1; --metal-3: #f8fafc;
+    --metal-shadow: inset 0 2px 5px rgba(255,255,255,0.8), inset 0 -2px 5px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.1);
   }
 
   /* ===== RESET ===== */
   *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body {
     margin: 0; padding: 0;
-    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
     background: var(--bg-0); color: var(--text);
     min-height: 100vh; overflow-x: hidden;
     transition: background 0.3s ease, color 0.3s ease;
@@ -72,7 +79,7 @@
   .sidebar-backdrop.open { opacity: 1; pointer-events: auto; }
   .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 50; padding: 20px 14px; display: flex; flex-direction: column; background: var(--bg-1); border-right: 1px solid var(--border); transition: transform 0.35s ease; overflow-y: auto; }
   .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; padding-left: 4px; }
-  .brand-logo { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--cyan), var(--cyan-deep)); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #fff; font-family: Georgia, serif; }
+  .brand-logo { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--cyan), var(--cyan-deep)); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #fff; font-family: Georgia, serif; box-shadow: 0 4px 10px var(--cyan-glow); }
   .brand-name { font-size: 15px; font-weight: 800; letter-spacing: 2px; color: var(--text); }
   .nav-label { font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin: 0 8px 10px; }
   .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin-bottom: 4px; border-radius: 8px; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent; background: transparent; text-align: left; width: 100%; transition: all 0.2s ease; }
@@ -83,13 +90,16 @@
   .topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: 60px; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: var(--bg-1); border-bottom: 1px solid var(--border); transition: left 0.35s ease; }
   .menu-toggle { display: none; background: transparent; border: 1px solid var(--border); color: var(--text); padding: 8px; border-radius: 8px; }
   .topbar-right { display: flex; align-items: center; gap: 12px; }
-  .clock { font-family: 'Courier New', monospace; font-size: 13px; color: var(--cyan); padding: 6px 12px; border-radius: 8px; background: var(--bg-2); border: 1px solid var(--border); font-weight: 600; }
-  .theme-toggle { background: var(--bg-2); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 8px; font-size: 14px; }
+  .theme-toggle { background: var(--bg-2); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 8px; font-size: 14px; cursor: pointer; }
 
   /* ===== MAIN ===== */
   .main { position: relative; z-index: 2; margin-left: var(--sidebar-w); padding: 85px 20px 80px; transition: margin-left 0.35s ease; max-width: 1160px; margin-right: auto; }
-  .hero { text-align: center; margin-bottom: 30px; }
-  .hero h1 { margin: 0 0 6px; font-size: 28px; font-weight: 900; color: var(--text); }
+  
+  /* Live Digital Clock Next to Welcome */
+  .hero { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; gap: 6px; }
+  .hero-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; justify-content: center; }
+  .hero h1 { margin: 0; font-size: 28px; font-weight: 900; color: var(--text); }
+  .digital-clock { font-family: 'Share Tech Mono', monospace; font-size: 24px; color: var(--gold); text-shadow: 0 0 10px var(--gold-glow); background: var(--bg-2); padding: 4px 12px; border-radius: 8px; border: 1px solid var(--border); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
   .hero h2 { margin: 0; font-size: 12px; letter-spacing: 4px; color: var(--cyan); text-transform: uppercase; font-weight: 700; }
 
   .main-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
@@ -97,17 +107,19 @@
   /* ===== CARD (FRAMES) ===== */
   .frame { background: var(--bg-1); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); min-height: 320px; }
   body.light-theme .frame { box-shadow: 0 4px 20px rgba(15,23,42,0.05); }
-  .card-head { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+  .card-head { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent); }
   .card-title { font-size: 12px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
   .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-  .dot.cyan { background: var(--cyan); } .dot.gold { background: var(--gold); } .dot.silver { background: var(--silver); }
+  .dot.cyan { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); } 
+  .dot.gold { background: var(--gold); box-shadow: 0 0 8px var(--gold); } 
+  .dot.silver { background: var(--silver); box-shadow: 0 0 8px var(--silver); }
   .card-tools { display: flex; gap: 6px; }
   .icon-btn { width: 28px; height: 28px; border-radius: 6px; background: var(--bg-2); border: 1px solid var(--border); color: var(--muted); display: flex; align-items: center; justify-content: center; padding: 0; transition: all 0.2s; }
   .icon-btn:hover { color: var(--cyan); border-color: var(--cyan); }
 
   /* ===== CALCULATOR (SIMPLE) ===== */
   .calc-body { padding: 16px; display: flex; flex-direction: column; flex: 1; gap: 8px; }
-  .calc-display { width: 100%; height: 56px; background: var(--bg-0); color: var(--text); border: 1px solid var(--border); border-radius: 10px; font-size: 24px; text-align: right; padding: 8px 12px; font-family: 'Courier New', monospace; font-weight: 700; outline: none; }
+  .calc-display { width: 100%; height: 56px; background: var(--bg-0); color: var(--text); border: 1px solid var(--border); border-radius: 10px; font-size: 24px; text-align: right; padding: 8px 12px; font-family: 'Share Tech Mono', monospace; font-weight: 700; outline: none; box-shadow: inset 0 3px 8px rgba(0,0,0,0.4); }
   .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; flex: 1; min-height: 220px; }
   .calc-grid button { border-radius: 10px; border: 1px solid transparent; font-size: 18px; font-weight: 700; transition: all 0.1s; display: flex; align-items: center; justify-content: center; }
   .calc-grid button:active { transform: scale(0.96); }
@@ -123,15 +135,15 @@
   .weather-search input { flex: 1; min-width: 0; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); font-size: 13px; outline: none; }
   .weather-search button { padding: 0 14px; border-radius: 8px; background: var(--cyan); color: #fff; font-weight: 800; border: none; font-size: 14px; }
   .weather-main { display: flex; flex-direction: column; align-items: center; text-align: center; flex: 1; justify-content: center; min-height: 100px; }
-  .weather-icon-large { font-size: 44px; margin-bottom: 4px; line-height: 1; }
-  .temp { font-size: 40px; font-weight: 900; line-height: 1; }
-  .w-desc { font-size: 13px; font-weight: 600; margin-top: 4px; }
-  .w-loc { font-size: 11px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .weather-icon-large { font-size: 48px; margin-bottom: 4px; line-height: 1; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
+  .temp { font-size: 42px; font-weight: 900; line-height: 1; }
+  .w-desc { font-size: 14px; font-weight: 600; margin-top: 4px; color: var(--cyan); }
+  .w-loc { font-size: 12px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
   .weather-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .stat-box { background: var(--bg-2); border: 1px solid var(--border); padding: 8px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; font-size: 11px; color: var(--muted); }
   .stat-box strong { color: var(--text); font-size: 13px; margin-top: 2px; }
   .forecast { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 4px; }
-  .fc-day { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 2px; border-radius: 6px; background: var(--bg-2); }
+  .fc-day { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 2px; border-radius: 6px; background: var(--bg-2); border: 1px solid var(--border); }
   .fc-name { font-size: 9px; color: var(--muted); text-transform: uppercase; font-weight: 700; }
   .fc-icon { font-size: 18px; }
   .fc-temps { font-size: 10px; display: flex; gap: 3px; }
@@ -154,124 +166,148 @@
   .lb-close:hover, .lb-prev:hover, .lb-next:hover { background: rgba(255,255,255,0.25); }
 
   /* ===== FULL SCREEN WINDOWS (Apps) ===== */
-  .app-window { position: fixed; inset: 0; z-index: 100; height: 100dvh; display: flex; flex-direction: column; background: var(--bg-0); opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .app-window { position: fixed; inset: 0; z-index: 100; height: 100dvh; display: flex; flex-direction: column; background: var(--bg-0); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
   .app-window.open { opacity: 1; pointer-events: auto; }
-  .app-head { padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--bg-1); flex-wrap: wrap; gap: 10px; }
-  .app-title { font-weight: 800; font-size: 16px; display: flex; align-items: center; gap: 10px; }
-  .app-body { flex: 1; overflow-y: auto; padding: 20px; max-width: 800px; margin: 0 auto; width: 100%; }
   
-  /* App Buttons */
-  .app-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); transition: all 0.2s; cursor: pointer; }
-  .app-btn:hover { border-color: var(--cyan); color: var(--cyan); }
-  .app-btn.primary { background: var(--cyan); color: #fff; border-color: var(--cyan); }
-  .app-btn.primary:hover { opacity: 0.9; }
-  .app-btn.danger { background: transparent; border-color: var(--danger); color: var(--danger); }
-  .app-btn.danger:hover { background: var(--danger); color: #fff; }
+  /* Modern Metallic UI for Headers */
+  .app-head { 
+    padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; 
+    background: linear-gradient(180deg, var(--metal-1), var(--metal-2));
+    border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px;
+    box-shadow: var(--metal-shadow);
+  }
+  .app-title { font-weight: 900; font-size: 16px; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+  
+  /* Metallic App Buttons */
+  .app-btn { 
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px; 
+    padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 800; 
+    background: linear-gradient(180deg, var(--metal-3), var(--metal-2));
+    border: 1px solid var(--border); color: var(--text);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.3);
+    transition: all 0.1s; cursor: pointer;
+  }
+  .app-btn:hover { border-color: var(--cyan); filter: brightness(1.2); }
+  .app-btn:active { transform: translateY(1px); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
+  .app-btn.primary { background: linear-gradient(180deg, var(--cyan-lite), var(--cyan-deep)); color: #fff; border-color: var(--cyan); text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+  .app-btn.danger { background: linear-gradient(180deg, #ef4444, #b91c1c); color: #fff; border-color: #dc2626; }
+
+  .app-body { flex: 1; overflow-y: auto; padding: 30px 20px; max-width: 800px; margin: 0 auto; width: 100%; }
 
   /* ===== SCIENTIFIC CALCULATOR ===== */
-  .sci-calc-container { max-width: 400px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; width: 100%; }
-  .sci-display { width: 100%; height: 80px; background: var(--bg-0); color: var(--text); border: 1px solid var(--border); border-radius: 12px; font-size: 32px; text-align: right; padding: 10px 16px; font-family: 'Courier New', monospace; font-weight: 700; outline: none; }
+  .sci-calc-container { max-width: 420px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; width: 100%; }
+  .sci-display { width: 100%; height: 80px; background: var(--bg-0); color: var(--cyan); border: 1px solid var(--border); border-radius: 12px; font-size: 36px; text-align: right; padding: 10px 16px; font-family: 'Share Tech Mono', monospace; font-weight: 700; outline: none; box-shadow: inset 0 4px 12px rgba(0,0,0,0.6); text-shadow: 0 0 10px var(--cyan-glow); }
   .sci-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-  .sci-grid button { border-radius: 10px; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); font-size: 15px; font-weight: 700; padding: 12px 0; transition: all 0.1s; }
+  .sci-grid button { 
+    border-radius: 10px; border: 1px solid var(--border); 
+    background: linear-gradient(180deg, var(--metal-3), var(--metal-2)); color: var(--text); 
+    font-size: 15px; font-weight: 700; padding: 14px 0; transition: all 0.1s; 
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 2px 4px rgba(0,0,0,0.3);
+  }
   .sci-grid button:active { transform: scale(0.96); }
   .sci-grid .btn-num { background: var(--bg-2); }
-  .sci-grid .btn-op { background: var(--cyan); color: #fff; border-color: var(--cyan); }
-  .sci-grid .btn-equal { background: var(--gold); color: #fff; border-color: var(--gold); }
-  body.light-theme .sci-grid .btn-equal { color: #1a1400; }
-  .sci-grid .btn-action { background: var(--border); color: var(--text); }
+  .sci-grid .btn-op { background: linear-gradient(180deg, var(--cyan), var(--cyan-deep)); color: #fff; border-color: var(--cyan); }
+  .sci-grid .btn-equal { background: linear-gradient(180deg, var(--gold-lite), var(--gold-deep)); color: #1a1400; border-color: var(--gold); font-weight: 900; }
+  .sci-grid .btn-action { background: linear-gradient(180deg, #475569, #1e293b); color: #fff; }
   .sci-grid .btn-func { background: rgba(0,163,204,0.1); color: var(--cyan); border-color: rgba(0,163,204,0.3); font-size: 13px; }
 
-  /* ===== NOTES / TODO ===== */
-  .notes-body textarea { width: 100%; resize: none; padding: 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-1); color: var(--text); font-size: 15px; outline: none; min-height: 100px; margin-bottom: 10px; }
-  .notes-list, .todo-list { display: flex; flex-direction: column; gap: 10px; }
-  .note-item { padding: 14px 16px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 12px; font-size: 14px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  /* ===== NOTES / TODO / METALLIC CARDS ===== */
+  .metal-input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-0); color: var(--text); font-size: 15px; outline: none; box-shadow: inset 0 3px 8px rgba(0,0,0,0.4); }
+  .metal-input:focus { border-color: var(--cyan); }
+  
+  .notes-list, .todo-list { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+  .metal-card { 
+    padding: 16px; background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); 
+    border: 1px solid var(--border); border-radius: 12px; font-size: 15px; 
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;
+    box-shadow: var(--metal-shadow);
+  }
   .note-text { flex: 1; white-space: pre-wrap; word-break: break-word; line-height: 1.5; }
   .note-meta { font-size: 11px; color: var(--muted); margin-top: 6px; }
-  .del-btn { background: transparent; border: none; color: var(--muted); padding: 4px; font-size: 20px; line-height: 1; border-radius: 6px; cursor: pointer; }
+  
+  .del-btn { background: transparent; border: none; color: var(--muted); padding: 4px; font-size: 20px; line-height: 1; border-radius: 6px; cursor: pointer; transition: color 0.2s; }
   .del-btn:hover { color: var(--danger); }
   
-  .todo-input-row { display: flex; gap: 10px; margin-bottom: 15px; }
-  .todo-input-row input { flex: 1; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-1); color: var(--text); font-size: 15px; outline: none; }
-  .todo-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 12px; font-size: 15px; }
+  .todo-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); border: 1px solid var(--border); border-radius: 12px; font-size: 15px; box-shadow: var(--metal-shadow); }
   .todo-item input[type="checkbox"] { accent-color: var(--cyan); width: 20px; height: 20px; cursor: pointer; flex-shrink: 0; }
   .todo-item.done .todo-text { text-decoration: line-through; color: var(--muted); }
   .todo-text { flex: 1; word-break: break-word; }
-  .empty-state { color: var(--muted); font-size: 14px; text-align: center; padding: 30px 0; }
 
   /* ===== POMODORO ===== */
-  .pomo-body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 20px; padding-top: 40px; }
-  .pomo-modes { display: flex; gap: 10px; }
-  .pomo-modes button { padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border); background: var(--bg-1); color: var(--muted); font-size: 14px; font-weight: 700; }
-  .pomo-modes button.active { background: var(--cyan); color: #fff; border-color: var(--cyan); }
-  .pomo-time { font-size: 90px; font-weight: 900; font-family: 'Courier New', monospace; color: var(--text); line-height: 1; letter-spacing: 2px; }
-  .pomo-controls { display: flex; gap: 12px; }
-  .pomo-controls button { padding: 14px 30px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-1); color: var(--text); font-weight: 800; font-size: 16px; cursor: pointer; }
-  .pomo-controls button.primary { background: var(--cyan); color: #fff; border-color: var(--cyan); }
+  .pomo-body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 30px; padding-top: 40px; }
+  .pomo-modes { display: flex; gap: 10px; background: var(--bg-0); padding: 6px; border-radius: 30px; border: 1px solid var(--border); box-shadow: inset 0 3px 8px rgba(0,0,0,0.5); }
+  .pomo-modes button { padding: 10px 24px; border-radius: 24px; border: none; background: transparent; color: var(--muted); font-size: 14px; font-weight: 800; transition: all 0.2s; }
+  .pomo-modes button.active { background: linear-gradient(180deg, var(--cyan-lite), var(--cyan-deep)); color: #fff; box-shadow: 0 2px 10px var(--cyan-glow); }
+  
+  .pomo-time-container { background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); padding: 30px 60px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--metal-shadow); }
+  .pomo-time { font-size: 90px; font-weight: 900; font-family: 'Share Tech Mono', monospace; color: var(--text); line-height: 1; letter-spacing: 4px; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
+  .pomo-controls { display: flex; gap: 15px; }
+  .pomo-controls button { padding: 16px 36px; border-radius: 12px; font-weight: 900; font-size: 16px; }
 
   /* ===== CONVERTER ===== */
-  .conv-body { display: flex; flex-direction: column; gap: 16px; max-width: 400px; margin: 0 auto; width: 100%; padding-top: 20px; }
-  .conv-cat { padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-1); color: var(--text); font-size: 15px; outline: none; }
-  .conv-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
-  .conv-row input { padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-1); color: var(--text); font-size: 20px; outline: none; min-width: 0; font-weight: 700; }
-  .conv-row select { padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-1); color: var(--text); font-size: 14px; outline: none; }
-  .conv-swap { display: flex; justify-content: center; }
-  .conv-swap button { padding: 10px 20px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-1); color: var(--muted); font-size: 14px; font-weight: 700; cursor: pointer; }
-  .conv-swap button:hover { color: var(--cyan); border-color: var(--cyan); }
+  .conv-body { display: flex; flex-direction: column; gap: 20px; max-width: 450px; margin: 0 auto; width: 100%; padding-top: 20px; }
+  .conv-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; background: var(--bg-1); padding: 12px; border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--metal-shadow); }
+  .conv-row input { padding: 10px; border-radius: 8px; border: none; background: transparent; color: var(--text); font-size: 24px; outline: none; min-width: 0; font-weight: 800; font-family: 'Share Tech Mono', monospace; }
+  .conv-row select { padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); font-size: 14px; outline: none; font-weight: 700; }
+  .conv-swap { display: flex; justify-content: center; margin: -10px 0; z-index: 2; }
+  .conv-swap button { padding: 10px 20px; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--border); background: var(--bg-1); color: var(--cyan); font-size: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; transition: transform 0.2s; }
+  .conv-swap button:hover { transform: scale(1.1); }
 
   /* ===== CHAT ===== */
   .chat-fab { position: fixed; bottom: 24px; right: 24px; width: 60px; height: 60px; border-radius: 50%; border: none; z-index: 40; background: var(--cyan); display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 4px 20px var(--cyan-glow); transition: transform 0.2s; }
   .chat-fab:hover { transform: scale(1.08); }
   .chat-fab.hidden { display: none; }
+  
   .chat-panel { position: fixed; inset: 0; height: 100dvh; z-index: 100; display: flex; flex-direction: column; background: var(--bg-0); opacity: 0; pointer-events: none; transition: opacity 0.2s; }
   .chat-panel.open { opacity: 1; pointer-events: auto; }
-  .chat-head { padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--bg-1); flex-wrap: wrap; gap: 8px; }
-  .chat-head-info { display: flex; align-items: center; gap: 10px; }
-  .chat-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--cyan); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #fff; font-size: 13px; }
-  .chat-name { font-weight: 800; font-size: 14px; }
-  .chat-sub { color: var(--muted); font-size: 11px; }
-  .chat-head-actions { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-  .chat-action-btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 9px; border-radius: 6px; font-size: 11px; font-weight: 700; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); transition: all 0.2s; }
+  .chat-head { padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; box-shadow: var(--metal-shadow); }
+  .chat-head-info { display: flex; align-items: center; gap: 12px; }
+  .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--cyan-lite), var(--cyan-deep)); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #fff; font-size: 14px; box-shadow: 0 0 10px var(--cyan-glow); }
+  .chat-name { font-weight: 800; font-size: 15px; }
+  .chat-sub { color: var(--cyan); font-size: 12px; font-weight: 600; }
+  .chat-head-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .chat-action-btn { display: inline-flex; align-items: center; gap: 4px; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 800; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); transition: all 0.2s; cursor: pointer; }
   .chat-action-btn:hover { border-color: var(--cyan); color: var(--cyan); }
   .chat-action-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
-  .chat-window { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-  .msg-wrapper { display: flex; flex-direction: column; max-width: 78%; }
+  
+  .chat-window { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .msg-wrapper { display: flex; flex-direction: column; max-width: 80%; }
   .msg-wrapper.user { align-self: flex-end; align-items: flex-end; }
   .msg-wrapper.bot { align-self: flex-start; align-items: flex-start; }
-  .msg { padding: 12px 16px; border-radius: 16px; font-size: 14.5px; line-height: 1.45; word-wrap: break-word; overflow-wrap: anywhere; }
-  .msg.bot { background: var(--cyan); color: #fff; border-bottom-left-radius: 4px; }
-  .msg.user { background: #fff; color: #000; border: 1px solid #E2E8F0; border-bottom-right-radius: 4px; font-weight: 500; }
-  .msg code { background: rgba(0,0,0,0.18); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 13px; }
-  .msg.typing { display: flex; gap: 5px; align-items: center; padding: 14px 18px; }
-  .dot-anim { width: 6px; height: 6px; border-radius: 50%; background: #fff; animation: blink 1.2s infinite; }
+  .msg { padding: 14px 18px; border-radius: 16px; font-size: 15px; line-height: 1.5; word-wrap: break-word; overflow-wrap: anywhere; }
+  .msg.bot { background: linear-gradient(145deg, #0a2228, #041016); border: 1px solid #104a58; color: #d8f6ff; border-bottom-left-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+  body.light-theme .msg.bot { background: linear-gradient(145deg, #e0f2fe, #bae6fd); border-color: #7dd3fc; color: #0c4a6e; }
+  .msg.user { background: linear-gradient(180deg, var(--cyan), var(--cyan-deep)); color: #fff; border-bottom-right-radius: 4px; font-weight: 500; box-shadow: 0 4px 15px var(--cyan-glow); }
+  .msg code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 13px; }
+  .msg.typing { display: flex; gap: 5px; align-items: center; padding: 16px 20px; }
+  .dot-anim { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); animation: blink 1.2s infinite; }
   .dot-anim:nth-child(2) { animation-delay: 0.2s; }
   .dot-anim:nth-child(3) { animation-delay: 0.4s; }
   @keyframes blink { 0%,80%,100% { opacity: 0.3; } 40% { opacity: 1; } }
-  .chat-input-area { padding: 12px 16px calc(12px + var(--safe-bottom)); background: var(--bg-1); border-top: 1px solid var(--border); }
-  .chat-input-row { display: flex; gap: 10px; max-width: 900px; margin: 0 auto; }
-  .chat-input-row input { flex: 1; min-width: 0; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); font-size: 15px; outline: none; }
-  .chat-send { padding: 0 20px; border-radius: 10px; background: var(--cyan); color: #fff; font-weight: 800; border: none; }
+  
+  .chat-input-area { padding: 16px 20px calc(16px + var(--safe-bottom)); background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); border-top: 1px solid var(--border); box-shadow: inset 0 1px 0 rgba(255,255,255,0.1); }
+  .chat-input-row { display: flex; gap: 12px; max-width: 900px; margin: 0 auto; }
+  .chat-input-row input { flex: 1; min-width: 0; padding: 14px 20px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-0); color: var(--text); font-size: 15px; outline: none; box-shadow: inset 0 3px 8px rgba(0,0,0,0.5); }
+  .chat-send { padding: 0 24px; border-radius: 10px; background: linear-gradient(180deg, var(--cyan-lite), var(--cyan-deep)); color: #fff; font-weight: 800; border: none; font-size: 15px; cursor: pointer; box-shadow: 0 4px 10px var(--cyan-glow); }
   .chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
 
   /* ===== MODAL (Custom Popups) ===== */
-  .custom-modal-overlay { position: fixed; inset: 0; z-index: 9000; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+  .custom-modal-overlay { position: fixed; inset: 0; z-index: 9000; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
   .custom-modal-overlay.open { opacity: 1; pointer-events: auto; }
-  .custom-modal { background: var(--bg-1); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.4); transform: scale(0.95) translateY(10px); transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); overflow: hidden; }
+  .custom-modal { background: var(--bg-1); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: scale(0.95) translateY(10px); transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); overflow: hidden; }
   .custom-modal-overlay.open .custom-modal { transform: scale(1) translateY(0); }
-  .cm-head { padding: 18px 20px 10px; display: flex; align-items: center; gap: 12px; }
+  .cm-head { padding: 20px 20px 10px; display: flex; align-items: center; gap: 12px; }
   .cm-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .cm-icon.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
   .cm-icon.cyan { background: rgba(0, 163, 204, 0.15); color: var(--cyan); }
   .cm-title { font-size: 16px; font-weight: 800; color: var(--text); }
   .cm-body { padding: 0 20px 20px; font-size: 14px; color: var(--muted); line-height: 1.5; }
-  .cm-input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); font-size: 14px; outline: none; margin-top: 12px; }
-  .cm-input:focus { border-color: var(--cyan); }
   .cm-footer { padding: 14px 20px; background: var(--bg-2); border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
-  .cm-btn { padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 700; border: 1px solid var(--border); background: transparent; color: var(--text); transition: all 0.15s ease; }
+  .cm-btn { padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 700; border: 1px solid var(--border); background: transparent; color: var(--text); transition: all 0.15s ease; cursor: pointer; }
   .cm-btn:hover { background: var(--border); }
   .cm-btn.confirm { background: var(--cyan); color: #fff; border-color: var(--cyan); }
   .cm-btn.confirm:hover { opacity: 0.9; }
   .cm-btn.danger { background: var(--danger); color: #fff; border-color: var(--danger); }
-  .cm-btn.danger:hover { opacity: 0.9; }
 
   /* ===== RESPONSIVE ===== */
   @media (max-width: 960px) {
@@ -282,9 +318,10 @@
     .menu-toggle { display: flex; }
     .main { margin-left: 0; padding: 80px 14px 90px; }
     .main-layout { grid-template-columns: 1fr; gap: 14px; }
-    .hero h1 { font-size: 24px; }
+    .hero h1 { font-size: 22px; }
+    .digital-clock { font-size: 18px; padding: 2px 8px; }
     .chat-action-btn span { display: none; }
-    .chat-action-btn { padding: 7px; }
+    .chat-action-btn { padding: 8px; }
     .chat-window { padding: 14px; }
     .msg-wrapper { max-width: 88%; }
     .chat-fab { bottom: 16px; right: 16px; }
@@ -293,6 +330,7 @@
     .fc-icon { font-size: 15px; }
     .sci-grid button { font-size: 14px; padding: 10px 0; }
     .pomo-time { font-size: 70px; }
+    .pomo-time-container { padding: 20px 30px; }
   }
 </style>
 </head>
@@ -313,11 +351,11 @@
   <button class="nav-item" onclick="scrollToCard('weatherCard')">Weather</button>
   <button class="nav-item" onclick="scrollToCard('galleryCard')">Gallery</button>
   
-  <div class="nav-label" style="margin-top:20px;">Tools & Apps</div>
+  <div class="nav-label" style="margin-top:20px;">Professional Apps</div>
   <button class="nav-item" onclick="openWindow('notesWin')">Notes</button>
-  <button class="nav-item" onclick="openWindow('todoWin')">Todo</button>
-  <button class="nav-item" onclick="openWindow('pomoWin')">Pomodoro</button>
-  <button class="nav-item" onclick="openWindow('convWin')">Converter</button>
+  <button class="nav-item" onclick="openWindow('todoWin')">Todo List</button>
+  <button class="nav-item" onclick="openWindow('pomoWin')">Pomodoro Timer</button>
+  <button class="nav-item" onclick="openWindow('convWin')">Unit Converter</button>
   <button class="nav-item" onclick="openChat()">Chatbot</button>
 </aside>
 
@@ -327,13 +365,15 @@
   </button>
   <div class="topbar-right">
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">🌙</button>
-    <div class="clock" id="clock" aria-label="Current time">--:--</div>
   </div>
 </header>
 
 <main class="main">
   <div class="hero">
-    <h1>Welcome to My Website</h1>
+    <div class="hero-row">
+      <h1>Welcome to My Website</h1>
+      <div class="digital-clock" id="liveClock">00:00:00</div>
+    </div>
     <h2>This is "ZJ WEBSITE"</h2>
   </div>
 
@@ -344,7 +384,6 @@
       <div class="card-head">
         <div class="card-title"><span class="dot silver"></span>Calculator</div>
         <div class="card-tools">
-          <!-- Opens the Scientific Calculator Window -->
           <button class="icon-btn" onclick="openWindow('sciCalcWin')" title="Scientific Mode" aria-label="Open scientific calculator">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 3H4v18h5"/><path d="M15 3h5v18h-5"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
           </button>
@@ -380,14 +419,14 @@
     <section class="frame" id="weatherCard" aria-label="Weather">
       <div class="card-head">
         <div class="card-title"><span class="dot cyan"></span>Weather</div>
-        <button class="icon-btn" onclick="refreshWeather()" title="Refresh" aria-label="Refresh weather">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        <button class="icon-btn" onclick="getLocationWeather()" title="Use My Location" aria-label="Use my location">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2a8 8 0 0 0-8 8c0 5.4 8 12 8 12s8-6.6 8-12a8 8 0 0 0-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
         </button>
       </div>
       <div class="weather-inner">
         <div class="weather-search">
-          <input type="text" id="cityInput" placeholder="City (e.g. Hyderabad)" aria-label="City name">
-          <button onclick="getWeather()" aria-label="Search">🔍</button>
+          <input type="text" id="cityInput" placeholder="City (e.g. Hyderabad)" aria-label="City name" onkeydown="if(event.key==='Enter') searchWeather()">
+          <button onclick="searchWeather()" aria-label="Search">🔍</button>
         </div>
         <div class="weather-main">
           <div class="weather-icon-large" id="wIcon">--</div>
@@ -431,9 +470,9 @@
     <div class="app-title"><span class="dot silver"></span>Notes</div>
     <button class="app-btn" onclick="closeWindow('notesWin')">Close</button>
   </div>
-  <div class="app-body notes-body">
-    <textarea id="noteInput" placeholder="Write a note..." aria-label="New note"></textarea>
-    <button class="app-btn primary" style="margin-bottom:20px;" onclick="addNote()">Add Note</button>
+  <div class="app-body">
+    <textarea id="noteInput" class="metal-input" placeholder="Write a note..." rows="4"></textarea>
+    <button class="app-btn primary" style="margin-top:10px;" onclick="addNote()">Add Note</button>
     <div class="notes-list" id="notesList"></div>
   </div>
 </div>
@@ -444,9 +483,9 @@
     <div class="app-title"><span class="dot cyan"></span>Todo List</div>
     <button class="app-btn" onclick="closeWindow('todoWin')">Close</button>
   </div>
-  <div class="app-body todo-body">
-    <div class="todo-input-row">
-      <input id="todoInput" placeholder="Add task..." aria-label="New task" onkeydown="if(event.key==='Enter'){event.preventDefault();addTodo();}">
+  <div class="app-body">
+    <div style="display:flex; gap:10px; margin-bottom:20px;">
+      <input id="todoInput" class="metal-input" placeholder="Add a new task..." onkeydown="if(event.key==='Enter'){event.preventDefault();addTodo();}">
       <button class="app-btn primary" onclick="addTodo()">Add</button>
     </div>
     <div class="todo-list" id="todoList"></div>
@@ -461,14 +500,16 @@
   </div>
   <div class="app-body pomo-body">
     <div class="pomo-modes">
-      <button class="active" onclick="setPomoMode(this,25)">Focus (25m)</button>
-      <button onclick="setPomoMode(this,5)">Short Break (5m)</button>
-      <button onclick="setPomoMode(this,15)">Long Break (15m)</button>
+      <button class="active" onclick="setPomoMode(this,25)">Focus</button>
+      <button onclick="setPomoMode(this,5)">Short Break</button>
+      <button onclick="setPomoMode(this,15)">Long Break</button>
     </div>
-    <div class="pomo-time" id="pomoTime" aria-live="polite">25:00</div>
+    <div class="pomo-time-container">
+      <div class="pomo-time" id="pomoTime" aria-live="polite">25:00</div>
+    </div>
     <div class="pomo-controls">
-      <button id="pomoToggle" class="primary" onclick="togglePomo()">Start</button>
-      <button onclick="resetPomo()">Reset</button>
+      <button id="pomoToggle" class="app-btn primary" onclick="togglePomo()">Start</button>
+      <button class="app-btn" onclick="resetPomo()">Reset</button>
     </div>
   </div>
 </div>
@@ -480,7 +521,7 @@
     <button class="app-btn" onclick="closeWindow('convWin')">Close</button>
   </div>
   <div class="app-body conv-body">
-    <select class="conv-cat" id="convCat" onchange="updateConvUnits()" aria-label="Category">
+    <select class="conv-cat metal-input" id="convCat" onchange="updateConvUnits()" aria-label="Category">
       <option value="length">Length</option>
       <option value="mass">Mass</option>
       <option value="temp">Temperature</option>
@@ -492,7 +533,7 @@
       <input type="number" id="convInput" value="1" oninput="doConvert()" aria-label="From value">
       <select id="convFrom" onchange="doConvert()" aria-label="From unit"></select>
     </div>
-    <div class="conv-swap"><button onclick="swapConv()">⇅ Swap</button></div>
+    <div class="conv-swap"><button onclick="swapConv()">⇅</button></div>
     <div class="conv-row">
       <input type="text" id="convOutput" readonly aria-label="Result">
       <select id="convTo" onchange="doConvert()" aria-label="To unit"></select>
@@ -552,14 +593,6 @@
   </div>
 </div>
 
-<!-- ===== LIGHTBOX ===== -->
-<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()" role="dialog" aria-label="Image viewer" aria-modal="true">
-  <button class="lb-close" onclick="closeLightbox()" aria-label="Close">×</button>
-  <button class="lb-prev" onclick="lbNav(-1)" aria-label="Previous">‹</button>
-  <img id="lightboxImg" src="" alt="">
-  <button class="lb-next" onclick="lbNav(1)" aria-label="Next">›</button>
-</div>
-
 <!-- ===== CHATBOT ===== -->
 <button class="chat-fab" id="chatFab" onclick="openChat()" aria-label="Open chat">
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -605,47 +638,36 @@ function showToast(msg, type = 'success') {
   c.appendChild(t); setTimeout(() => t.remove(), 3100);
 }
 
-/* THEME */
+/* ===== THEME & CLOCK ===== */
 function toggleTheme() {
   const isLight = document.body.classList.toggle('light-theme');
   store('theme', isLight ? 'light' : 'dark');
   $('#themeToggle').textContent = isLight ? '☀️' : '🌙';
 }
-if (load('theme', 'dark') === 'light') { // Defaults to dark
+if (load('theme', 'dark') === 'light') {
   document.body.classList.add('light-theme'); $('#themeToggle').textContent = '☀️';
 }
 
-/* CLOCK */
 setInterval(() => {
   const d = new Date(); const pad = n => String(n).padStart(2, '0');
-  $('#clock').textContent = pad(d.getHours()) + ':' + pad(d.getMinutes());
+  $('#liveClock').textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
 }, 1000);
 
-/* SIDEBAR & WINDOWS */
+/* ===== SIDEBAR & WINDOWS ===== */
 function toggleSidebar() { $('#sidebar').classList.toggle('open'); $('#sidebarBackdrop').classList.toggle('open'); }
 function closeSidebar() { $('#sidebar').classList.remove('open'); $('#sidebarBackdrop').classList.remove('open'); }
-function scrollToCard(id) {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  closeSidebar();
-}
+function scrollToCard(id) { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); closeSidebar(); }
 function openWindow(id) {
   closeSidebar();
   const win = document.getElementById(id);
-  if (win) {
-    win.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
+  if (win) { win.classList.add('open'); document.body.style.overflow = 'hidden'; }
 }
 function closeWindow(id) {
   const win = document.getElementById(id);
-  if (win) {
-    win.classList.remove('open');
-    document.body.style.overflow = '';
-  }
+  if (win) { win.classList.remove('open'); document.body.style.overflow = ''; }
 }
 
-/* SAFE MATH EVALUATOR */
+/* ===== SAFE MATH EVALUATOR ===== */
 function preprocess(expr) {
   return String(expr).replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-').replace(/√/g, 'sqrt')
     .replace(/π/g, '(3.141592653589793)').replace(/e/g, '(2.718281828459045)').replace(/(\d|\))%(?![0-9])/g, '$1/100');
@@ -722,15 +744,12 @@ function evaluate(expr) {
   return evalRPN(toRPN(tokenize(preprocess(expr))));
 }
 
-/* MAIN CALCULATOR */
+/* ===== MAIN CALCULATOR ===== */
 let calcExpr = '0';
-function updateCalcDisplay() {
-  $('#calcDisplay').value = calcExpr || '0';
-}
+function updateCalcDisplay() { $('#calcDisplay').value = calcExpr || '0'; }
 function appendCalc(ch) {
   if (ch === 'AC') { calcExpr = '0'; updateCalcDisplay(); return; }
   if (ch === 'DEL') { calcExpr = calcExpr.slice(0, -1) || '0'; updateCalcDisplay(); return; }
-  
   if (calcExpr === '0' && /[0-9.]/.test(ch)) calcExpr = ch;
   else if (ch === '.') { if (!(calcExpr.match(/[0-9.]*$/) || [''])[0].includes('.')) calcExpr += ch; }
   else if ('+-×÷^%'.includes(ch)) { if ('+-×÷^%'.includes(calcExpr.slice(-1))) calcExpr = calcExpr.slice(0, -1) + ch; else calcExpr += ch; }
@@ -742,15 +761,12 @@ function calcEquals() {
   catch (e) { $('#calcDisplay').value = 'Error'; setTimeout(() => { calcExpr = '0'; updateCalcDisplay(); }, 1200); }
 }
 
-/* SCIENTIFIC CALCULATOR */
+/* ===== SCIENTIFIC CALCULATOR ===== */
 let sciExpr = '0';
-function updateSciDisplay() {
-  $('#sciDisplay').value = sciExpr || '0';
-}
+function updateSciDisplay() { $('#sciDisplay').value = sciExpr || '0'; }
 function sciAppend(ch) {
   if (ch === 'AC') { sciExpr = '0'; updateSciDisplay(); return; }
   if (ch === 'DEL') { sciExpr = sciExpr.slice(0, -1) || '0'; updateSciDisplay(); return; }
-  
   if (sciExpr === '0' && /[0-9.]/.test(ch)) sciExpr = ch;
   else if (ch === '.') { if (!(sciExpr.match(/[0-9.]*$/) || [''])[0].includes('.')) sciExpr += ch; }
   else sciExpr += ch;
@@ -761,19 +777,14 @@ function sciEquals() {
   catch (e) { $('#sciDisplay').value = 'Error'; setTimeout(() => { sciExpr = '0'; updateSciDisplay(); }, 1200); }
 }
 
-/* WEATHER */
-const WMO = { 0: { desc: 'Clear', icon: '☀️', night: '🌙' }, 1: { desc: 'Mainly clear', icon: '🌤️', night: '🌙' }, 2: { desc: 'Partly cloudy', icon: '⛅', night: '☁️' }, 3: { desc: 'Overcast', icon: '☁️', night: '☁️' }, 45: { desc: 'Fog', icon: '🌫️', night: '🌫️' }, 51: { desc: 'Drizzle', icon: '🌦️', night: '🌦️' }, 61: { desc: 'Rain', icon: '🌧️', night: '🌧️' }, 71: { desc: 'Snow', icon: '🌨️', night: '🌨️' }, 95: { desc: 'Thunderstorm', icon: '⛈️', night: '⛈️' } };
-function getWeatherIcon(code, isNight) { const c = WMO[code] || { icon: '❓' }; return isNight && c.night ? c.night : c.icon; }
+/* ===== WEATHER ===== */
+const WMO = { 0: { desc: 'Clear Sky', icon: '☀️', night: '🌙' }, 1: { desc: 'Mainly Clear', icon: '🌤️', night: '🌙' }, 2: { desc: 'Partly Cloudy', icon: '⛅', night: '☁️' }, 3: { desc: 'Overcast', icon: '☁️', night: '☁️' }, 45: { desc: 'Fog', icon: '🌫️', night: '🌫️' }, 51: { desc: 'Light Drizzle', icon: '🌦️', night: '🌦️' }, 61: { desc: 'Rain', icon: '🌧️', night: '🌧️' }, 71: { desc: 'Snow', icon: '🌨️', night: '🌨️' }, 95: { desc: 'Thunderstorm', icon: '⛈️', night: '⛈️' } };
+function getWeatherIcon(code, isNight) { const c = WMO[code] || { icon: '❓', desc: 'Unknown' }; return isNight && c.night ? c.night : c.icon; }
 
-async function getWeather() {
-  const city = $('#cityInput').value.trim() || 'Hyderabad';
-  $('#temp').textContent = '...'; $('#wIcon').textContent = '⏳'; $('#wDesc').textContent = 'Fetching...'; $('#wLoc').textContent = 'Locating...';
+async function fetchWeatherData(lat, lon, name) {
+  $('#temp').textContent = '...'; $('#wIcon').textContent = '⏳'; $('#wDesc').textContent = 'Fetching...'; $('#wLoc').textContent = name;
   try {
-    const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`);
-    const geoData = await geoRes.json();
-    if (!geoData.results || !geoData.results.length) throw new Error('City not found');
-    const r = geoData.results[0];
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${r.latitude}&longitude=${r.longitude}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&hourly=relative_humidity_2m&timezone=auto&forecast_days=7`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&hourly=relative_humidity_2m&timezone=auto&forecast_days=7`;
     const res = await fetch(url); const data = await res.json();
     
     const cur = data.current_weather; const daily = data.daily;
@@ -783,9 +794,16 @@ async function getWeather() {
     $('#wIcon').textContent = getWeatherIcon(cur.weathercode, isNight);
     $('#temp').textContent = Math.round(cur.temperature) + '°C';
     $('#wDesc').textContent = (WMO[cur.weathercode]?.desc || 'Unknown') + (isNight ? ' (Night)' : '');
-    $('#wLoc').textContent = r.name + ', ' + (r.country_code || '');
+    
+    let humidity = '--';
+    if (data.hourly && data.hourly.time) {
+      const idx = data.hourly.time.indexOf(cur.time);
+      if (idx !== -1) humidity = data.hourly.relative_humidity_2m[idx];
+    }
+    
     $('#wRain').textContent = (daily.precipitation_probability_max[0] ?? '--') + '%';
     $('#wUv').textContent = daily.uv_index_max[0] ?? '--';
+    $('#wHum').textContent = humidity + '%';
     $('#wWind').textContent = cur.windspeed + ' km/h';
 
     const fcEl = $('#wForecast'); fcEl.innerHTML = '';
@@ -794,19 +812,96 @@ async function getWeather() {
       const d = new Date(daily.time[i] + 'T00:00');
       fcEl.innerHTML += `<div class="fc-day"><div class="fc-name">${i === 0 ? 'Today' : dayNames[d.getDay()]}</div><div class="fc-icon">${getWeatherIcon(daily.weathercode[i], false)}</div><div class="fc-temps"><span>${Math.round(daily.temperature_2m_max[i])}°</span><span class="fc-low">${Math.round(daily.temperature_2m_min[i])}°</span></div></div>`;
     }
+    store('lastWeather', { lat, lon, name });
   } catch (e) {
     $('#temp').textContent = '--°'; $('#wIcon').textContent = '⚠️'; $('#wDesc').textContent = 'Error'; $('#wLoc').textContent = 'Try again';
   }
 }
-getWeather();
 
-/* NOTES */
+async function searchWeather() {
+  const city = $('#cityInput').value.trim();
+  if (!city) return;
+  $('#temp').textContent = '...'; $('#wIcon').textContent = '🔍'; $('#wDesc').textContent = 'Searching...';
+  
+  try {
+    const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=5&language=en&format=json`);
+    const data = await res.json();
+    
+    if (!data.results || data.results.length === 0) {
+      showToast('City not found. Try another name.', 'error');
+      $('#wDesc').textContent = 'Not found';
+      $('#wIcon').textContent = '⚠️';
+      return;
+    }
+
+    if (data.results.length === 1) {
+      const r = data.results[0];
+      fetchWeatherData(r.latitude, r.longitude, `${r.name}, ${r.country_code}`);
+    } else {
+      // Multiple results, show custom choice modal
+      showCityChooser(data.results);
+    }
+  } catch (e) {
+    showToast('Network error', 'error');
+  }
+}
+
+function showCityChooser(results) {
+  const overlay = document.createElement('div'); overlay.className = 'custom-modal-overlay open';
+  let listHtml = results.map((r, i) => `
+    <button class="cm-btn" style="width:100%; justify-content:space-between; margin-bottom:8px; text-align:left;" onclick="pickCity(${r.latitude}, ${r.longitude}, '${r.name.replace(/'/g, "\\'")}, ${r.country_code || r.country}')">
+      <span>${r.name}</span>
+      <span style="color:var(--muted); font-size:12px;">${r.admin1 ? r.admin1 + ', ' : ''}${r.country}</span>
+    </button>
+  `).join('');
+  
+  overlay.innerHTML = `
+    <div class="custom-modal">
+      <div class="cm-head"><div class="cm-icon cyan">📍</div><div class="cm-title">Select Location</div></div>
+      <div class="cm-body">Multiple cities found with that name. Please choose one:</div>
+      <div style="padding: 0 20px 20px; max-height: 300px; overflow-y:auto;">${listHtml}</div>
+      <div class="cm-footer"><button class="cm-btn cancel" onclick="this.closest('.custom-modal-overlay').remove()">Cancel</button></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+function pickCity(lat, lon, name) {
+  document.querySelector('.custom-modal-overlay').remove();
+  fetchWeatherData(lat, lon, name);
+}
+
+function getLocationWeather() {
+  if (navigator.geolocation) {
+    $('#temp').textContent = '...'; $('#wIcon').textContent = '📍'; $('#wDesc').textContent = 'Locating...'; $('#wLoc').textContent = 'My Location';
+    navigator.geolocation.getCurrentPosition(
+      pos => fetchWeatherData(pos.coords.latitude, pos.coords.longitude, 'My Location'),
+      () => showToast('Location access denied', 'error')
+    );
+  } else {
+    showToast('Geolocation not supported', 'error');
+  }
+}
+
+// Load last weather or default
+const savedWeather = load('lastWeather', null);
+if (savedWeather) {
+  fetchWeatherData(savedWeather.lat, savedWeather.lon, savedWeather.name);
+} else {
+  getLocationWeather();
+}
+
+/* ===== NOTES ===== */
 let notes = load('notes', []);
 function renderNotes() {
   const list = $('#notesList'); list.innerHTML = '';
-  if (!notes.length) { list.innerHTML = '<div class="empty-state">No notes yet.</div>'; return; }
+  if (!notes.length) { list.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;">No notes yet.</div>'; return; }
   notes.forEach(n => {
-    list.innerHTML += `<div class="note-item"><div style="flex:1"><div class="note-text">${n.text}</div><div class="note-meta">${new Date(n.ts).toLocaleString()}</div></div><button class="del-btn" onclick="delNote('${n.id}')">×</button></div>`;
+    list.innerHTML += `
+      <div class="metal-card">
+        <div style="flex:1"><div class="note-text">${n.text}</div><div class="note-meta">${new Date(n.ts).toLocaleString()}</div></div>
+        <button class="del-btn" onclick="delNote('${n.id}')">×</button>
+      </div>`;
   });
 }
 function addNote() {
@@ -816,13 +911,18 @@ function addNote() {
 function delNote(id) { notes = notes.filter(x => x.id !== id); store('notes', notes); renderNotes(); }
 renderNotes();
 
-/* TODO */
+/* ===== TODO ===== */
 let todos = load('todos', []);
 function renderTodos() {
   const list = $('#todoList'); list.innerHTML = '';
-  if (!todos.length) { list.innerHTML = '<div class="empty-state">No tasks yet.</div>'; return; }
+  if (!todos.length) { list.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;">No tasks yet.</div>'; return; }
   todos.forEach(t => {
-    list.innerHTML += `<div class="todo-item ${t.done ? 'done' : ''}"><input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTodo('${t.id}')"><div class="todo-text">${t.text}</div><button class="del-btn" onclick="delTodo('${t.id}')">×</button></div>`;
+    list.innerHTML += `
+      <div class="todo-item ${t.done ? 'done' : ''}">
+        <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTodo('${t.id}')">
+        <div class="todo-text">${t.text}</div>
+        <button class="del-btn" onclick="delTodo('${t.id}')">×</button>
+      </div>`;
   });
 }
 function addTodo() {
@@ -833,7 +933,7 @@ function toggleTodo(id) { const t = todos.find(x => x.id === id); if (t) t.done 
 function delTodo(id) { todos = todos.filter(x => x.id !== id); store('todos', todos); renderTodos(); }
 renderTodos();
 
-/* POMODORO */
+/* ===== POMODORO ===== */
 const pomo = { minutes: 25, remaining: 25 * 60, running: false, interval: null };
 function updatePomoDisplay() { $('#pomoTime').textContent = String(Math.floor(pomo.remaining / 60)).padStart(2, '0') + ':' + String(pomo.remaining % 60).padStart(2, '0'); }
 function setPomoMode(btn, min) {
@@ -861,7 +961,7 @@ function togglePomo() {
 }
 updatePomoDisplay();
 
-/* CONVERTER */
+/* ===== CONVERTER ===== */
 const UNITS = { length: { m: 1, km: 1000, cm: 0.01, mm: 0.001, mi: 1609.344, yd: 0.9144, ft: 0.3048, in: 0.0254 }, mass: { kg: 1, g: 0.001, mg: 0.000001, t: 1000, lb: 0.45359237, oz: 0.028349523 }, temp: { C: 1, F: 1, K: 1 }, area: { 'm²': 1, 'km²': 1e6, 'cm²': 1e-4, ha: 1e4, acre: 4046.8564224, 'ft²': 0.09290304, 'in²': 0.00064516 }, volume: { L: 1, mL: 0.001, 'm³': 1000, gal: 3.785411784, qt: 0.946352946, pt: 0.473176473, cup: 0.2365882365, floz: 0.0295735296 }, speed: { 'm/s': 1, 'km/h': 1/3.6, mph: 0.44704, knot: 0.514444 } };
 function populateConvUnits() {
   const cat = $('#convCat').value; const units = Object.keys(UNITS[cat]); const from = $('#convFrom'), to = $('#convTo');
@@ -885,12 +985,152 @@ function swapConv() {
 }
 populateConvUnits(); doConvert();
 
-/* CHATBOT LOGIC (Simplified for brevity) */
-function openChat() { $('#chatPanel').classList.add('open'); $('#chatFab').classList.add('hidden'); document.body.style.overflow = 'hidden'; }
-function closeChat() { $('#chatPanel').classList.remove('open'); $('#chatFab').classList.remove('hidden'); document.body.style.overflow = ''; }
-function sendMessage() { showToast('Chatbot integrated via backend.'); $('#chatInput').value = ''; }
+/* ===== CHATBOT SYSTEM ===== */
+const BOT_API = '/chat';
+const WELCOME_MSG = "Hi! I'm ZJ Bot 👋 How can I help you today?";
+let chatSessions = load('chat_sessions', []);
+let currentChatId = load('current_chat', null);
 
-/* CUSTOM MODALS */
+if (chatSessions.length > 0 && !chatSessions.find(s => s.id === currentChatId)) currentChatId = chatSessions[0].id;
+else if (chatSessions.length === 0) currentChatId = null;
+
+function persistChats() { store('chat_sessions', chatSessions); store('current_chat', currentChatId || ''); }
+function getCurrentSession() { return chatSessions.find(s => s.id === currentChatId) || null; }
+function createNewSession() {
+  const id = 'chat_' + Date.now();
+  const session = { id: id, title: 'New Chat', messages: [{ sender: 'bot', text: WELCOME_MSG }] };
+  chatSessions.unshift(session); currentChatId = id; persistChats(); return session;
+}
+
+function formatMarkdown(text) {
+  let s = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/(^|[^*])\*([^*]+)\*/g, '$1<em>$2</em>')
+       .replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\n/g, '<br>');
+  return s;
+}
+
+function renderChat() {
+  const chatWindow = $('#chatWindow');
+  chatWindow.innerHTML = '';
+  const session = getCurrentSession(); if (!session) return;
+  
+  session.messages.forEach(m => {
+    const wrapper = document.createElement('div'); wrapper.className = 'msg-wrapper ' + m.sender;
+    const msgDiv = document.createElement('div'); msgDiv.className = 'msg ' + m.sender;
+    if (m.sender === 'bot') msgDiv.innerHTML = formatMarkdown(m.text); else msgDiv.textContent = m.text;
+    wrapper.appendChild(msgDiv);
+    chatWindow.appendChild(wrapper);
+  });
+  
+  if (session.messages.length === 1 && session.messages[0].text === WELCOME_MSG) {
+    const suggWrap = document.createElement('div'); suggWrap.className = 'chat-suggestions';
+    ['Hello!', 'Tell me a joke', "What's 12×8?", 'What can you do?'].forEach(text => {
+      const chip = document.createElement('button'); chip.className = 'suggestion-chip'; chip.textContent = text; chip.style.cssText = 'background:transparent; border:1px solid var(--cyan); color:var(--cyan); padding:8px 14px; border-radius:20px; font-size:13px; font-weight:600; margin-top:8px; margin-right:6px; cursor:pointer;';
+      chip.onclick = () => { $('#chatInput').value = text; sendMessage(); };
+      suggWrap.appendChild(chip);
+    });
+    chatWindow.appendChild(suggWrap);
+  }
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+function pushMessage(sender, text) {
+  let session = getCurrentSession(); if (!session) session = createNewSession();
+  session.messages.push({ sender: sender, text: text }); persistChats(); renderChat();
+}
+
+function openChat() {
+  if (!currentChatId) createNewSession();
+  $('#chatPanel').classList.add('open'); $('#chatFab').classList.add('hidden'); document.body.style.overflow = 'hidden';
+  renderChat(); setTimeout(() => { $('#chatInput').focus(); }, 300);
+}
+function closeChat() {
+  $('#chatPanel').classList.remove('open'); $('#chatFab').classList.remove('hidden'); document.body.style.overflow = '';
+}
+
+const JOKES = ["Why don't scientists trust atoms? Because they make up everything. 😄", "Why did the developer go broke? Because he used up all his cache. 💸", "Why do programmers prefer dark mode? Because light attracts bugs. 🐛"];
+function localBotReply(text) {
+  const t = text.toLowerCase().trim();
+  if (/^(hi|hello|hey|yo)\b/.test(t)) return 'Hey there! 👋 What can I do for you?';
+  if (/how are you/.test(t)) return "I'm running smoothly — thanks for asking! 😊";
+  if (/your name|who are you/.test(t)) return "I'm **ZJ Bot**, built into ZJ Website.";
+  if (/joke/.test(t)) return JOKES[Math.floor(Math.random() * JOKES.length)];
+  if (/time/.test(t)) return "It's **" + new Date().toLocaleTimeString() + '** right now.';
+  if (/date|today/.test(t)) return 'Today is **' + new Date().toLocaleDateString() + '**.';
+  return "I'm a demo bot. Try: hello, joke, time, or math like 2+2.";
+}
+async function tryServer(text) {
+  try {
+    const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), 2500);
+    const res = await fetch(BOT_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text }), signal: controller.signal });
+    clearTimeout(timer); if (!res.ok) throw new Error();
+    const data = await res.json(); if (data && data.reply) return data.reply;
+    throw new Error();
+  } catch (e) { return null; }
+}
+
+async function sendMessage() {
+  const chatInput = $('#chatInput');
+  const text = chatInput.value.trim(); if (!text) return;
+  if (!currentChatId) createNewSession();
+  
+  pushMessage('user', text); chatInput.value = '';
+  $('#chatSendBtn').disabled = true; chatInput.disabled = true;
+  
+  const session = getCurrentSession();
+  if (session && session.title === 'New Chat') { session.title = text.slice(0, 24); persistChats(); }
+  
+  const typingWrap = document.createElement('div'); typingWrap.className = 'msg-wrapper bot';
+  typingWrap.innerHTML = '<div class="msg bot typing"><span class="dot-anim"></span><span class="dot-anim"></span><span class="dot-anim"></span></div>';
+  $('#chatWindow').appendChild(typingWrap); $('#chatWindow').scrollTop = $('#chatWindow').scrollHeight;
+
+  try {
+    const reply = (await tryServer(text)) || localBotReply(text);
+    typingWrap.remove(); pushMessage('bot', reply);
+  } catch (e) {
+    typingWrap.remove(); pushMessage('bot', '⚠️ Network error.');
+  } finally {
+    $('#chatSendBtn').disabled = false; chatInput.disabled = false; chatInput.focus();
+  }
+}
+
+function newChat() { createNewSession(); renderChat(); showToast('New chat started'); }
+function clearChat() {
+  showCustomModal({
+    title: 'Clear Chat', message: 'Delete all messages in this chat?', iconType: 'danger',
+    iconHtml: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+    confirmText: 'Clear', onConfirm: () => {
+      const session = getCurrentSession();
+      if (session) { session.messages = [{ sender: 'bot', text: WELCOME_MSG }]; session.title = 'New Chat'; persistChats(); renderChat(); }
+      showToast('Chat cleared');
+    }
+  });
+}
+
+function showChatHistory() {
+  const overlay = document.createElement('div'); overlay.className = 'custom-modal-overlay open';
+  let listHtml = chatSessions.map(s => `
+    <button class="cm-btn" style="width:100%; margin-bottom:8px; justify-content:space-between; border-color: ${s.id === currentChatId ? 'var(--cyan)' : 'var(--border)'}" onclick="loadChatSession('${s.id}')">
+      <span style="font-weight:800; color:var(--text);">${s.title}</span>
+      <span style="font-size:11px; color:var(--muted);">${s.messages.length} msgs</span>
+    </button>
+  `).join('');
+  
+  overlay.innerHTML = `
+    <div class="custom-modal">
+      <div class="cm-head"><div class="cm-icon cyan">💬</div><div class="cm-title">Chat History</div></div>
+      <div style="padding: 0 20px 20px; max-height: 300px; overflow-y:auto;">${listHtml}</div>
+      <div class="cm-footer"><button class="cm-btn cancel" onclick="this.closest('.custom-modal-overlay').remove()">Close</button></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+function loadChatSession(id) {
+  currentChatId = id; persistChats(); renderChat();
+  document.querySelector('.custom-modal-overlay').remove();
+}
+
 function showCustomModal({ title, message, iconHtml, iconType, confirmText, onConfirm }) {
   const overlay = document.createElement('div'); overlay.className = 'custom-modal-overlay';
   overlay.innerHTML = `
@@ -905,14 +1145,6 @@ function showCustomModal({ title, message, iconHtml, iconType, confirmText, onCo
   document.body.appendChild(overlay); requestAnimationFrame(() => overlay.classList.add('open'));
   overlay.querySelector('.cancel').onclick = () => { overlay.classList.remove('open'); setTimeout(() => overlay.remove(), 200); };
   overlay.querySelector('.confirm').onclick = () => { onConfirm(); overlay.querySelector('.cancel').click(); };
-}
-
-function clearChat() {
-  showCustomModal({
-    title: 'Clear Chat', message: 'Delete all messages?', iconType: 'danger',
-    iconHtml: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
-    confirmText: 'Clear', onConfirm: () => showToast('Chat cleared')
-  });
 }
 </script>
 </body>
