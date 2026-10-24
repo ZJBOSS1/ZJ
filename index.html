@@ -29,7 +29,7 @@
   body.light-theme {
     --bg-0: #F1F5F9; --bg-1: #FFFFFF; --bg-2: #F8FAFC;
     --border: #CBD5E1; --text: #0F172A; --muted: #64748B;
-    --cyan: #0284C7; /* Slightly darker sky blue for readable white text */
+    --cyan: #0284C7; 
     --cyan-glow: rgba(2, 132, 199, 0.15);
     --gold: #F59E0B; --gold-glow: rgba(245, 158, 11, 0.15);
     --silver: #475569; --silver-mid: #94A3B8;
@@ -60,7 +60,10 @@
   @keyframes toastIn { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
   @keyframes toastOut { to { opacity: 0; transform: translateY(20px) scale(0.9); } }
 
-  /* SIDEBAR */
+  /* SIDEBAR & BACKDROP */
+  .sidebar-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 45; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  .sidebar-backdrop.open { opacity: 1; pointer-events: auto; }
+  
   .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 50; padding: 20px 14px; display: flex; flex-direction: column; background: var(--bg-1); border-right: 1px solid var(--border); transition: transform 0.35s ease; }
   .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; padding-left: 4px; }
   .brand-logo { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--cyan), var(--cyan-deep)); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #fff; font-family: Georgia, serif; }
@@ -149,7 +152,7 @@
   .chat-action-btn:hover { border-color: var(--cyan); color: var(--cyan); }
   .chat-action-btn.danger:hover { border-color: #EF4444; color: #EF4444; }
 
-  /* CHAT BUBBLES - SPECIFIC COLORS */
+  /* CHAT BUBBLES */
   .chat-window { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
   .msg-wrapper { display: flex; flex-direction: column; max-width: 75%; }
   .msg-wrapper.user { align-self: flex-end; align-items: flex-end; }
@@ -160,8 +163,9 @@
   /* BOT = CYAN BACKGROUND, WHITE TEXT */
   .msg.bot { background: var(--cyan); color: #FFFFFF; border-bottom-left-radius: 4px; }
   
-  /* USER = WHITE BACKGROUND, BLACK TEXT */
+  /* USER = WHITE BACKGROUND, BLACK TEXT (Forced across both themes for exact request) */
   .msg.user { background: #FFFFFF; color: #000000; border: 1px solid #E2E8F0; border-bottom-right-radius: 4px; font-weight: 500; }
+  body.light-theme .msg.user { background: #FFFFFF; color: #000000; border-color: #CBD5E1; }
   
   .msg code { background: rgba(0,0,0,0.15); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 13px; }
   
@@ -178,6 +182,7 @@
   .chat-input-row { display: flex; gap: 10px; max-width: 900px; margin: 0 auto; }
   .chat-input-row input { flex: 1; min-width: 0; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); font-size: 15px; outline: none; }
   .chat-send { padding: 0 20px; border-radius: 10px; background: var(--cyan); color: #fff; font-weight: 800; border: none; cursor: pointer; }
+  .chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
 
   /* SCROLL BUTTON */
   .scroll-bottom-btn { position: absolute; bottom: 85px; right: 24px; width: 40px; height: 40px; border-radius: 50%; background: var(--bg-1); border: 1px solid var(--border); color: var(--text); display: none; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 10; }
@@ -220,6 +225,7 @@
 
 <div class="bg"><div class="grid"></div><div class="orb orb1"></div><div class="orb orb2"></div></div>
 <div class="toast-container" id="toastContainer"></div>
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
 
 <aside class="sidebar" id="sidebar">
   <div class="brand">
@@ -228,14 +234,14 @@
   </div>
   <div class="nav-label">Menu</div>
   <button class="nav-item active" onclick="scrollToSection()">Dashboard</button>
-  <button class="nav-item" onclick="document.getElementById('sidebar').classList.remove('open'); focusCalc();">Calculator</button>
+  <button class="nav-item" onclick="toggleSidebar(); focusCalc();">Calculator</button>
   <button class="nav-item" onclick="openChat()">Chatbot</button>
-  <button class="nav-item" onclick="document.getElementById('sidebar').classList.remove('open'); focusWeather();">Weather</button>
+  <button class="nav-item" onclick="toggleSidebar(); focusWeather();">Weather</button>
 </aside>
 
 <header class="topbar">
   <div style="display:flex;align-items:center;">
-    <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">
+    <button class="menu-toggle" onclick="toggleSidebar()">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
   </div>
@@ -288,10 +294,10 @@
       <div class="card-head"><div class="card-title"><span class="dot gold"></span>Gallery</div></div>
       <div class="slider-wrap">
         <div class="slides">
-          <img src="ZJPP.jpeg" alt="ZJ" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/300x400?text=ZJ'">
-          <img src="bmw.jpeg" alt="BMW" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/300x400?text=BMW'">
-          <img src="ZJPP.jpeg" alt="ZJ" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/300x400?text=ZJ'">
-          <img src="bmw.jpeg" alt="BMW" onclick="openLightbox(this.src)" onerror="this.src='https://via.placeholder.com/300x400?text=BMW'">
+          <img src="ZJPP.jpeg" alt="ZJ" onclick="openLightbox(this.src)" onerror="this.src='https://picsum.photos/400/600?random=1'">
+          <img src="bmw.jpeg" alt="BMW" onclick="openLightbox(this.src)" onerror="this.src='https://picsum.photos/400/600?random=2'">
+          <img src="ZJPP.jpeg" alt="ZJ" onclick="openLightbox(this.src)" onerror="this.src='https://picsum.photos/400/600?random=1'">
+          <img src="bmw.jpeg" alt="BMW" onclick="openLightbox(this.src)" onerror="this.src='https://picsum.photos/400/600?random=2'">
         </div>
       </div>
     </div>
@@ -353,7 +359,7 @@
   <div class="chat-input-area">
     <div class="chat-input-row">
       <input type="text" id="chatInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendMessage()">
-      <button class="chat-send" onclick="sendMessage()">Send</button>
+      <button class="chat-send" id="chatSendBtn" onclick="sendMessage()">Send</button>
     </div>
   </div>
 </div>
@@ -367,6 +373,14 @@ function showToast(message) {
   container.appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
 }
+
+function toggleSidebar() {
+  const s = document.getElementById('sidebar');
+  const b = document.getElementById('sidebarBackdrop');
+  const isOpen = s.classList.toggle('open');
+  b.classList.toggle('open', isOpen);
+}
+
 function scrollToSection(){ window.scrollTo({ top: 0, behavior: 'smooth' }); }
 function focusCalc(){ document.getElementById('calcCard').scrollIntoView({behavior:'smooth', block:'center'}); }
 function focusWeather(){ document.getElementById('weatherCard').scrollIntoView({behavior:'smooth', block:'center'}); }
@@ -540,6 +554,7 @@ const chatWindow = document.getElementById('chatWindow');
 const chatInput  = document.getElementById('chatInput');
 const chatPanel  = document.getElementById('chatPanel');
 const chatFab    = document.getElementById('chatFab');
+const chatSendBtn = document.getElementById('chatSendBtn');
 const BOT_API    = '/chat';
 const WELCOME_MSG = "Hi! I'm ZJ Bot 👋 How can I help you today?";
 
@@ -579,8 +594,14 @@ function renderChat(){
     if (m.sender === 'bot') {
       const actions = document.createElement('div'); actions.className = 'msg-actions';
       const copyBtn = document.createElement('button'); copyBtn.className = 'copy-btn';
-      copyBtn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy`;
-      copyBtn.onclick = () => { navigator.clipboard.writeText(m.text); showToast('Copied!'); };
+      const originalHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy`;
+      copyBtn.innerHTML = originalHTML;
+      
+      copyBtn.onclick = () => { 
+        navigator.clipboard.writeText(m.text); 
+        copyBtn.innerHTML = 'Copied!'; 
+        setTimeout(() => copyBtn.innerHTML = originalHTML, 2000);
+      };
       actions.appendChild(copyBtn); wrapper.appendChild(actions);
     }
     chatWindow.appendChild(wrapper);
@@ -613,7 +634,12 @@ function closeChat(){
 async function sendMessage(){
   const text = chatInput.value.trim(); if (!text) return;
   if (!currentChatId) createNewSession();
-  pushMessage('user', text); chatInput.value = '';
+  
+  pushMessage('user', text); 
+  chatInput.value = '';
+  chatSendBtn.disabled = true;
+  chatInput.disabled = true;
+  
   const session = getCurrentSession();
   if (session && session.title === 'New Chat') { session.title = text.slice(0, 20); persistChats(); }
   
@@ -627,6 +653,10 @@ async function sendMessage(){
     pushMessage('bot', data.reply || 'No response');
   } catch {
     wrapper.remove(); pushMessage('bot', '⚠️ Cannot reach server.');
+  } finally {
+    chatSendBtn.disabled = false;
+    chatInput.disabled = false;
+    chatInput.focus();
   }
 }
 
@@ -667,4 +697,3 @@ document.addEventListener('keydown', (e) => {
 </script>
 </body>
 </html>
-  
