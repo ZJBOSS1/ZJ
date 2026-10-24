@@ -194,7 +194,7 @@
   .chat-sub { color: var(--cyan); font-size: 12px; display: flex; align-items: center; gap: 5px; }
   body.light-theme .chat-sub { color: var(--cyan-deep); }
 
-  /* CHAT ACTION BUTTONS — themed */
+  /* CHAT ACTION BUTTONS */
   .chat-head-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .chat-action-btn { display: inline-flex; align-items: center; gap: 6px;
     padding: 8px 12px; border-radius: 10px; font-size: 12px; font-weight: 700; letter-spacing: 1px;
@@ -233,13 +233,19 @@
     display: flex; align-items: center; gap: 4px; padding: 0; }
   .copy-btn:hover { color: var(--cyan); }
 
+  /* CHAT INPUT AREA */
   .chat-input-area { padding: 15px 20px calc(15px + var(--safe-bottom)); background: var(--bg-1); border-top: 1px solid var(--border); flex-shrink: 0; }
-  .chat-input-row { display: flex; gap: 10px; max-width: 900px; margin: 0 auto; }
-  .chat-input-row input { flex: 1; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border);
+  .chat-input-row { display: flex; gap: 10px; max-width: 900px; margin: 0 auto; width: 100%; }
+  
+  /* FIX: Added min-width: 0 so input doesn't push button off screen */
+  .chat-input-row input { flex: 1; min-width: 0; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border);
     background: var(--bg-0); color: var(--text); font-size: 16px; outline: none; font-family: inherit; transition: border-color 0.15s; }
+  
   body.light-theme .chat-input-row input { background: #fff; }
   .chat-input-row input:focus { border-color: var(--cyan); box-shadow: 0 0 18px rgba(0,234,255,0.3); }
-  .chat-send { padding: 0 22px; border-radius: 12px; background: var(--cyan); color: #001418;
+  
+  /* FIX: Added flex-shrink: 0 to prevent button from squishing */
+  .chat-send { flex-shrink: 0; padding: 0 22px; border-radius: 12px; background: var(--cyan); color: #001418;
     font-weight: 800; letter-spacing: 1px; border: none; cursor: pointer; transition: all 0.15s; }
   .chat-send:hover { box-shadow: 0 0 18px var(--cyan-glow); }
 
@@ -299,12 +305,17 @@
     .chat-window { padding: 15px; }
     .msg-wrapper { max-width: 90%; }
     .chat-fab { bottom: 20px; right: 15px; }
+    
     .chat-action-btn span { display: none; }
     .chat-action-btn { padding: 8px 10px; }
     .chat-action-btn.danger { padding: 8px 10px; }
+    
     .chat-close span { display: none; }
     .chat-close { padding: 8px 10px; }
-    .chat-send { padding: 0 16px; font-size: 13px; }
+    
+    /* Adjust spacing on mobile so input fits perfectly */
+    .chat-input-area { padding: 12px 15px calc(12px + var(--safe-bottom)); }
+    .chat-send { padding: 0 16px; font-size: 14px; }
   }
 </style>
 </head>
@@ -325,7 +336,7 @@
   <button class="nav-item" onclick="document.getElementById('sidebar').classList.remove('open'); focusWeather();">Weather</button>
   <div class="sidebar-footer">
     <span class="status-dot"></span>Systems online<br>
-    <span style="font-size:10px;letter-spacing:1px;">v7.0 · ALL FIXES</span>
+    <span style="font-size:10px;letter-spacing:1px;">v7.1 · FIXED</span>
   </div>
 </aside>
 
@@ -615,7 +626,7 @@ function openCalcHistory(){
   document.body.appendChild(overlay);
 }
 
-/* ============ WEATHER (cache + skeleton + error) ============ */
+/* ============ WEATHER ============ */
 const WEATHER_TTL = 10 * 60 * 1000;
 const weatherCache = {};
 let weatherAbort = null;
