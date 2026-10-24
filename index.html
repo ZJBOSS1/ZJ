@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="theme-color" content="#00a3cc">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>ZJ Website — Dashboard</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2300a3cc'/%3E%3Ctext x='50' y='68' font-size='50' font-family='Georgia' font-weight='900' text-anchor='middle' fill='white'%3EZJ%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +21,6 @@
     --silver: #e8eef2; --silver-mid: #b8c4cc; --silver-dark: #6a7a84;
     --danger: #ef4444; --success: #10b981;
 
-    /* Metallic Theme Colors */
     --metal-1: #1a1e24; --metal-2: #0d1014; --metal-3: #2a3038;
     --metal-shadow: inset 0 2px 5px rgba(255,255,255,0.1), inset 0 -2px 5px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3);
 
@@ -52,9 +52,15 @@
     transition: background 0.3s ease, color 0.3s ease;
   }
   button, input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
-  button { cursor: pointer; }
+  button { cursor: pointer; min-height: 44px; min-width: 44px; }
   img { max-width: 100%; display: block; }
   :focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; border-radius: 4px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    .slides { animation: none !important; overflow-x: auto; }
+    .orb { animation: none; }
+  }
 
   /* ===== BACKGROUND ===== */
   .bg { position: fixed; inset: 0; z-index: 0; background: radial-gradient(ellipse at top left, #06222a 0%, transparent 50%), radial-gradient(ellipse at bottom right, #1a1400 0%, transparent 50%), var(--bg-0); }
@@ -68,7 +74,7 @@
 
   /* ===== TOAST ===== */
   .toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
-  .toast { background: var(--bg-1); border: 1px solid var(--border); color: var(--text); padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 600; box-shadow: 0 8px 30px rgba(0,0,0,0.3); animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), toastOut 0.3s ease 2.7s forwards; display: flex; align-items: center; gap: 8px; max-width: 90vw; }
+  .toast { background: var(--bg-1); border: 1px solid var(--border); color: var(--text); padding: 12px 24px; border-radius: 30px; font-size: 13px; font-weight: 600; box-shadow: 0 8px 30px rgba(0,0,0,0.3); animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), toastOut 0.3s ease 2.7s forwards; display: flex; align-items: center; gap: 8px; max-width: 90vw; }
   .toast.success { border-color: var(--success); color: var(--success); }
   .toast.error { border-color: var(--danger); color: var(--danger); }
   @keyframes toastIn { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
@@ -82,20 +88,19 @@
   .brand-logo { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--cyan), var(--cyan-deep)); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #fff; font-family: Georgia, serif; box-shadow: 0 4px 10px var(--cyan-glow); }
   .brand-name { font-size: 15px; font-weight: 800; letter-spacing: 2px; color: var(--text); }
   .nav-label { font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin: 0 8px 10px; }
-  .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin-bottom: 4px; border-radius: 8px; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent; background: transparent; text-align: left; width: 100%; transition: all 0.2s ease; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; margin-bottom: 4px; border-radius: 8px; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent; background: transparent; text-align: left; width: 100%; transition: all 0.2s ease; }
   .nav-item:hover { color: var(--text); background: var(--bg-2); }
   .nav-item.active { color: var(--cyan); background: var(--bg-2); border-color: var(--cyan); }
 
   /* ===== TOPBAR ===== */
   .topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: 60px; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: var(--bg-1); border-bottom: 1px solid var(--border); transition: left 0.35s ease; }
-  .menu-toggle { display: none; background: transparent; border: 1px solid var(--border); color: var(--text); padding: 8px; border-radius: 8px; }
+  .menu-toggle { display: none; background: transparent; border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; }
   .topbar-right { display: flex; align-items: center; gap: 12px; }
-  .theme-toggle { background: var(--bg-2); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+  .theme-toggle { background: var(--bg-2); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; }
 
   /* ===== MAIN ===== */
   .main { position: relative; z-index: 2; margin-left: var(--sidebar-w); padding: 85px 20px 80px; transition: margin-left 0.35s ease; max-width: 1160px; margin-right: auto; }
   
-  /* Live Digital Clock Next to Welcome */
   .hero { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; gap: 6px; }
   .hero-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; justify-content: center; }
   .hero h1 { margin: 0; font-size: 28px; font-weight: 900; color: var(--text); }
@@ -114,12 +119,18 @@
   .dot.gold { background: var(--gold); box-shadow: 0 0 8px var(--gold); } 
   .dot.silver { background: var(--silver); box-shadow: 0 0 8px var(--silver); }
   .card-tools { display: flex; gap: 6px; }
-  .icon-btn { width: 28px; height: 28px; border-radius: 6px; background: var(--bg-2); border: 1px solid var(--border); color: var(--muted); display: flex; align-items: center; justify-content: center; padding: 0; transition: all 0.2s; }
+  .icon-btn { width: 44px; height: 44px; border-radius: 8px; background: var(--bg-2); border: 1px solid var(--border); color: var(--muted); display: flex; align-items: center; justify-content: center; padding: 0; transition: all 0.2s; }
   .icon-btn:hover { color: var(--cyan); border-color: var(--cyan); }
 
   /* ===== CALCULATOR (SIMPLE) ===== */
   .calc-body { padding: 16px; display: flex; flex-direction: column; flex: 1; gap: 8px; }
   .calc-display { width: 100%; height: 56px; background: var(--bg-0); color: var(--text); border: 1px solid var(--border); border-radius: 10px; font-size: 24px; text-align: right; padding: 8px 12px; font-family: 'Share Tech Mono', monospace; font-weight: 700; outline: none; box-shadow: inset 0 3px 8px rgba(0,0,0,0.4); }
+  
+  /* Tape / History */
+  .calc-tape { height: 50px; overflow-y: auto; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; padding: 4px 8px; font-family: 'Share Tech Mono', monospace; font-size: 12px; display: flex; flex-direction: column; gap: 4px; }
+  .tape-item { color: var(--muted); cursor: pointer; text-align: right; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 2px; }
+  .tape-item:hover { color: var(--cyan); }
+
   .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; flex: 1; min-height: 220px; }
   .calc-grid button { border-radius: 10px; border: 1px solid transparent; font-size: 18px; font-weight: 700; transition: all 0.1s; display: flex; align-items: center; justify-content: center; }
   .calc-grid button:active { transform: scale(0.96); }
@@ -132,11 +143,12 @@
   /* ===== WEATHER ===== */
   .weather-inner { padding: 14px 16px; display: flex; flex-direction: column; flex: 1; gap: 12px; }
   .weather-search { display: flex; gap: 8px; }
-  .weather-search input { flex: 1; min-width: 0; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); font-size: 13px; outline: none; }
+  .weather-search input { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); font-size: 13px; outline: none; }
   .weather-search button { padding: 0 14px; border-radius: 8px; background: var(--cyan); color: #fff; font-weight: 800; border: none; font-size: 14px; }
   .weather-main { display: flex; flex-direction: column; align-items: center; text-align: center; flex: 1; justify-content: center; min-height: 100px; }
   .weather-icon-large { font-size: 48px; margin-bottom: 4px; line-height: 1; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
   .temp { font-size: 42px; font-weight: 900; line-height: 1; }
+  .temp-toggle { font-size: 16px; color: var(--cyan); cursor: pointer; background: var(--bg-2); padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border); margin-left: 8px; user-select: none; }
   .w-desc { font-size: 14px; font-weight: 600; margin-top: 4px; color: var(--cyan); }
   .w-loc { font-size: 12px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
   .weather-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -169,28 +181,13 @@
   .app-window { position: fixed; inset: 0; z-index: 100; height: 100dvh; display: flex; flex-direction: column; background: var(--bg-0); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
   .app-window.open { opacity: 1; pointer-events: auto; }
   
-  /* Modern Metallic UI for Headers */
-  .app-head { 
-    padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; 
-    background: linear-gradient(180deg, var(--metal-1), var(--metal-2));
-    border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px;
-    box-shadow: var(--metal-shadow);
-  }
+  .app-head { padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; box-shadow: var(--metal-shadow); }
   .app-title { font-weight: 900; font-size: 16px; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
   
-  /* Metallic App Buttons */
-  .app-btn { 
-    display: inline-flex; align-items: center; justify-content: center; gap: 6px; 
-    padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 800; 
-    background: linear-gradient(180deg, var(--metal-3), var(--metal-2));
-    border: 1px solid var(--border); color: var(--text);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.3);
-    transition: all 0.1s; cursor: pointer;
-  }
+  .app-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 800; background: linear-gradient(180deg, var(--metal-3), var(--metal-2)); border: 1px solid var(--border); color: var(--text); box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.3); transition: all 0.1s; cursor: pointer; }
   .app-btn:hover { border-color: var(--cyan); filter: brightness(1.2); }
   .app-btn:active { transform: translateY(1px); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
   .app-btn.primary { background: linear-gradient(180deg, var(--cyan-lite), var(--cyan-deep)); color: #fff; border-color: var(--cyan); text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
-  .app-btn.danger { background: linear-gradient(180deg, #ef4444, #b91c1c); color: #fff; border-color: #dc2626; }
 
   .app-body { flex: 1; overflow-y: auto; padding: 30px 20px; max-width: 800px; margin: 0 auto; width: 100%; }
 
@@ -198,12 +195,7 @@
   .sci-calc-container { max-width: 420px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; width: 100%; }
   .sci-display { width: 100%; height: 80px; background: var(--bg-0); color: var(--cyan); border: 1px solid var(--border); border-radius: 12px; font-size: 36px; text-align: right; padding: 10px 16px; font-family: 'Share Tech Mono', monospace; font-weight: 700; outline: none; box-shadow: inset 0 4px 12px rgba(0,0,0,0.6); text-shadow: 0 0 10px var(--cyan-glow); }
   .sci-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-  .sci-grid button { 
-    border-radius: 10px; border: 1px solid var(--border); 
-    background: linear-gradient(180deg, var(--metal-3), var(--metal-2)); color: var(--text); 
-    font-size: 15px; font-weight: 700; padding: 14px 0; transition: all 0.1s; 
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 2px 4px rgba(0,0,0,0.3);
-  }
+  .sci-grid button { border-radius: 10px; border: 1px solid var(--border); background: linear-gradient(180deg, var(--metal-3), var(--metal-2)); color: var(--text); font-size: 15px; font-weight: 700; padding: 14px 0; transition: all 0.1s; box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 2px 4px rgba(0,0,0,0.3); }
   .sci-grid button:active { transform: scale(0.96); }
   .sci-grid .btn-num { background: var(--bg-2); }
   .sci-grid .btn-op { background: linear-gradient(180deg, var(--cyan), var(--cyan-deep)); color: #fff; border-color: var(--cyan); }
@@ -216,20 +208,15 @@
   .metal-input:focus { border-color: var(--cyan); }
   
   .notes-list, .todo-list { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
-  .metal-card { 
-    padding: 16px; background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); 
-    border: 1px solid var(--border); border-radius: 12px; font-size: 15px; 
-    display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;
-    box-shadow: var(--metal-shadow);
-  }
+  .metal-card { padding: 16px; background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); border: 1px solid var(--border); border-radius: 12px; font-size: 15px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; box-shadow: var(--metal-shadow); }
   .note-text { flex: 1; white-space: pre-wrap; word-break: break-word; line-height: 1.5; }
   .note-meta { font-size: 11px; color: var(--muted); margin-top: 6px; }
   
-  .del-btn { background: transparent; border: none; color: var(--muted); padding: 4px; font-size: 20px; line-height: 1; border-radius: 6px; cursor: pointer; transition: color 0.2s; }
+  .del-btn { background: transparent; border: none; color: var(--muted); padding: 8px; font-size: 20px; line-height: 1; border-radius: 6px; cursor: pointer; transition: color 0.2s; }
   .del-btn:hover { color: var(--danger); }
   
   .todo-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); border: 1px solid var(--border); border-radius: 12px; font-size: 15px; box-shadow: var(--metal-shadow); }
-  .todo-item input[type="checkbox"] { accent-color: var(--cyan); width: 20px; height: 20px; cursor: pointer; flex-shrink: 0; }
+  .todo-item input[type="checkbox"] { accent-color: var(--cyan); width: 22px; height: 22px; cursor: pointer; flex-shrink: 0; }
   .todo-item.done .todo-text { text-decoration: line-through; color: var(--muted); }
   .todo-text { flex: 1; word-break: break-word; }
 
@@ -239,8 +226,10 @@
   .pomo-modes button { padding: 10px 24px; border-radius: 24px; border: none; background: transparent; color: var(--muted); font-size: 14px; font-weight: 800; transition: all 0.2s; }
   .pomo-modes button.active { background: linear-gradient(180deg, var(--cyan-lite), var(--cyan-deep)); color: #fff; box-shadow: 0 2px 10px var(--cyan-glow); }
   
-  .pomo-time-container { background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); padding: 30px 60px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--metal-shadow); }
-  .pomo-time { font-size: 90px; font-weight: 900; font-family: 'Share Tech Mono', monospace; color: var(--text); line-height: 1; letter-spacing: 4px; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
+  .pomo-time-container { background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); padding: 30px 60px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--metal-shadow); cursor: pointer; position: relative; }
+  .pomo-time-container::after { content: 'Click to edit'; position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--muted); opacity: 0; transition: opacity 0.2s; }
+  .pomo-time-container:hover::after { opacity: 1; }
+  .pomo-time { font-size: 90px; font-weight: 900; font-family: 'Share Tech Mono', monospace; color: var(--text); line-height: 1; letter-spacing: 4px; text-shadow: 0 0 20px rgba(255,255,255,0.2); user-select: none; }
   .pomo-controls { display: flex; gap: 15px; }
   .pomo-controls button { padding: 16px 36px; border-radius: 12px; font-weight: 900; font-size: 16px; }
 
@@ -266,7 +255,7 @@
   .chat-name { font-weight: 800; font-size: 15px; }
   .chat-sub { color: var(--cyan); font-size: 12px; font-weight: 600; }
   .chat-head-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .chat-action-btn { display: inline-flex; align-items: center; gap: 4px; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 800; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); transition: all 0.2s; cursor: pointer; }
+  .chat-action-btn { display: inline-flex; align-items: center; gap: 4px; padding: 10px 14px; border-radius: 6px; font-size: 12px; font-weight: 800; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); transition: all 0.2s; cursor: pointer; min-height: 44px; }
   .chat-action-btn:hover { border-color: var(--cyan); color: var(--cyan); }
   .chat-action-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
   
@@ -279,11 +268,6 @@
   body.light-theme .msg.bot { background: linear-gradient(145deg, #e0f2fe, #bae6fd); border-color: #7dd3fc; color: #0c4a6e; }
   .msg.user { background: linear-gradient(180deg, var(--cyan), var(--cyan-deep)); color: #fff; border-bottom-right-radius: 4px; font-weight: 500; box-shadow: 0 4px 15px var(--cyan-glow); }
   .msg code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 13px; }
-  .msg.typing { display: flex; gap: 5px; align-items: center; padding: 16px 20px; }
-  .dot-anim { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); animation: blink 1.2s infinite; }
-  .dot-anim:nth-child(2) { animation-delay: 0.2s; }
-  .dot-anim:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes blink { 0%,80%,100% { opacity: 0.3; } 40% { opacity: 1; } }
   
   .chat-input-area { padding: 16px 20px calc(16px + var(--safe-bottom)); background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); border-top: 1px solid var(--border); box-shadow: inset 0 1px 0 rgba(255,255,255,0.1); }
   .chat-input-row { display: flex; gap: 12px; max-width: 900px; margin: 0 auto; }
@@ -303,7 +287,7 @@
   .cm-title { font-size: 16px; font-weight: 800; color: var(--text); }
   .cm-body { padding: 0 20px 20px; font-size: 14px; color: var(--muted); line-height: 1.5; }
   .cm-footer { padding: 14px 20px; background: var(--bg-2); border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
-  .cm-btn { padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 700; border: 1px solid var(--border); background: transparent; color: var(--text); transition: all 0.15s ease; cursor: pointer; }
+  .cm-btn { padding: 12px 18px; border-radius: 8px; font-size: 13px; font-weight: 700; border: 1px solid var(--border); background: transparent; color: var(--text); transition: all 0.15s ease; cursor: pointer; min-height: 44px; }
   .cm-btn:hover { background: var(--border); }
   .cm-btn.confirm { background: var(--cyan); color: #fff; border-color: var(--cyan); }
   .cm-btn.confirm:hover { opacity: 0.9; }
@@ -321,7 +305,7 @@
     .hero h1 { font-size: 22px; }
     .digital-clock { font-size: 18px; padding: 2px 8px; }
     .chat-action-btn span { display: none; }
-    .chat-action-btn { padding: 8px; }
+    .chat-action-btn { padding: 10px; }
     .chat-window { padding: 14px; }
     .msg-wrapper { max-width: 88%; }
     .chat-fab { bottom: 16px; right: 16px; }
@@ -337,7 +321,7 @@
 <body>
 
 <div class="bg" aria-hidden="true"><div class="grid"></div><div class="orb orb1"></div><div class="orb orb2"></div></div>
-<div class="toast-container" id="toastContainer" aria-live="polite"></div>
+<div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
 <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 
 <aside class="sidebar" id="sidebar" aria-label="Main navigation">
@@ -346,17 +330,17 @@
     <div class="brand-name">ZJ WEBSITE</div>
   </div>
   <div class="nav-label">Main Menu</div>
-  <button class="nav-item active" onclick="scrollToCard('dashboard')">Dashboard</button>
-  <button class="nav-item" onclick="scrollToCard('calcCard')">Calculator</button>
-  <button class="nav-item" onclick="scrollToCard('weatherCard')">Weather</button>
-  <button class="nav-item" onclick="scrollToCard('galleryCard')">Gallery</button>
+  <button class="nav-item active" onclick="scrollToCard('dashboard', this)">Dashboard</button>
+  <button class="nav-item" onclick="scrollToCard('calcCard', this)">Calculator</button>
+  <button class="nav-item" onclick="scrollToCard('weatherCard', this)">Weather</button>
+  <button class="nav-item" onclick="scrollToCard('galleryCard', this)">Gallery</button>
   
   <div class="nav-label" style="margin-top:20px;">Professional Apps</div>
-  <button class="nav-item" onclick="openWindow('notesWin')">Notes</button>
-  <button class="nav-item" onclick="openWindow('todoWin')">Todo List</button>
-  <button class="nav-item" onclick="openWindow('pomoWin')">Pomodoro Timer</button>
-  <button class="nav-item" onclick="openWindow('convWin')">Unit Converter</button>
-  <button class="nav-item" onclick="openChat()">Chatbot</button>
+  <button class="nav-item" onclick="openWindow('notesWin', this)">Notes</button>
+  <button class="nav-item" onclick="openWindow('todoWin', this)">Todo List</button>
+  <button class="nav-item" onclick="openWindow('pomoWin', this)">Pomodoro Timer</button>
+  <button class="nav-item" onclick="openWindow('convWin', this)">Unit Converter</button>
+  <button class="nav-item" onclick="openChat(this)">Chatbot</button>
 </aside>
 
 <header class="topbar">
@@ -384,12 +368,13 @@
       <div class="card-head">
         <div class="card-title"><span class="dot silver"></span>Calculator</div>
         <div class="card-tools">
-          <button class="icon-btn" onclick="openWindow('sciCalcWin')" title="Scientific Mode" aria-label="Open scientific calculator">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 3H4v18h5"/><path d="M15 3h5v18h-5"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          <button class="icon-btn" onclick="openWindow('sciCalcWin', this)" title="Scientific Mode" aria-label="Open scientific calculator">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 3H4v18h5"/><path d="M15 3h5v18h-5"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
           </button>
         </div>
       </div>
       <div class="calc-body">
+        <div class="calc-tape" id="calcTape"></div>
         <input type="text" id="calcDisplay" class="calc-display" readonly value="0" aria-label="Calculator display">
         <div class="calc-grid">
           <button class="btn-silver" onclick="appendCalc('AC')">AC</button>
@@ -420,7 +405,7 @@
       <div class="card-head">
         <div class="card-title"><span class="dot cyan"></span>Weather</div>
         <button class="icon-btn" onclick="getLocationWeather()" title="Use My Location" aria-label="Use my location">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2a8 8 0 0 0-8 8c0 5.4 8 12 8 12s8-6.6 8-12a8 8 0 0 0-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2a8 8 0 0 0-8 8c0 5.4 8 12 8 12s8-6.6 8-12a8 8 0 0 0-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
         </button>
       </div>
       <div class="weather-inner">
@@ -430,7 +415,7 @@
         </div>
         <div class="weather-main">
           <div class="weather-icon-large" id="wIcon">--</div>
-          <div class="temp" id="temp">--°</div>
+          <div class="temp" id="temp">--° <span class="temp-toggle" onclick="toggleTempUnit()" id="tempUnitToggle">°C</span></div>
           <div class="w-desc" id="wDesc">Loading...</div>
           <div class="w-loc" id="wLoc">Detecting...</div>
         </div>
@@ -449,10 +434,10 @@
       <div class="card-head"><div class="card-title"><span class="dot gold"></span>Gallery</div></div>
       <div class="slider-wrap">
         <div class="slides" id="slides">
-          <img src="ZJPP.jpeg" alt="ZJ" data-gallery onclick="openLightbox(this)" onerror="this.src='https://picsum.photos/400/600?random=1'">
-          <img src="bmw.jpeg" alt="BMW" data-gallery onclick="openLightbox(this)" onerror="this.src='https://picsum.photos/400/600?random=2'">
-          <img src="ZJPP.jpeg" alt="ZJ" data-gallery onclick="openLightbox(this)" onerror="this.src='https://picsum.photos/400/600?random=1'">
-          <img src="bmw.jpeg" alt="BMW" data-gallery onclick="openLightbox(this)" onerror="this.src='https://picsum.photos/400/600?random=2'">
+          <img src="ZJPP.jpeg" alt="ZJ" data-gallery onclick="openLightbox(this)" loading="lazy" decoding="async" onerror="this.src='https://picsum.photos/400/600?random=1'">
+          <img src="bmw.jpeg" alt="BMW" data-gallery onclick="openLightbox(this)" loading="lazy" decoding="async" onerror="this.src='https://picsum.photos/400/600?random=2'">
+          <img src="ZJPP.jpeg" alt="ZJ" data-gallery onclick="openLightbox(this)" loading="lazy" decoding="async" onerror="this.src='https://picsum.photos/400/600?random=1'">
+          <img src="bmw.jpeg" alt="BMW" data-gallery onclick="openLightbox(this)" loading="lazy" decoding="async" onerror="this.src='https://picsum.photos/400/600?random=2'">
         </div>
       </div>
     </section>
@@ -471,7 +456,7 @@
     <button class="app-btn" onclick="closeWindow('notesWin')">Close</button>
   </div>
   <div class="app-body">
-    <textarea id="noteInput" class="metal-input" placeholder="Write a note..." rows="4"></textarea>
+    <textarea id="noteInput" class="metal-input" placeholder="Write a note..." rows="4" style="resize:vertical; min-height:100px;"></textarea>
     <button class="app-btn primary" style="margin-top:10px;" onclick="addNote()">Add Note</button>
     <div class="notes-list" id="notesList"></div>
   </div>
@@ -504,7 +489,7 @@
       <button onclick="setPomoMode(this,5)">Short Break</button>
       <button onclick="setPomoMode(this,15)">Long Break</button>
     </div>
-    <div class="pomo-time-container">
+    <div class="pomo-time-container" onclick="editPomoTime()" title="Click to edit time">
       <div class="pomo-time" id="pomoTime" aria-live="polite">25:00</div>
     </div>
     <div class="pomo-controls">
@@ -549,6 +534,7 @@
   </div>
   <div class="app-body">
     <div class="sci-calc-container">
+      <div class="calc-tape" id="sciCalcTape"></div>
       <input type="text" id="sciDisplay" class="sci-display" readonly value="0" aria-label="Scientific calculator display">
       <div class="sci-grid">
         <button class="btn-func" onclick="sciAppend('sin(')">sin</button>
@@ -594,7 +580,7 @@
 </div>
 
 <!-- ===== CHATBOT ===== -->
-<button class="chat-fab" id="chatFab" onclick="openChat()" aria-label="Open chat">
+<button class="chat-fab" id="chatFab" onclick="openChat(this)" aria-label="Open chat">
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
 </button>
 
@@ -611,6 +597,7 @@
       <button class="chat-action-btn" onclick="newChat()"><span>NEW</span></button>
       <button class="chat-action-btn" onclick="showChatHistory()"><span>HISTORY</span></button>
       <button class="chat-action-btn danger" onclick="clearChat()"><span>CLEAR</span></button>
+      <button class="chat-action-btn" id="stopGenBtn" onclick="stopGeneration()" style="display:none; border-color:var(--danger); color:var(--danger);">STOP</button>
       <button class="chat-action-btn" onclick="closeChat()"><span>CLOSE</span></button>
     </div>
   </div>
@@ -638,7 +625,11 @@ function showToast(msg, type = 'success') {
   c.appendChild(t); setTimeout(() => t.remove(), 3100);
 }
 
-/* ===== THEME & CLOCK ===== */
+/* ===== OVERLAY COUNTER & THEME ===== */
+let overlayCount = 0;
+function lockScroll() { overlayCount++; document.body.style.overflow = 'hidden'; }
+function unlockScroll() { overlayCount = Math.max(0, overlayCount - 1); if (overlayCount === 0) document.body.style.overflow = ''; }
+
 function toggleTheme() {
   const isLight = document.body.classList.toggle('light-theme');
   store('theme', isLight ? 'light' : 'dark');
@@ -656,21 +647,37 @@ setInterval(() => {
 /* ===== SIDEBAR & WINDOWS ===== */
 function toggleSidebar() { $('#sidebar').classList.toggle('open'); $('#sidebarBackdrop').classList.toggle('open'); }
 function closeSidebar() { $('#sidebar').classList.remove('open'); $('#sidebarBackdrop').classList.remove('open'); }
-function scrollToCard(id) { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); closeSidebar(); }
-function openWindow(id) {
+
+function setActiveNav(btn) {
+  if (!btn) return;
+  $$('.nav-item').forEach(el => el.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function scrollToCard(id, btn) {
+  setActiveNav(btn);
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  closeSidebar();
+}
+
+function openWindow(id, btn) {
+  setActiveNav(btn);
   closeSidebar();
   const win = document.getElementById(id);
-  if (win) { win.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  if (win) { win.classList.add('open'); lockScroll(); }
 }
 function closeWindow(id) {
   const win = document.getElementById(id);
-  if (win) { win.classList.remove('open'); document.body.style.overflow = ''; }
+  if (win) { win.classList.remove('open'); unlockScroll(); }
 }
 
 /* ===== SAFE MATH EVALUATOR ===== */
 function preprocess(expr) {
+  // Fix: Only replace 'e' if it's a standalone constant, not part of scientific notation (1e5)
   return String(expr).replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-').replace(/√/g, 'sqrt')
-    .replace(/π/g, '(3.141592653589793)').replace(/e/g, '(2.718281828459045)').replace(/(\d|\))%(?![0-9])/g, '$1/100');
+    .replace(/π/g, '(3.141592653589793)').replace(/(?<![0-9])e(?![0-9])/g, '(2.718281828459045)')
+    .replace(/(\d|\))%(?![0-9])/g, '$1/100');
 }
 function tokenize(expr) {
   const tokens = []; let i = 0;
@@ -746,7 +753,20 @@ function evaluate(expr) {
 
 /* ===== MAIN CALCULATOR ===== */
 let calcExpr = '0';
+let calcTapeData = [];
+
 function updateCalcDisplay() { $('#calcDisplay').value = calcExpr || '0'; }
+function renderCalcTape() {
+  const tape = $('#calcTape'); tape.innerHTML = '';
+  calcTapeData.slice(-5).forEach(item => {
+    const div = document.createElement('div'); div.className = 'tape-item';
+    div.textContent = `${item.expr} = ${item.result}`;
+    div.onclick = () => { calcExpr = String(item.result); updateCalcDisplay(); };
+    tape.appendChild(div);
+  });
+  tape.scrollTop = tape.scrollHeight;
+}
+
 function appendCalc(ch) {
   if (ch === 'AC') { calcExpr = '0'; updateCalcDisplay(); return; }
   if (ch === 'DEL') { calcExpr = calcExpr.slice(0, -1) || '0'; updateCalcDisplay(); return; }
@@ -756,14 +776,32 @@ function appendCalc(ch) {
   else calcExpr += ch;
   updateCalcDisplay();
 }
+
 function calcEquals() {
-  try { calcExpr = String(evaluate(calcExpr)); updateCalcDisplay(); } 
-  catch (e) { $('#calcDisplay').value = 'Error'; setTimeout(() => { calcExpr = '0'; updateCalcDisplay(); }, 1200); }
+  try {
+    const res = evaluate(calcExpr);
+    calcTapeData.push({ expr: calcExpr, result: res });
+    if (calcTapeData.length > 20) calcTapeData.shift();
+    calcExpr = String(res); updateCalcDisplay(); renderCalcTape();
+  } catch (e) { $('#calcDisplay').value = 'Error'; setTimeout(() => { calcExpr = '0'; updateCalcDisplay(); }, 1200); }
 }
 
 /* ===== SCIENTIFIC CALCULATOR ===== */
 let sciExpr = '0';
+let sciTapeData = [];
+
 function updateSciDisplay() { $('#sciDisplay').value = sciExpr || '0'; }
+function renderSciTape() {
+  const tape = $('#sciCalcTape'); tape.innerHTML = '';
+  sciTapeData.slice(-5).forEach(item => {
+    const div = document.createElement('div'); div.className = 'tape-item';
+    div.textContent = `${item.expr} = ${item.result}`;
+    div.onclick = () => { sciExpr = String(item.result); updateSciDisplay(); };
+    tape.appendChild(div);
+  });
+  tape.scrollTop = tape.scrollHeight;
+}
+
 function sciAppend(ch) {
   if (ch === 'AC') { sciExpr = '0'; updateSciDisplay(); return; }
   if (ch === 'DEL') { sciExpr = sciExpr.slice(0, -1) || '0'; updateSciDisplay(); return; }
@@ -772,27 +810,48 @@ function sciAppend(ch) {
   else sciExpr += ch;
   updateSciDisplay();
 }
+
 function sciEquals() {
-  try { sciExpr = String(evaluate(sciExpr)); updateSciDisplay(); } 
-  catch (e) { $('#sciDisplay').value = 'Error'; setTimeout(() => { sciExpr = '0'; updateSciDisplay(); }, 1200); }
+  try {
+    const res = evaluate(sciExpr);
+    sciTapeData.push({ expr: sciExpr, result: res });
+    if (sciTapeData.length > 20) sciTapeData.shift();
+    sciExpr = String(res); updateSciDisplay(); renderSciTape();
+  } catch (e) { $('#sciDisplay').value = 'Error'; setTimeout(() => { sciExpr = '0'; updateSciDisplay(); }, 1200); }
 }
 
 /* ===== WEATHER ===== */
 const WMO = { 0: { desc: 'Clear Sky', icon: '☀️', night: '🌙' }, 1: { desc: 'Mainly Clear', icon: '🌤️', night: '🌙' }, 2: { desc: 'Partly Cloudy', icon: '⛅', night: '☁️' }, 3: { desc: 'Overcast', icon: '☁️', night: '☁️' }, 45: { desc: 'Fog', icon: '🌫️', night: '🌫️' }, 51: { desc: 'Light Drizzle', icon: '🌦️', night: '🌦️' }, 61: { desc: 'Rain', icon: '🌧️', night: '🌧️' }, 71: { desc: 'Snow', icon: '🌨️', night: '🌨️' }, 95: { desc: 'Thunderstorm', icon: '⛈️', night: '⛈️' } };
 function getWeatherIcon(code, isNight) { const c = WMO[code] || { icon: '❓', desc: 'Unknown' }; return isNight && c.night ? c.night : c.icon; }
 
+let isCelsius = true;
+let lastWeatherData = null;
+
+function toggleTempUnit() {
+  isCelsius = !isCelsius;
+  $('#tempUnitToggle').textContent = isCelsius ? '°C' : '°F';
+  if (lastWeatherData) {
+    const tempC = lastWeatherData.current.temperature;
+    const temp = isCelsius ? tempC : (tempC * 9/5) + 32;
+    $('#temp').innerHTML = `${Math.round(temp)}° <span class="temp-toggle" onclick="toggleTempUnit()" id="tempUnitToggle">${isCelsius ? '°C' : '°F'}</span>`;
+  }
+}
+
 async function fetchWeatherData(lat, lon, name) {
-  $('#temp').textContent = '...'; $('#wIcon').textContent = '⏳'; $('#wDesc').textContent = 'Fetching...'; $('#wLoc').textContent = name;
+  $('#temp').innerHTML = '...'; $('#wIcon').textContent = '⏳'; $('#wDesc').textContent = 'Fetching...'; $('#wLoc').textContent = name;
   try {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&hourly=relative_humidity_2m&timezone=auto&forecast_days=7`;
     const res = await fetch(url); const data = await res.json();
+    lastWeatherData = data;
     
     const cur = data.current_weather; const daily = data.daily;
     const curTime = new Date(cur.time); const sunrise = new Date(daily.sunrise[0]); const sunset = new Date(daily.sunset[0]);
     const isNight = curTime < sunrise || curTime > sunset;
     
     $('#wIcon').textContent = getWeatherIcon(cur.weathercode, isNight);
-    $('#temp').textContent = Math.round(cur.temperature) + '°C';
+    const tempC = cur.temperature;
+    const temp = isCelsius ? tempC : (tempC * 9/5) + 32;
+    $('#temp').innerHTML = `${Math.round(temp)}° <span class="temp-toggle" onclick="toggleTempUnit()" id="tempUnitToggle">${isCelsius ? '°C' : '°F'}</span>`;
     $('#wDesc').textContent = (WMO[cur.weathercode]?.desc || 'Unknown') + (isNight ? ' (Night)' : '');
     
     let humidity = '--';
@@ -808,10 +867,14 @@ async function fetchWeatherData(lat, lon, name) {
 
     const fcEl = $('#wForecast'); fcEl.innerHTML = '';
     const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const fragment = document.createDocumentFragment();
     for (let i = 0; i < 7; i++) {
       const d = new Date(daily.time[i] + 'T00:00');
-      fcEl.innerHTML += `<div class="fc-day"><div class="fc-name">${i === 0 ? 'Today' : dayNames[d.getDay()]}</div><div class="fc-icon">${getWeatherIcon(daily.weathercode[i], false)}</div><div class="fc-temps"><span>${Math.round(daily.temperature_2m_max[i])}°</span><span class="fc-low">${Math.round(daily.temperature_2m_min[i])}°</span></div></div>`;
+      const div = document.createElement('div'); div.className = 'fc-day';
+      div.innerHTML = `<div class="fc-name">${i === 0 ? 'Today' : dayNames[d.getDay()]}</div><div class="fc-icon">${getWeatherIcon(daily.weathercode[i], false)}</div><div class="fc-temps"><span>${Math.round(daily.temperature_2m_max[i])}°</span><span class="fc-low">${Math.round(daily.temperature_2m_min[i])}°</span></div>`;
+      fragment.appendChild(div);
     }
+    fcEl.appendChild(fragment);
     store('lastWeather', { lat, lon, name });
   } catch (e) {
     $('#temp').textContent = '--°'; $('#wIcon').textContent = '⚠️'; $('#wDesc').textContent = 'Error'; $('#wLoc').textContent = 'Try again';
@@ -838,7 +901,6 @@ async function searchWeather() {
       const r = data.results[0];
       fetchWeatherData(r.latitude, r.longitude, `${r.name}, ${r.country_code}`);
     } else {
-      // Multiple results, show custom choice modal
       showCityChooser(data.results);
     }
   } catch (e) {
@@ -848,8 +910,10 @@ async function searchWeather() {
 
 function showCityChooser(results) {
   const overlay = document.createElement('div'); overlay.className = 'custom-modal-overlay open';
+  const container = document.createElement('div');
+  
   let listHtml = results.map((r, i) => `
-    <button class="cm-btn" style="width:100%; justify-content:space-between; margin-bottom:8px; text-align:left;" onclick="pickCity(${r.latitude}, ${r.longitude}, '${r.name.replace(/'/g, "\\'")}, ${r.country_code || r.country}')">
+    <button class="cm-btn" data-index="${i}" style="width:100%; justify-content:space-between; margin-bottom:8px; text-align:left;">
       <span>${r.name}</span>
       <span style="color:var(--muted); font-size:12px;">${r.admin1 ? r.admin1 + ', ' : ''}${r.country}</span>
     </button>
@@ -859,16 +923,21 @@ function showCityChooser(results) {
     <div class="custom-modal">
       <div class="cm-head"><div class="cm-icon cyan">📍</div><div class="cm-title">Select Location</div></div>
       <div class="cm-body">Multiple cities found with that name. Please choose one:</div>
-      <div style="padding: 0 20px 20px; max-height: 300px; overflow-y:auto;">${listHtml}</div>
-      <div class="cm-footer"><button class="cm-btn cancel" onclick="this.closest('.custom-modal-overlay').remove()">Cancel</button></div>
+      <div style="padding: 0 20px 20px; max-height: 300px; overflow-y:auto;" id="cityListContainer">${listHtml}</div>
+      <div class="cm-footer"><button class="cm-btn cancel">Cancel</button></div>
     </div>
   `;
   document.body.appendChild(overlay);
-}
+  lockScroll();
 
-function pickCity(lat, lon, name) {
-  document.querySelector('.custom-modal-overlay').remove();
-  fetchWeatherData(lat, lon, name);
+  overlay.querySelector('.cancel').onclick = () => { overlay.remove(); unlockScroll(); };
+  overlay.querySelectorAll('[data-index]').forEach(btn => {
+    btn.onclick = () => {
+      const r = results[parseInt(btn.getAttribute('data-index'))];
+      overlay.remove(); unlockScroll();
+      fetchWeatherData(r.latitude, r.longitude, `${r.name}, ${r.country_code || r.country}`);
+    };
+  });
 }
 
 function getLocationWeather() {
@@ -876,14 +945,17 @@ function getLocationWeather() {
     $('#temp').textContent = '...'; $('#wIcon').textContent = '📍'; $('#wDesc').textContent = 'Locating...'; $('#wLoc').textContent = 'My Location';
     navigator.geolocation.getCurrentPosition(
       pos => fetchWeatherData(pos.coords.latitude, pos.coords.longitude, 'My Location'),
-      () => showToast('Location access denied', 'error')
+      () => {
+        showToast('Location denied. Falling back to default.', 'error');
+        fetchWeatherData(51.5074, -0.1278, 'London, UK'); // Default fallback
+      }
     );
   } else {
-    showToast('Geolocation not supported', 'error');
+    showToast('Geolocation not supported. Using default.', 'error');
+    fetchWeatherData(51.5074, -0.1278, 'London, UK');
   }
 }
 
-// Load last weather or default
 const savedWeather = load('lastWeather', null);
 if (savedWeather) {
   fetchWeatherData(savedWeather.lat, savedWeather.lon, savedWeather.name);
@@ -896,13 +968,23 @@ let notes = load('notes', []);
 function renderNotes() {
   const list = $('#notesList'); list.innerHTML = '';
   if (!notes.length) { list.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;">No notes yet.</div>'; return; }
+  
+  const fragment = document.createDocumentFragment();
   notes.forEach(n => {
-    list.innerHTML += `
-      <div class="metal-card">
-        <div style="flex:1"><div class="note-text">${n.text}</div><div class="note-meta">${new Date(n.ts).toLocaleString()}</div></div>
-        <button class="del-btn" onclick="delNote('${n.id}')">×</button>
-      </div>`;
+    const div = document.createElement('div'); div.className = 'metal-card';
+    
+    const textWrap = document.createElement('div'); textWrap.style.flex = '1';
+    const textEl = document.createElement('div'); textEl.className = 'note-text'; textEl.textContent = n.text; // Safe against XSS
+    const metaEl = document.createElement('div'); metaEl.className = 'note-meta'; metaEl.textContent = new Date(n.ts).toLocaleString();
+    textWrap.appendChild(textEl); textWrap.appendChild(metaEl);
+    
+    const delBtn = document.createElement('button'); delBtn.className = 'del-btn'; delBtn.textContent = '×';
+    delBtn.onclick = () => delNote(n.id);
+    
+    div.appendChild(textWrap); div.appendChild(delBtn);
+    fragment.appendChild(div);
   });
+  list.appendChild(fragment);
 }
 function addNote() {
   const text = $('#noteInput').value.trim(); if (!text) return;
@@ -916,14 +998,23 @@ let todos = load('todos', []);
 function renderTodos() {
   const list = $('#todoList'); list.innerHTML = '';
   if (!todos.length) { list.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;">No tasks yet.</div>'; return; }
+  
+  const fragment = document.createDocumentFragment();
   todos.forEach(t => {
-    list.innerHTML += `
-      <div class="todo-item ${t.done ? 'done' : ''}">
-        <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTodo('${t.id}')">
-        <div class="todo-text">${t.text}</div>
-        <button class="del-btn" onclick="delTodo('${t.id}')">×</button>
-      </div>`;
+    const div = document.createElement('div'); div.className = 'todo-item ' + (t.done ? 'done' : '');
+    
+    const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = t.done;
+    cb.onchange = () => toggleTodo(t.id);
+    
+    const textEl = document.createElement('div'); textEl.className = 'todo-text'; textEl.textContent = t.text; // Safe against XSS
+    
+    const delBtn = document.createElement('button'); delBtn.className = 'del-btn'; delBtn.textContent = '×';
+    delBtn.onclick = () => delTodo(t.id);
+    
+    div.appendChild(cb); div.appendChild(textEl); div.appendChild(delBtn);
+    fragment.appendChild(div);
   });
+  list.appendChild(fragment);
 }
 function addTodo() {
   const text = $('#todoInput').value.trim(); if (!text) return;
@@ -934,15 +1025,35 @@ function delTodo(id) { todos = todos.filter(x => x.id !== id); store('todos', to
 renderTodos();
 
 /* ===== POMODORO ===== */
-const pomo = { minutes: 25, remaining: 25 * 60, running: false, interval: null };
+let pomo = load('pomo_state', { minutes: 25, remaining: 25 * 60, running: false, interval: null });
+function savePomo() { store('pomo_state', { minutes: pomo.minutes, remaining: pomo.remaining, running: pomo.running }); }
 function updatePomoDisplay() { $('#pomoTime').textContent = String(Math.floor(pomo.remaining / 60)).padStart(2, '0') + ':' + String(pomo.remaining % 60).padStart(2, '0'); }
+
+function editPomoTime() {
+  const currentMins = Math.floor(pomo.remaining / 60);
+  showCustomModal({
+    title: 'Set Timer', message: 'Enter minutes:', iconType: 'cyan',
+    iconHtml: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    input: true, inputValue: currentMins, confirmText: 'Set',
+    onConfirm: (val) => {
+      const m = parseInt(val);
+      if (!isNaN(m) && m > 0 && m < 120) {
+        pomo.minutes = m; pomo.remaining = m * 60; pomo.running = false;
+        if (pomo.interval) clearInterval(pomo.interval);
+        updatePomoDisplay(); $('#pomoToggle').textContent = 'Start'; savePomo();
+      }
+    }
+  });
+}
+
 function setPomoMode(btn, min) {
+  if (pomo.running && !confirm('Timer is running. Change mode?')) return;
   $$('.pomo-modes button').forEach(b => b.classList.remove('active')); btn.classList.add('active');
   pomo.minutes = min; resetPomo();
 }
 function resetPomo() {
   if (pomo.interval) clearInterval(pomo.interval);
-  pomo.running = false; pomo.remaining = pomo.minutes * 60; updatePomoDisplay(); $('#pomoToggle').textContent = 'Start';
+  pomo.running = false; pomo.remaining = pomo.minutes * 60; updatePomoDisplay(); $('#pomoToggle').textContent = 'Start'; savePomo();
 }
 function togglePomo() {
   const btn = $('#pomoToggle');
@@ -951,14 +1062,20 @@ function togglePomo() {
     pomo.running = true; btn.textContent = 'Pause';
     pomo.interval = setInterval(() => {
       pomo.remaining--;
+      savePomo(); updatePomoDisplay();
+      document.title = `${fmtTime(pomo.remaining)} - ZJ Website`;
       if (pomo.remaining <= 0) {
         clearInterval(pomo.interval); pomo.running = false; pomo.remaining = 0; updatePomoDisplay(); btn.textContent = 'Start';
+        document.title = 'ZJ Website — Dashboard';
         showToast('⏰ Time is up!'); return;
       }
-      updatePomoDisplay();
     }, 1000);
   }
 }
+function fmtTime(sec) { return String(Math.floor(sec / 60)).padStart(2, '0') + ':' + String(sec % 60).padStart(2, '0'); }
+
+// Resume if it was running (approximate)
+if (pomo.running) { pomo.running = false; } // Don't auto-start on load to avoid background timer bugs
 updatePomoDisplay();
 
 /* ===== CONVERTER ===== */
@@ -990,6 +1107,7 @@ const BOT_API = '/chat';
 const WELCOME_MSG = "Hi! I'm ZJ Bot 👋 How can I help you today?";
 let chatSessions = load('chat_sessions', []);
 let currentChatId = load('current_chat', null);
+let abortController = null;
 
 if (chatSessions.length > 0 && !chatSessions.find(s => s.id === currentChatId)) currentChatId = chatSessions[0].id;
 else if (chatSessions.length === 0) currentChatId = null;
@@ -1039,13 +1157,14 @@ function pushMessage(sender, text) {
   session.messages.push({ sender: sender, text: text }); persistChats(); renderChat();
 }
 
-function openChat() {
+function openChat(btn) {
+  setActiveNav(btn);
   if (!currentChatId) createNewSession();
-  $('#chatPanel').classList.add('open'); $('#chatFab').classList.add('hidden'); document.body.style.overflow = 'hidden';
+  $('#chatPanel').classList.add('open'); $('#chatFab').classList.add('hidden'); lockScroll();
   renderChat(); setTimeout(() => { $('#chatInput').focus(); }, 300);
 }
 function closeChat() {
-  $('#chatPanel').classList.remove('open'); $('#chatFab').classList.remove('hidden'); document.body.style.overflow = '';
+  $('#chatPanel').classList.remove('open'); $('#chatFab').classList.remove('hidden'); unlockScroll();
 }
 
 const JOKES = ["Why don't scientists trust atoms? Because they make up everything. 😄", "Why did the developer go broke? Because he used up all his cache. 💸", "Why do programmers prefer dark mode? Because light attracts bugs. 🐛"];
@@ -1057,16 +1176,32 @@ function localBotReply(text) {
   if (/joke/.test(t)) return JOKES[Math.floor(Math.random() * JOKES.length)];
   if (/time/.test(t)) return "It's **" + new Date().toLocaleTimeString() + '** right now.';
   if (/date|today/.test(t)) return 'Today is **' + new Date().toLocaleDateString() + '**.';
+  const mathMatch = text.match(/^[\s\d+\-*/().^%×÷√π]+$/);
+  if (mathMatch && /\d/.test(text)) { try { const r = evaluate(text); return '`' + text + '` = **' + r + '**'; } catch (e) { } }
   return "I'm a demo bot. Try: hello, joke, time, or math like 2+2.";
 }
+
+let serverAvailable = null;
 async function tryServer(text) {
+  if (serverAvailable === false) return null;
   try {
-    const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), 2500);
-    const res = await fetch(BOT_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text }), signal: controller.signal });
+    abortController = new AbortController();
+    const timer = setTimeout(() => abortController.abort(), 3000);
+    const res = await fetch(BOT_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text }), signal: abortController.signal });
     clearTimeout(timer); if (!res.ok) throw new Error();
-    const data = await res.json(); if (data && data.reply) return data.reply;
+    const data = await res.json(); if (data && data.reply) { serverAvailable = true; return data.reply; }
     throw new Error();
-  } catch (e) { return null; }
+  } catch (e) { serverAvailable = false; return null; }
+}
+
+function stopGeneration() {
+  if (abortController) {
+    abortController.abort();
+    $('#stopGenBtn').style.display = 'none';
+    $('#chatSendBtn').disabled = false;
+    $('#chatInput').disabled = false;
+    pushMessage('bot', '⚠️ Generation stopped by user.');
+  }
 }
 
 async function sendMessage() {
@@ -1076,6 +1211,7 @@ async function sendMessage() {
   
   pushMessage('user', text); chatInput.value = '';
   $('#chatSendBtn').disabled = true; chatInput.disabled = true;
+  $('#stopGenBtn').style.display = 'inline-flex';
   
   const session = getCurrentSession();
   if (session && session.title === 'New Chat') { session.title = text.slice(0, 24); persistChats(); }
@@ -1088,9 +1224,11 @@ async function sendMessage() {
     const reply = (await tryServer(text)) || localBotReply(text);
     typingWrap.remove(); pushMessage('bot', reply);
   } catch (e) {
-    typingWrap.remove(); pushMessage('bot', '⚠️ Network error.');
+    typingWrap.remove(); 
+    if (e.name !== 'AbortError') pushMessage('bot', '⚠️ Network error.');
   } finally {
     $('#chatSendBtn').disabled = false; chatInput.disabled = false; chatInput.focus();
+    $('#stopGenBtn').style.display = 'none';
   }
 }
 
@@ -1110,41 +1248,74 @@ function clearChat() {
 function showChatHistory() {
   const overlay = document.createElement('div'); overlay.className = 'custom-modal-overlay open';
   let listHtml = chatSessions.map(s => `
-    <button class="cm-btn" style="width:100%; margin-bottom:8px; justify-content:space-between; border-color: ${s.id === currentChatId ? 'var(--cyan)' : 'var(--border)'}" onclick="loadChatSession('${s.id}')">
-      <span style="font-weight:800; color:var(--text);">${s.title}</span>
-      <span style="font-size:11px; color:var(--muted);">${s.messages.length} msgs</span>
-    </button>
+    <div style="display:flex; gap:8px; margin-bottom:8px;">
+      <button class="cm-btn" style="flex:1; justify-content:space-between; border-color: ${s.id === currentChatId ? 'var(--cyan)' : 'var(--border)'}" onclick="loadChatSession('${s.id}')">
+        <span style="font-weight:800; color:var(--text); text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:120px;">${s.title}</span>
+        <span style="font-size:11px; color:var(--muted);">${s.messages.length} msgs</span>
+      </button>
+      <button class="cm-btn danger" onclick="deleteChatSession('${s.id}')" style="width:44px; padding:0;">✕</button>
+    </div>
   `).join('');
   
   overlay.innerHTML = `
     <div class="custom-modal">
       <div class="cm-head"><div class="cm-icon cyan">💬</div><div class="cm-title">Chat History</div></div>
-      <div style="padding: 0 20px 20px; max-height: 300px; overflow-y:auto;">${listHtml}</div>
-      <div class="cm-footer"><button class="cm-btn cancel" onclick="this.closest('.custom-modal-overlay').remove()">Close</button></div>
+      <div style="padding: 0 20px 20px; max-height: 300px; overflow-y:auto;">${listHtml || 'No history.'}</div>
+      <div class="cm-footer"><button class="cm-btn cancel" onclick="this.closest('.custom-modal-overlay').remove(); unlockScroll();">Close</button></div>
     </div>
   `;
   document.body.appendChild(overlay);
+  lockScroll();
 }
 
 function loadChatSession(id) {
   currentChatId = id; persistChats(); renderChat();
   document.querySelector('.custom-modal-overlay').remove();
+  unlockScroll();
 }
 
-function showCustomModal({ title, message, iconHtml, iconType, confirmText, onConfirm }) {
+function deleteChatSession(id) {
+  showCustomModal({
+    title: 'Delete Chat', message: 'Permanently delete this chat?', iconType: 'danger',
+    iconHtml: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+    confirmText: 'Delete', onConfirm: () => {
+      chatSessions = chatSessions.filter(s => s.id !== id);
+      if (currentChatId === id) currentChatId = chatSessions.length ? chatSessions[0].id : null;
+      persistChats(); renderChat();
+      document.querySelector('.custom-modal-overlay').remove(); // Close history modal
+      unlockScroll();
+      showToast('Chat deleted');
+    }
+  });
+}
+
+function showCustomModal({ title, message, iconHtml, iconType, confirmText, input, inputValue, onConfirm }) {
   const overlay = document.createElement('div'); overlay.className = 'custom-modal-overlay';
+  
+  let inputHtml = '';
+  if (input) inputHtml = `<input type="text" class="metal-input" id="cmInput" value="${inputValue || ''}" style="margin-top:12px;">`;
+
   overlay.innerHTML = `
     <div class="custom-modal">
       <div class="cm-head"><div class="cm-icon ${iconType}">${iconHtml}</div><div class="cm-title">${title}</div></div>
-      <div class="cm-body">${message}</div>
+      <div class="cm-body">${message} ${inputHtml}</div>
       <div class="cm-footer">
         <button class="cm-btn cancel">Cancel</button>
         <button class="cm-btn confirm ${iconType === 'danger' ? 'danger' : ''}">${confirmText}</button>
       </div>
     </div>`;
   document.body.appendChild(overlay); requestAnimationFrame(() => overlay.classList.add('open'));
-  overlay.querySelector('.cancel').onclick = () => { overlay.classList.remove('open'); setTimeout(() => overlay.remove(), 200); };
-  overlay.querySelector('.confirm').onclick = () => { onConfirm(); overlay.querySelector('.cancel').click(); };
+  lockScroll();
+  
+  if (input) setTimeout(() => { const el = overlay.querySelector('#cmInput'); if (el) el.focus(); }, 100);
+
+  overlay.querySelector('.cancel').onclick = () => { overlay.classList.remove('open'); setTimeout(() => overlay.remove(), 200); unlockScroll(); };
+  overlay.querySelector('.confirm').onclick = () => {
+    let val = null;
+    if (input) val = overlay.querySelector('#cmInput').value;
+    onConfirm(val);
+    overlay.querySelector('.cancel').click();
+  };
 }
 </script>
 </body>
