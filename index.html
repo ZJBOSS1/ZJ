@@ -25,19 +25,19 @@
     --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  /* Light Theme - Professional & Clean */
+  /* Light Theme - Professional Silver & Slate */
   body.light-theme {
-    --bg-0: #F4F7FB; /* Soft cool gray page background */
-    --bg-1: #FFFFFF; /* White card backgrounds */
-    --bg-2: #EEF2F7; /* Secondary panels, hover states */
-    --border: #E2E8F0; /* Subtle border */
-    --text: #0F172A; /* Slate-900 */
-    --muted: #64748B; /* Slate-500 */
-    --cyan: #0EA5E9; /* Sky-blue accent for primary actions */
-    --cyan-glow: rgba(14, 165, 233, 0.15); /* Reduced glow */
-    --gold: #F59E0B; /* Amber accent */
-    --gold-glow: rgba(245, 158, 11, 0.15);
-    --silver: #334155; /* Slate-700 */
+    --bg-0: #F8FAFC; /* Very light silver background */
+    --bg-1: #FFFFFF; /* Clean white cards */
+    --bg-2: #F1F5F9; /* Soft silver-gray for secondary panels */
+    --border: #E2E8F0; /* Crisp silver border */
+    --text: #1E293B; /* Deep slate for readability */
+    --muted: #64748B; /* Muted slate for secondary text */
+    --cyan: #475569; /* Slate-blue accent (replaces cyan for primary actions) */
+    --cyan-glow: rgba(71, 85, 105, 0.15); /* Subtle shadow */
+    --gold: #94A3B8; /* Silver accent (replaces gold) */
+    --gold-glow: rgba(148, 163, 184, 0.2);
+    --silver: #475569;
     --silver-mid: #94A3B8;
   }
 
@@ -60,18 +60,18 @@
     background: radial-gradient(ellipse at top left, #06222a 0%, transparent 55%),
                 radial-gradient(ellipse at bottom right, #1a1400 0%, transparent 55%), var(--bg-0); }
   body.light-theme .bg {
-    background: radial-gradient(ellipse at top left, #E0F2FE 0%, transparent 55%),
-                radial-gradient(ellipse at bottom right, #FEF3C7 0%, transparent 55%), var(--bg-0); }
+    background: radial-gradient(ellipse at top left, #E2E8F0 0%, transparent 55%),
+                radial-gradient(ellipse at bottom right, #F1F5F9 0%, transparent 55%), var(--bg-0); }
   .grid { position: absolute; inset: 0;
     background-image: linear-gradient(rgba(0,234,255,0.025) 1px, transparent 1px),
                       linear-gradient(90deg, rgba(0,234,255,0.025) 1px, transparent 1px);
     background-size: 46px 46px; }
-  body.light-theme .grid { opacity: 0.4; }
+  body.light-theme .grid { opacity: 0.3; }
   .orb { position: absolute; border-radius: 50%; filter: blur(110px); animation: float 15s infinite ease-in-out; }
   .orb1 { width: 480px; height: 480px; background: var(--cyan); top: -140px; left: -140px; opacity: 0.16; }
   .orb2 { width: 560px; height: 560px; background: var(--gold); bottom: -180px; right: -120px; animation-delay: -5s; opacity: 0.14; }
   .orb3 { width: 340px; height: 340px; background: var(--silver); top: 45%; left: 48%; opacity: 0.07; animation-delay: -9s; }
-  body.light-theme .orb { opacity: 0.1; }
+  body.light-theme .orb { opacity: 0.08; }
   @keyframes float { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(40px,-50px) scale(1.1); } }
 
   /* SIDEBAR */
@@ -80,23 +80,24 @@
     background: linear-gradient(180deg, #0d1014 0%, #040608 55%, #000 100%);
     border-right: 1px solid var(--border); box-shadow: 8px 0 40px rgba(0,0,0,0.85);
     transition: transform 0.35s ease; }
-  body.light-theme .sidebar { background: #fff; box-shadow: 4px 0 24px rgba(15,23,42,0.04); }
+  body.light-theme .sidebar { background: #fff; box-shadow: 2px 0 12px rgba(15,23,42,0.04); }
   .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; }
   .brand-logo { width: 42px; height: 42px; border-radius: 12px;
     background: radial-gradient(circle at 30% 25%, #fff7c2, var(--gold) 45%, var(--gold-deep) 100%);
     display: flex; align-items: center; justify-content: center; font-weight: 900; color: #2a1e00; font-family: Georgia, serif;
     box-shadow: 0 4px 20px var(--gold-glow); }
+  body.light-theme .brand-logo { background: linear-gradient(135deg, #94A3B8, #475569); color: #fff; }
   .brand-name { font-size: 16px; font-weight: 800; letter-spacing: 3px;
     background: linear-gradient(180deg, #ffffff 0%, var(--silver-mid) 45%, var(--gold) 100%);
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-  body.light-theme .brand-name { background: linear-gradient(180deg, #0F172A 0%, #475569 45%, var(--gold-deep) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  body.light-theme .brand-name { background: linear-gradient(180deg, #1E293B 0%, #64748B 45%, #94A3B8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   .nav-label { font-size: 10px; letter-spacing: 2.5px; color: var(--muted); text-transform: uppercase; margin: 14px 8px 10px; }
   .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; margin-bottom: 4px; border-radius: 10px;
     color: var(--muted); font-size: 13.5px; font-weight: 500; cursor: pointer; border: 1px solid transparent; background: transparent; text-align: left; width: 100%; transition: all 0.2s ease; }
   .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); }
   body.light-theme .nav-item:hover { background: #F8FAFC; border-color: #E2E8F0; }
   .nav-item.active { color: var(--text); background: linear-gradient(180deg, rgba(255,215,0,0.16), rgba(255,215,0,0.03)); border: 1px solid rgba(255,215,0,0.45); }
-  body.light-theme .nav-item.active { background: #F1F5F9; border-color: var(--cyan); color: var(--cyan); font-weight: 600; }
+  body.light-theme .nav-item.active { background: #F1F5F9; border-color: #CBD5E1; color: #1E293B; font-weight: 600; }
 
   /* TOP BAR */
   .topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: 62px; z-index: 40;
@@ -106,7 +107,7 @@
   .menu-toggle { display: none; background: transparent; border: 1px solid var(--border); color: var(--text); padding: 8px 10px; border-radius: 8px; cursor: pointer; }
   .topbar-right { display: flex; align-items: center; gap: 14px; }
   .clock { font-family: 'Courier New', monospace; font-size: 13px; color: var(--cyan); padding: 6px 14px; border-radius: 8px; background: rgba(0,0,0,0.5); border: 1px solid var(--border); letter-spacing: 1px; }
-  body.light-theme .clock { background: #F8FAFC; border-color: #E2E8F0; font-weight: 600; }
+  body.light-theme .clock { background: #F8FAFC; border-color: #E2E8F0; color: #475569; font-weight: 600; }
   .theme-toggle { background: transparent; border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: all 0.15s ease; }
   .theme-toggle:hover { border-color: var(--cyan); color: var(--cyan); }
 
@@ -115,7 +116,7 @@
   .hero h1 { margin: 0 0 8px; font-size: 32px; font-weight: 900; text-align: center;
     background: linear-gradient(180deg, #ffffff 0%, var(--silver-mid) 40%, var(--gold) 100%);
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-  body.light-theme .hero h1 { background: linear-gradient(180deg, #0F172A 0%, #475569 40%, var(--gold-deep) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  body.light-theme .hero h1 { background: linear-gradient(180deg, #1E293B 0%, #64748B 40%, #94A3B8 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
   .hero h2 { margin: 0; font-size: 13px; letter-spacing: 4px; color: var(--cyan); text-align: center; text-transform: uppercase; margin-bottom: 30px; }
 
   .panel { max-width: 1220px; margin: 0 auto; padding: 26px; border-radius: 22px; background: var(--bg-1); border: 1px solid var(--border);
@@ -140,7 +141,7 @@
     display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.18s ease; padding: 0; }
   body.light-theme .icon-btn { background: #F8FAFC; color: #64748B; border-color: #E2E8F0; }
   .icon-btn:hover { color: var(--gold); border-color: var(--gold); box-shadow: 0 0 14px var(--gold-glow); transform: scale(1.08); }
-  body.light-theme .icon-btn:hover { color: var(--cyan); border-color: var(--cyan); background: #F0F9FF; }
+  body.light-theme .icon-btn:hover { color: #475569; border-color: #CBD5E1; background: #F1F5F9; }
   .icon-btn:active { transform: scale(0.94); }
   .icon-btn svg { width: 14px; height: 14px; }
 
@@ -150,20 +151,20 @@
     border-radius: 10px; font-size: 26px; text-align: right; padding: 10px; margin-bottom: 10px;
     font-family: 'Courier New', monospace; font-weight: 600; letter-spacing: 1px;
     box-shadow: inset 0 3px 12px rgba(0,0,0,0.9), 0 0 20px rgba(0,234,255,0.1); outline: none; }
-  body.light-theme .calc-display { background: #F8FAFC; color: #0F172A; border-color: #E2E8F0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+  body.light-theme .calc-display { background: #F8FAFC; color: #1E293B; border-color: #E2E8F0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
   .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; flex: 1; }
   .calc button { border-radius: 10px; border: 1px solid transparent; font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.08s ease; }
   .calc button:active { transform: translateY(1px) scale(0.98); }
   .btn-num { background: linear-gradient(180deg, #2a3238 0%, #141a1f 100%); color: #fff; border-color: #2e3840; }
   .btn-num:hover { background: linear-gradient(180deg, #3a444c 0%, #20282f 100%); }
-  body.light-theme .btn-num { background: #FFFFFF; color: #0F172A; border-color: #E2E8F0; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+  body.light-theme .btn-num { background: #FFFFFF; color: #1E293B; border-color: #E2E8F0; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
   body.light-theme .btn-num:hover { background: #F8FAFC; }
   .btn-op { background: linear-gradient(180deg, #00aaff, var(--cyan-deep)); color: #fff; border-color: var(--cyan); }
-  body.light-theme .btn-op { background: #0EA5E9; color: #fff; border-color: #0284C7; }
+  body.light-theme .btn-op { background: #475569; color: #fff; border-color: #334155; }
   .btn-silver { background: linear-gradient(180deg, #d9d9d9 0%, #a8a8a8 100%); color: #000; border-color: #c0c0c0; }
-  body.light-theme .btn-silver { background: #F1F5F9; color: #334155; border-color: #CBD5E1; }
+  body.light-theme .btn-silver { background: #F1F5F9; color: #475569; border-color: #CBD5E1; }
   .btn-equal { background: linear-gradient(180deg, #fff0a0 0%, var(--gold) 55%, var(--gold-deep) 100%); color: #2a1e00; grid-column: span 2; font-size: 20px; border-color: var(--gold); }
-  body.light-theme .btn-equal { background: #F59E0B; color: #fff; border-color: #D97706; }
+  body.light-theme .btn-equal { background: #94A3B8; color: #fff; border-color: #64748B; }
 
   /* SLIDER */
   .slider-wrap { flex: 1; overflow: hidden; position: relative; }
@@ -176,18 +177,18 @@
   /* WEATHER */
   .weather-inner { padding: 18px; display: flex; flex-direction: column; flex: 1; }
   .weather-inner input { padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--text); margin-bottom: 10px; outline: none; font-family: inherit; }
-  body.light-theme .weather-inner input { background: #F8FAFC; border-color: #E2E8F0; color: #0F172A; }
+  body.light-theme .weather-inner input { background: #F8FAFC; border-color: #E2E8F0; color: #1E293B; }
   .weather-inner input:focus { border-color: var(--cyan); box-shadow: 0 0 14px rgba(0,234,255,0.3); }
-  body.light-theme .weather-inner input:focus { box-shadow: 0 0 0 3px rgba(14,165,233,0.15); }
+  body.light-theme .weather-inner input:focus { box-shadow: 0 0 0 3px rgba(71,85,105,0.1); border-color: #475569; }
   .weather-inner button { padding: 10px; border-radius: 10px; background: var(--cyan); color: #001418; font-weight: 800; letter-spacing: 1px; cursor: pointer; border: none; transition: all 0.15s ease; }
-  body.light-theme .weather-inner button { background: #0EA5E9; color: #fff; }
+  body.light-theme .weather-inner button { background: #475569; color: #fff; }
   .weather-inner button:hover { box-shadow: 0 0 18px var(--cyan-glow); }
   .weather-inner button:disabled { opacity: 0.6; cursor: wait; }
   .temp { font-size: 52px; font-weight: 800; text-align: center; margin-top: 20px; text-shadow: 0 0 15px var(--cyan-glow); }
-  body.light-theme .temp { color: #0F172A; text-shadow: none; }
+  body.light-theme .temp { color: #1E293B; text-shadow: none; }
   .w-details { text-align: center; color: var(--muted); font-size: 13px; line-height: 1.6; }
   .w-details strong { color: var(--cyan); }
-  body.light-theme .w-details strong { color: #0EA5E9; }
+  body.light-theme .w-details strong { color: #475569; }
   .w-details.error { color: #ff5c5c; }
   .w-skeleton { display: inline-block; width: 60%; height: 12px; border-radius: 6px;
     background: linear-gradient(90deg, #1a2025 0%, #2a3038 50%, #1a2025 100%);
@@ -201,7 +202,7 @@
     display: flex; align-items: center; justify-content: center; color: #001418;
     box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), inset 0 -3px 8px rgba(0,0,0,0.4), 0 8px 30px var(--cyan-glow);
     transition: transform 0.2s ease; }
-  body.light-theme .chat-fab { background: #0EA5E9; color: #fff; box-shadow: 0 4px 14px rgba(14,165,233,0.4); }
+  body.light-theme .chat-fab { background: #475569; color: #fff; box-shadow: 0 4px 14px rgba(71,85,105,0.3); }
   .chat-fab:hover { transform: scale(1.08); }
   .chat-fab:active { transform: scale(0.95); }
 
@@ -209,7 +210,7 @@
   .chat-panel { position: fixed; inset: 0; height: 100dvh; z-index: 100; display: flex; flex-direction: column;
     background: radial-gradient(ellipse at top, rgba(8,16,24,0.98) 0%, rgba(0,0,0,0.99) 60%), var(--bg-0);
     opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-  body.light-theme .chat-panel { background: #F4F7FB; }
+  body.light-theme .chat-panel { background: #F8FAFC; }
   .chat-panel.open { opacity: 1; pointer-events: auto; }
 
   .chat-head { padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
@@ -218,10 +219,10 @@
   .chat-head-info { display: flex; align-items: center; gap: 10px; }
   .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #7af5ff, var(--cyan) 50%, var(--cyan-deep));
     display: flex; align-items: center; justify-content: center; font-weight: 900; color: #001418; box-shadow: 0 0 18px var(--cyan-glow); }
-  body.light-theme .chat-avatar { background: #0EA5E9; color: #fff; box-shadow: none; }
+  body.light-theme .chat-avatar { background: #475569; color: #fff; box-shadow: none; }
   .chat-name { font-weight: 800; font-size: 16px; }
   .chat-sub { color: var(--cyan); font-size: 12px; display: flex; align-items: center; gap: 5px; }
-  body.light-theme .chat-sub { color: #0EA5E9; }
+  body.light-theme .chat-sub { color: #64748B; }
 
   /* CHAT ACTION BUTTONS */
   .chat-head-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -231,13 +232,13 @@
   .chat-action-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
   .chat-action-btn.gold { border-color: rgba(255,215,0,0.5); color: var(--gold-lite); background: rgba(255,215,0,0.06); }
   .chat-action-btn.gold:hover { color: #fff; border-color: var(--gold); background: rgba(255,215,0,0.16); box-shadow: 0 0 18px var(--gold-glow); }
-  body.light-theme .chat-action-btn.gold { color: #B45309; border-color: #FCD34D; background: #FEF3C7; }
-  body.light-theme .chat-action-btn.gold:hover { background: #FDE68A; box-shadow: none; }
+  body.light-theme .chat-action-btn.gold { color: #475569; border-color: #CBD5E1; background: #F1F5F9; }
+  body.light-theme .chat-action-btn.gold:hover { background: #E2E8F0; box-shadow: none; }
   
   .chat-action-btn.cyan { border-color: rgba(0,234,255,0.4); color: var(--cyan-lite); background: rgba(0,234,255,0.06); }
   .chat-action-btn.cyan:hover { color: #fff; border-color: var(--cyan); background: rgba(0,234,255,0.16); box-shadow: 0 0 18px var(--cyan-glow); }
-  body.light-theme .chat-action-btn.cyan { color: #0369A1; border-color: #7DD3FC; background: #E0F2FE; }
-  body.light-theme .chat-action-btn.cyan:hover { background: #BAE6FD; box-shadow: none; }
+  body.light-theme .chat-action-btn.cyan { color: #475569; border-color: #CBD5E1; background: #F1F5F9; }
+  body.light-theme .chat-action-btn.cyan:hover { background: #E2E8F0; box-shadow: none; }
   
   .chat-action-btn.danger { border-color: rgba(255,92,92,0.4); color: #ff9a9a; background: rgba(255,92,92,0.06); padding: 8px 10px; }
   .chat-action-btn.danger:hover { color: #fff; border-color: #ff5c5c; background: rgba(255,92,92,0.16); box-shadow: 0 0 18px rgba(255,92,92,0.5); }
@@ -249,7 +250,7 @@
     cursor: pointer; transition: all 0.15s ease; background: transparent; border: 1px solid var(--border); color: var(--text); }
   .chat-close:hover { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 14px var(--gold-glow); }
   body.light-theme .chat-close { border-color: #E2E8F0; color: #64748B; }
-  body.light-theme .chat-close:hover { border-color: #0EA5E9; color: #0EA5E9; box-shadow: none; }
+  body.light-theme .chat-close:hover { border-color: #475569; color: #475569; box-shadow: none; }
 
   /* CHAT WINDOW */
   .chat-window { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px;
@@ -264,7 +265,7 @@
   .msg.bot { background: var(--bg-2); border: 1px solid var(--border); border-bottom-left-radius: 4px; color: var(--text); }
   body.light-theme .msg.bot { background: #fff; border-color: #E2E8F0; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
   .msg.user { background: var(--cyan-lite); color: #001418; font-weight: 600; border-bottom-right-radius: 4px; }
-  body.light-theme .msg.user { background: #0EA5E9; color: #fff; }
+  body.light-theme .msg.user { background: #475569; color: #fff; }
   .typing { font-style: italic; color: var(--muted); font-size: 13px; }
   .msg-actions { margin-top: 4px; display: flex; gap: 8px; }
   .copy-btn { background: transparent; border: none; color: var(--muted); font-size: 11px; cursor: pointer;
@@ -277,12 +278,12 @@
   .chat-input-row { display: flex; gap: 10px; max-width: 900px; margin: 0 auto; width: 100%; }
   .chat-input-row input { flex: 1; min-width: 0; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border);
     background: var(--bg-0); color: var(--text); font-size: 16px; outline: none; font-family: inherit; transition: border-color 0.15s; }
-  body.light-theme .chat-input-row input { background: #F8FAFC; border-color: #E2E8F0; color: #0F172A; }
+  body.light-theme .chat-input-row input { background: #F8FAFC; border-color: #E2E8F0; color: #1E293B; }
   .chat-input-row input:focus { border-color: var(--cyan); box-shadow: 0 0 18px rgba(0,234,255,0.3); }
-  body.light-theme .chat-input-row input:focus { border-color: #0EA5E9; box-shadow: 0 0 0 3px rgba(14,165,233,0.15); }
+  body.light-theme .chat-input-row input:focus { border-color: #475569; box-shadow: 0 0 0 3px rgba(71,85,105,0.1); }
   .chat-send { flex-shrink: 0; padding: 0 22px; border-radius: 12px; background: var(--cyan); color: #001418;
     font-weight: 800; letter-spacing: 1px; border: none; cursor: pointer; transition: all 0.15s; }
-  body.light-theme .chat-send { background: #0EA5E9; color: #fff; }
+  body.light-theme .chat-send { background: #475569; color: #fff; }
   .chat-send:hover { box-shadow: 0 0 18px var(--cyan-glow); }
 
   /* SCROLL-TO-BOTTOM */
@@ -290,7 +291,7 @@
     background: var(--bg-1); border: 1px solid var(--cyan); color: var(--cyan);
     display: none; align-items: center; justify-content: center; cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 10; }
-  body.light-theme .scroll-bottom-btn { background: #fff; border-color: #E2E8F0; color: #0EA5E9; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  body.light-theme .scroll-bottom-btn { background: #fff; border-color: #E2E8F0; color: #475569; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
   .scroll-bottom-btn.visible { display: flex; }
 
   /* MODALS */
@@ -304,7 +305,7 @@
   .modal-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
   body.light-theme .modal-head { border-bottom-color: #E2E8F0; }
   .modal-title { font-size: 14px; font-weight: 800; letter-spacing: 2px; color: var(--cyan); }
-  body.light-theme .modal-title { color: #0EA5E9; }
+  body.light-theme .modal-title { color: #475569; }
   .modal-close { background: transparent; border: 1px solid var(--border); color: var(--text);
     padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; }
   body.light-theme .modal-close { border-color: #E2E8F0; }
@@ -314,16 +315,16 @@
     border: 1px solid var(--border); cursor: pointer; transition: all 0.15s; }
   body.light-theme .modal-item { background: #F8FAFC; border-color: #E2E8F0; }
   .modal-item:hover { background: rgba(0,234,255,0.06); border-color: rgba(0,234,255,0.4); }
-  body.light-theme .modal-item:hover { background: #F0F9FF; border-color: #0EA5E9; }
+  body.light-theme .modal-item:hover { background: #F1F5F9; border-color: #CBD5E1; }
   .modal-item.active { background: rgba(0,234,255,0.12); border-color: var(--cyan); }
-  body.light-theme .modal-item.active { background: #E0F2FE; border-color: #0EA5E9; }
+  body.light-theme .modal-item.active { background: #E2E8F0; border-color: #94A3B8; }
   .modal-item-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
   .modal-item-meta { font-size: 11px; color: var(--muted); }
   .modal-footer { padding: 12px; border-top: 1px solid var(--border); }
   body.light-theme .modal-footer { border-top-color: #E2E8F0; }
   .modal-new-btn { width: 100%; padding: 12px; border-radius: 10px; background: var(--cyan); color: #001418;
     font-weight: 800; letter-spacing: 1.5px; font-size: 13px; border: none; cursor: pointer; transition: all 0.15s; }
-  body.light-theme .modal-new-btn { background: #0EA5E9; color: #fff; }
+  body.light-theme .modal-new-btn { background: #475569; color: #fff; }
   .modal-new-btn:hover { box-shadow: 0 0 18px var(--cyan-glow); }
   .modal-new-btn.danger { background: linear-gradient(180deg, #ff9a9a, #ff5c5c); color: #2a0000; }
   body.light-theme .modal-new-btn.danger { background: #EF4444; color: #fff; }
@@ -381,7 +382,7 @@
   <button class="nav-item" onclick="document.getElementById('sidebar').classList.remove('open'); focusWeather();">Weather</button>
   <div class="sidebar-footer">
     <span class="status-dot"></span>Systems online<br>
-    <span style="font-size:10px;letter-spacing:1px;">v7.2 · POLISHED</span>
+    <span style="font-size:10px;letter-spacing:1px;">v7.3 · SILVER</span>
   </div>
 </aside>
 
@@ -456,7 +457,7 @@
       <div class="frame weather" id="weatherCard">
         <div class="card-head"><div class="card-title"><span class="dot cyan"></span>Weather</div></div>
         <div class="weather-inner">
-          <input type="text" id="cityInput" placeholder="Enter city (e.g. London)" aria-label="City name">
+          <input type="text" id="cityInput" placeholder="Enter city (e.g. Hyderabad)" aria-label="City name">
           <button id="weatherBtn" onclick="getWeather()">GET WEATHER</button>
           <div class="temp" id="temp" aria-live="polite">--°</div>
           <div class="w-details" id="wDetails" aria-live="polite">Enter city name</div>
@@ -693,6 +694,9 @@ async function getWeather(){
   const detEl = document.getElementById('wDetails');
   const btn = document.getElementById('weatherBtn');
 
+  // FIX: Force Pakistan country code for Hyderabad to avoid returning Hyderabad, India
+  const countryCode = (city.toLowerCase() === 'hyderabad') ? '&countryCode=PK' : '';
+
   const cached = weatherCache[city.toLowerCase()];
   if (cached && Date.now() - cached.ts < WEATHER_TTL) {
     renderWeather(cached.data, city);
@@ -708,8 +712,8 @@ async function getWeather(){
   weatherAbort = new AbortController();
 
   try {
-    // 1. Geocode city name to coordinates
-    const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`, { signal: weatherAbort.signal });
+    // 1. Geocode city name to coordinates (with country filter if applicable)
+    const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json${countryCode}`, { signal: weatherAbort.signal });
     if (!geoRes.ok) throw new Error('Geocoding failed');
     const geoData = await geoRes.json();
     
@@ -720,7 +724,6 @@ async function getWeather(){
     const loc = geoData.results[0];
     const lat = loc.latitude;
     const lon = loc.longitude;
-    const country = loc.country_code || '';
 
     // 2. Fetch weather forecast
     const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relative_humidity_2m,apparent_temperature&timezone=auto`, { signal: weatherAbort.signal });
