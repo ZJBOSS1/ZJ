@@ -1,0 +1,41 @@
+{
+  "name": "ZJ Dashboard",
+  "short_name": "ZJ",
+  "description": "All-in-one productivity dashboard with notes, weather, calculator, and AI chatbot.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#080C10",
+  "theme_color": "#00A3CC",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%2300A3CC'/%3E%3Ctext x='96' y='130' font-size='100' font-family='Georgia' font-weight='900' text-anchor='middle' fill='white'%3EZJ%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%2300A3CC'/%3E%3Ctext x='256' y='340' font-size='240' font-family='Georgia' font-weight='900' text-anchor='middle' fill='white'%3EZJ%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%2300A3CC'/%3E%3Ctext x='256' y='340' font-size='240' font-family='Georgia' font-weight='900' text-anchor='middle' fill='white'%3EZJ%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Chat with ZJ Bot",
+      "url": "./?action=chat",
+      "description": "Open the AI Chatbot"
+    },
+    {
+      "name": "New Note",
+      "url": "./?action=notes",
+      "description": "Create a new note"
+    }
+  ]
+}
