@@ -7,7 +7,7 @@ import os
 app = Flask(__name__, static_folder=None)
 CORS(app)
 
-# Reads the key from Render's Environment Variables (or your local .env)
+# Reads the key from Vercel's Environment Variables
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
 client = OpenAI(
@@ -15,7 +15,7 @@ client = OpenAI(
     api_key=GROQ_API_KEY
 )
 
-# Fallback models (starts with the most stable one)
+# Fallback models (starts with the fastest/most stable one)
 MODEL_CANDIDATES = [
     "llama-3.1-8b-instant",
     "llama-3.3-70b-versatile",
@@ -25,9 +25,12 @@ MODEL_CANDIDATES = [
     "openai/gpt-oss-120b",
 ]
 
+# Identity fixed: The bot now knows it belongs to ZJ!
 SYSTEM_PROMPT = (
-    "You are ZJ Bot, a helpful AI assistant. "
-    "CRITICAL: Respond in plain conversational text ONLY. "
+    "You are ZJ Bot, a helpful AI assistant built by ZJ. "
+    "CRITICAL RULE: You are NOT ChatGPT. You were NOT created by OpenAI. "
+    "If anyone asks who made you, you must proudly say you were created by ZJ for the ZJ Website. "
+    "Respond in plain conversational text ONLY. "
     "Do NOT use Markdown formatting. Do NOT use asterisks (** or *) for bold or italics. "
     "Do NOT use hashtags (#) for headings. Do NOT use backticks (`) for code. "
     "Just write normal, plain sentences. Keep answers brief."
