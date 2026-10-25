@@ -436,27 +436,47 @@
     <div class="chat-identity">
       <div class="chat-avatar">ZJ</div>
       <div>
-        <div class="chat-name" id="chatTitle">ZJ Assistant</div>
-        <div class="chat-sub" id="chatSub">Offline · no data leaves your device</div>
+        <div class="chat-name" id="chatTitle">ZJ Chatbot</div>
+        <div class="chat-sub online">
+          <span class="online-dot"></span> Online
+        </div>
       </div>
     </div>
-    <div class="head-actions">
-      <button class="icon-btn" data-action="new-chat" data-tooltip="New chat"><i data-lucide="plus"></i></button>
-      <button class="icon-btn" data-action="chat-history" data-tooltip="History"><i data-lucide="history"></i></button>
-      <button class="icon-btn" data-action="clear-chat" data-tooltip="Clear chat"><i data-lucide="trash-2"></i></button>
-      <button class="icon-btn" data-action="close-window" data-target="chatPanel" data-tooltip="Close"><i data-lucide="x"></i></button>
+    <div class="head-actions chat-actions">
+      <button class="icon-btn action-plus" data-action="new-chat" data-tooltip="New chat">
+        <i data-lucide="plus"></i>
+      </button>
+      <button class="icon-btn action-clock" data-action="chat-history" data-tooltip="History">
+        <i data-lucide="clock"></i>
+      </button>
+      <button class="icon-btn action-trash" data-action="clear-chat" data-tooltip="Clear chat">
+        <i data-lucide="trash-2"></i>
+      </button>
+      <button class="icon-btn action-close" data-action="close-window" data-target="chatPanel" data-tooltip="Close">
+        <i data-lucide="x"></i>
+      </button>
     </div>
   </div>
 
-  <div class="chat-window" id="chatWindow" aria-live="polite"></div>
+  <div class="chat-window" id="chatWindow" aria-live="polite">
+    <!-- Initial Bot Message -->
+    <div class="chat-msg bot">
+      <div class="msg-bubble">
+        Hi! I'm ZJ Bot 👋 How can I help you today?
+      </div>
+      <button class="msg-copy" onclick="navigator.clipboard.writeText('Hi! I\'m ZJ Bot 👋 How can I help you today?')">
+        <i data-lucide="copy" size="14"></i> Copy
+      </button>
+    </div>
+  </div>
 
   <div class="chat-input-area">
     <div class="chat-input-row">
-      <input type="text" id="chatInput" placeholder="Ask me something…"
+      <input type="text" id="chatInput" placeholder="Type a message..."
              autocomplete="off" enterkeyhint="send" autocapitalize="sentences"
              aria-label="Message">
       <button class="chat-send" id="chatSendBtn" data-action="send-message" aria-label="Send">
-        <i data-lucide="send"></i>
+        Send
       </button>
     </div>
   </div>
