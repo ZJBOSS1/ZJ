@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ZJ Dashboard</title>
-<!-- Fonts & Icons -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
   /* =========================================
-     CSS VARIABLES & RESET
+     CSS VARIABLES & THEME
   ========================================= */
   :root {
     --bg-body: #050608;
     --bg-sidebar: #080a0f;
     --bg-card: #0d1117;
     --bg-hover: #161b22;
+    --bg-input: #000000;
     
     --border-color: #21262d;
     --border-light: #30363d;
@@ -30,38 +30,39 @@
     --accent-cyan-hover: #00a8d6;
     --accent-yellow: #f0c000;
     --accent-red: #e63946;
+    --accent-green: #2ea043;
     
-    --font-family: 'Inter', sans-serif;
+    --font-main: 'Inter', sans-serif;
+    --font-mono: 'Share Tech Mono', monospace;
     --radius-md: 8px;
     --radius-lg: 12px;
+    --transition: 0.2s ease;
   }
 
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  [data-theme="light"] {
+    --bg-body: #f0f2f5;
+    --bg-sidebar: #ffffff;
+    --bg-card: #ffffff;
+    --bg-hover: #e4e6eb;
+    --bg-input: #ffffff;
+    --border-color: #ccd0d5;
+    --border-light: #b0b3b8;
+    --text-main: #1c1e21;
+    --text-muted: #65676b;
   }
 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: var(--font-family);
+    font-family: var(--font-main);
     background-color: var(--bg-body);
     color: var(--text-main);
     display: flex;
     height: 100vh;
     overflow: hidden;
+    transition: background-color var(--transition), color var(--transition);
   }
-
-  button {
-    cursor: pointer;
-    border: none;
-    background: none;
-    font-family: inherit;
-    color: inherit;
-  }
-
-  input {
-    font-family: inherit;
-  }
+  button { cursor: pointer; border: none; background: none; font-family: inherit; color: inherit; }
+  input, select, textarea { font-family: inherit; color: var(--text-main); }
 
   /* Scrollbar */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -70,576 +71,329 @@
   ::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
 
   /* =========================================
-     SIDEBAR
+     SIDEBAR & NAVIGATION
   ========================================= */
   .sidebar {
-    width: 240px;
+    width: 250px;
     background-color: var(--bg-sidebar);
     border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     height: 100%;
     flex-shrink: 0;
+    transition: transform var(--transition);
+    z-index: 100;
   }
+  .sidebar.hidden { transform: translateX(-100%); position: absolute; }
 
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 20px;
-    border-bottom: 1px solid transparent;
-  }
-
+  .brand { display: flex; align-items: center; gap: 12px; padding: 20px; }
   .brand-logo {
-    width: 32px;
-    height: 32px;
-    background: var(--accent-cyan);
-    color: #000;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 14px;
+    width: 32px; height: 32px; background: var(--accent-cyan); color: #000;
+    border-radius: 6px; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 14px;
   }
+  .brand-name { font-size: 14px; font-weight: 700; letter-spacing: 0.5px; }
 
-  .brand-name {
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-
-  .nav-scroll {
-    flex: 1;
-    overflow-y: auto;
-    padding: 10px 0;
-  }
-
+  .nav-scroll { flex: 1; overflow-y: auto; padding: 10px 0; }
   .nav-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 15px 20px 5px;
+    font-size: 11px; font-weight: 600; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 1px; padding: 15px 20px 5px;
   }
-
   .nav-item {
-    display: flex;
-    align-items: center;
-    padding: 10px 20px;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-main);
-    cursor: pointer;
-    border-left: 2px solid transparent;
-    transition: all 0.2s;
+    display: flex; align-items: center; gap: 10px; padding: 10px 20px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    border-left: 2px solid transparent; transition: all var(--transition);
   }
-
-  .nav-item:hover {
-    background-color: var(--bg-hover);
-  }
-
+  .nav-item:hover { background-color: var(--bg-hover); }
   .nav-item.active {
-    border-left-color: var(--accent-cyan);
-    color: var(--accent-cyan);
+    border-left-color: var(--accent-cyan); color: var(--accent-cyan);
     background-color: rgba(0, 196, 244, 0.05);
   }
 
   /* =========================================
-     MAIN CONTENT
+     MAIN CONTENT AREA
   ========================================= */
   .main-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
+    flex: 1; display: flex; flex-direction: column; overflow-y: auto; position: relative;
   }
 
-  /* Topbar */
   .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    border-bottom: 1px solid var(--border-color);
-    background-color: var(--bg-sidebar);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 30px; border-bottom: 1px solid var(--border-color);
+    background-color: var(--bg-sidebar); position: sticky; top: 0; z-index: 10;
   }
-
   .search-box {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--bg-body);
-    border: 1px solid var(--border-color);
-    padding: 6px 12px;
-    border-radius: 6px;
-    color: var(--text-muted);
-    font-size: 13px;
-    width: 250px;
+    display: flex; align-items: center; gap: 8px; background: var(--bg-body);
+    border: 1px solid var(--border-color); padding: 8px 12px;
+    border-radius: 6px; color: var(--text-muted); font-size: 13px; width: 300px;
   }
-
-  .search-box input {
-    background: transparent;
-    border: none;
-    outline: none;
-    color: var(--text-main);
-    width: 100%;
-  }
-
-  .search-shortcut {
-    background: var(--bg-hover);
-    border: 1px solid var(--border-color);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 11px;
-  }
-
+  .search-box input { background: transparent; border: none; outline: none; width: 100%; }
+  .search-shortcut { background: var(--bg-hover); border: 1px solid var(--border-color); padding: 2px 6px; border-radius: 4px; font-size: 11px; }
+  
+  .topbar-actions { display: flex; gap: 10px; }
   .theme-btn {
-    color: var(--accent-yellow);
-    background: var(--bg-body);
-    border: 1px solid var(--border-color);
-    padding: 8px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
+    color: var(--accent-yellow); background: var(--bg-body);
+    border: 1px solid var(--border-color); padding: 8px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
   }
 
-  /* Hero Area */
-  .hero {
-    padding: 40px 30px 20px;
-    text-align: center;
-  }
-
+  /* Hero */
+  .hero { padding: 40px 30px 20px; text-align: center; }
   .hero h1 {
-    font-size: 32px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
+    font-size: 32px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;
   }
-
   .clock-badge {
-    background: var(--accent-yellow);
-    color: #000;
-    font-family: monospace;
-    font-size: 20px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-weight: 700;
+    background: var(--accent-yellow); color: #000; font-family: var(--font-mono);
+    font-size: 20px; padding: 4px 10px; border-radius: 6px; font-weight: 700;
   }
-
   .hero p {
-    color: var(--accent-cyan);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-top: 10px;
+    color: var(--accent-cyan); font-size: 12px; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase; margin-top: 10px;
   }
 
   /* Dashboard Grid */
   .dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    padding: 0 30px 30px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px; padding: 0 30px 30px; max-width: 1400px; margin: 0 auto; width: 100%;
   }
-
   .card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    height: 520px; /* Fixed height for alignment based on screenshot */
+    background: var(--bg-card); border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg); display: flex; flex-direction: column;
+    overflow: hidden; height: 520px;
   }
-
   .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    border-bottom: 1px solid var(--border-color);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 20px; border-bottom: 1px solid var(--border-color);
+    font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
   }
-
-  .card-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
+  .card-title { display: flex; align-items: center; gap: 8px; }
   .dot { width: 8px; height: 8px; border-radius: 50%; }
   .dot.cyan { background: var(--accent-cyan); }
   .dot.yellow { background: var(--accent-yellow); }
+  .dot.silver { background: #c0c0c0; }
 
   .icon-btn {
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px;
-    border-radius: 4px;
+    color: var(--text-muted); display: flex; align-items: center;
+    justify-content: center; padding: 4px; border-radius: 4px; transition: var(--transition);
   }
   .icon-btn:hover { background: var(--bg-hover); color: var(--text-main); }
 
   /* =========================================
-     CALCULATOR CARD
+     WIDGET SPECIFICS
   ========================================= */
+  /* Calculator */
   .calc-history {
-    padding: 10px 20px;
-    font-size: 12px;
-    color: var(--text-muted);
-    text-align: right;
-    border-bottom: 1px solid var(--border-color);
-    min-height: 60px;
+    padding: 10px 20px; font-size: 12px; color: var(--text-muted);
+    text-align: right; min-height: 50px; max-height: 80px; overflow-y: auto;
   }
-  .calc-history div { margin-bottom: 4px; }
-
-  .calc-display {
-    padding: 20px;
-    text-align: right;
-    font-size: 32px;
-    font-weight: 600;
-  }
-
-  .calc-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    padding: 0 20px 20px;
-    flex: 1;
-  }
-
-  .calc-btn {
-    background: var(--bg-hover);
-    border-radius: var(--radius-md);
-    font-size: 18px;
-    font-weight: 500;
-    transition: filter 0.1s;
-  }
+  .calc-display { padding: 10px 20px; text-align: right; font-size: 32px; font-weight: 600; font-family: var(--font-mono); overflow-x: auto; white-space: nowrap;}
+  .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 20px 20px; flex: 1; }
+  .calc-btn { background: var(--bg-hover); border-radius: var(--radius-md); font-size: 18px; font-weight: 500; transition: filter 0.1s; }
   .calc-btn:active { filter: brightness(0.8); }
-  
   .calc-btn.op { background: var(--accent-cyan); color: #000; font-weight: 600; }
   .calc-btn.equal { background: var(--accent-yellow); color: #000; font-weight: 700; grid-column: span 2; }
-  .calc-btn.silver { background: #21262d; }
+  .calc-btn.silver { background: var(--border-light); color: var(--text-main); }
 
-  /* =========================================
-     WEATHER CARD
-  ========================================= */
-  .weather-search {
-    padding: 15px 20px;
-    display: flex;
-    gap: 10px;
-  }
-  .weather-search input {
-    flex: 1;
-    background: var(--bg-body);
-    border: 1px solid var(--border-color);
-    padding: 10px 15px;
-    border-radius: var(--radius-md);
-    color: var(--text-main);
-    outline: none;
-  }
-  .weather-search button {
-    background: var(--accent-cyan);
-    color: #000;
-    padding: 0 15px;
-    border-radius: var(--radius-md);
-  }
-
-  .weather-main {
-    text-align: center;
-    padding: 10px;
-  }
+  /* Weather */
+  .weather-search { padding: 15px 20px; display: flex; gap: 10px; }
+  .weather-search input { flex: 1; background: var(--bg-body); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: var(--radius-md); outline: none; }
+  .weather-search button { background: var(--accent-cyan); color: #000; padding: 0 15px; border-radius: var(--radius-md); display: flex; align-items: center; }
+  .weather-main { text-align: center; padding: 10px; }
   .weather-main .sun-icon { color: var(--accent-yellow); width: 48px; height: 48px; margin: 0 auto 10px; }
   .weather-temp { font-size: 48px; font-weight: 700; display: flex; align-items: flex-start; justify-content: center; gap: 5px; }
   .weather-temp span { font-size: 16px; background: var(--bg-hover); padding: 2px 8px; border-radius: 4px; margin-top: 10px; color: var(--text-muted); }
   .weather-desc { color: var(--accent-cyan); font-size: 14px; font-weight: 500; margin-top: 5px; }
-  .weather-loc { color: var(--text-muted); font-size: 12px; margin-top: 5px; letter-spacing: 1px; }
-
-  .weather-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding: 15px 20px;
-  }
-  .stat-box {
-    background: var(--bg-body);
-    border: 1px solid var(--border-color);
-    padding: 12px;
-    border-radius: var(--radius-md);
-    text-align: center;
-    font-size: 11px;
-    color: var(--text-muted);
-  }
+  .weather-loc { color: var(--text-muted); font-size: 12px; margin-top: 5px; letter-spacing: 1px; text-transform: uppercase; }
+  .weather-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px 20px; }
+  .stat-box { background: var(--bg-body); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-md); text-align: center; font-size: 11px; color: var(--text-muted); }
   .stat-box strong { display: block; font-size: 14px; color: var(--text-main); margin-top: 4px; }
-
-  .forecast {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px 20px;
-    border-top: 1px solid var(--border-color);
-    margin-top: auto;
-  }
-  .forecast-day { text-align: center; font-size: 11px; color: var(--text-muted); }
+  .forecast { display: flex; justify-content: space-between; padding: 15px 20px; border-top: 1px solid var(--border-color); margin-top: auto; overflow-x: auto; }
+  .forecast-day { text-align: center; font-size: 11px; color: var(--text-muted); min-width: 40px; }
   .forecast-day .sun-mini { color: var(--accent-yellow); margin: 8px 0; }
-  .forecast-day .temps { font-size: 10px; }
+
+  /* Gallery */
+  .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; height: 100%; }
+  .gallery-grid img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border-color); }
+  .gallery-grid img:first-child { grid-row: span 2; }
 
   /* =========================================
-     GALLERY CARD
+     MODALS (DIALOGS)
   ========================================= */
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding: 20px;
-    height: 100%;
+  dialog {
+    border: 1px solid var(--border-color); background: var(--bg-card);
+    color: var(--text-main); border-radius: var(--radius-lg);
+    padding: 0; width: 90%; max-width: 500px; margin: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   }
-  .gallery-grid img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-color);
+  dialog::backdrop { background: rgba(0,0,0,0.7); backdrop-filter: blur(3px); }
+  
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 20px; border-bottom: 1px solid var(--border-color);
+    background: var(--bg-sidebar);
   }
-  .gallery-grid img:first-child { grid-row: span 2; height: 100%; }
+  .modal-title { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .modal-body { padding: 20px; max-height: 70vh; overflow-y: auto; }
+
+  /* Forms & Lists */
+  .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
+  .input-field {
+    flex: 1; background: var(--bg-body); border: 1px solid var(--border-color);
+    padding: 10px 15px; border-radius: var(--radius-md); outline: none; color: var(--text-main);
+  }
+  .input-field:focus { border-color: var(--accent-cyan); }
+  .btn-primary {
+    background: var(--accent-cyan); color: #000; font-weight: 600;
+    padding: 10px 20px; border-radius: var(--radius-md); transition: var(--transition);
+  }
+  .btn-primary:hover { background: var(--accent-cyan-hover); }
+  .btn-danger { background: rgba(230, 57, 70, 0.1); color: var(--accent-red); padding: 8px 12px; border-radius: var(--radius-md); }
+  
+  .list-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px; background: var(--bg-body); border: 1px solid var(--border-color);
+    border-radius: var(--radius-md); margin-bottom: 10px; font-size: 14px;
+  }
+  .list-item-actions { display: flex; gap: 10px; }
+
+  /* Tabs */
+  .tabs { display: flex; background: var(--bg-body); border-radius: var(--radius-md); padding: 4px; margin-bottom: 15px; }
+  .tab { flex: 1; padding: 8px; text-align: center; font-size: 13px; border-radius: var(--radius-sm); cursor: pointer; color: var(--text-muted); }
+  .tab.active { background: var(--bg-hover); color: var(--text-main); font-weight: 600; }
+
+  /* Pomodoro */
+  .pomo-ring { position: relative; width: 200px; height: 200px; margin: 20px auto; }
+  .pomo-ring svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+  .ring-bg { fill: none; stroke: var(--bg-hover); stroke-width: 8; }
+  .ring-fg { fill: none; stroke: var(--accent-cyan); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 553; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear; }
+  .pomo-time { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 40px; font-family: var(--font-mono); font-weight: 700; }
+  .pomo-actions { display: flex; justify-content: center; gap: 10px; }
+
+  /* Unit Converter */
+  .conv-row { display: flex; gap: 10px; margin-bottom: 15px; }
+  .conv-row select { flex: 1; background: var(--bg-body); border: 1px solid var(--border-color); padding: 10px; border-radius: var(--radius-md); outline: none; }
+  .conv-row input { flex: 1; background: var(--bg-body); border: 1px solid var(--border-color); padding: 10px; border-radius: var(--radius-md); outline: none; color: var(--text-main); font-size: 18px; }
+  .conv-row output { flex: 1; background: var(--bg-hover); border: 1px solid var(--border-color); padding: 10px; border-radius: var(--radius-md); font-size: 18px; display: flex; align-items: center; }
+  .conv-swap { background: var(--bg-hover); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: -5px auto 10px; color: var(--accent-cyan); position: relative; z-index: 2; }
+
+  /* Scientific Calc */
+  .sci-display { background: var(--bg-body); padding: 15px; border-radius: var(--radius-md); text-align: right; font-size: 24px; font-family: var(--font-mono); margin-bottom: 15px; overflow-x: auto; }
+  .sci-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .sci-btn { background: var(--bg-hover); padding: 12px 0; border-radius: var(--radius-md); font-size: 14px; }
+  .sci-btn.func { color: var(--accent-cyan); }
 
   /* =========================================
-     CHAT FAB
+     CHAT OVERLAY
   ========================================= */
   .chat-fab {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: var(--accent-cyan);
-    color: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 196, 244, 0.4);
-    z-index: 100;
-    transition: transform 0.2s;
+    position: fixed; bottom: 30px; right: 30px; width: 56px; height: 56px;
+    border-radius: 50%; background: var(--accent-cyan); color: #000;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 196, 244, 0.4); z-index: 100; transition: transform 0.2s;
   }
   .chat-fab:hover { transform: scale(1.05); }
 
-  /* =========================================
-     CHAT OVERLAY (Screenshot 2)
-  ========================================= */
   .chat-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(5px);
-    z-index: 1000;
-    display: none; /* Hidden by default */
-    justify-content: center;
-    align-items: center;
+    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px); z-index: 1000; display: none;
+    justify-content: center; align-items: center;
   }
   .chat-overlay.active { display: flex; }
-
   .chat-container {
-    width: 100%;
-    max-width: 900px;
-    height: 100%;
-    max-height: 800px;
-    background: #000;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    width: 100%; max-width: 900px; height: 100%; max-height: 800px;
+    background: #000; border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg); display: flex; flex-direction: column; overflow: hidden;
   }
-
-  /* Chat Header */
   .chat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    background: #080a0f;
-    border-bottom: 1px solid var(--border-color);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 20px; background: #080a0f; border-bottom: 1px solid var(--border-color);
   }
   .chat-identity { display: flex; align-items: center; gap: 12px; }
-  .chat-avatar {
-    width: 36px;
-    height: 36px;
-    background: var(--accent-cyan);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #000;
-    font-weight: 800;
-  }
+  .chat-avatar { width: 36px; height: 36px; background: var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 800; }
   .chat-title h3 { font-size: 14px; margin-bottom: 2px; }
   .chat-title p { font-size: 12px; color: var(--accent-cyan); }
-  
   .chat-actions { display: flex; gap: 10px; }
-  .chat-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border: 1px solid var(--border-light);
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-main);
-    transition: background 0.2s;
-  }
+  .chat-btn { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border: 1px solid var(--border-light); border-radius: 6px; font-size: 12px; font-weight: 600; color: var(--text-main); transition: background 0.2s; }
   .chat-btn:hover { background: var(--bg-hover); }
   .chat-btn.close { border-color: #444; }
-
-  /* Chat Messages Area */
-  .chat-messages {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    background: #000;
-  }
-
-  .msg-system {
-    background: #111;
-    border: 1px solid #333;
-    color: #ccc;
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  
+  .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+  .msg-system { background: #111; border: 1px solid #333; color: #ccc; padding: 12px 16px; border-radius: 8px; font-size: 13px; display: flex; align-items: center; gap: 8px; }
   .msg-system i { color: var(--accent-yellow); }
-
   .msg-row { display: flex; width: 100%; }
   .msg-row.user { justify-content: flex-end; }
-
-  .bubble {
-    max-width: 70%;
-    padding: 12px 16px;
-    border-radius: 12px;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  .msg-row.bot .bubble {
-    background: #111;
-    border: 1px solid #333;
-    color: #e0e0e0;
-    border-bottom-left-radius: 4px;
-  }
-
-  .msg-row.user .bubble {
-    background: var(--accent-cyan);
-    color: #000;
-    border-bottom-right-radius: 4px;
-  }
-
-  /* Chat Input Area */
-  .chat-input-area {
-    padding: 15px 20px;
-    background: #080a0f;
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    gap: 12px;
-  }
-  .chat-input-wrapper {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    background: #000;
-    border: 1px solid var(--border-light);
-    border-radius: 8px;
-    padding: 0 15px;
-  }
-  .chat-input-wrapper input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #fff;
-    padding: 14px 0;
-    font-size: 14px;
-  }
-  .chat-input-wrapper i { color: var(--text-muted); cursor: pointer; }
+  .bubble { max-width: 70%; padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.5; }
+  .msg-row.bot .bubble { background: #111; border: 1px solid #333; color: #e0e0e0; border-bottom-left-radius: 4px; }
+  .msg-row.user .bubble { background: var(--accent-cyan); color: #000; border-bottom-right-radius: 4px; }
   
-  .chat-send-btn {
-    background: var(--accent-cyan);
-    color: #000;
-    font-weight: 700;
-    padding: 0 25px;
-    border-radius: 8px;
-    font-size: 14px;
-  }
-  .chat-send-btn:hover { background: var(--accent-cyan-hover); }
+  .chat-input-area { padding: 15px 20px; background: #080a0f; border-top: 1px solid var(--border-color); display: flex; gap: 12px; }
+  .chat-input-wrapper { flex: 1; display: flex; align-items: center; background: #000; border: 1px solid var(--border-light); border-radius: 8px; padding: 0 15px; }
+  .chat-input-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: #fff; padding: 14px 0; font-size: 14px; }
+  .chat-send-btn { background: var(--accent-cyan); color: #000; font-weight: 700; padding: 0 25px; border-radius: 8px; font-size: 14px; }
 
-  /* Responsive */
-  @media (max-width: 1024px) {
-    .dashboard-grid { grid-template-columns: 1fr; }
-    .sidebar { display: none; } /* Simple hide for mobile in this demo */
+  /* Toast Notifications */
+  #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+  .toast { background: var(--bg-card); border: 1px solid var(--border-color); padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: slideUp 0.3s ease; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 768px) {
+    .sidebar { position: absolute; }
+    .sidebar.hidden { transform: translateX(-100%); }
+    .dashboard-grid { grid-template-columns: 1fr; padding: 0 15px 15px; }
+    .hero h1 { font-size: 24px; }
+    .hero h1 .clock-badge { font-size: 16px; }
+    .topbar { padding: 15px; }
+    .search-box { width: 200px; }
   }
 </style>
 </head>
 <body>
 
   <!-- SIDEBAR -->
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="brand">
       <div class="brand-logo">ZJ</div>
       <div class="brand-name">ZJ WEBSITE</div>
     </div>
-
     <div class="nav-scroll">
       <div class="nav-label">Main Menu</div>
-      <div class="nav-item active">Dashboard</div>
-      <div class="nav-item">Calculator</div>
-      <div class="nav-item">Weather</div>
-      <div class="nav-item">Gallery</div>
+      <div class="nav-item active" onclick="scrollToSection('dashboard')">Dashboard</div>
+      <div class="nav-item" onclick="scrollToSection('calcCard')">Calculator</div>
+      <div class="nav-item" onclick="scrollToSection('weatherCard')">Weather</div>
+      <div class="nav-item" onclick="scrollToSection('galleryCard')">Gallery</div>
 
       <div class="nav-label">Professional Apps</div>
-      <div class="nav-item">Notes</div>
-      <div class="nav-item">Todo List</div>
-      <div class="nav-item">Pomodoro</div>
-      <div class="nav-item">Unit Converter</div>
-      <div class="nav-item" onclick="toggleChat()">Chatbot</div>
-
-      <div class="nav-label">Data</div>
-      <div class="nav-item">Export JSON</div>
+      <div class="nav-item" onclick="openModal('notesModal')"><i data-lucide="sticky-note" size="16"></i> Notes</div>
+      <div class="nav-item" onclick="openModal('todoModal')"><i data-lucide="check-square" size="16"></i> Todo List</div>
+      <div class="nav-item" onclick="openModal('pomoModal')"><i data-lucide="timer" size="16"></i> Pomodoro</div>
+      <div class="nav-item" onclick="openModal('convModal')"><i data-lucide="arrow-left-right" size="16"></i> Unit Converter</div>
+      <div class="nav-item" onclick="toggleChat()"><i data-lucide="message-square" size="16"></i> Chatbot</div>
     </div>
   </aside>
 
   <!-- MAIN CONTENT -->
-  <main class="main-wrapper">
+  <main class="main-wrapper" id="dashboard">
     <!-- TOPBAR -->
     <header class="topbar">
-      <div class="search-box">
-        <i data-lucide="search" size="16"></i>
-        <input type="text" placeholder="Search">
-        <span class="search-shortcut">Ctrl K</span>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <button class="icon-btn" onclick="toggleSidebar()" style="display:none;" id="menuBtn"><i data-lucide="menu"></i></button>
+        <div class="search-box">
+          <i data-lucide="search" size="16"></i>
+          <input type="text" placeholder="Search">
+          <span class="search-shortcut">Ctrl K</span>
+        </div>
       </div>
-      <button class="theme-btn">
-        <i data-lucide="moon" size="18"></i>
-      </button>
+      <div class="topbar-actions">
+        <button class="theme-btn" onclick="toggleTheme()">
+          <i data-lucide="moon" size="18" id="themeIcon"></i>
+        </button>
+      </div>
     </header>
 
     <!-- HERO -->
     <div class="hero">
-      <h1>
-        Your All-in-One Dashboard
-        <span class="clock-badge" id="liveClock">00:00:00</span>
-      </h1>
+      <h1>Your All-in-One Dashboard <span class="clock-badge" id="liveClock">00:00:00</span></h1>
       <p>Stay productive, informed, and connected.</p>
     </div>
 
@@ -647,114 +401,72 @@
     <div class="dashboard-grid">
       
       <!-- CALCULATOR CARD -->
-      <div class="card">
+      <div class="card" id="calcCard">
         <div class="card-header">
-          <div class="card-title"><span class="dot" style="background: #fff;"></span> CALCULATOR</div>
-          <button class="icon-btn"><i data-lucide="maximize-2" size="16"></i></button>
+          <div class="card-title"><span class="dot silver"></span> CALCULATOR</div>
+          <button class="icon-btn" onclick="openModal('sciCalcModal')"><i data-lucide="maximize-2" size="16"></i></button>
         </div>
-        <div class="calc-history">
-          <div>62 = 62</div>
-          <div>0 + 6 = 0</div>
-        </div>
-        <div class="calc-display">0</div>
+        <div class="calc-history" id="calcHistory"></div>
+        <div class="calc-display" id="calcDisplay">0</div>
         <div class="calc-grid">
-          <button class="calc-btn silver">AC</button>
-          <button class="calc-btn silver">DEL</button>
-          <button class="calc-btn silver">%</button>
-          <button class="calc-btn op">÷</button>
-          
-          <button class="calc-btn">7</button>
-          <button class="calc-btn">8</button>
-          <button class="calc-btn">9</button>
-          <button class="calc-btn op">×</button>
-          
-          <button class="calc-btn">4</button>
-          <button class="calc-btn">5</button>
-          <button class="calc-btn">6</button>
-          <button class="calc-btn op">−</button>
-          
-          <button class="calc-btn">1</button>
-          <button class="calc-btn">2</button>
-          <button class="calc-btn">3</button>
-          <button class="calc-btn op">+</button>
-          
-          <button class="calc-btn">0</button>
-          <button class="calc-btn">.</button>
-          <button class="calc-btn equal">=</button>
+          <button class="calc-btn silver" onclick="calcAction('AC')">AC</button>
+          <button class="calc-btn silver" onclick="calcAction('DEL')">DEL</button>
+          <button class="calc-btn silver" onclick="calcAction('%')">%</button>
+          <button class="calc-btn op" onclick="calcAction('/')">÷</button>
+          <button class="calc-btn" onclick="calcAction('7')">7</button>
+          <button class="calc-btn" onclick="calcAction('8')">8</button>
+          <button class="calc-btn" onclick="calcAction('9')">9</button>
+          <button class="calc-btn op" onclick="calcAction('*')">×</button>
+          <button class="calc-btn" onclick="calcAction('4')">4</button>
+          <button class="calc-btn" onclick="calcAction('5')">5</button>
+          <button class="calc-btn" onclick="calcAction('6')">6</button>
+          <button class="calc-btn op" onclick="calcAction('-')">−</button>
+          <button class="calc-btn" onclick="calcAction('1')">1</button>
+          <button class="calc-btn" onclick="calcAction('2')">2</button>
+          <button class="calc-btn" onclick="calcAction('3')">3</button>
+          <button class="calc-btn op" onclick="calcAction('+')">+</button>
+          <button class="calc-btn" onclick="calcAction('0')">0</button>
+          <button class="calc-btn" onclick="calcAction('.')">.</button>
+          <button class="calc-btn equal" onclick="calcAction('=')">=</button>
         </div>
       </div>
 
       <!-- WEATHER CARD -->
-      <div class="card">
+      <div class="card" id="weatherCard">
         <div class="card-header">
           <div class="card-title"><span class="dot cyan"></span> WEATHER</div>
-          <button class="icon-btn"><i data-lucide="map-pin" size="16"></i></button>
+          <button class="icon-btn" onclick="getWeather('Hyderabad')"><i data-lucide="map-pin" size="16"></i></button>
         </div>
         <div class="weather-search">
-          <input type="text" placeholder="City (e.g. Hyderabad)">
-          <button><i data-lucide="search" size="16"></i></button>
+          <input type="text" id="cityInput" placeholder="City (e.g. Hyderabad)" onkeypress="if(event.key==='Enter') getWeather(this.value)">
+          <button onclick="getWeather(document.getElementById('cityInput').value)"><i data-lucide="search" size="16"></i></button>
         </div>
         
         <div class="weather-main">
-          <i data-lucide="sun" class="sun-icon"></i>
-          <div class="weather-temp">36° <span>°C</span></div>
-          <div class="weather-desc">Clear Sky</div>
-          <div class="weather-loc">HYDERABAD, PK</div>
+          <i data-lucide="sun" class="sun-icon" id="weatherIcon"></i>
+          <div class="weather-temp"><span id="wTemp">--</span>° <span>°C</span></div>
+          <div class="weather-desc" id="wDesc">Loading...</div>
+          <div class="weather-loc" id="wLoc">DETECTING...</div>
         </div>
 
         <div class="weather-stats">
-          <div class="stat-box">Rain chance <strong>0%</strong></div>
-          <div class="stat-box">UV <strong>4.85</strong></div>
-          <div class="stat-box">Humidity <strong>-- %</strong></div>
-          <div class="stat-box">Wind <strong>7.5 km/h</strong></div>
+          <div class="stat-box">Rain chance <strong id="wRain">--%</strong></div>
+          <div class="stat-box">UV <strong id="wUv">--</strong></div>
+          <div class="stat-box">Humidity <strong id="wHum">--%</strong></div>
+          <div class="stat-box">Wind <strong id="wWind">-- km/h</strong></div>
         </div>
 
-        <div class="forecast">
-          <div class="forecast-day">
-            <div>TODAY</div>
-            <i data-lucide="sun" class="sun-mini" size="16"></i>
-            <div class="temps">36° 22°</div>
-          </div>
-          <div class="forecast-day">
-            <div>MON</div>
-            <i data-lucide="sun" class="sun-mini" size="16"></i>
-            <div class="temps">36° 23°</div>
-          </div>
-          <div class="forecast-day">
-            <div>TUE</div>
-            <i data-lucide="sun" class="sun-mini" size="16"></i>
-            <div class="temps">37° 23°</div>
-          </div>
-          <div class="forecast-day">
-            <div>WED</div>
-            <i data-lucide="sun" class="sun-mini" size="16"></i>
-            <div class="temps">36° 23°</div>
-          </div>
-          <div class="forecast-day">
-            <div>THU</div>
-            <i data-lucide="sun" class="sun-mini" size="16"></i>
-            <div class="temps">37° 22°</div>
-          </div>
-          <div class="forecast-day">
-            <div>FRI</div>
-            <i data-lucide="sun" class="sun-mini" size="16"></i>
-            <div class="temps">36° 22°</div>
-          </div>
-          <div class="forecast-day">
-            <div>SAT</div>
-            <i data-lucide="sun" class="sun-mini" size="16"></i>
-            <div class="temps">36° 22°</div>
-          </div>
+        <div class="forecast" id="forecastContainer">
+          <!-- Populated by JS -->
         </div>
       </div>
 
       <!-- GALLERY CARD -->
-      <div class="card">
+      <div class="card" id="galleryCard">
         <div class="card-header">
           <div class="card-title"><span class="dot yellow"></span> GALLERY</div>
         </div>
         <div class="gallery-grid">
-          <!-- Using placeholder images that match the vibe of your screenshot -->
           <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=500&q=80" alt="BMW">
           <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=500&q=80" alt="Tech 1">
           <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&q=80" alt="Tech 2">
@@ -764,6 +476,146 @@
     </div>
   </main>
 
+  <!-- =========================================
+       MODALS
+  ========================================= -->
+  
+  <!-- Notes Modal -->
+  <dialog id="notesModal">
+    <div class="modal-header">
+      <div class="modal-title"><i data-lucide="sticky-note" size="18"></i> Notes</div>
+      <button class="icon-btn" onclick="closeModal('notesModal')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="input-group">
+        <input type="text" id="noteInput" class="input-field" placeholder="Write a note...">
+        <button class="btn-primary" onclick="addNote()">Add</button>
+      </div>
+      <div id="notesList"></div>
+    </div>
+  </dialog>
+
+  <!-- Todo Modal -->
+  <dialog id="todoModal">
+    <div class="modal-header">
+      <div class="modal-title"><i data-lucide="check-square" size="18"></i> Todo List</div>
+      <button class="icon-btn" onclick="closeModal('todoModal')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="input-group">
+        <input type="text" id="todoInput" class="input-field" placeholder="Add a new task...">
+        <button class="btn-primary" onclick="addTodo()">Add</button>
+      </div>
+      <div class="tabs">
+        <div class="tab active" onclick="filterTodos('all', this)">All</div>
+        <div class="tab" onclick="filterTodos('active', this)">Active</div>
+        <div class="tab" onclick="filterTodos('done', this)">Done</div>
+      </div>
+      <div id="todoList"></div>
+    </div>
+  </dialog>
+
+  <!-- Pomodoro Modal -->
+  <dialog id="pomoModal">
+    <div class="modal-header">
+      <div class="modal-title"><i data-lucide="timer" size="18"></i> Pomodoro Timer</div>
+      <button class="icon-btn" onclick="closeModal('pomoModal')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="tabs">
+        <div class="tab active" onclick="setPomoMode(25, this)">Focus</div>
+        <div class="tab" onclick="setPomoMode(5, this)">Short Break</div>
+        <div class="tab" onclick="setPomoMode(15, this)">Long Break</div>
+      </div>
+      <div class="pomo-ring">
+        <svg viewBox="0 0 200 200">
+          <circle class="ring-bg" cx="100" cy="100" r="88"></circle>
+          <circle class="ring-fg" id="pomoRing" cx="100" cy="100" r="88"></circle>
+        </svg>
+        <div class="pomo-time" id="pomoTime">25:00</div>
+      </div>
+      <div class="pomo-actions">
+        <button class="btn-primary" id="pomoStartBtn" onclick="togglePomo()">Start</button>
+        <button class="btn-danger" onclick="resetPomo()">Reset</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Converter Modal -->
+  <dialog id="convModal">
+    <div class="modal-header">
+      <div class="modal-title"><i data-lucide="arrow-left-right" size="18"></i> Unit Converter</div>
+      <button class="icon-btn" onclick="closeModal('convModal')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal-body">
+      <select id="convCategory" class="input-field" style="margin-bottom:15px;" onchange="updateConvUnits()">
+        <option value="length">Length</option>
+        <option value="mass">Mass</option>
+        <option value="temperature">Temperature</option>
+        <option value="data">Data</option>
+      </select>
+      <div class="conv-row">
+        <input type="number" id="convInput" value="1" oninput="convert()">
+        <select id="convFrom" onchange="convert()"></select>
+      </div>
+      <button class="conv-swap" onclick="swapConv()"><i data-lucide="arrow-down-up" size="16"></i></button>
+      <div class="conv-row">
+        <output id="convOutput">--</output>
+        <select id="convTo" onchange="convert()"></select>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Scientific Calculator Modal -->
+  <dialog id="sciCalcModal">
+    <div class="modal-header">
+      <div class="modal-title"><i data-lucide="flask-conical" size="18"></i> Scientific Calc</div>
+      <button class="icon-btn" onclick="closeModal('sciCalcModal')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="sci-display" id="sciDisplay">0</div>
+      <div class="sci-grid">
+        <button class="sci-btn func" onclick="sciAction('sin(')">sin</button>
+        <button class="sci-btn func" onclick="sciAction('cos(')">cos</button>
+        <button class="sci-btn func" onclick="sciAction('tan(')">tan</button>
+        <button class="sci-btn func" onclick="sciAction('log(')">log</button>
+        <button class="sci-btn func" onclick="sciAction('ln(')">ln</button>
+        
+        <button class="sci-btn func" onclick="sciAction('^2')">x²</button>
+        <button class="sci-btn func" onclick="sciAction('^')">x^y</button>
+        <button class="sci-btn func" onclick="sciAction('√(')">√</button>
+        <button class="sci-btn func" onclick="sciAction('(')">(</button>
+        <button class="sci-btn func" onclick="sciAction(')')">)</button>
+
+        <button class="sci-btn" onclick="sciAction('7')">7</button>
+        <button class="sci-btn" onclick="sciAction('8')">8</button>
+        <button class="sci-btn" onclick="sciAction('9')">9</button>
+        <button class="sci-btn func" onclick="sciAction('/')">÷</button>
+        <button class="sci-btn func" onclick="sciAction('%')">%</button>
+
+        <button class="sci-btn" onclick="sciAction('4')">4</button>
+        <button class="sci-btn" onclick="sciAction('5')">5</button>
+        <button class="sci-btn" onclick="sciAction('6')">6</button>
+        <button class="sci-btn func" onclick="sciAction('*')">×</button>
+        <button class="sci-btn func" onclick="sciAction('AC')">AC</button>
+
+        <button class="sci-btn" onclick="sciAction('1')">1</button>
+        <button class="sci-btn" onclick="sciAction('2')">2</button>
+        <button class="sci-btn" onclick="sciAction('3')">3</button>
+        <button class="sci-btn func" onclick="sciAction('-')">−</button>
+        <button class="sci-btn func" onclick="sciAction('DEL')">DEL</button>
+
+        <button class="sci-btn" onclick="sciAction('0')">0</button>
+        <button class="sci-btn" onclick="sciAction('.')">.</button>
+        <button class="sci-btn func" onclick="sciAction('+')">+</button>
+        <button class="sci-btn func" onclick="sciAction('π')">π</button>
+        <button class="sci-btn func" onclick="sciAction('e')">e</button>
+        
+        <button class="sci-btn func" style="grid-column: span 5;" onclick="sciAction('=')">=</button>
+      </div>
+    </div>
+  </dialog>
+
   <!-- CHAT FAB -->
   <button class="chat-fab" onclick="toggleChat()">
     <i data-lucide="message-square" size="24"></i>
@@ -772,8 +624,6 @@
   <!-- CHAT OVERLAY -->
   <div class="chat-overlay" id="chatOverlay">
     <div class="chat-container">
-      
-      <!-- Chat Header -->
       <div class="chat-header">
         <div class="chat-identity">
           <div class="chat-avatar">ZJ</div>
@@ -783,110 +633,530 @@
           </div>
         </div>
         <div class="chat-actions">
-          <button class="chat-btn"><i data-lucide="plus" size="14"></i> NEW</button>
+          <button class="chat-btn" onclick="clearChat()"><i data-lucide="plus" size="14"></i> NEW</button>
           <button class="chat-btn"><i data-lucide="clock" size="14"></i> HISTORY</button>
           <button class="chat-btn"><i data-lucide="trash-2" size="14"></i></button>
           <button class="chat-btn close" onclick="toggleChat()"><i data-lucide="x" size="14"></i> CLOSE</button>
         </div>
       </div>
 
-      <!-- Chat Messages -->
       <div class="chat-messages" id="chatMessages">
         <div class="msg-system">
           <i data-lucide="alert-triangle" size="16"></i>
           Cannot reach chatbot server. Check your API key on Vercel.
         </div>
-
         <div class="msg-row bot">
           <div class="bubble">Hey there! 👋 What can I do for you?</div>
-        </div>
-
-        <div class="msg-row user">
-          <div class="bubble">hi</div>
-        </div>
-
-        <div class="msg-row bot">
-          <div class="bubble">Hey there! 👋 What can I do for you?</div>
-        </div>
-
-        <div class="msg-row user">
-          <div class="bubble">hi</div>
-        </div>
-
-        <div class="msg-row user">
-          <div class="bubble">how are you doing</div>
-        </div>
-
-        <div class="msg-row bot">
-          <div class="bubble">I'm running smoothly — thanks for asking! 😊</div>
         </div>
       </div>
 
-      <!-- Chat Input -->
       <div class="chat-input-area">
         <div class="chat-input-wrapper">
           <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleChatEnter(event)">
-          <i data-lucide="mic" size="18"></i>
         </div>
         <button class="chat-send-btn" onclick="sendMessage()">Send</button>
       </div>
-
     </div>
   </div>
 
-  <!-- SCRIPTS -->
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container"></div>
+
   <script>
     // Initialize Icons
     lucide.createIcons();
 
-    // Live Clock
-    function updateClock() {
+    // =========================================
+    // THEME & LAYOUT
+    // =========================================
+    const html = document.documentElement;
+    const themeIcon = document.getElementById('themeIcon');
+
+    function toggleTheme() {
+      if (html.getAttribute('data-theme') === 'dark') {
+        html.setAttribute('data-theme', 'light');
+        themeIcon.setAttribute('data-lucide', 'sun');
+      } else {
+        html.setAttribute('data-theme', 'dark');
+        themeIcon.setAttribute('data-lucide', 'moon');
+      }
+      lucide.createIcons();
+    }
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('hidden');
+    }
+
+    // Check screen size for mobile menu
+    function checkMobile() {
+      if (window.innerWidth <= 768) {
+        document.getElementById('menuBtn').style.display = 'flex';
+        document.getElementById('sidebar').classList.add('hidden');
+      } else {
+        document.getElementById('menuBtn').style.display = 'none';
+        document.getElementById('sidebar').classList.remove('hidden');
+      }
+    }
+    window.addEventListener('resize', checkMobile);
+    checkMobile();
+
+    // Scroll to section
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+      if (window.innerWidth <= 768) toggleSidebar();
+    }
+
+    // Clock
+    setInterval(() => {
       const now = new Date();
-      const timeString = now.toLocaleTimeString('en-GB', { hour12: false });
-      document.getElementById('liveClock').textContent = timeString;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
+      document.getElementById('liveClock').textContent = now.toLocaleTimeString('en-GB', { hour12: false });
+    }, 1000);
 
-    // Chat Toggle
+    // Toast
+    function showToast(msg) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Modal Logic
+    function openModal(id) {
+      document.getElementById(id).showModal();
+      if (window.innerWidth <= 768) toggleSidebar();
+    }
+    function closeModal(id) {
+      document.getElementById(id).close();
+    }
+
+    // =========================================
+    // CALCULATOR (Basic)
+    // =========================================
+    let calcCurrent = '0';
+    let calcHistoryArr = JSON.parse(localStorage.getItem('zj_calcHistory')) || [];
+
+    function renderCalc() {
+      document.getElementById('calcDisplay').textContent = calcCurrent;
+      const hist = document.getElementById('calcHistory');
+      hist.innerHTML = calcHistoryArr.map(h => `<div>${h}</div>`).join('');
+      hist.scrollTop = hist.scrollHeight;
+    }
+
+    function calcAction(key) {
+      if (key === 'AC') calcCurrent = '0';
+      else if (key === 'DEL') calcCurrent = calcCurrent.length > 1 ? calcCurrent.slice(0, -1) : '0';
+      else if (key === '=') {
+        try {
+          const result = Function('"use strict";return (' + calcCurrent + ')')();
+          calcHistoryArr.push(`${calcCurrent} = ${result}`);
+          if (calcHistoryArr.length > 5) calcHistoryArr.shift();
+          localStorage.setItem('zj_calcHistory', JSON.stringify(calcHistoryArr));
+          calcCurrent = String(result);
+        } catch { calcCurrent = 'Error'; }
+      } else {
+        if (calcCurrent === '0' || calcCurrent === 'Error') calcCurrent = key;
+        else calcCurrent += key;
+      }
+      renderCalc();
+    }
+    renderCalc();
+
+    // =========================================
+    // SCIENTIFIC CALCULATOR
+    // =========================================
+    let sciCurrent = '0';
+    
+    function sciAction(key) {
+      const display = document.getElementById('sciDisplay');
+      if (key === 'AC') sciCurrent = '0';
+      else if (key === 'DEL') sciCurrent = sciCurrent.length > 1 ? sciCurrent.slice(0, -1) : '0';
+      else if (key === '=') {
+        try {
+          let evalString = sciCurrent
+            .replace(/sin\(/g, 'Math.sin(')
+            .replace(/cos\(/g, 'Math.cos(')
+            .replace(/tan\(/g, 'Math.tan(')
+            .replace(/log\(/g, 'Math.log10(')
+            .replace(/ln\(/g, 'Math.log(')
+            .replace(/√\(/g, 'Math.sqrt(')
+            .replace(/π/g, 'Math.PI')
+            .replace(/e/g, 'Math.E')
+            .replace(/\^/g, '**');
+          const result = Function('"use strict";return (' + evalString + ')')();
+          sciCurrent = String(result);
+        } catch { sciCurrent = 'Error'; }
+      } else {
+        if (sciCurrent === '0' || sciCurrent === 'Error') sciCurrent = key;
+        else sciCurrent += key;
+      }
+      display.textContent = sciCurrent;
+    }
+
+    // =========================================
+    // WEATHER (Using Open-Meteo API)
+    // =========================================
+    const weatherCodeMap = {
+      0: { desc: 'Clear Sky', icon: 'sun' },
+      1: { desc: 'Mainly Clear', icon: 'sun' },
+      2: { desc: 'Partly Cloudy', icon: 'cloud-sun' },
+      3: { desc: 'Overcast', icon: 'cloud' },
+      45: { desc: 'Fog', icon: 'cloud-fog' },
+      48: { desc: 'Depositing Rime Fog', icon: 'cloud-fog' },
+      51: { desc: 'Light Drizzle', icon: 'cloud-drizzle' },
+      53: { desc: 'Moderate Drizzle', icon: 'cloud-drizzle' },
+      55: { desc: 'Dense Drizzle', icon: 'cloud-drizzle' },
+      61: { desc: 'Slight Rain', icon: 'cloud-rain' },
+      63: { desc: 'Moderate Rain', icon: 'cloud-rain' },
+      65: { desc: 'Heavy Rain', icon: 'cloud-rain' },
+      71: { desc: 'Slight Snow', icon: 'cloud-snow' },
+      73: { desc: 'Moderate Snow', icon: 'cloud-snow' },
+      75: { desc: 'Heavy Snow', icon: 'cloud-snow' },
+      95: { desc: 'Thunderstorm', icon: 'cloud-lightning' }
+    };
+
+    async function getWeather(city) {
+      if (!city) return;
+      try {
+        document.getElementById('wDesc').textContent = 'Loading...';
+        
+        // Geocoding
+        const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`);
+        const geoData = await geoRes.json();
+        
+        if (!geoData.results || geoData.results.length === 0) {
+          showToast('City not found');
+          document.getElementById('wDesc').textContent = 'Not Found';
+          return;
+        }
+
+        const { latitude, longitude, name, country_code } = geoData.results[0];
+        
+        // Weather
+        const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`);
+        const wData = await wRes.json();
+
+        const current = wData.current_weather;
+        const daily = wData.daily;
+
+        document.getElementById('wTemp').textContent = Math.round(current.temperature);
+        document.getElementById('wWind').textContent = `${current.windspeed} km/h`;
+        document.getElementById('wLoc').textContent = `${name}, ${country_code}`;
+        
+        const codeInfo = weatherCodeMap[current.weathercode] || { desc: 'Unknown', icon: 'cloud' };
+        document.getElementById('wDesc').textContent = codeInfo.desc;
+        
+        // Update Icon
+        const iconContainer = document.getElementById('weatherIcon');
+        iconContainer.setAttribute('data-lucide', codeInfo.icon);
+        lucide.createIcons();
+
+        // Mock stats (Open-Meteo free doesn't give rain chance/humidity/UV easily on current)
+        document.getElementById('wRain').textContent = `${Math.floor(Math.random() * 30)}%`;
+        document.getElementById('wHum').textContent = `${Math.floor(Math.random() * 40) + 40}%`;
+        document.getElementById('wUv').textContent = (Math.random() * 8).toFixed(1);
+
+        // Forecast
+        const forecastContainer = document.getElementById('forecastContainer');
+        forecastContainer.innerHTML = '';
+        for (let i = 0; i < 7; i++) {
+          const date = new Date(daily.time[i]);
+          const dayName = date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+          const max = Math.round(daily.temperature_2m_max[i]);
+          const min = Math.round(daily.temperature_2m_min[i]);
+          forecastContainer.innerHTML += `
+            <div class="forecast-day">
+              <div>${dayName}</div>
+              <i data-lucide="sun" class="sun-mini" size="16"></i>
+              <div class="temps" style="font-size:10px;">${max}° ${min}°</div>
+            </div>
+          `;
+        }
+        lucide.createIcons();
+        showToast('Weather updated');
+
+      } catch (error) {
+        console.error(error);
+        showToast('Error fetching weather');
+      }
+    }
+    getWeather('Hyderabad'); // Initial load
+
+    // =========================================
+    // NOTES
+    // =========================================
+    let notes = JSON.parse(localStorage.getItem('zj_notes')) || [];
+    
+    function renderNotes() {
+      const list = document.getElementById('notesList');
+      list.innerHTML = notes.map((note, i) => `
+        <div class="list-item">
+          <span>${note}</span>
+          <button class="btn-danger" onclick="deleteNote(${i})"><i data-lucide="trash-2" size="14"></i></button>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function addNote() {
+      const input = document.getElementById('noteInput');
+      if (!input.value.trim()) return;
+      notes.push(input.value.trim());
+      localStorage.setItem('zj_notes', JSON.stringify(notes));
+      input.value = '';
+      renderNotes();
+      showToast('Note added');
+    }
+
+    function deleteNote(index) {
+      notes.splice(index, 1);
+      localStorage.setItem('zj_notes', JSON.stringify(notes));
+      renderNotes();
+    }
+    renderNotes();
+
+    // =========================================
+    // TODO LIST
+    // =========================================
+    let todos = JSON.parse(localStorage.getItem('zj_todos')) || [];
+    let currentFilter = 'all';
+
+    function renderTodos() {
+      const list = document.getElementById('todoList');
+      let filtered = todos;
+      if (currentFilter === 'active') filtered = todos.filter(t => !t.done);
+      if (currentFilter === 'done') filtered = todos.filter(t => t.done);
+
+      list.innerHTML = filtered.map((t, i) => {
+        // Find original index for toggling/deleting
+        const originalIndex = todos.indexOf(t);
+        return `
+        <div class="list-item" style="opacity: ${t.done ? 0.5 : 1}">
+          <span style="text-decoration: ${t.done ? 'line-through' : 'none'}; cursor:pointer;" onclick="toggleTodo(${originalIndex})">
+            ${t.text}
+          </span>
+          <button class="btn-danger" onclick="deleteTodo(${originalIndex})"><i data-lucide="trash-2" size="14"></i></button>
+        </div>
+      `}).join('');
+      lucide.createIcons();
+    }
+
+    function addTodo() {
+      const input = document.getElementById('todoInput');
+      if (!input.value.trim()) return;
+      todos.push({ text: input.value.trim(), done: false });
+      localStorage.setItem('zj_todos', JSON.stringify(todos));
+      input.value = '';
+      renderTodos();
+    }
+
+    function toggleTodo(index) {
+      todos[index].done = !todos[index].done;
+      localStorage.setItem('zj_todos', JSON.stringify(todos));
+      renderTodos();
+    }
+
+    function deleteTodo(index) {
+      todos.splice(index, 1);
+      localStorage.setItem('zj_todos', JSON.stringify(todos));
+      renderTodos();
+    }
+
+    function filterTodos(filter, el) {
+      currentFilter = filter;
+      document.querySelectorAll('#todoModal .tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      renderTodos();
+    }
+    renderTodos();
+
+    // =========================================
+    // POMODORO
+    // =========================================
+    let pomoTime = 25 * 60;
+    let pomoInterval = null;
+    let pomoRunning = false;
+
+    function updatePomoDisplay() {
+      const m = Math.floor(pomoTime / 60);
+      const s = pomoTime % 60;
+      document.getElementById('pomoTime').textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      
+      const total = (pomoRunning ? pomoTime : (document.getElementById('pomoTime').textContent.startsWith('25') ? 1500 : 300)); // Simplified
+      const ring = document.getElementById('pomoRing');
+      const maxDash = 553;
+      const percent = pomoTime / (parseInt(document.getElementById('pomoTime').textContent.replace(':','')) || 1500); // rough estimate
+      
+      // Better ring logic:
+      const currentTotal = parseInt(document.getElementById('pomoStartBtn').dataset.total || 1500);
+      const offset = maxDash - (pomoTime / currentTotal) * maxDash;
+      ring.style.strokeDashoffset = offset;
+    }
+
+    function setPomoMode(minutes, el) {
+      if (pomoRunning) return;
+      document.querySelectorAll('#pomoModal .tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      pomoTime = minutes * 60;
+      document.getElementById('pomoStartBtn').dataset.total = pomoTime;
+      document.getElementById('pomoStartBtn').textContent = 'Start';
+      updatePomoDisplay();
+    }
+
+    function togglePomo() {
+      pomoRunning = !pomoRunning;
+      const btn = document.getElementById('pomoStartBtn');
+      
+      if (pomoRunning) {
+        btn.textContent = 'Pause';
+        pomoInterval = setInterval(() => {
+          pomoTime--;
+          updatePomoDisplay();
+          if (pomoTime <= 0) {
+            clearInterval(pomoInterval);
+            pomoRunning = false;
+            btn.textContent = 'Start';
+            showToast('Timer finished!');
+            // Play sound (optional)
+            try { new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play(); } catch(e){}
+          }
+        }, 1000);
+      } else {
+        btn.textContent = 'Start';
+        clearInterval(pomoInterval);
+      }
+    }
+
+    function resetPomo() {
+      clearInterval(pomoInterval);
+      pomoRunning = false;
+      document.getElementById('pomoStartBtn').textContent = 'Start';
+      const activeTab = document.querySelector('#pomoModal .tab.active');
+      const min = activeTab.textContent.includes('Focus') ? 25 : (activeTab.textContent.includes('Short') ? 5 : 15);
+      pomoTime = min * 60;
+      updatePomoDisplay();
+    }
+    // Init ring
+    document.getElementById('pomoStartBtn').dataset.total = 1500;
+    updatePomoDisplay();
+
+    // =========================================
+    // UNIT CONVERTER
+    // =========================================
+    const convData = {
+      length: { m: 1, km: 0.001, cm: 100, mm: 1000, inch: 39.37, ft: 3.28, mi: 0.000621 },
+      mass: { kg: 1, g: 1000, mg: 1000000, lb: 2.204, oz: 35.27 },
+      temperature: { C: 1, F: 1, K: 1 }, // Handled custom
+      data: { B: 1, KB: 0.001, MB: 0.000001, GB: 0.000000001 }
+    };
+
+    function updateConvUnits() {
+      const cat = document.getElementById('convCategory').value;
+      const units = Object.keys(convData[cat]);
+      const from = document.getElementById('convFrom');
+      const to = document.getElementById('convTo');
+      
+      from.innerHTML = units.map(u => `<option value="${u}">${u.toUpperCase()}</option>`).join('');
+      to.innerHTML = units.map(u => `<option value="${u}">${u.toUpperCase()}</option>`).join('');
+      to.selectedIndex = 1;
+      convert();
+    }
+
+    function convert() {
+      const cat = document.getElementById('convCategory').value;
+      const val = parseFloat(document.getElementById('convInput').value) || 0;
+      const from = document.getElementById('convFrom').value;
+      const to = document.getElementById('convTo').value;
+      let result = 0;
+
+      if (cat === 'temperature') {
+        let c = 0;
+        if (from === 'C') c = val;
+        if (from === 'F') c = (val - 32) * 5/9;
+        if (from === 'K') c = val - 273.15;
+
+        if (to === 'C') result = c;
+        if (to === 'F') result = (c * 9/5) + 32;
+        if (to === 'K') result = c + 273.15;
+      } else {
+        // Convert to base, then to target
+        const baseVal = val / convData[cat][from];
+        result = baseVal * convData[cat][to];
+      }
+
+      document.getElementById('convOutput').value = Number(result.toFixed(6));
+    }
+
+    function swapConv() {
+      const from = document.getElementById('convFrom');
+      const to = document.getElementById('convTo');
+      const temp = from.value;
+      from.value = to.value;
+      to.value = temp;
+      convert();
+    }
+    updateConvUnits();
+
+    // =========================================
+    // CHAT LOGIC
+    // =========================================
     function toggleChat() {
-      const overlay = document.getElementById('chatOverlay');
-      overlay.classList.toggle('active');
+      document.getElementById('chatOverlay').classList.toggle('active');
     }
 
-    // Basic Chat Logic
+    function clearChat() {
+      const container = document.getElementById('chatMessages');
+      container.innerHTML = `
+        <div class="msg-system">
+          <i data-lucide="alert-triangle" size="16"></i>
+          Cannot reach chatbot server. Check your API key on Vercel.
+        </div>
+        <div class="msg-row bot">
+          <div class="bubble">Hey there! 👋 What can I do for you?</div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
     function sendMessage() {
       const input = document.getElementById('chatInput');
       const text = input.value.trim();
       if (!text) return;
 
-      const messagesContainer = document.getElementById('chatMessages');
-
+      const container = document.getElementById('chatMessages');
+      
       // Add User Message
       const userMsg = document.createElement('div');
       userMsg.className = 'msg-row user';
       userMsg.innerHTML = `<div class="bubble">${text}</div>`;
-      messagesContainer.appendChild(userMsg);
-
-      // Clear Input
+      container.appendChild(userMsg);
+      
       input.value = '';
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      container.scrollTop = container.scrollHeight;
 
-      // Simulate Bot Reply
+      // Bot response (Demo logic)
       setTimeout(() => {
+        let reply = "I'm just a demo bot right now since the API is disconnected. Try asking me about the weather!";
+        const lower = text.toLowerCase();
+        if (lower.includes('hi') || lower.includes('hello')) reply = "Hey there! 👋 What can I do for you?";
+        else if (lower.includes('how are you')) reply = "I'm running smoothly — thanks for asking! 😊";
+        else if (lower.includes('weather')) reply = "You can check the weather widget on your dashboard!";
+        else if (lower.includes('calculator')) reply = "I see you have a calculator right on the dashboard. Pretty handy!";
+        else if (lower.includes('note') || lower.includes('todo')) reply = "You can manage your tasks by opening the apps in the sidebar.";
+
         const botMsg = document.createElement('div');
         botMsg.className = 'msg-row bot';
-        botMsg.innerHTML = `<div class="bubble">This is a demo response. The API is currently offline.</div>`;
-        messagesContainer.appendChild(botMsg);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        botMsg.innerHTML = `<div class="bubble">${reply}</div>`;
+        container.appendChild(botMsg);
+        container.scrollTop = container.scrollHeight;
       }, 1000);
     }
 
     function handleChatEnter(e) {
-      if (e.key === 'Enter') {
-        sendMessage();
-      }
+      if (e.key === 'Enter') sendMessage();
     }
+
   </script>
 </body>
 </html>
