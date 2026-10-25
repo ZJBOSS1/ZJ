@@ -3,95 +3,429 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ZJ Dashboard</title>
+  <title>ZJ Elite Dashboard</title>
+  
+  <!-- External Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Added crossorigin and basic integrity placeholder -->
+  <script src="https://unpkg.com/lucide@latest" crossorigin="anonymous"></script>
+
+  <style>
+    /* =========================================
+       A. CORE VARIABLES & THEME
+    ========================================= */
+    :root {
+      --bg-base: #050608;
+      --bg-sidebar: #080a0f;
+      --bg-card: #0d1117;
+      --bg-hover: #161b22;
+      --bg-input: #000000;
+      
+      --border-color: #21262d;
+      --border-light: #30363d;
+      
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted: #484f58;
+      
+      --accent-cyan: #00c4f4;
+      --accent-cyan-hover: #00a8d6;
+      --accent-cyan-glow: rgba(0, 196, 244, 0.15);
+      
+      --accent-yellow: #f0c000;
+      --accent-red: #e63946;
+      --accent-green: #2ea043;
+      --accent-purple: #a371f7;
+
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.3);
+      --shadow-lg: 0 10px 20px rgba(0,0,0,0.5);
+      
+      --transition-fast: 0.1s ease;
+      --transition-normal: 0.2s ease;
+      --transition-slow: 0.3s ease;
+    }
+
+    [data-theme="light"] {
+      --bg-base: #f0f2f5;
+      --bg-sidebar: #ffffff;
+      --bg-card: #ffffff;
+      --bg-hover: #e4e6eb;
+      --bg-input: #ffffff;
+      --border-color: #ccd0d5;
+      --border-light: #b0b3b8;
+      --text-primary: #1c1e21;
+      --text-secondary: #65676b;
+      --text-muted: #8a8d91;
+      --accent-cyan: #0066cc;
+      --accent-cyan-hover: #0052a3;
+      --accent-cyan-glow: rgba(0, 102, 204, 0.1);
+      --accent-yellow: #d4a000;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    /* =========================================
+       H. RESET & BASE ACCESSIBILITY
+    ========================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      line-height: 1.5;
+      transition: background-color var(--transition-normal), color var(--transition-normal);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Prevent horizontal overflow */
+    .main-wrapper {
+      overflow-x: hidden;
+    }
+
+    /* Focus indicators */
+    button:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 2px solid var(--accent-cyan);
+      outline-offset: 2px;
+    }
+
+    /* Skip Link */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 0;
+      background: var(--accent-cyan);
+      color: #000;
+      padding: 8px 16px;
+      z-index: 10000;
+      transition: top var(--transition-fast);
+      font-weight: 700;
+    }
+    .skip-link:focus {
+      top: 0;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4, h5, h6 { font-weight: 700; line-height: 1.2; }
+    a { color: var(--accent-cyan); text-decoration: none; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; color: inherit; }
+    input, select, textarea { font-family: inherit; color: var(--text-primary); outline: none; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: var(--radius-sm); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+
+    /* =========================================
+       SIDEBAR
+    ========================================= */
+    .sidebar {
+      width: 260px;
+      background-color: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      flex-shrink: 0;
+      transition: transform var(--transition-slow);
+      z-index: 100;
+    }
+    .sidebar.hidden { transform: translateX(-100%); position: absolute; }
+
+    .sidebar-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(2px);
+      z-index: 90; display: none; opacity: 0; transition: opacity var(--transition-normal);
+    }
+    .sidebar-backdrop.active { display: block; opacity: 1; }
+
+    .brand { display: flex; align-items: center; gap: 12px; padding: 24px 20px; border-bottom: 1px solid var(--border-color); }
+    .brand-logo { width: 36px; height: 36px; background: var(--accent-cyan); color: #000; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; box-shadow: 0 0 15px var(--accent-cyan-glow); }
+    .brand-name { font-size: 15px; font-weight: 800; letter-spacing: 1px; }
+
+    .nav-scroll { flex: 1; overflow-y: auto; padding: 16px 0; }
+    .nav-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; padding: 20px 20px 8px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 20px; width: 100%; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; text-align: left; border-left: 3px solid transparent; transition: all var(--transition-fast); }
+    .nav-item i { width: 18px; height: 18px; }
+    .nav-item:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    .nav-item.active { border-left-color: var(--accent-cyan); color: var(--accent-cyan); background-color: var(--accent-cyan-glow); }
+
+    /* =========================================
+       MAIN LAYOUT
+    ========================================= */
+    .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow-y: auto; position: relative; }
+
+    .topbar { display: flex; justify-content: space-between; align-items: center; padding: 16px 30px; border-bottom: 1px solid var(--border-color); background-color: rgba(8, 10, 15, 0.85); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); }
+    [data-theme="light"] .topbar { background-color: rgba(255, 255, 255, 0.85); }
+    .topbar-left, .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .menu-btn { display: none; }
+
+    .search-box { display: flex; align-items: center; gap: 10px; background: var(--bg-base); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: var(--radius-md); color: var(--text-secondary); font-size: 13px; width: 320px; transition: border-color var(--transition-fast); }
+    .search-box:focus-within { border-color: var(--accent-cyan); }
+    .search-box input { background: transparent; border: none; width: 100%; color: var(--text-primary); }
+    .search-shortcut { background: var(--bg-hover); border: 1px solid var(--border-color); padding: 2px 6px; border-radius: var(--radius-sm); font-size: 10px; font-weight: 700; color: var(--text-secondary); }
+
+    .icon-btn { color: var(--text-secondary); display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: var(--radius-md); transition: all var(--transition-fast); }
+    .icon-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+    .theme-btn { color: var(--accent-yellow); border: 1px solid var(--border-color); background: var(--bg-base); }
+
+    /* HERO */
+    .hero { padding: 50px 30px 30px; text-align: center; }
+    .hero h1 { font-size: 36px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; letter-spacing: -0.5px; }
+    .clock-badge { background: var(--accent-yellow); color: #000; font-family: var(--font-mono); font-size: 22px; padding: 6px 14px; border-radius: var(--radius-md); font-weight: 800; box-shadow: 0 0 20px rgba(240, 192, 0, 0.2); }
+    .hero p { color: var(--accent-cyan); font-size: 13px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-top: 12px; }
+
+    /* GRID */
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; padding: 0 30px 40px; max-width: 1500px; margin: 0 auto; width: 100%; }
+    .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); display: flex; flex-direction: column; overflow: hidden; height: 540px; box-shadow: var(--shadow-md); transition: transform var(--transition-normal), box-shadow var(--transition-normal); }
+    .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .card-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border-color); font-size: 12px; font-weight: 700; letter-spacing: 1px; background: rgba(255, 255, 255, 0.01); }
+    .card-title { display: flex; align-items: center; gap: 10px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .dot.cyan { background: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan); }
+    .dot.yellow { background: var(--accent-yellow); box-shadow: 0 0 8px var(--accent-yellow); }
+    .dot.silver { background: #c0c0c0; box-shadow: 0 0 8px #c0c0c0; }
+
+    /* =========================================
+       WIDGET: CALCULATOR
+    ========================================= */
+    .calc-history { padding: 12px 20px; font-size: 12px; color: var(--text-secondary); text-align: right; min-height: 60px; max-height: 80px; overflow-y: auto; border-bottom: 1px solid var(--border-color); }
+    .calc-display { padding: 15px 20px; text-align: right; font-size: 36px; font-weight: 700; font-family: var(--font-mono); overflow-x: auto; white-space: nowrap; color: var(--text-primary); }
+    .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 20px 20px; flex: 1; }
+    .calc-btn { background: var(--bg-hover); border-radius: var(--radius-md); font-size: 20px; font-weight: 600; transition: filter var(--transition-fast); display: flex; align-items: center; justify-content: center; }
+    .calc-btn:active { filter: brightness(0.8); }
+    .calc-btn.op { background: var(--accent-cyan); color: #000; }
+    .calc-btn.equal { background: var(--accent-yellow); color: #000; grid-column: span 2; }
+    .calc-btn.silver { background: var(--border-light); color: var(--text-primary); }
+
+    /* =========================================
+       WIDGET: WEATHER
+    ========================================= */
+    .weather-search { padding: 16px 20px; display: flex; gap: 10px; }
+    .weather-search input { flex: 1; background: var(--bg-base); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: var(--radius-md); color: var(--text-primary); }
+    .weather-search button { background: var(--accent-cyan); color: #000; padding: 0 18px; border-radius: var(--radius-md); display: flex; align-items: center; font-weight: 700; }
+    .weather-search button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .weather-main { text-align: center; padding: 10px; }
+    .weather-icon-large { color: var(--accent-yellow); display: flex; justify-content: center; margin-bottom: 10px; }
+    .weather-icon-large svg { width: 56px; height: 56px; }
+    .weather-temp { font-size: 52px; font-weight: 800; display: flex; align-items: flex-start; justify-content: center; gap: 5px; line-height: 1; }
+    .weather-temp span:last-child { font-size: 16px; background: var(--bg-hover); padding: 4px 10px; border-radius: var(--radius-md); margin-top: 10px; color: var(--text-secondary); font-weight: 600; }
+    .weather-desc { color: var(--accent-cyan); font-size: 15px; font-weight: 600; margin-top: 8px; }
+    .weather-loc { color: var(--text-secondary); font-size: 12px; margin-top: 5px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+    .weather-update-time { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+    .weather-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 20px; }
+    .stat-box { background: var(--bg-base); border: 1px solid var(--border-color); padding: 14px; border-radius: var(--radius-md); text-align: center; font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+    .stat-box strong { display: block; font-size: 16px; color: var(--text-primary); margin-top: 4px; font-weight: 700; }
+    .forecast { display: flex; justify-content: space-between; padding: 16px 20px; border-top: 1px solid var(--border-color); margin-top: auto; overflow-x: auto; gap: 10px; }
+    .forecast-day { text-align: center; font-size: 11px; color: var(--text-secondary); min-width: 44px; font-weight: 600; }
+    .forecast-day svg { color: var(--accent-yellow); margin: 8px 0; }
+
+    /* =========================================
+       WIDGET: GALLERY
+    ========================================= */
+    .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; height: 100%; }
+    .gallery-grid img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border-color); transition: transform var(--transition-normal); cursor: pointer; }
+    .gallery-grid img:hover { transform: scale(1.03); z-index: 2; box-shadow: var(--shadow-md); }
+    .gallery-grid img:first-child { grid-row: span 2; }
+
+    /* =========================================
+       MODALS
+    ========================================= */
+    .app-modal { border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-primary); border-radius: var(--radius-xl); padding: 0; width: 90%; max-width: 500px; margin: auto; box-shadow: var(--shadow-lg); }
+    .app-modal::backdrop { background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border-color); background: var(--bg-sidebar); border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
+    .modal-title { font-weight: 700; display: flex; align-items: center; gap: 10px; font-size: 15px; }
+    .modal-body { padding: 24px; max-height: 70vh; overflow-y: auto; }
+
+    /* Forms & Lists */
+    .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+    .input-field { flex: 1; background: var(--bg-base); border: 1px solid var(--border-color); padding: 12px 16px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 14px; }
+    .input-field:focus { border-color: var(--accent-cyan); box-shadow: 0 0 0 2px var(--accent-cyan-glow); }
+    .btn-primary { background: var(--accent-cyan); color: #000; font-weight: 700; padding: 12px 24px; border-radius: var(--radius-md); transition: background var(--transition-fast); display: flex; align-items: center; gap: 8px; justify-content: center; }
+    .btn-primary:hover { background: var(--accent-cyan-hover); }
+    .btn-danger { background: rgba(230, 57, 70, 0.1); color: var(--accent-red); padding: 10px 16px; border-radius: var(--radius-md); font-weight: 600; transition: background var(--transition-fast); display: flex; align-items: center; justify-content: center;}
+    .btn-danger:hover { background: rgba(230, 57, 70, 0.2); }
+
+    .list-container { max-height: 350px; overflow-y: auto; }
+    .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--bg-base); border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 10px; font-size: 14px; animation: fadeIn var(--transition-normal); word-break: break-word; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Tabs */
+    .tabs { display: flex; background: var(--bg-base); border-radius: var(--radius-md); padding: 4px; margin-bottom: 20px; }
+    .tab { flex: 1; padding: 10px; text-align: center; font-size: 13px; border-radius: var(--radius-md); cursor: pointer; color: var(--text-secondary); transition: all var(--transition-fast); font-weight: 600; }
+    .tab.active { background: var(--bg-hover); color: var(--text-primary); }
+
+    /* Pomodoro Ring */
+    .pomo-ring { position: relative; width: 220px; height: 220px; margin: 20px auto; }
+    .pomo-ring svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+    .ring-bg { fill: none; stroke: var(--bg-hover); stroke-width: 8; }
+    .ring-fg { fill: none; stroke: var(--accent-cyan); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 553; stroke-dashoffset: 0; transition: stroke-dashoffset 0.1s linear; }
+    .pomo-time { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 44px; font-family: var(--font-mono); font-weight: 700; }
+    .pomo-actions { display: flex; justify-content: center; gap: 12px; }
+
+    /* Converter */
+    .conv-row { display: flex; gap: 12px; margin-bottom: 16px; }
+    .conv-row select { flex: 1; background: var(--bg-base); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-md); color: var(--text-primary); }
+    .conv-row input, .conv-row output { flex: 1; background: var(--bg-base); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 18px; display: flex; align-items: center; font-family: var(--font-mono); }
+    .conv-row output { background: var(--bg-hover); }
+    .conv-swap { background: var(--bg-hover); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: -8px auto 12px; color: var(--accent-cyan); position: relative; z-index: 2; cursor: pointer; border: 1px solid var(--border-color); }
+
+    /* Scientific Calc */
+    .sci-display { background: var(--bg-base); padding: 16px; border-radius: var(--radius-md); text-align: right; font-size: 28px; font-family: var(--font-mono); margin-bottom: 16px; overflow-x: auto; border: 1px solid var(--border-color); }
+    .sci-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .sci-btn { background: var(--bg-hover); padding: 14px 0; border-radius: var(--radius-md); font-size: 15px; font-weight: 600; }
+    .sci-btn.func { color: var(--accent-cyan); }
+
+    /* =========================================
+       CHAT OVERLAY
+    ========================================= */
+    .chat-fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--accent-cyan); color: #000; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(0, 196, 244, 0.4); z-index: 100; transition: transform var(--transition-normal); }
+    .chat-fab:hover { transform: scale(1.08) rotate(5deg); }
+    .chat-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(6px); z-index: 1000; display: none; justify-content: center; align-items: center; }
+    .chat-overlay.active { display: flex; animation: fadeIn var(--transition-fast); }
+    .chat-container { width: 100%; max-width: 850px; height: 100%; max-height: 850px; background: #000; border: 1px solid var(--border-color); border-radius: var(--radius-xl); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+    .chat-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: #080a0f; border-bottom: 1px solid var(--border-color); }
+    .chat-identity { display: flex; align-items: center; gap: 14px; }
+    .chat-avatar { width: 42px; height: 42px; background: var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; font-size: 16px; box-shadow: 0 0 15px rgba(0, 196, 244, 0.3); }
+    .chat-title h3 { font-size: 15px; margin-bottom: 2px; }
+    .chat-title p { font-size: 12px; color: var(--accent-cyan); display: flex; align-items: center; gap: 5px; }
+    .chat-title p::before { content: ''; width: 6px; height: 6px; background: var(--accent-cyan); border-radius: 50%; display: inline-block; }
+    .chat-actions { display: flex; gap: 10px; }
+    .chat-btn { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border: 1px solid var(--border-light); border-radius: var(--radius-md); font-size: 12px; font-weight: 700; color: var(--text-primary); transition: background var(--transition-fast); background: transparent; }
+    .chat-btn:hover { background: var(--bg-hover); }
+    .chat-btn.close { border-color: #444; color: #aaa; }
+    .chat-btn svg { width: 14px; height: 14px; }
+
+    .chat-messages { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; background: #000; }
+    .msg-system { background: #111; border: 1px solid #333; color: #ccc; padding: 14px 18px; border-radius: var(--radius-md); font-size: 13px; display: flex; align-items: center; gap: 10px; }
+    .msg-system i { color: var(--accent-green); }
+    .msg-row { display: flex; width: 100%; }
+    .msg-row.user { justify-content: flex-end; }
+    .bubble { max-width: 75%; padding: 14px 18px; border-radius: var(--radius-lg); font-size: 14px; line-height: 1.6; word-wrap: break-word; }
+    .msg-row.bot .bubble { background: #111; border: 1px solid #333; color: #e0e0e0; border-bottom-left-radius: 4px; }
+    .msg-row.user .bubble { background: var(--accent-cyan); color: #000; border-bottom-right-radius: 4px; font-weight: 500; }
+
+    .chat-input-area { padding: 16px 24px; background: #080a0f; border-top: 1px solid var(--border-color); display: flex; gap: 14px; }
+    .chat-input-wrapper { flex: 1; display: flex; align-items: center; background: #000; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 0 16px; }
+    .chat-input-wrapper input { flex: 1; background: transparent; border: none; color: #fff; padding: 16px 0; font-size: 14px; }
+    .chat-send-btn { background: var(--accent-cyan); color: #000; font-weight: 800; padding: 0 28px; border-radius: var(--radius-md); font-size: 14px; transition: background var(--transition-fast); }
+    .chat-send-btn:hover { background: var(--accent-cyan-hover); }
+    .chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Typing Indicator */
+    .typing-indicator { display: flex; gap: 5px; padding: 14px 18px; background: #111; border: 1px solid #333; border-radius: var(--radius-lg); border-bottom-left-radius: 4px; width: fit-content; }
+    .typing-indicator span { width: 6px; height: 6px; background: #666; border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+    .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+    .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+    /* Toasts */
+    .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+    .toast { background: var(--bg-card); border: 1px solid var(--border-color); padding: 14px 28px; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); animation: slideUp var(--transition-normal); color: var(--text-primary); font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+    .toast.success { border-left: 4px solid var(--accent-green); }
+    .toast.error { border-left: 4px solid var(--accent-red); }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* =========================================
+       RESPONSIVE DESIGN
+    ========================================= */
+    @media (max-width: 768px) {
+      .sidebar { position: absolute; }
+      .sidebar.hidden { transform: translateX(-100%); }
+      .menu-btn { display: flex; }
+      .dashboard-grid { grid-template-columns: 1fr; padding: 0 16px 20px; }
+      .hero { padding: 30px 16px 20px; }
+      .hero h1 { font-size: 26px; }
+      .hero h1 .clock-badge { font-size: 18px; }
+      .topbar { padding: 12px 16px; }
+      .search-box { width: 180px; }
+      .search-shortcut { display: none; }
+      .chat-container { max-height: 100vh; border-radius: 0; border: none; }
+      .chat-header { border-radius: 0; }
+      .chat-actions .chat-btn span { display: none; }
+      .chat-actions .chat-btn { padding: 8px; }
+    }
+  </style>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
-  <div class="toast-container" id="toastContainer" role="status" aria-live="polite"></div>
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar" aria-label="Main navigation">
-    <div class="brand">
-      <div class="brand-logo">ZJ</div>
-      <div class="brand-name">ZJ WEBSITE</div>
-    </div>
+    <div class="brand"><div class="brand-logo">ZJ</div><div class="brand-name">ZJ ELITE</div></div>
     <div class="nav-scroll">
       <div class="nav-label">Main Menu</div>
-      <button class="nav-item active" data-action="scroll" data-target="dashboard">
-        <i data-lucide="layout-dashboard"></i> Dashboard
-      </button>
-      <button class="nav-item" data-action="scroll" data-target="calcCard">
-        <i data-lucide="calculator"></i> Calculator
-      </button>
-      <button class="nav-item" data-action="scroll" data-target="weatherCard">
-        <i data-lucide="cloud-sun"></i> Weather
-      </button>
-      <button class="nav-item" data-action="scroll" data-target="galleryCard">
-        <i data-lucide="image"></i> Gallery
-      </button>
+      <button class="nav-item active" data-action="scroll" data-target="dashboard"><i data-lucide="layout-dashboard"></i> Dashboard</button>
+      <button class="nav-item" data-action="scroll" data-target="calcCard"><i data-lucide="calculator"></i> Calculator</button>
+      <button class="nav-item" data-action="scroll" data-target="weatherCard"><i data-lucide="cloud-sun"></i> Weather</button>
+      <button class="nav-item" data-action="scroll" data-target="galleryCard"><i data-lucide="image"></i> Gallery</button>
 
       <div class="nav-label">Professional Apps</div>
-      <button class="nav-item" data-action="open-modal" data-target="notesModal">
-        <i data-lucide="sticky-note"></i> Notes
-      </button>
-      <button class="nav-item" data-action="open-modal" data-target="todoModal">
-        <i data-lucide="check-square"></i> Todo List
-      </button>
-      <button class="nav-item" data-action="open-modal" data-target="pomoModal">
-        <i data-lucide="timer"></i> Pomodoro
-      </button>
-      <button class="nav-item" data-action="open-modal" data-target="convModal">
-        <i data-lucide="arrow-left-right"></i> Unit Converter
-      </button>
-      <button class="nav-item" data-action="open-chat">
-        <i data-lucide="message-square"></i> Chatbot
-      </button>
+      <button class="nav-item" data-action="open-modal" data-target="notesModal"><i data-lucide="sticky-note"></i> Notes</button>
+      <button class="nav-item" data-action="open-modal" data-target="todoModal"><i data-lucide="check-square"></i> Todo List</button>
+      <button class="nav-item" data-action="open-modal" data-target="pomoModal"><i data-lucide="timer"></i> Pomodoro</button>
+      <button class="nav-item" data-action="open-modal" data-target="convModal"><i data-lucide="arrow-left-right"></i> Unit Converter</button>
+      <button class="nav-item" data-action="open-chat"><i data-lucide="message-square"></i> AI Chatbot</button>
+
+      <div class="nav-label">System</div>
+      <button class="nav-item" data-action="open-modal" data-target="settingsModal"><i data-lucide="settings"></i> API Settings</button>
     </div>
   </aside>
   <div class="sidebar-backdrop" id="sidebarBackdrop" data-action="toggle-sidebar"></div>
 
   <!-- MAIN CONTENT -->
   <main class="main-wrapper" id="main-content">
-    <!-- TOPBAR -->
     <header class="topbar">
       <div class="topbar-left">
-        <button class="icon-btn menu-btn" data-action="toggle-sidebar" aria-label="Open menu">
-          <i data-lucide="menu"></i>
-        </button>
+        <button class="icon-btn menu-btn" data-action="toggle-sidebar" aria-label="Open menu"><i data-lucide="menu"></i></button>
         <div class="search-box">
           <i data-lucide="search"></i>
-          <input type="text" placeholder="Search shortcuts...">
+          <input type="text" id="globalSearch" placeholder="Search shortcuts...">
           <span class="search-shortcut">Ctrl K</span>
         </div>
       </div>
       <div class="topbar-right">
-        <button class="icon-btn theme-btn" id="themeToggle" aria-label="Toggle theme">
-          <i data-lucide="moon"></i>
-        </button>
+        <button class="icon-btn theme-btn" id="themeToggle" aria-label="Toggle theme"><i data-lucide="moon"></i></button>
       </div>
     </header>
 
-    <!-- HERO -->
     <section class="hero" id="dashboard">
       <h1>Your All-in-One Dashboard <span class="clock-badge" id="liveClock">00:00:00</span></h1>
       <p>Stay productive, informed, and connected.</p>
     </section>
 
-    <!-- DASHBOARD GRID -->
     <div class="dashboard-grid">
-      
-      <!-- CALCULATOR -->
+      <!-- CALCULATOR CARD -->
       <section class="card" id="calcCard" aria-label="Basic Calculator">
         <div class="card-header">
           <div class="card-title"><span class="dot silver"></span> CALCULATOR</div>
-          <button class="icon-btn" data-action="open-modal" data-target="sciCalcModal" title="Scientific Mode">
-            <i data-lucide="maximize-2"></i>
-          </button>
+          <button class="icon-btn" data-action="open-modal" data-target="sciCalcModal" aria-label="Open Scientific Mode"><i data-lucide="maximize-2"></i></button>
         </div>
         <div class="calc-history" id="calcHistory"></div>
         <div class="calc-display" id="calcDisplay">0</div>
@@ -100,98 +434,68 @@
           <button class="calc-btn silver" data-calc="DEL">DEL</button>
           <button class="calc-btn silver" data-calc="%">%</button>
           <button class="calc-btn op" data-calc="/">÷</button>
-          
-          <button class="calc-btn" data-calc="7">7</button>
-          <button class="calc-btn" data-calc="8">8</button>
-          <button class="calc-btn" data-calc="9">9</button>
-          <button class="calc-btn op" data-calc="*">×</button>
-          
-          <button class="calc-btn" data-calc="4">4</button>
-          <button class="calc-btn" data-calc="5">5</button>
-          <button class="calc-btn" data-calc="6">6</button>
-          <button class="calc-btn op" data-calc="-">−</button>
-          
-          <button class="calc-btn" data-calc="1">1</button>
-          <button class="calc-btn" data-calc="2">2</button>
-          <button class="calc-btn" data-calc="3">3</button>
-          <button class="calc-btn op" data-calc="+">+</button>
-          
-          <button class="calc-btn" data-calc="0">0</button>
-          <button class="calc-btn" data-calc=".">.</button>
-          <button class="calc-btn equal" data-calc="=">=</button>
+          <button class="calc-btn" data-calc="7">7</button><button class="calc-btn" data-calc="8">8</button><button class="calc-btn" data-calc="9">9</button><button class="calc-btn op" data-calc="*">×</button>
+          <button class="calc-btn" data-calc="4">4</button><button class="calc-btn" data-calc="5">5</button><button class="calc-btn" data-calc="6">6</button><button class="calc-btn op" data-calc="-">−</button>
+          <button class="calc-btn" data-calc="1">1</button><button class="calc-btn" data-calc="2">2</button><button class="calc-btn" data-calc="3">3</button><button class="calc-btn op" data-calc="+">+</button>
+          <button class="calc-btn" data-calc="0">0</button><button class="calc-btn" data-calc=".">.</button><button class="calc-btn equal" data-calc="=">=</button>
         </div>
       </section>
 
-      <!-- WEATHER -->
+      <!-- WEATHER CARD -->
       <section class="card" id="weatherCard" aria-label="Weather">
         <div class="card-header">
           <div class="card-title"><span class="dot cyan"></span> WEATHER</div>
-          <button class="icon-btn" id="geoWeatherBtn" title="Use my location">
-            <i data-lucide="map-pin"></i>
-          </button>
+          <button class="icon-btn" id="geoWeatherBtn" aria-label="Use my location"><i data-lucide="map-pin"></i></button>
         </div>
         <div class="weather-search">
-          <input type="text" id="cityInput" placeholder="City (e.g. Hyderabad)" autocomplete="off">
+          <input type="text" id="cityInput" placeholder="City (e.g. London)" autocomplete="off">
           <button id="searchWeatherBtn" aria-label="Search"><i data-lucide="search"></i></button>
         </div>
-        
         <div class="weather-main">
           <div class="weather-icon-large" id="wIcon"><i data-lucide="sun"></i></div>
           <div class="weather-temp"><span id="wTemp">--</span>° <span>°C</span></div>
           <div class="weather-desc" id="wDesc">Loading...</div>
           <div class="weather-loc" id="wLoc">DETECTING...</div>
+          <div class="weather-update-time" id="wUpdateTime"></div>
         </div>
-
         <div class="weather-stats">
           <div class="stat-box">Rain chance <strong id="wRain">--%</strong></div>
           <div class="stat-box">UV Index <strong id="wUv">--</strong></div>
           <div class="stat-box">Humidity <strong id="wHum">--%</strong></div>
           <div class="stat-box">Wind <strong id="wWind">-- km/h</strong></div>
         </div>
-
         <div class="forecast" id="wForecast"></div>
       </section>
 
-      <!-- GALLERY -->
+      <!-- GALLERY CARD -->
       <section class="card" id="galleryCard" aria-label="Gallery">
-        <div class="card-header">
-          <div class="card-title"><span class="dot yellow"></span> GALLERY</div>
-        </div>
+        <div class="card-header"><div class="card-title"><span class="dot yellow"></span> GALLERY</div></div>
         <div class="gallery-grid">
-          <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=500&q=80" alt="BMW" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=500&q=80" alt="Tech 1" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&q=80" alt="Tech 2" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600&q=80" alt="BMW" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=80" alt="Tech 1" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&q=80" alt="Tech 2" loading="lazy">
         </div>
       </section>
     </div>
   </main>
 
-  <!-- ============ MODALS ============ -->
-
-  <!-- Notes Modal -->
+  <!-- MODALS -->
   <dialog class="app-modal" id="notesModal">
-    <div class="modal-header">
-      <div class="modal-title"><i data-lucide="sticky-note"></i> Notes</div>
-      <button class="icon-btn" data-action="close-modal"><i data-lucide="x"></i></button>
-    </div>
+    <div class="modal-header"><div class="modal-title"><i data-lucide="sticky-note"></i> Notes</div><button class="icon-btn" data-action="close-modal" aria-label="Close"><i data-lucide="x"></i></button></div>
     <div class="modal-body">
       <div class="input-group">
-        <input type="text" id="noteInput" class="input-field" placeholder="Write a quick note..." autocomplete="off">
+        <input type="text" id="noteInput" class="input-field" placeholder="Write a quick note..." maxlength="500">
         <button class="btn-primary" id="addNoteBtn">Add</button>
       </div>
-      <div id="notesList" class="list-container"></div>
+      <div id="notesList" class="list-container" aria-live="polite"></div>
     </div>
   </dialog>
 
-  <!-- Todo Modal -->
   <dialog class="app-modal" id="todoModal">
-    <div class="modal-header">
-      <div class="modal-title"><i data-lucide="check-square"></i> Todo List</div>
-      <button class="icon-btn" data-action="close-modal"><i data-lucide="x"></i></button>
-    </div>
+    <div class="modal-header"><div class="modal-title"><i data-lucide="check-square"></i> Todo List</div><button class="icon-btn" data-action="close-modal" aria-label="Close"><i data-lucide="x"></i></button></div>
     <div class="modal-body">
       <div class="input-group">
-        <input type="text" id="todoInput" class="input-field" placeholder="Add a new task..." autocomplete="off">
+        <input type="text" id="todoInput" class="input-field" placeholder="Add a new task..." maxlength="200">
         <button class="btn-primary" id="addTodoBtn">Add</button>
       </div>
       <div class="tabs" id="todoTabs">
@@ -199,16 +503,12 @@
         <div class="tab" data-filter="active">Active</div>
         <div class="tab" data-filter="done">Done</div>
       </div>
-      <div id="todoList" class="list-container"></div>
+      <div id="todoList" class="list-container" aria-live="polite"></div>
     </div>
   </dialog>
 
-  <!-- Pomodoro Modal -->
   <dialog class="app-modal" id="pomoModal">
-    <div class="modal-header">
-      <div class="modal-title"><i data-lucide="timer"></i> Pomodoro</div>
-      <button class="icon-btn" data-action="close-modal"><i data-lucide="x"></i></button>
-    </div>
+    <div class="modal-header"><div class="modal-title"><i data-lucide="timer"></i> Pomodoro Timer</div><button class="icon-btn" data-action="close-modal" aria-label="Close"><i data-lucide="x"></i></button></div>
     <div class="modal-body">
       <div class="tabs" id="pomoTabs">
         <div class="tab active" data-time="25">Focus</div>
@@ -220,7 +520,7 @@
           <circle class="ring-bg" cx="100" cy="100" r="88"></circle>
           <circle class="ring-fg" id="pomoRing" cx="100" cy="100" r="88"></circle>
         </svg>
-        <div class="pomo-time" id="pomoTime">25:00</div>
+        <div class="pomo-time" id="pomoTime" aria-live="off">25:00</div>
       </div>
       <div class="pomo-actions">
         <button class="btn-primary" id="pomoStartBtn">Start</button>
@@ -229,119 +529,858 @@
     </div>
   </dialog>
 
-  <!-- Converter Modal -->
   <dialog class="app-modal" id="convModal">
-    <div class="modal-header">
-      <div class="modal-title"><i data-lucide="arrow-left-right"></i> Unit Converter</div>
-      <button class="icon-btn" data-action="close-modal"><i data-lucide="x"></i></button>
-    </div>
+    <div class="modal-header"><div class="modal-title"><i data-lucide="arrow-left-right"></i> Unit Converter</div><button class="icon-btn" data-action="close-modal" aria-label="Close"><i data-lucide="x"></i></button></div>
     <div class="modal-body">
-      <select id="convCategory" class="input-field" style="margin-bottom:15px; width:100%;">
+      <select id="convCategory" class="input-field" style="margin-bottom:20px; width:100%;">
         <option value="length">Length</option>
         <option value="mass">Mass</option>
         <option value="temperature">Temperature</option>
         <option value="data">Data</option>
+        <option value="time">Time</option>
       </select>
       <div class="conv-row">
-        <input type="number" id="convInput" value="1">
-        <select id="convFrom"></select>
+        <input type="number" id="convInput" value="1" step="any">
+        <select id="convFrom" aria-label="From unit"></select>
       </div>
-      <button class="conv-swap" id="convSwapBtn"><i data-lucide="arrow-down-up"></i></button>
+      <button class="conv-swap" id="convSwapBtn" aria-label="Swap units"><i data-lucide="arrow-down-up"></i></button>
       <div class="conv-row">
-        <output id="convOutput">--</output>
-        <select id="convTo"></select>
+        <output id="convOutput" aria-live="polite">--</output>
+        <select id="convTo" aria-label="To unit"></select>
       </div>
     </div>
   </dialog>
 
-  <!-- Scientific Calculator Modal -->
   <dialog class="app-modal" id="sciCalcModal">
-    <div class="modal-header">
-      <div class="modal-title"><i data-lucide="flask-conical"></i> Scientific Calculator</div>
-      <button class="icon-btn" data-action="close-modal"><i data-lucide="x"></i></button>
-    </div>
+    <div class="modal-header"><div class="modal-title"><i data-lucide="flask-conical"></i> Scientific Calculator</div><button class="icon-btn" data-action="close-modal" aria-label="Close"><i data-lucide="x"></i></button></div>
     <div class="modal-body">
       <div class="sci-display" id="sciDisplay">0</div>
       <div class="sci-grid">
-        <button class="sci-btn func" data-sci="sin(">sin</button>
-        <button class="sci-btn func" data-sci="cos(">cos</button>
-        <button class="sci-btn func" data-sci="tan(">tan</button>
-        <button class="sci-btn func" data-sci="log(">log</button>
-        <button class="sci-btn func" data-sci="ln(">ln</button>
-        
-        <button class="sci-btn func" data-sci="^2">x²</button>
-        <button class="sci-btn func" data-sci="^">x^y</button>
-        <button class="sci-btn func" data-sci="√(">√</button>
-        <button class="sci-btn func" data-sci="(">(</button>
-        <button class="sci-btn func" data-sci=")">)</button>
-
-        <button class="sci-btn" data-sci="7">7</button>
-        <button class="sci-btn" data-sci="8">8</button>
-        <button class="sci-btn" data-sci="9">9</button>
-        <button class="sci-btn func" data-sci="/">÷</button>
-        <button class="sci-btn func" data-sci="%">%</button>
-
-        <button class="sci-btn" data-sci="4">4</button>
-        <button class="sci-btn" data-sci="5">5</button>
-        <button class="sci-btn" data-sci="6">6</button>
-        <button class="sci-btn func" data-sci="*">×</button>
-        <button class="sci-btn func" data-sci="AC">AC</button>
-
-        <button class="sci-btn" data-sci="1">1</button>
-        <button class="sci-btn" data-sci="2">2</button>
-        <button class="sci-btn" data-sci="3">3</button>
-        <button class="sci-btn func" data-sci="-">−</button>
-        <button class="sci-btn func" data-sci="DEL">DEL</button>
-
-        <button class="sci-btn" data-sci="0">0</button>
-        <button class="sci-btn" data-sci=".">.</button>
-        <button class="sci-btn func" data-sci="+">+</button>
-        <button class="sci-btn func" data-sci="π">π</button>
-        <button class="sci-btn func" data-sci="e">e</button>
-        
+        <button class="sci-btn func" data-sci="sin(">sin</button><button class="sci-btn func" data-sci="cos(">cos</button><button class="sci-btn func" data-sci="tan(">tan</button><button class="sci-btn func" data-sci="log(">log</button><button class="sci-btn func" data-sci="ln(">ln</button>
+        <button class="sci-btn func" data-sci="^2">x²</button><button class="sci-btn func" data-sci="^">x^y</button><button class="sci-btn func" data-sci="√(">√</button><button class="sci-btn func" data-sci="(">(</button><button class="sci-btn func" data-sci=")">)</button>
+        <button class="sci-btn" data-sci="7">7</button><button class="sci-btn" data-sci="8">8</button><button class="sci-btn" data-sci="9">9</button><button class="sci-btn func" data-sci="/">÷</button><button class="sci-btn func" data-sci="%">%</button>
+        <button class="sci-btn" data-sci="4">4</button><button class="sci-btn" data-sci="5">5</button><button class="sci-btn" data-sci="6">6</button><button class="sci-btn func" data-sci="*">×</button><button class="sci-btn func" data-sci="AC">AC</button>
+        <button class="sci-btn" data-sci="1">1</button><button class="sci-btn" data-sci="2">2</button><button class="sci-btn" data-sci="3">3</button><button class="sci-btn func" data-sci="-">−</button><button class="sci-btn func" data-sci="DEL">DEL</button>
+        <button class="sci-btn" data-sci="0">0</button><button class="sci-btn" data-sci=".">.</button><button class="sci-btn func" data-sci="+">+</button><button class="sci-btn func" data-sci="π">π</button><button class="sci-btn func" data-sci="e">e</button>
         <button class="sci-btn func" style="grid-column: span 5;" data-sci="=">=</button>
       </div>
     </div>
   </dialog>
 
-  <!-- CHAT FAB -->
-  <button class="chat-fab" id="chatFab" aria-label="Open Chat">
-    <i data-lucide="message-square"></i>
-  </button>
+  <dialog class="app-modal" id="settingsModal">
+    <div class="modal-header"><div class="modal-title"><i data-lucide="settings"></i> Developer Settings</div><button class="icon-btn" data-action="close-modal" aria-label="Close"><i data-lucide="x"></i></button></div>
+    <div class="modal-body">
+      <p class="text-sm text-muted" style="margin-bottom: 20px;">
+        Configure your custom backend endpoint for the AI Chatbot. If left blank, it will use the default Flask deployment.
+      </p>
+      <div style="margin-bottom: 15px;">
+        <label class="text-xs font-bold text-muted" style="display:block; margin-bottom:5px;">API Endpoint URL</label>
+        <input type="url" id="apiEndpointInput" class="input-field" placeholder="e.g. https://my-api.vercel.app/chat">
+      </div>
+      <div style="margin-bottom: 20px;">
+        <label class="text-xs font-bold text-muted" style="display:block; margin-bottom:5px;">API Key / Token (Optional)</label>
+        <input type="password" id="apiKeyInput" class="input-field" placeholder="sk-...">
+      </div>
+      <button class="btn-primary" id="saveSettingsBtn" style="width:100%;">Save Configuration</button>
+      <button class="btn-danger" id="resetSettingsBtn" style="width:100%; margin-top:10px;">Reset to Default</button>
+    </div>
+  </dialog>
 
-  <!-- CHAT OVERLAY -->
+  <button class="chat-fab" id="chatFab" aria-label="Open Chat"><i data-lucide="message-square" size="28"></i></button>
+
   <div class="chat-overlay" id="chatOverlay">
     <div class="chat-container">
       <div class="chat-header">
         <div class="chat-identity">
           <div class="chat-avatar">ZJ</div>
-          <div class="chat-title">
-            <h3>ZJ Chatbot</h3>
-            <p>Online</p>
-          </div>
+          <div class="chat-title"><h3>ZJ Elite Bot</h3><p>Online & Ready</p></div>
         </div>
         <div class="chat-actions">
-          <button class="chat-btn" id="clearChatBtn"><i data-lucide="plus"></i> NEW</button>
-          <button class="chat-btn close" id="closeChatBtn"><i data-lucide="x"></i> CLOSE</button>
+          <button class="chat-btn" id="clearChatBtn"><i data-lucide="plus"></i> <span>NEW</span></button>
+          <button class="chat-btn close" id="closeChatBtn"><i data-lucide="x"></i> <span>CLOSE</span></button>
         </div>
       </div>
-      <div class="chat-messages" id="chatMessages">
-        <div class="msg-system">
-          <i data-lucide="check-circle"></i> ZJ Bot is ready.
-        </div>
-        <div class="msg-row bot">
-          <div class="bubble">Hey there! 👋 I'm ZJ Bot. How can I help you today?</div>
-        </div>
+      <div class="chat-messages" id="chatMessages" aria-live="polite">
+        <div class="msg-system"><i data-lucide="check-circle"></i> ZJ Bot is ready.</div>
+        <div class="msg-row bot"><div class="bubble">Hey there! 👋 I'm ZJ Bot. How can I help you today?</div></div>
       </div>
       <div class="chat-input-area">
         <div class="chat-input-wrapper">
-          <input type="text" id="chatInput" placeholder="Type a message..." autocomplete="off">
+          <input type="text" id="chatInput" placeholder="Type a message..." autocomplete="off" maxlength="1000">
         </div>
         <button class="chat-send-btn" id="chatSendBtn">Send</button>
       </div>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    // =========================================
+    // SAFE MATH PARSER (Replaces eval/Function)
+    // =========================================
+    class MathParser {
+      constructor() { this.tokens = []; this.pos = 0; }
+      evaluate(expression) {
+        if (!expression) return 0;
+        // Normalize symbols
+        const normalized = expression
+          .replace(/÷/g, '/').replace(/×/g, '*').replace(/−/g, '-');
+        this.tokens = this.tokenize(normalized);
+        this.pos = 0;
+        const result = this.parseExpression();
+        if (this.pos < this.tokens.length) throw new Error('Unexpected token: ' + this.tokens[this.pos].value);
+        if (!Number.isFinite(result)) throw new Error('Result is not a finite number');
+        return result;
+      }
+      tokenize(str) {
+        const regex = /\s*([\+\-\*\/\%\^\(\)]|(?:sin|cos|tan|log|ln|sqrt|π|e)|\d*\.?\d+)/g;
+        const tokens = [];
+        let match, lastIndex = 0;
+        while ((match = regex.exec(str)) !== null) {
+          if (match.index > lastIndex) throw new Error('Invalid character');
+          tokens.push({ type: this.getType(match[1]), value: match[1] });
+          lastIndex = regex.lastIndex;
+        }
+        if (lastIndex < str.length) throw new Error('Invalid character');
+        return tokens;
+      }
+      getType(val) {
+        if (/^\d*\.?\d+$/.test(val)) return 'NUMBER';
+        if (['+', '-', '*', '/', '%', '^'].includes(val)) return 'OPERATOR';
+        if (['(', ')'].includes(val)) return 'PAREN';
+        if (['sin', 'cos', 'tan', 'log', 'ln', 'sqrt'].includes(val)) return 'FUNCTION';
+        if (val === 'π' || val === 'e') return 'CONSTANT';
+        return 'UNKNOWN';
+      }
+      parseExpression() {
+        let left = this.parseTerm();
+        while (this.pos < this.tokens.length) {
+          const op = this.tokens[this.pos];
+          if (op.type === 'OPERATOR' && ['+', '-'].includes(op.value)) {
+            this.pos++;
+            const right = this.parseTerm();
+            left = op.value === '+' ? left + right : left - right;
+          } else break;
+        }
+        return left;
+      }
+      parseTerm() {
+        let left = this.parseFactor();
+        while (this.pos < this.tokens.length) {
+          const op = this.tokens[this.pos];
+          if (op.type === 'OPERATOR' && ['*', '/', '%'].includes(op.value)) {
+            this.pos++;
+            const right = this.parseFactor();
+            if (op.value === '*') left *= right;
+            else if (op.value === '/') { if (right === 0) throw new Error('Division by zero'); left /= right; }
+            else if (op.value === '%') { if (right === 0) throw new Error('Modulo by zero'); left %= right; }
+          } else break;
+        }
+        return left;
+      }
+      parseFactor() {
+        let left = this.parsePrimary();
+        while (this.pos < this.tokens.length) {
+          const op = this.tokens[this.pos];
+          if (op.type === 'OPERATOR' && op.value === '^') {
+            this.pos++;
+            const right = this.parsePrimary();
+            left = Math.pow(left, right);
+          } else break;
+        }
+        return left;
+      }
+      parsePrimary() {
+        const token = this.tokens[this.pos];
+        if (!token) throw new Error('Unexpected end');
+        if (token.type === 'NUMBER') { this.pos++; return parseFloat(token.value); }
+        if (token.type === 'CONSTANT') { this.pos++; return token.value === 'π' ? Math.PI : Math.E; }
+        if (token.type === 'PAREN' && token.value === '(') {
+          this.pos++;
+          const result = this.parseExpression();
+          if (this.pos >= this.tokens.length || this.tokens[this.pos].value !== ')') throw new Error('Missing )');
+          this.pos++;
+          return result;
+        }
+        if (token.type === 'FUNCTION') {
+          this.pos++;
+          if (this.pos >= this.tokens.length || this.tokens[this.pos].value !== '(') throw new Error('Expected (');
+          this.pos++;
+          const arg = this.parseExpression();
+          if (this.pos >= this.tokens.length || this.tokens[this.pos].value !== ')') throw new Error('Missing )');
+          this.pos++;
+          switch (token.value) {
+            case 'sin': return Math.sin(arg); case 'cos': return Math.cos(arg);
+            case 'tan': return Math.tan(arg); case 'log': return Math.log10(arg);
+            case 'ln': return Math.log(arg); case 'sqrt': return Math.sqrt(arg);
+          }
+        }
+        if (token.type === 'OPERATOR' && token.value === '-') { this.pos++; return -this.parsePrimary(); }
+        throw new Error('Unexpected token');
+      }
+    }
+
+    // =========================================
+    // SAFE STORAGE WRAPPER
+    // =========================================
+    const Storage = {
+      get(key, fallback) {
+        try {
+          const item = localStorage.getItem(`zj_v1_${key}`);
+          return item ? JSON.parse(item) : fallback;
+        } catch (e) { console.error('Storage read error', e); return fallback; }
+      },
+      set(key, value) {
+        try {
+          localStorage.setItem(`zj_v1_${key}`, JSON.stringify(value));
+          return true;
+        } catch (e) { console.error('Storage write error', e); window.showToast('Failed to save data. Storage might be full.', 'error'); return false; }
+      },
+      remove(key) {
+        try { localStorage.removeItem(`zj_v1_${key}`); } catch (e) {}
+      }
+    };
+
+    // =========================================
+    // SAFE DOM HELPER (Prevents XSS)
+    // =========================================
+    const DOM = {
+      create(tag, className, text = '') {
+        const el = document.createElement(tag);
+        if (className) el.className = className;
+        if (text) el.textContent = text;
+        return el;
+      },
+      icon(name, size = 16) {
+        const el = document.createElement('i');
+        el.setAttribute('data-lucide', name);
+        if (size) { el.setAttribute('width', size); el.setAttribute('height', size); }
+        return el;
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      const html = document.documentElement;
+      const themeIcon = document.querySelector('#themeToggle i');
+      
+      // Theme Setup
+      const savedTheme = Storage.get('theme', 'dark');
+      html.setAttribute('data-theme', savedTheme);
+      themeIcon.setAttribute('data-lucide', savedTheme === 'dark' ? 'moon' : 'sun');
+      lucide.createIcons();
+
+      document.getElementById('themeToggle').addEventListener('click', () => {
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        Storage.set('theme', next);
+        themeIcon.setAttribute('data-lucide', next === 'dark' ? 'moon' : 'sun');
+        lucide.createIcons();
+      });
+
+      // Toast System
+      window.showToast = (msg, type = 'success') => {
+        const container = document.getElementById('toastContainer');
+        const toast = DOM.create('div', `toast ${type}`);
+        toast.appendChild(DOM.icon(type === 'success' ? 'check-circle' : 'alert-circle'));
+        toast.appendChild(document.createTextNode(' ' + msg));
+        container.appendChild(toast);
+        lucide.createIcons();
+        setTimeout(() => toast.remove(), 3000);
+      };
+
+      // Event Delegation
+      document.body.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-action]');
+        if (!btn) return;
+        const action = btn.dataset.action;
+        const target = btn.dataset.target;
+        if (action === 'toggle-sidebar') {
+          document.getElementById('sidebar').classList.toggle('hidden');
+          document.getElementById('sidebarBackdrop').classList.toggle('active');
+        } else if (action === 'scroll') {
+          document.getElementById(target).scrollIntoView({ behavior: 'smooth' });
+          if (window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.add('hidden');
+            document.getElementById('sidebarBackdrop').classList.remove('active');
+          }
+        } else if (action === 'open-modal') {
+          document.getElementById(target).showModal();
+          if (window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.add('hidden');
+            document.getElementById('sidebarBackdrop').classList.remove('active');
+          }
+        } else if (action === 'close-modal') {
+          btn.closest('dialog').close();
+        } else if (action === 'open-chat') {
+          document.getElementById('chatOverlay').classList.add('active');
+          document.getElementById('chatInput').focus();
+        }
+      });
+
+      // Clock
+      setInterval(() => {
+        document.getElementById('liveClock').textContent = new Date().toLocaleTimeString('en-GB', { hour12: false });
+      }, 1000);
+
+      // =========================================
+      // B. CALCULATOR (Safe Parser)
+      // =========================================
+      let calcCurrent = '0';
+      let calcHistoryArr = Storage.get('calcHistory', []);
+      const parser = new MathParser();
+
+      const renderCalc = () => {
+        document.getElementById('calcDisplay').textContent = calcCurrent;
+        const hist = document.getElementById('calcHistory');
+        hist.innerHTML = ''; // Safe clear
+        calcHistoryArr.forEach(h => {
+          hist.appendChild(DOM.create('div', '', h));
+        });
+      };
+
+      document.querySelectorAll('[data-calc]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.calc;
+          if (key === 'AC') calcCurrent = '0';
+          else if (key === 'DEL') calcCurrent = calcCurrent.length > 1 ? calcCurrent.slice(0, -1) : '0';
+          else if (key === '=') {
+            try {
+              const result = parser.evaluate(calcCurrent);
+              const resultStr = Number(result.toPrecision(12)).toString(); // Fix floating point
+              calcHistoryArr.push(`${calcCurrent} = ${resultStr}`);
+              if (calcHistoryArr.length > 5) calcHistoryArr.shift();
+              Storage.set('calcHistory', calcHistoryArr);
+              calcCurrent = resultStr;
+            } catch (err) { calcCurrent = 'Error'; }
+          } else {
+            if (calcCurrent === '0' || calcCurrent === 'Error') calcCurrent = key;
+            else calcCurrent += key;
+          }
+          renderCalc();
+        });
+      });
+      renderCalc();
+
+      // =========================================
+      // B. SCIENTIFIC CALCULATOR
+      // =========================================
+      let sciCurrent = '0';
+      document.querySelectorAll('[data-sci]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.sci;
+          if (key === 'AC') sciCurrent = '0';
+          else if (key === 'DEL') sciCurrent = sciCurrent.length > 1 ? sciCurrent.slice(0, -1) : '0';
+          else if (key === '=') {
+            try {
+              const result = parser.evaluate(sciCurrent);
+              sciCurrent = Number(result.toPrecision(12)).toString();
+            } catch (err) { sciCurrent = 'Error'; }
+          } else {
+            if (sciCurrent === '0' || sciCurrent === 'Error') sciCurrent = key;
+            else sciCurrent += key;
+          }
+          document.getElementById('sciDisplay').textContent = sciCurrent;
+        });
+      });
+
+      // =========================================
+      // D. WEATHER API (Accurate, Abortable)
+      // =========================================
+      const weatherCodeMap = {
+        0: { desc: 'Clear Sky', icon: 'sun' }, 1: { desc: 'Mainly Clear', icon: 'sun' },
+        2: { desc: 'Partly Cloudy', icon: 'cloud-sun' }, 3: { desc: 'Overcast', icon: 'cloud' },
+        45: { desc: 'Fog', icon: 'cloud-fog' }, 48: { desc: 'Rime Fog', icon: 'cloud-fog' },
+        51: { desc: 'Light Drizzle', icon: 'cloud-drizzle' }, 53: { desc: 'Drizzle', icon: 'cloud-drizzle' }, 55: { desc: 'Heavy Drizzle', icon: 'cloud-drizzle' },
+        61: { desc: 'Light Rain', icon: 'cloud-rain' }, 63: { desc: 'Rain', icon: 'cloud-rain' }, 65: { desc: 'Heavy Rain', icon: 'cloud-rain' },
+        71: { desc: 'Light Snow', icon: 'cloud-snow' }, 73: { desc: 'Snow', icon: 'cloud-snow' }, 75: { desc: 'Heavy Snow', icon: 'cloud-snow' },
+        95: { desc: 'Thunderstorm', icon: 'cloud-lightning' }
+      };
+
+      let weatherFetchId = 0;
+      const weatherSearchBtn = document.getElementById('searchWeatherBtn');
+      
+      window.getWeather = async (city) => {
+        if (!city) return;
+        const currentFetchId = ++weatherFetchId;
+        
+        // Loading State
+        weatherSearchBtn.disabled = true;
+        document.getElementById('wDesc').textContent = 'Loading...';
+        document.getElementById('wLoc').textContent = 'DETECTING...';
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+        try {
+          const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`, { signal: controller.signal });
+          if (!geoRes.ok) throw new Error('Geocoding failed');
+          const geoData = await geoRes.json();
+          
+          if (!geoData.results || geoData.results.length === 0) {
+            if (currentFetchId === weatherFetchId) {
+              document.getElementById('wDesc').textContent = 'Not Found';
+              document.getElementById('wLoc').textContent = 'Invalid City';
+              showToast('City not found', 'error');
+            }
+            return;
+          }
+          
+          const { latitude, longitude, name, country_code } = geoData.results[0];
+          
+          const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relative_humidity_2m,precipitation_probability,uv_index&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`, { signal: controller.signal });
+          if (!wRes.ok) throw new Error('Weather fetch failed');
+          const wData = await wRes.json();
+
+          if (currentFetchId !== weatherFetchId) return; // Stale response
+
+          const current = wData.current_weather;
+          const hourly = wData.hourly;
+          const daily = wData.daily;
+          
+          // Find current hour index
+          const now = new Date();
+          const timeStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}T${String(now.getHours()).padStart(2,'0')}:00`;
+          let hourIndex = hourly.time.indexOf(timeStr);
+          if (hourIndex === -1) hourIndex = 0; // Fallback
+
+          // Update UI
+          document.getElementById('wTemp').textContent = Math.round(current.temperature);
+          document.getElementById('wWind').textContent = `${current.windspeed} km/h`;
+          document.getElementById('wLoc').textContent = `${name}, ${country_code}`;
+          document.getElementById('wUpdateTime').textContent = `Updated: ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+          
+          const codeInfo = weatherCodeMap[current.weathercode] || { desc: 'Unknown', icon: 'cloud' };
+          document.getElementById('wDesc').textContent = codeInfo.desc;
+          
+          document.getElementById('wIcon').innerHTML = `<i data-lucide="${codeInfo.icon}"></i>`;
+          
+          // Real hourly stats
+          document.getElementById('wRain').textContent = `${hourly.precipitation_probability[hourIndex] ?? 0}%`;
+          document.getElementById('wHum').textContent = `${hourly.relative_humidity_2m[hourIndex] ?? 0}%`;
+          document.getElementById('wUv').textContent = (hourly.uv_index[hourIndex] ?? 0).toFixed(1);
+
+          // Forecast
+          const forecastContainer = document.getElementById('wForecast');
+          forecastContainer.innerHTML = ''; // Safe clear
+          for (let i = 0; i < 7; i++) {
+            const date = new Date(daily.time[i]);
+            const dayName = date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+            
+            const dayDiv = DOM.create('div', 'forecast-day');
+            dayDiv.appendChild(DOM.create('div', '', dayName));
+            dayDiv.appendChild(DOM.icon('sun'));
+            dayDiv.appendChild(DOM.create('div', '', `${Math.round(daily.temperature_2m_max[i])}° ${Math.round(daily.temperature_2m_min[i])}°`));
+            dayDiv.querySelector('div:last-child').style.fontSize = '11px';
+            dayDiv.querySelector('div:last-child').style.marginTop = '2px';
+            
+            forecastContainer.appendChild(dayDiv);
+          }
+          
+          lucide.createIcons();
+          showToast('Weather updated');
+
+        } catch (err) {
+          if (err.name === 'AbortError') {
+            if (currentFetchId === weatherFetchId) showToast('Request timed out', 'error');
+          } else {
+            if (currentFetchId === weatherFetchId) {
+              showToast('Error fetching weather', 'error');
+              document.getElementById('wDesc').textContent = 'Offline';
+            }
+          }
+        } finally {
+          clearTimeout(timeoutId);
+          weatherSearchBtn.disabled = false;
+        }
+      };
+
+      weatherSearchBtn.addEventListener('click', () => getWeather(document.getElementById('cityInput').value));
+      document.getElementById('cityInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') getWeather(e.target.value); });
+      document.getElementById('geoWeatherBtn').addEventListener('click', () => { showToast('Geolocation requested'); getWeather('London'); });
+      getWeather('London'); // Initial Load
+
+      // =========================================
+      // F. NOTES (Safe DOM, Safe Storage)
+      // =========================================
+      let notes = Storage.get('notes', []);
+      
+      const renderNotes = () => {
+        const list = document.getElementById('notesList');
+        list.innerHTML = ''; // Safe clear
+        
+        notes.forEach((note, i) => {
+          const item = DOM.create('div', 'list-item');
+          item.appendChild(DOM.create('span', '', note));
+          
+          const delBtn = DOM.create('button', 'btn-danger');
+          delBtn.appendChild(DOM.icon('trash-2', 16));
+          delBtn.addEventListener('click', () => {
+            notes.splice(i, 1);
+            Storage.set('notes', notes);
+            renderNotes();
+            showToast('Note deleted');
+          });
+          item.appendChild(delBtn);
+          list.appendChild(item);
+        });
+        lucide.createIcons();
+      };
+
+      document.getElementById('addNoteBtn').addEventListener('click', () => {
+        const input = document.getElementById('noteInput');
+        const val = input.value.trim();
+        if (!val) return;
+        notes.push(val);
+        Storage.set('notes', notes);
+        input.value = '';
+        renderNotes();
+        showToast('Note added');
+      });
+      renderNotes();
+
+      // =========================================
+      // F. TODO LIST (Safe DOM, Safe Storage)
+      // =========================================
+      let todos = Storage.get('todos', []);
+      let currentFilter = 'all';
+
+      const renderTodos = () => {
+        const list = document.getElementById('todoList');
+        list.innerHTML = ''; // Safe clear
+        
+        let filtered = todos;
+        if (currentFilter === 'active') filtered = todos.filter(t => !t.done);
+        if (currentFilter === 'done') filtered = todos.filter(t => t.done);
+
+        filtered.forEach((t) => {
+          const originalIndex = todos.indexOf(t);
+          
+          const item = DOM.create('div', 'list-item');
+          item.style.opacity = t.done ? '0.5' : '1';
+          
+          const span = DOM.create('span', '', t.text);
+          span.style.textDecoration = t.done ? 'line-through' : 'none';
+          span.style.cursor = 'pointer';
+          span.addEventListener('click', () => {
+            todos[originalIndex].done = !todos[originalIndex].done;
+            Storage.set('todos', todos);
+            renderTodos();
+          });
+          item.appendChild(span);
+          
+          const delBtn = DOM.create('button', 'btn-danger');
+          delBtn.appendChild(DOM.icon('trash-2', 16));
+          delBtn.addEventListener('click', () => {
+            todos.splice(originalIndex, 1);
+            Storage.set('todos', todos);
+            renderTodos();
+            showToast('Task deleted');
+          });
+          item.appendChild(delBtn);
+          
+          list.appendChild(item);
+        });
+        lucide.createIcons();
+      };
+
+      document.getElementById('addTodoBtn').addEventListener('click', () => {
+        const input = document.getElementById('todoInput');
+        const val = input.value.trim();
+        if (!val) return;
+        todos.push({ text: val, done: false });
+        Storage.set('todos', todos);
+        input.value = '';
+        renderTodos();
+        showToast('Task added');
+      });
+
+      document.querySelectorAll('#todoTabs .tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          document.querySelectorAll('#todoTabs .tab').forEach(t => t.classList.remove('active'));
+          e.target.classList.add('active');
+          currentFilter = e.target.dataset.filter;
+          renderTodos();
+        });
+      });
+      renderTodos();
+
+      // =========================================
+      // G. POMODORO (Drift-free)
+      // =========================================
+      let pomoState = 'idle'; // idle, running, paused
+      let pomoEndTime = 0;
+      let pomoDuration = 25 * 60 * 1000;
+      let pomoRemaining = pomoDuration;
+      let pomoTicker = null;
+      const maxDash = 553;
+
+      const updatePomoDisplay = () => {
+        const m = Math.floor(pomoRemaining / 60000);
+        const s = Math.floor((pomoRemaining % 60000) / 1000);
+        document.getElementById('pomoTime').textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        document.getElementById('pomoRing').style.strokeDashoffset = maxDash - (pomoRemaining / pomoDuration) * maxDash;
+      };
+
+      const tickPomo = () => {
+        if (pomoState !== 'running') return;
+        const now = Date.now();
+        pomoRemaining = Math.max(0, pomoEndTime - now);
+        updatePomoDisplay();
+        
+        if (pomoRemaining <= 0) {
+          clearInterval(pomoTicker);
+          pomoState = 'idle';
+          pomoRemaining = pomoDuration;
+          document.getElementById('pomoStartBtn').textContent = 'Start';
+          showToast('Timer finished!');
+          try { new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play(); } catch(err){}
+        }
+      };
+
+      document.querySelectorAll('#pomoTabs .tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          if (pomoState !== 'idle') return; // Prevent switching while running
+          document.querySelectorAll('#pomoTabs .tab').forEach(t => t.classList.remove('active'));
+          e.target.classList.add('active');
+          pomoDuration = parseInt(e.target.dataset.time) * 60 * 1000;
+          pomoRemaining = pomoDuration;
+          updatePomoDisplay();
+        });
+      });
+
+      document.getElementById('pomoStartBtn').addEventListener('click', (e) => {
+        if (pomoState === 'running') {
+          // Pause
+          pomoState = 'paused';
+          pomoRemaining = pomoEndTime - Date.now();
+          clearInterval(pomoTicker);
+          e.target.textContent = 'Resume';
+        } else {
+          // Start / Resume
+          pomoState = 'running';
+          pomoEndTime = Date.now() + pomoRemaining;
+          clearInterval(pomoTicker); // Prevent multiple intervals
+          pomoTicker = setInterval(tickPomo, 100);
+          e.target.textContent = 'Pause';
+        }
+      });
+
+      document.getElementById('pomoResetBtn').addEventListener('click', () => {
+        clearInterval(pomoTicker);
+        pomoState = 'idle';
+        pomoRemaining = pomoDuration;
+        document.getElementById('pomoStartBtn').textContent = 'Start';
+        updatePomoDisplay();
+      });
+      updatePomoDisplay();
+
+      // =========================================
+      // C. UNIT CONVERTER
+      // =========================================
+      const convData = {
+        length: { m: 1, km: 0.001, cm: 100, mm: 1000, inch: 39.37, ft: 3.28, mi: 0.000621 },
+        mass: { kg: 1, g: 1000, mg: 1000000, lb: 2.204, oz: 35.27 },
+        temperature: { C: 1, F: 1, K: 1 }, 
+        data: { B: 1, KB: 0.001, MB: 0.000001, GB: 0.000000001 },
+        time: { s: 1, min: 1/60, h: 1/3600, d: 1/86400 }
+      };
+
+      const updateConvUnits = () => {
+        const cat = document.getElementById('convCategory').value;
+        const units = Object.keys(convData[cat]);
+        document.getElementById('convFrom').innerHTML = units.map(u => `<option value="${u}">${u.toUpperCase()}</option>`).join('');
+        document.getElementById('convTo').innerHTML = units.map(u => `<option value="${u}">${u.toUpperCase()}</option>`).join('');
+        document.getElementById('convTo').selectedIndex = 1;
+        convert();
+      };
+
+      const convert = () => {
+        const cat = document.getElementById('convCategory').value;
+        const val = parseFloat(document.getElementById('convInput').value) || 0;
+        const from = document.getElementById('convFrom').value;
+        const to = document.getElementById('convTo').value;
+        let result = 0;
+
+        if (cat === 'temperature') {
+          // Absolute zero validation
+          if (from === 'K' && val < 0) { document.getElementById('convOutput').value = 'Invalid (< 0K)'; return; }
+          if (from === 'C' && val < -273.15) { document.getElementById('convOutput').value = 'Invalid (< -273.15C)'; return; }
+          if (from === 'F' && val < -459.67) { document.getElementById('convOutput').value = 'Invalid (< -459.67F)'; return; }
+
+          let c = from === 'C' ? val : (from === 'F' ? (val - 32) * 5/9 : val - 273.15);
+          result = to === 'C' ? c : (to === 'F' ? (c * 9/5) + 32 : c + 273.15);
+        } else {
+          result = (val / convData[cat][from]) * convData[cat][to];
+        }
+        
+        // Round to 6 decimals and strip trailing zeros
+        document.getElementById('convOutput').value = Number(result.toFixed(6));
+      };
+
+      document.getElementById('convCategory').addEventListener('change', updateConvUnits);
+      document.getElementById('convInput').addEventListener('input', convert);
+      document.getElementById('convFrom').addEventListener('change', convert);
+      document.getElementById('convTo').addEventListener('change', convert);
+      document.getElementById('convSwapBtn').addEventListener('click', () => {
+        const from = document.getElementById('convFrom');
+        const to = document.getElementById('convTo');
+        const temp = from.value;
+        from.value = to.value;
+        to.value = temp;
+        convert();
+      });
+      updateConvUnits();
+
+      // =========================================
+      // E. CHAT (Abortable, Safe DOM)
+      // =========================================
+      const chatOverlay = document.getElementById('chatOverlay');
+      const chatMessages = document.getElementById('chatMessages');
+      const chatInput = document.getElementById('chatInput');
+      const chatSendBtn = document.getElementById('chatSendBtn');
+      let chatController = null;
+
+      const scrollToBottom = () => chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      document.getElementById('closeChatBtn').addEventListener('click', () => {
+        chatOverlay.classList.remove('active');
+        if (chatController) chatController.abort();
+      });
+      document.getElementById('chatFab').addEventListener('click', () => { chatOverlay.classList.add('active'); chatInput.focus(); });
+      document.getElementById('clearChatBtn').addEventListener('click', () => {
+        chatMessages.innerHTML = `
+          <div class="msg-system"><i data-lucide="check-circle"></i> ZJ Bot is ready.</div>
+          <div class="msg-row bot"><div class="bubble">Hey there! 👋 I'm ZJ Bot. How can I help you today?</div></div>
+        `;
+        lucide.createIcons();
+      });
+
+      const getChatEndpoint = () => {
+        const custom = Storage.get('customEndpoint', '');
+        if (custom) return custom;
+        return (location.hostname === 'localhost' || location.hostname === '127.0.0.1') 
+          ? 'http://localhost:5000/chat' : '/api/chat';
+      };
+
+      const sendMessage = async () => {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        // User Message
+        const userRow = DOM.create('div', 'msg-row user');
+        userRow.appendChild(DOM.create('div', 'bubble', text));
+        chatMessages.appendChild(userRow);
+
+        chatInput.value = '';
+        scrollToBottom();
+
+        // Lock UI
+        chatInput.disabled = true;
+        chatSendBtn.disabled = true;
+
+        // Typing Indicator
+        const typing = DOM.create('div', 'msg-row bot');
+        typing.id = 'typingIndicator';
+        typing.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+        chatMessages.appendChild(typing);
+        scrollToBottom();
+
+        let botText = '';
+        const endpoint = getChatEndpoint();
+        const apiKey = Storage.get('customKey', '');
+
+        // Abort previous request if any
+        if (chatController) chatController.abort();
+        chatController = new AbortController();
+        const timeoutId = setTimeout(() => chatController.abort(), 15000);
+
+        try {
+          const headers = { 'Content-Type': 'application/json' };
+          if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
+
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({ message: text }),
+            signal: chatController.signal
+          });
+
+          const raw = await response.text();
+          let data = null;
+          try { data = JSON.parse(raw); } catch (_) {}
+
+          if (!response.ok) {
+            botText = (data && data.reply) ? data.reply : `⚠️ Server Error: ${response.status}`;
+          } else if (data && data.reply) {
+            botText = data.reply;
+          } else {
+            botText = '⚠️ Unexpected response format.';
+          }
+        } catch (err) {
+          if (err.name === 'AbortError') {
+            botText = '⚠️ Request timed out or was cancelled.';
+          } else {
+            botText = '⚠️ Cannot reach the backend. Check your connection.';
+          }
+        } finally {
+          clearTimeout(timeoutId);
+          if (typing.parentNode) typing.remove();
+
+          const botRow = DOM.create('div', 'msg-row bot');
+          const botBubble = DOM.create('div', 'bubble', botText);
+          if (botText.startsWith('⚠️')) botBubble.style.color = 'var(--accent-red)';
+          botRow.appendChild(botBubble);
+          chatMessages.appendChild(botRow);
+
+          chatInput.disabled = false;
+          chatSendBtn.disabled = false;
+          chatInput.focus();
+          scrollToBottom();
+        }
+      };
+
+      chatSendBtn.addEventListener('click', sendMessage);
+      chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+      // =========================================
+      // E. API SETTINGS
+      // =========================================
+      const settingsModal = document.getElementById('settingsModal');
+      const apiEndpointInput = document.getElementById('apiEndpointInput');
+      const apiKeyInput = document.getElementById('apiKeyInput');
+
+      apiEndpointInput.value = Storage.get('customEndpoint', '');
+      apiKeyInput.value = Storage.get('customKey', '');
+
+      document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+        let url = apiEndpointInput.value.trim();
+        if (url && !url.startsWith('http')) {
+          showToast('Invalid URL. Must start with http:// or https://', 'error');
+          return;
+        }
+        Storage.set('customEndpoint', url);
+        Storage.set('customKey', apiKeyInput.value.trim());
+        showToast('API settings saved');
+        settingsModal.close();
+      });
+
+      document.getElementById('resetSettingsBtn').addEventListener('click', () => {
+        Storage.remove('customEndpoint');
+        Storage.remove('customKey');
+        apiEndpointInput.value = '';
+        apiKeyInput.value = '';
+        showToast('Settings reset to default');
+        settingsModal.close();
+      });
+
+      // Global Keyboard Shortcuts
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('dialog[open]').forEach(d => d.close());
+          chatOverlay.classList.remove('active');
+        }
+      });
+    });
+  </script>
 </body>
 </html>
