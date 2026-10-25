@@ -1,304 +1,138 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#080C10">
+<meta name="description" content="ZJ Dashboard — calculator, live weather, notes, todos, pomodoro, unit converter, gallery and an offline assistant. No analytics, no tracking.">
+<meta name="author" content="ZJ">
+<meta name="application-name" content="ZJ Dashboard">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>ZJ Dashboard</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2300A3CC'/%3E%3Ctext x='50' y='68' font-size='50' font-family='Georgia' font-weight='900' text-anchor='middle' fill='white'%3EZJ%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2300A3CC'/%3E%3Ctext x='50' y='69' font-size='50' font-family='Georgia,serif' font-weight='900' text-anchor='middle' fill='white'%3EZJ%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap">
+<link rel="stylesheet" href="styles.css">
 <script src="https://unpkg.com/lucide@latest"></script>
-
-<style>
-  /* ===== VARIABLES ===== */
-  :root {
-    color-scheme: dark light;
-    --bg-0: #080C10; --bg-1: #0F151B; --bg-2: #171F28; --bg-3: #1F2933;
-    --border: #2A3541; --border-strong: #3D4A58;
-    --text: #F0F6FA; --text-secondary: #B8C5D1; --text-tertiary: #A0B0BE; --text-disabled: #5A6878;
-    --cyan-300: #66D6F0; --cyan-400: #33C2E8; --cyan-500: #00A3CC; --cyan-600: #0085A8; --cyan-700: #006B87;
-    --gold-300: #FFE680; --gold-400: #FFD700; --gold-500: #E6C200; --gold-600: #B89A00; --gold-700: #8A6F00;
-    --metal-1: #1A2129; --metal-2: #0F151B; --metal-3: #232D38;
-    --success: #10B981; --success-bg: rgba(16, 185, 129, 0.12);
-    --danger: #F87171; --danger-bg: rgba(239, 68, 68, 0.12);
-    --cyan-glow: rgba(0, 163, 204, 0.25); --gold-glow: rgba(255, 215, 0, 0.20);
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.40); --shadow-md: 0 4px 16px rgba(0,0,0,0.40); --shadow-lg: 0 20px 50px rgba(0,0,0,0.60);
-    --sidebar-w: 220px; --safe-bottom: env(safe-area-inset-bottom, 0px);
-    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --dur-fast: 180ms; --dur-mid: 340ms; --dur-slow: 640ms;
-    --fs-hero: clamp(24px, 2.5vw + 16px, 48px);
-    --fs-h2: clamp(12px, 0.8vw + 8px, 15px);
-  }
-  body.light-theme {
-    color-scheme: light dark;
-    --bg-0: #F1F5F9; --bg-1: #FFFFFF; --bg-2: #F8FAFC; --bg-3: #E2E8F0;
-    --border: #CBD5E1; --border-strong: #94A3B8;
-    --text: #0F172A; --text-secondary: #334155; --text-tertiary: #5A6878; --text-disabled: #94A3B8;
-    --cyan-300: #0091B8; --cyan-400: #0085A8; --cyan-500: #006B87; --cyan-600: #005872; --cyan-700: #004558;
-    --gold-300: #B89A00; --gold-400: #8A6F00; --gold-500: #7A6200; --gold-600: #665200; --gold-700: #524100;
-    --metal-1: #E8EEF4; --metal-2: #D4DEE8; --metal-3: #F1F5F9;
-    --success: #059669; --success-bg: rgba(5, 150, 105, 0.10);
-    --danger: #DC2626; --danger-bg: rgba(220, 38, 38, 0.10);
-    --cyan-glow: rgba(0, 107, 135, 0.15); --gold-glow: rgba(138, 111, 0, 0.15);
-    --shadow-sm: 0 1px 3px rgba(15,23,42,0.06); --shadow-md: 0 4px 16px rgba(15,23,42,0.08); --shadow-lg: 0 20px 50px rgba(15,23,42,0.12);
-  }
-
-  /* ===== RESET & TYPOGRAPHY ===== */
-  *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { 
-    margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; 
-    background: var(--bg-0); color: var(--text); min-height: 100vh; overflow-x: hidden; 
-    transition: background var(--dur-mid), color var(--dur-mid); 
-    -webkit-font-smoothing: antialiased; 
-    font-variant-numeric: tabular-nums;
-  }
-  h1, h2, h3 { text-wrap: balance; }
-  p { text-wrap: pretty; }
-  button, input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
-  button { cursor: pointer; min-height: 44px; min-width: 44px; }
-  img { max-width: 100%; display: block; }
-  :focus-visible { outline: 2px solid var(--cyan-500); outline-offset: 3px; border-radius: 6px; }
-  ::selection { background: var(--cyan-500); color: #fff; }
-
-  /* ===== TOOLTIPS & ICONS ===== */
-  [data-tooltip] { position: relative; }
-  [data-tooltip]::after { content: attr(data-tooltip); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(4px); background: var(--bg-3); color: var(--text); padding: 6px 10px; border-radius: 6px; font-size: 11px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity var(--dur-fast); border: 1px solid var(--border); z-index: 100; }
-  [data-tooltip]:hover::after, [data-tooltip]:focus-visible::after { opacity: 1; transform: translateX(-50%) translateY(-4px); }
-  .lucide { width: 18px; height: 18px; stroke-width: 2px; flex-shrink: 0; }
-
-  /* ===== DIALOGS (NATIVE) ===== */
-  dialog { padding: 0; border: 1px solid var(--border); border-radius: 16px; background: var(--bg-1); color: var(--text); box-shadow: var(--shadow-lg); width: 100%; max-width: 420px; transform: scale(0.95); opacity: 0; transition: opacity var(--dur-mid), transform var(--dur-mid), overlay var(--dur-mid) allow-discrete, display var(--dur-mid) allow-discrete; }
-  dialog[open] { opacity: 1; transform: scale(1); }
-  @starting-style { dialog[open] { opacity: 0; transform: scale(0.95); } }
-  dialog::backdrop { background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); opacity: 0; transition: opacity var(--dur-mid), overlay var(--dur-mid) allow-discrete, display var(--dur-mid) allow-discrete; }
-  dialog[open]::backdrop { opacity: 1; }
-  @starting-style { dialog[open]::backdrop { opacity: 0; } }
-
-  /* ===== LAYOUT ===== */
-  .toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
-  .toast { background: var(--bg-1); border: 1px solid var(--border); color: var(--text); padding: 12px 24px; border-radius: 30px; font-size: 13px; font-weight: 600; box-shadow: var(--shadow-md); animation: toastIn var(--dur-mid) var(--ease-spring), toastOut var(--dur-fast) ease 2.7s forwards; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(12px); }
-  .toast.success { border-color: var(--success); color: var(--success); }
-  .toast.error { border-color: var(--danger); color: var(--danger); }
-  .toast.info { border-color: var(--cyan-400); color: var(--cyan-400); }
-  @keyframes toastIn { from { opacity: 0; transform: translateY(20px) scale(0.85); } to { opacity: 1; transform: translateY(0) scale(1); } }
-  @keyframes toastOut { to { opacity: 0; transform: translateY(20px) scale(0.9); } }
-
-  .sidebar-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 45; opacity: 0; pointer-events: none; transition: opacity var(--dur-mid); }
-  .sidebar-backdrop.open { opacity: 1; pointer-events: auto; }
-  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); z-index: 50; padding: 20px 14px; display: flex; flex-direction: column; background: var(--bg-1); border-right: 1px solid var(--border); transition: transform var(--dur-mid) var(--ease-smooth); overflow-y: auto; }
-  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
-  .brand-logo { width: 38px; height: 38px; border-radius: 11px; background: linear-gradient(135deg, var(--cyan-400), var(--cyan-700)); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #fff; font-family: Georgia, serif; box-shadow: 0 4px 14px var(--cyan-glow); }
-  .brand-name { font-size: 15px; font-weight: 800; letter-spacing: 2px; }
-  .nav-label { font-size: 10px; letter-spacing: 2px; color: var(--text-tertiary); text-transform: uppercase; margin: 20px 8px 10px; font-weight: 700; }
-  .nav-item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; margin-bottom: 4px; border-radius: 8px; color: var(--text-secondary); font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent; background: transparent; text-align: left; width: 100%; transition: all var(--dur-fast); }
-  .nav-item:hover { color: var(--text); background: var(--bg-2); }
-  .nav-item.active { color: var(--cyan-400); background: var(--bg-2); border-color: rgba(0, 163, 204, 0.3); }
-
-  .topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: 60px; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: rgba(15,21,27,0.85); border-bottom: 1px solid var(--border); transition: left var(--dur-mid); backdrop-filter: blur(16px); }
-  body.light-theme .topbar { background: rgba(255,255,255,0.85); }
-  .menu-toggle { display: none; background: transparent; border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; }
-  .topbar-right { display: flex; align-items: center; gap: 10px; }
-  .theme-toggle, .cmd-btn { background: var(--bg-2); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all var(--dur-fast); }
-  .theme-toggle:hover, .cmd-btn:hover { border-color: var(--cyan-400); color: var(--cyan-400); }
-
-  .main { position: relative; z-index: 2; margin-left: var(--sidebar-w); padding: 85px max(20px, env(safe-area-inset-left)) 80px; max-width: 1160px; margin-right: auto; }
-  .hero { display: flex; flex-direction: column; align-items: center; margin-bottom: 32px; gap: 8px; text-align: center; }
-  .hero-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; justify-content: center; }
-  .hero h1 { margin: 0; font-size: var(--fs-hero); font-weight: 900; letter-spacing: -0.5px; }
-  .hero h2 { margin: 0; font-size: var(--fs-h2); letter-spacing: 4px; color: var(--cyan-500); text-transform: uppercase; font-weight: 700; }
-  .digital-clock { font-family: 'Share Tech Mono', monospace; font-size: 24px; color: var(--gold-400); text-shadow: 0 0 14px var(--gold-glow); background: var(--bg-2); padding: 6px 14px; border-radius: 10px; border: 1px solid var(--border); }
-
-  /* ===== CARDS ===== */
-  .main-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
-  .frame { background: var(--bg-1); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); min-height: 320px; transition: transform var(--dur-mid), box-shadow var(--dur-mid); }
-  .frame:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-  .card-head { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-  .card-title { font-size: 12px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; color: var(--text-secondary); }
-  .dot { width: 7px; height: 7px; border-radius: 50%; }
-  .dot.cyan { background: var(--cyan-500); box-shadow: 0 0 10px var(--cyan-500); }
-  .dot.gold { background: var(--gold-400); box-shadow: 0 0 10px var(--gold-400); }
-  .dot.silver { background: var(--text-tertiary); box-shadow: 0 0 10px var(--text-tertiary); }
-  .card-tools { display: flex; gap: 6px; }
-  .icon-btn { width: 44px; height: 44px; border-radius: 8px; background: var(--bg-2); border: 1px solid var(--border); color: var(--text-tertiary); display: flex; align-items: center; justify-content: center; transition: all var(--dur-fast); }
-  .icon-btn:hover { color: var(--cyan-400); border-color: var(--cyan-400); }
-
-  /* ===== CALCULATOR ===== */
-  .calc-body { padding: 16px; display: flex; flex-direction: column; flex: 1; gap: 10px; }
-  .calc-display { width: 100%; height: 60px; background: var(--bg-0); color: var(--text); border: 1px solid var(--border); border-radius: 10px; font-size: 26px; text-align: right; padding: 8px 14px; font-family: 'Share Tech Mono', monospace; font-weight: 700; outline: none; }
-  .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; flex: 1; }
-  .calc-grid button { border-radius: 10px; border: 1px solid transparent; font-size: 18px; font-weight: 700; transition: all 90ms; display: flex; align-items: center; justify-content: center; }
-  .calc-grid button:active { transform: scale(0.94); }
-  .btn-num { background: var(--bg-2); color: var(--text); border-color: var(--border); }
-  .btn-op { background: linear-gradient(180deg, var(--cyan-400), var(--cyan-600)); color: #fff; }
-  .btn-silver { background: var(--border); color: var(--text); }
-  .btn-equal { background: linear-gradient(180deg, var(--gold-300), var(--gold-600)); color: #1a1400; grid-column: span 2; font-size: 22px; }
-
-  /* ===== WEATHER ===== */
-  .weather-inner { padding: 14px 16px; display: flex; flex-direction: column; flex: 1; gap: 12px; }
-  .weather-search { display: flex; gap: 8px; }
-  .weather-search input { flex: 1; min-width: 0; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); font-size: 13px; outline: none; }
-  .weather-search button { padding: 0 14px; border-radius: 8px; background: var(--cyan-500); color: #fff; border: none; }
-  .weather-main { display: flex; flex-direction: column; align-items: center; text-align: center; flex: 1; justify-content: center; }
-  .weather-icon-large { font-size: 48px; margin-bottom: 4px; }
-  .temp { font-size: 44px; font-weight: 900; }
-  .temp-toggle { font-size: 15px; color: var(--cyan-400); cursor: pointer; background: var(--bg-2); padding: 3px 9px; border-radius: 6px; border: 1px solid var(--border); margin-left: 4px; }
-  .w-desc { font-size: 14px; font-weight: 600; margin-top: 4px; color: var(--cyan-400); }
-  .w-loc { font-size: 12px; color: var(--text-tertiary); }
-  .weather-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .stat-box { background: var(--bg-2); border: 1px solid var(--border); padding: 9px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; font-size: 11px; color: var(--text-tertiary); }
-  .stat-box strong { color: var(--text); font-size: 13px; }
-  .forecast { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-  .fc-day { display: flex; flex-direction: column; align-items: center; padding: 5px 2px; border-radius: 6px; background: var(--bg-2); border: 1px solid var(--border); }
-  .fc-name { font-size: 9px; color: var(--text-tertiary); font-weight: 700; }
-  .fc-icon { font-size: 18px; }
-  .fc-temps { font-size: 10px; display: flex; gap: 3px; }
-  .w-updated { font-size: 10px; color: var(--text-tertiary); text-align: center; }
-
-  /* ===== GALLERY ===== */
-  .slider-wrap { flex: 1; overflow: hidden; background: var(--bg-0); position: relative; }
-  .slides { display: flex; width: max-content; height: 100%; animation: slideRight 24s linear infinite; }
-  .slides:hover { animation-play-state: paused; }
-  .slides img { width: 280px; height: 100%; object-fit: cover; flex-shrink: 0; }
-  @keyframes slideRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
-
-  /* ===== APP WINDOWS ===== */
-  .app-window { position: fixed; inset: 0; z-index: 100; height: 100dvh; display: flex; flex-direction: column; background: var(--bg-0); opacity: 0; pointer-events: none; transform: translateY(20px); transition: opacity var(--dur-mid), transform var(--dur-mid); }
-  .app-window.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
-  .app-head { padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); border-bottom: 1px solid var(--border); }
-  .app-title { font-weight: 900; font-size: 16px; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
-  .app-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 800; background: linear-gradient(180deg, var(--metal-3), var(--metal-2)); border: 1px solid var(--border); color: var(--text); cursor: pointer; }
-  .app-btn.primary { background: linear-gradient(180deg, var(--cyan-400), var(--cyan-600)); color: #fff; border-color: var(--cyan-500); }
-  .app-body { flex: 1; overflow-y: auto; padding: 30px 20px; max-width: 800px; margin: 0 auto; width: 100%; }
-
-  /* ===== SCIENTIFIC CALCULATOR ===== */
-  .sci-calc-container { max-width: 420px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
-  .sci-display { width: 100%; height: 84px; background: var(--bg-0); color: var(--cyan-400); border: 1px solid var(--border); border-radius: 12px; font-size: 36px; text-align: right; padding: 10px 18px; font-family: 'Share Tech Mono', monospace; font-weight: 700; outline: none; }
-  .sci-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-  .sci-grid button { border-radius: 10px; border: 1px solid var(--border); background: linear-gradient(180deg, var(--metal-3), var(--metal-2)); color: var(--text); font-size: 15px; font-weight: 700; padding: 14px 0; transition: all var(--dur-fast); }
-  .sci-grid button:active { transform: scale(0.96); }
-  .sci-grid .btn-func { background: rgba(0,163,204,0.1); color: var(--cyan-400); border-color: rgba(0,163,204,0.3); font-size: 13px; }
-
-  /* ===== NOTES / TODO ===== */
-  .metal-input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-0); color: var(--text); font-size: 15px; outline: none; }
-  .metal-card { padding: 16px; background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); border: 1px solid var(--border); border-radius: 12px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-top: 12px; }
-  .del-btn, .edit-btn { background: transparent; border: none; color: var(--text-tertiary); padding: 8px; border-radius: 6px; cursor: pointer; }
-  .todo-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; }
-  .todo-item.done .todo-text { text-decoration: line-through; color: var(--text-tertiary); }
-
-  /* ===== CHAT ===== */
-  .chat-fab { position: fixed; bottom: 24px; right: 24px; width: 62px; height: 62px; border-radius: 50%; border: none; z-index: 40; background: linear-gradient(135deg, var(--cyan-400), var(--cyan-600)); display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 6px 24px var(--cyan-glow); transition: transform var(--dur-mid); }
-  .chat-fab:hover { transform: scale(1.1); }
-  .chat-panel { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; background: var(--bg-0); opacity: 0; pointer-events: none; transform: translateY(20px); transition: opacity var(--dur-mid), transform var(--dur-mid); }
-  .chat-panel.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
-  .chat-head { padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); border-bottom: 1px solid var(--border); }
-  .chat-window { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
-  .msg-wrapper { display: flex; flex-direction: column; max-width: 80%; }
-  .msg-wrapper.user { align-self: flex-end; }
-  .msg-wrapper.bot { align-self: flex-start; }
-  .msg { padding: 14px 18px; border-radius: 16px; font-size: 15px; line-height: 1.5; }
-  .msg.bot { background: linear-gradient(145deg, var(--bg-2), var(--bg-1)); border: 1px solid var(--border); }
-  .msg.user { background: linear-gradient(180deg, var(--cyan-500), var(--cyan-700)); color: #fff; }
-  .chat-input-area { padding: 16px 20px; background: linear-gradient(180deg, var(--metal-1), var(--metal-2)); border-top: 1px solid var(--border); }
-  .chat-input-row { display: flex; gap: 10px; max-width: 900px; margin: 0 auto; }
-  .chat-input-row input { flex: 1; padding: 14px 20px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-0); color: var(--text); font-size: 15px; outline: none; }
-  .chat-send { padding: 0 24px; border-radius: 10px; background: var(--cyan-500); color: #fff; border: none; }
-
-  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; color: var(--text-tertiary); }
-  .empty-state .lucide { width: 48px; height: 48px; margin-bottom: 12px; opacity: 0.5; }
-
-  kbd { background: var(--bg-2); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; font-family: 'Share Tech Mono', monospace; font-size: 11px; }
-
-  @media (max-width: 1100px) {
-    :root { --sidebar-w: 0px; }
-    .sidebar { transform: translateX(-100%); width: 260px; }
-    .sidebar.open { transform: translateX(0); }
-    .topbar { left: 0; }
-    .menu-toggle { display: flex; }
-    .main { margin-left: 0; padding: 80px 16px 90px; }
-    .main-layout { grid-template-columns: 1fr; }
-    .chat-fab { bottom: 16px; right: 16px; }
-  }
-</style>
+<script src="script.js" defer></script>
 </head>
+
 <body>
-
 <a href="#main-content" class="skip-link">Skip to main content</a>
-<div class="toast-container" id="toastContainer" role="status" aria-live="polite"></div>
-<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 
+<div class="toast-container" id="toastContainer" role="status" aria-live="polite"></div>
+
+<div class="sidebar-backdrop" id="sidebarBackdrop" data-action="close-sidebar"></div>
+
+<!-- ============ SIDEBAR ============ -->
 <aside class="sidebar" id="sidebar" aria-label="Main navigation">
   <div class="brand">
     <div class="brand-logo">ZJ</div>
     <div class="brand-name">ZJ WEBSITE</div>
   </div>
+
   <div class="nav-label">Main Menu</div>
-  <button class="nav-item active" onclick="scrollToCard('dashboard', this)"><i data-lucide="layout-dashboard"></i> Dashboard</button>
-  <button class="nav-item" onclick="scrollToCard('calcCard', this)"><i data-lucide="calculator"></i> Calculator</button>
-  <button class="nav-item" onclick="scrollToCard('weatherCard', this)"><i data-lucide="cloud-sun"></i> Weather</button>
-  <button class="nav-item" onclick="scrollToCard('galleryCard', this)"><i data-lucide="image"></i> Gallery</button>
-  
+  <button class="nav-item active" data-action="nav-scroll" data-target="calcCard">
+    <i data-lucide="calculator"></i> Calculator
+  </button>
+  <button class="nav-item" data-action="nav-scroll" data-target="weatherCard">
+    <i data-lucide="cloud-sun"></i> Weather
+  </button>
+  <button class="nav-item" data-action="nav-scroll" data-target="galleryCard">
+    <i data-lucide="image"></i> Gallery
+  </button>
+
   <div class="nav-label">Professional Apps</div>
-  <button class="nav-item" onclick="openWindow('notesWin', this)"><i data-lucide="sticky-note"></i> Notes</button>
-  <button class="nav-item" onclick="openWindow('todoWin', this)"><i data-lucide="check-square"></i> Todo List</button>
-  <button class="nav-item" onclick="openWindow('pomoWin', this)"><i data-lucide="timer"></i> Pomodoro</button>
-  <button class="nav-item" onclick="openWindow('convWin', this)"><i data-lucide="arrow-left-right"></i> Unit Converter</button>
-  <button class="nav-item" onclick="openChat(this)"><i data-lucide="message-square"></i> Chatbot</button>
+  <button class="nav-item" data-action="open-window" data-target="notesWin">
+    <i data-lucide="sticky-note"></i> Notes
+  </button>
+  <button class="nav-item" data-action="open-window" data-target="todoWin">
+    <i data-lucide="check-square"></i> Todo List
+  </button>
+  <button class="nav-item" data-action="open-window" data-target="pomoWin">
+    <i data-lucide="timer"></i> Pomodoro
+  </button>
+  <button class="nav-item" data-action="open-window" data-target="convWin">
+    <i data-lucide="arrow-left-right"></i> Unit Converter
+  </button>
+  <button class="nav-item" data-action="open-chat">
+    <i data-lucide="message-square"></i> Assistant
+  </button>
+
+  <div class="nav-label">Help</div>
+  <button class="nav-item" data-action="open-shortcuts">
+    <i data-lucide="keyboard"></i> Shortcuts
+  </button>
 </aside>
 
+<!-- ============ TOPBAR ============ -->
 <header class="topbar">
-  <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Open menu"><i data-lucide="menu"></i></button>
+  <button class="menu-toggle" data-action="toggle-sidebar" aria-label="Open menu">
+    <i data-lucide="menu"></i>
+  </button>
   <div class="topbar-right">
-    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" data-tooltip="Toggle Theme"><i data-lucide="moon"></i></button>
+    <button class="install-pill" id="installPill" data-action="install-app" hidden>
+      <i data-lucide="download"></i> Install
+    </button>
+    <button class="theme-toggle" id="themeToggle" data-action="toggle-theme" data-tooltip="Toggle theme">
+      <i data-lucide="moon"></i>
+    </button>
   </div>
 </header>
 
+<!-- ============ MAIN ============ -->
 <main class="main" id="main-content">
   <div class="hero">
     <div class="hero-row">
       <h1 id="greeting">Welcome back, ZJ</h1>
-      <div class="digital-clock" id="liveClock">00:00:00</div>
+      <time class="digital-clock" id="liveClock">00:00:00</time>
     </div>
-    <h2>Your all-in-one dashboard</h2>
+    <h2 id="heroDate">Your all-in-one dashboard</h2>
   </div>
 
   <div class="main-layout" id="dashboard">
 
-    <!-- SIMPLE CALCULATOR -->
+    <!-- CALCULATOR -->
     <section class="frame" id="calcCard" aria-label="Calculator">
       <div class="card-head">
         <div class="card-title"><span class="dot silver"></span>Calculator</div>
         <div class="card-tools">
-          <button class="icon-btn" onclick="openHistory()" data-tooltip="History"><i data-lucide="history"></i></button>
-          <button class="icon-btn" onclick="openWindow('sciCalcWin', this)" data-tooltip="Scientific Mode"><i data-lucide="flask-conical"></i></button>
+          <button class="icon-btn" data-action="open-history" data-tooltip="History">
+            <i data-lucide="history"></i>
+          </button>
+          <button class="icon-btn" data-action="open-window" data-target="sciCalcWin" data-tooltip="Scientific mode">
+            <i data-lucide="flask-conical"></i>
+          </button>
         </div>
       </div>
       <div class="calc-body">
-        <input type="text" id="calcDisplay" class="calc-display" readonly value="0" autocomplete="off">
+        <output class="calc-display" id="calcDisplay" aria-live="polite">0</output>
         <div class="calc-grid">
-          <button class="btn-silver" onclick="appendCalc('AC')">AC</button>
-          <button class="btn-silver" onclick="appendCalc('DEL')">DEL</button>
-          <button class="btn-silver" onclick="appendCalc('%')">%</button>
-          <button class="btn-op" onclick="appendCalc('÷')">÷</button>
-          <button class="btn-num" onclick="appendCalc('7')">7</button>
-          <button class="btn-num" onclick="appendCalc('8')">8</button>
-          <button class="btn-num" onclick="appendCalc('9')">9</button>
-          <button class="btn-op" onclick="appendCalc('×')">×</button>
-          <button class="btn-num" onclick="appendCalc('4')">4</button>
-          <button class="btn-num" onclick="appendCalc('5')">5</button>
-          <button class="btn-num" onclick="appendCalc('6')">6</button>
-          <button class="btn-op" onclick="appendCalc('-')">−</button>
-          <button class="btn-num" onclick="appendCalc('1')">1</button>
-          <button class="btn-num" onclick="appendCalc('2')">2</button>
-          <button class="btn-num" onclick="appendCalc('3')">3</button>
-          <button class="btn-op" onclick="appendCalc('+')">+</button>
-          <button class="btn-num" onclick="appendCalc('0')">0</button>
-          <button class="btn-num" onclick="appendCalc('.')">.</button>
-          <button class="btn-equal" onclick="calcEquals()">=</button>
+          <button class="btn-silver" data-action="calc" data-key="AC">AC</button>
+          <button class="btn-silver" data-action="calc" data-key="DEL">DEL</button>
+          <button class="btn-silver" data-action="calc" data-key="%">%</button>
+          <button class="btn-op" data-action="calc" data-key="÷">÷</button>
+
+          <button class="btn-num" data-action="calc" data-key="7">7</button>
+          <button class="btn-num" data-action="calc" data-key="8">8</button>
+          <button class="btn-num" data-action="calc" data-key="9">9</button>
+          <button class="btn-op" data-action="calc" data-key="×">×</button>
+
+          <button class="btn-num" data-action="calc" data-key="4">4</button>
+          <button class="btn-num" data-action="calc" data-key="5">5</button>
+          <button class="btn-num" data-action="calc" data-key="6">6</button>
+          <button class="btn-op" data-action="calc" data-key="-">−</button>
+
+          <button class="btn-num" data-action="calc" data-key="1">1</button>
+          <button class="btn-num" data-action="calc" data-key="2">2</button>
+          <button class="btn-num" data-action="calc" data-key="3">3</button>
+          <button class="btn-op" data-action="calc" data-key="+">+</button>
+
+          <button class="btn-num" data-action="calc" data-key="0">0</button>
+          <button class="btn-num" data-action="calc" data-key=".">.</button>
+          <button class="btn-equal" data-action="calc-equals">=</button>
         </div>
       </div>
     </section>
@@ -307,25 +141,38 @@
     <section class="frame" id="weatherCard" aria-label="Weather">
       <div class="card-head">
         <div class="card-title"><span class="dot cyan"></span>Weather</div>
-        <button class="icon-btn" onclick="getLocationWeather()" data-tooltip="My Location"><i data-lucide="map-pin"></i></button>
+        <button class="icon-btn" data-action="geo-weather" data-tooltip="Use my location">
+          <i data-lucide="map-pin"></i>
+        </button>
       </div>
       <div class="weather-inner">
         <div class="weather-search">
-          <input type="text" id="cityInput" placeholder="City (e.g. Hyderabad)" onkeydown="if(event.key==='Enter') searchWeather()">
-          <button onclick="searchWeather()"><i data-lucide="search"></i></button>
+          <input type="text" id="cityInput" placeholder="City (e.g. Hyderabad)"
+                 autocomplete="off" autocapitalize="words" enterkeyhint="search"
+                 aria-label="Search city">
+          <button data-action="search-weather" aria-label="Search">
+            <i data-lucide="search"></i>
+          </button>
         </div>
+
         <div class="weather-main">
-          <div class="weather-icon-large" id="wIcon">--</div>
-          <div class="temp" id="temp">--° <span class="temp-toggle" onclick="toggleTempUnit()">°C</span></div>
-          <div class="w-desc" id="wDesc">Loading...</div>
-          <div class="w-loc" id="wLoc">Detecting...</div>
+          <div class="weather-icon-large" id="wIcon" aria-hidden="true">
+            <i data-lucide="cloud-sun"></i>
+          </div>
+          <div class="temp" id="temp">--°</div>
+          <div class="w-desc" id="wDesc">Loading…</div>
+          <div class="w-loc" id="wLoc">Detecting…</div>
         </div>
+
         <div class="weather-stats">
-          <div class="stat-box">Rain <strong id="wRain">--%</strong></div>
-          <div class="stat-box">UV <strong id="wUv">--</strong></div>
+          <div class="stat-box">Feels like <strong id="wFeels">--°</strong></div>
           <div class="stat-box">Humidity <strong id="wHum">--%</strong></div>
+          <div class="stat-box">Rain <strong id="wRain">--%</strong></div>
           <div class="stat-box">Wind <strong id="wWind">-- km/h</strong></div>
+          <div class="stat-box">UV <strong id="wUv">--</strong></div>
+          <div class="stat-box">Sun <strong id="wSun">--</strong></div>
         </div>
+
         <div class="forecast" id="wForecast"></div>
         <div class="w-updated" id="wUpdated"></div>
       </div>
@@ -333,643 +180,287 @@
 
     <!-- GALLERY -->
     <section class="frame" id="galleryCard" aria-label="Gallery">
-      <div class="card-head"><div class="card-title"><span class="dot gold"></span>Gallery</div></div>
+      <div class="card-head">
+        <div class="card-title"><span class="dot gold"></span>Gallery</div>
+        <div class="card-tools">
+          <button class="icon-btn" data-action="toggle-gallery-motion" data-tooltip="Pause / play">
+            <i data-lucide="pause"></i>
+          </button>
+        </div>
+      </div>
       <div class="slider-wrap">
-        <div class="slides">
-          <img src="ZJPP.jpeg" alt="ZJ" onerror="this.src='https://picsum.photos/400/600?random=1'">
-          <img src="bmw.jpeg" alt="BMW" onerror="this.src='https://picsum.photos/400/600?random=2'">
-          <img src="ZJPP.jpeg" alt="ZJ" onerror="this.src='https://picsum.photos/400/600?random=1'">
-          <img src="bmw.jpeg" alt="BMW" onerror="this.src='https://picsum.photos/400/600?random=2'">
+        <div class="slides" id="gallerySlides">
+          <img src="ZJPP.jpeg" alt="ZJ portrait" width="280" height="320" loading="lazy"
+               onerror="this.src='https://picsum.photos/400/600?random=1'">
+          <img src="bmw.jpeg" alt="BMW car" width="280" height="320" loading="lazy"
+               onerror="this.src='https://picsum.photos/400/600?random=2'">
+          <img src="ZJPP.jpeg" alt="ZJ portrait" width="280" height="320" loading="lazy" aria-hidden="true"
+               onerror="this.src='https://picsum.photos/400/600?random=1'">
+          <img src="bmw.jpeg" alt="BMW car" width="280" height="320" loading="lazy" aria-hidden="true"
+               onerror="this.src='https://picsum.photos/400/600?random=2'">
         </div>
       </div>
     </section>
   </div>
+
+  <footer class="site-footer">
+    <span class="badge">v2.0.0</span>
+    <span>Made by ZJ</span>
+    <span class="sep">·</span>
+    <span>Storage: <strong id="storageUsage">—</strong></span>
+    <span class="sep">·</span>
+    <span>No analytics, no tracking. Everything stays on your device.</span>
+  </footer>
 </main>
 
-<!-- APP WINDOWS -->
-
-<div class="app-window" id="notesWin" role="dialog" aria-modal="true">
+<!-- ============ NOTES WINDOW ============ -->
+<dialog class="app-window" id="notesWin" aria-labelledby="notesTitle">
   <div class="app-head">
-    <div class="app-title"><i data-lucide="sticky-note"></i> Notes</div>
-    <button class="app-btn" onclick="closeWindow('notesWin')">Close</button>
+    <div class="app-title" id="notesTitle"><i data-lucide="sticky-note"></i> Notes</div>
+    <button class="app-btn" data-action="close-window" data-target="notesWin">Close</button>
   </div>
   <div class="app-body">
-    <textarea id="noteInput" class="metal-input" placeholder="Write a note..." rows="4" style="resize:vertical; min-height:100px;"></textarea>
-    <button class="app-btn primary" style="margin-top:10px;" onclick="addNote()">Add Note</button>
+    <textarea id="noteInput" class="metal-input" placeholder="Write a note…" rows="4"
+              autocapitalize="sentences" spellcheck="true"></textarea>
+    <div class="row-actions">
+      <button class="app-btn primary" data-action="add-note">Add Note</button>
+      <span class="hint" id="noteCount"></span>
+    </div>
     <div id="notesList"></div>
   </div>
-</div>
+</dialog>
 
-<div class="app-window" id="todoWin" role="dialog" aria-modal="true">
+<!-- ============ TODO WINDOW ============ -->
+<dialog class="app-window" id="todoWin" aria-labelledby="todoTitle">
   <div class="app-head">
-    <div class="app-title"><i data-lucide="check-square"></i> Todo List</div>
-    <button class="app-btn" onclick="closeWindow('todoWin')">Close</button>
+    <div class="app-title" id="todoTitle"><i data-lucide="check-square"></i> Todo List</div>
+    <button class="app-btn" data-action="close-window" data-target="todoWin">Close</button>
   </div>
   <div class="app-body">
-    <div style="display:flex; gap:10px; margin-bottom:20px;">
-      <input id="todoInput" class="metal-input" placeholder="Add a new task..." onkeydown="if(event.key==='Enter'){event.preventDefault();addTodo();}">
-      <button class="app-btn primary" onclick="addTodo()">Add</button>
+    <div class="row-actions">
+      <input id="todoInput" class="metal-input" placeholder="Add a new task…"
+             autocapitalize="sentences" enterkeyhint="done">
+      <button class="app-btn primary" data-action="add-todo">Add</button>
+    </div>
+    <div class="segmented" id="todoFilters" role="tablist">
+      <button class="seg-btn active" data-action="todo-filter" data-filter="all" role="tab">All</button>
+      <button class="seg-btn" data-action="todo-filter" data-filter="active" role="tab">Active</button>
+      <button class="seg-btn" data-action="todo-filter" data-filter="done" role="tab">Done</button>
     </div>
     <div id="todoList"></div>
   </div>
-</div>
+</dialog>
 
-<div class="app-window" id="pomoWin" role="dialog" aria-modal="true">
+<!-- ============ POMODORO WINDOW ============ -->
+<dialog class="app-window" id="pomoWin" aria-labelledby="pomoTitle">
   <div class="app-head">
-    <div class="app-title"><i data-lucide="timer"></i> Pomodoro Timer</div>
-    <button class="app-btn" onclick="closeWindow('pomoWin')">Close</button>
+    <div class="app-title" id="pomoTitle"><i data-lucide="timer"></i> Pomodoro Timer</div>
+    <button class="app-btn" data-action="close-window" data-target="pomoWin">Close</button>
   </div>
-  <div class="app-body" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:30px;">
-    <div style="display:flex; gap:6px; background:var(--bg-0); padding:6px; border-radius:30px; border:1px solid var(--border);">
-      <button class="pomo-btn active" onclick="setPomoMode(this,25,'Focus')" style="padding:10px 24px; border-radius:24px; border:none; background:linear-gradient(180deg,var(--cyan-400),var(--cyan-600)); color:#fff; font-weight:800;">Focus</button>
-      <button class="pomo-btn" onclick="setPomoMode(this,5,'Short')" style="padding:10px 24px; border-radius:24px; border:none; background:transparent; color:var(--text-tertiary); font-weight:800;">Short Break</button>
+  <div class="app-body pomo-body">
+    <div class="segmented" role="tablist">
+      <button class="seg-btn active" data-action="pomo-mode" data-mode="focus" data-min="25">Focus</button>
+      <button class="seg-btn" data-action="pomo-mode" data-mode="short" data-min="5">Short Break</button>
+      <button class="seg-btn" data-action="pomo-mode" data-mode="long" data-min="15">Long Break</button>
     </div>
-    <div style="background:linear-gradient(180deg,var(--metal-1),var(--metal-2)); padding:30px 60px; border-radius:20px; border:1px solid var(--border); cursor:pointer;" onclick="editPomoTime()">
-      <div id="pomoTime" style="font-size:90px; font-weight:900; font-family:'Share Tech Mono', monospace; line-height:1; user-select:none;">25:00</div>
-    </div>
-    <div style="display:flex; gap:15px;">
-      <button id="pomoToggle" class="app-btn primary" onclick="togglePomo()">Start</button>
-      <button class="app-btn" onclick="resetPomo()">Reset</button>
-    </div>
-  </div>
-</div>
 
-<div class="app-window" id="convWin" role="dialog" aria-modal="true">
-  <div class="app-head">
-    <div class="app-title"><i data-lucide="arrow-left-right"></i> Unit Converter</div>
-    <button class="app-btn" onclick="closeWindow('convWin')">Close</button>
+    <div class="pomo-ring-wrap">
+      <svg class="pomo-ring" viewBox="0 0 200 200" aria-hidden="true">
+        <circle class="ring-bg" cx="100" cy="100" r="88"></circle>
+        <circle class="ring-fg" id="pomoRing" cx="100" cy="100" r="88"></circle>
+      </svg>
+      <div class="pomo-time" id="pomoTime" role="timer" aria-live="off">25:00</div>
+    </div>
+
+    <div class="pomo-actions">
+      <button class="app-btn primary" id="pomoToggle" data-action="pomo-toggle">Start</button>
+      <button class="app-btn" data-action="pomo-reset">Reset</button>
+    </div>
+
+    <div class="pomo-stats">
+      <div class="stat-box">Sessions today <strong id="pomoSessions">0</strong></div>
+      <div class="stat-box">Focus minutes <strong id="pomoMinutes">0</strong></div>
+    </div>
   </div>
-  <div class="app-body" style="display:flex; flex-direction:column; gap:20px; max-width:450px; margin:0 auto;">
-    <select class="metal-input" id="convCat" onchange="updateConvUnits()" style="padding:12px;">
+</dialog>
+
+<!-- ============ CONVERTER WINDOW ============ -->
+<dialog class="app-window" id="convWin" aria-labelledby="convTitle">
+  <div class="app-head">
+    <div class="app-title" id="convTitle"><i data-lucide="arrow-left-right"></i> Unit Converter</div>
+    <button class="app-btn" data-action="close-window" data-target="convWin">Close</button>
+  </div>
+  <div class="app-body conv-body">
+    <select class="metal-input" id="convCat" aria-label="Category">
       <option value="length">Length</option>
       <option value="mass">Mass</option>
-      <option value="temp">Temperature</option>
+      <option value="temperature">Temperature</option>
+      <option value="data">Data</option>
+      <option value="time">Time</option>
+      <option value="area">Area</option>
+      <option value="volume">Volume</option>
+      <option value="speed">Speed</option>
+      <option value="pressure">Pressure</option>
+      <option value="energy">Energy</option>
+      <option value="power">Power</option>
+      <option value="angle">Angle</option>
     </select>
-    <div style="display:grid; grid-template-columns:1fr auto; gap:10px; background:var(--bg-1); padding:12px; border-radius:12px; border:1px solid var(--border);">
-      <input type="number" id="convInput" value="1" oninput="doConvert()" style="padding:10px; border:none; background:transparent; color:var(--text); font-size:24px; font-weight:800; font-family:'Share Tech Mono',monospace; outline:none;">
-      <select id="convFrom" onchange="doConvert()" style="padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--bg-2); color:var(--text); font-weight:700;"></select>
+
+    <div class="conv-row">
+      <input type="number" id="convInput" value="1" inputmode="decimal" autocomplete="off" aria-label="From value">
+      <select id="convFrom" aria-label="From unit"></select>
     </div>
-    <div style="display:flex; justify-content:center; margin:-10px 0; z-index:2;">
-      <button onclick="swapConv()" style="width:44px; height:44px; border-radius:50%; border:2px solid var(--border); background:var(--bg-1); color:var(--cyan-400); display:flex; align-items:center; justify-content:center; cursor:pointer;"><i data-lucide="arrow-down-up"></i></button>
-    </div>
-    <div style="display:grid; grid-template-columns:1fr auto; gap:10px; background:var(--bg-1); padding:12px; border-radius:12px; border:1px solid var(--border);">
-      <input type="text" id="convOutput" readonly style="padding:10px; border:none; background:transparent; color:var(--text); font-size:24px; font-weight:800; font-family:'Share Tech Mono',monospace; outline:none;">
-      <select id="convTo" onchange="doConvert()" style="padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--bg-2); color:var(--text); font-weight:700;"></select>
+
+    <button class="conv-swap" data-action="conv-swap" aria-label="Swap units">
+      <i data-lucide="arrow-down-up"></i>
+    </button>
+
+    <div class="conv-row">
+      <output id="convOutput" aria-live="polite">—</output>
+      <select id="convTo" aria-label="To unit"></select>
     </div>
   </div>
-</div>
+</dialog>
 
-<!-- SCIENTIFIC CALCULATOR -->
-<div class="app-window" id="sciCalcWin" role="dialog" aria-modal="true">
+<!-- ============ SCIENTIFIC CALCULATOR ============ -->
+<dialog class="app-window" id="sciCalcWin" aria-labelledby="sciTitle">
   <div class="app-head">
-    <div class="app-title"><i data-lucide="flask-conical"></i> Scientific Calculator</div>
-    <div style="display:flex; gap:8px;">
-      <button class="app-btn" id="radDegToggle" onclick="toggleRadDeg()">RAD</button>
-      <button class="app-btn" onclick="openHistory()" data-tooltip="History"><i data-lucide="history"></i></button>
-      <button class="app-btn" onclick="closeWindow('sciCalcWin')">Close</button>
+    <div class="app-title" id="sciTitle"><i data-lucide="flask-conical"></i> Scientific Calculator</div>
+    <div class="head-actions">
+      <button class="app-btn" id="angleToggle" data-action="toggle-angle">DEG</button>
+      <button class="app-btn" data-action="open-history"><i data-lucide="history"></i></button>
+      <button class="app-btn" data-action="close-window" data-target="sciCalcWin">Close</button>
     </div>
   </div>
   <div class="app-body">
     <div class="sci-calc-container">
-      <input type="text" id="sciDisplay" class="sci-display" readonly value="0">
+      <output class="sci-display" id="sciDisplay" aria-live="polite">0</output>
       <div class="sci-grid">
-        <button class="btn-func" onclick="sciAppend('sin(')">sin</button>
-        <button class="btn-func" onclick="sciAppend('cos(')">cos</button>
-        <button class="btn-func" onclick="sciAppend('tan(')">tan</button>
-        <button class="btn-func" onclick="sciAppend('log(')">log</button>
-        <button class="btn-func" onclick="sciAppend('ln(')">ln</button>
+        <button class="btn-func" data-action="sci" data-key="sin(">sin</button>
+        <button class="btn-func" data-action="sci" data-key="cos(">cos</button>
+        <button class="btn-func" data-action="sci" data-key="tan(">tan</button>
+        <button class="btn-func" data-action="sci" data-key="log(">log</button>
+        <button class="btn-func" data-action="sci" data-key="ln(">ln</button>
 
-        <button class="btn-func" onclick="sciAppend('^2')">x²</button>
-        <button class="btn-func" onclick="sciAppend('^')">x^y</button>
-        <button class="btn-func" onclick="sciAppend('√(')">√</button>
-        <button class="btn-func" onclick="sciAppend('(')">(</button>
-        <button class="btn-func" onclick="sciAppend(')')">)</button>
+        <button class="btn-func" data-action="sci" data-key="^2">x²</button>
+        <button class="btn-func" data-action="sci" data-key="^">x^y</button>
+        <button class="btn-func" data-action="sci" data-key="√(">√</button>
+        <button class="btn-func" data-action="sci" data-key="(">(</button>
+        <button class="btn-func" data-action="sci" data-key=")">)</button>
 
-        <button class="btn-num" onclick="sciAppend('7')">7</button>
-        <button class="btn-num" onclick="sciAppend('8')">8</button>
-        <button class="btn-num" onclick="sciAppend('9')">9</button>
-        <button class="btn-op" onclick="sciAppend('÷')">÷</button>
-        <button class="btn-silver" onclick="sciAppend('%')">%</button>
+        <button class="btn-num" data-action="sci" data-key="7">7</button>
+        <button class="btn-num" data-action="sci" data-key="8">8</button>
+        <button class="btn-num" data-action="sci" data-key="9">9</button>
+        <button class="btn-op" data-action="sci" data-key="÷">÷</button>
+        <button class="btn-silver" data-action="sci" data-key="%">%</button>
 
-        <button class="btn-num" onclick="sciAppend('4')">4</button>
-        <button class="btn-num" onclick="sciAppend('5')">5</button>
-        <button class="btn-num" onclick="sciAppend('6')">6</button>
-        <button class="btn-op" onclick="sciAppend('×')">×</button>
-        <button class="btn-silver" onclick="sciAppend('AC')">AC</button>
+        <button class="btn-num" data-action="sci" data-key="4">4</button>
+        <button class="btn-num" data-action="sci" data-key="5">5</button>
+        <button class="btn-num" data-action="sci" data-key="6">6</button>
+        <button class="btn-op" data-action="sci" data-key="×">×</button>
+        <button class="btn-silver" data-action="sci" data-key="AC">AC</button>
 
-        <button class="btn-num" onclick="sciAppend('1')">1</button>
-        <button class="btn-num" onclick="sciAppend('2')">2</button>
-        <button class="btn-num" onclick="sciAppend('3')">3</button>
-        <button class="btn-op" onclick="sciAppend('-')">−</button>
-        <button class="btn-silver" onclick="sciAppend('DEL')">DEL</button>
+        <button class="btn-num" data-action="sci" data-key="1">1</button>
+        <button class="btn-num" data-action="sci" data-key="2">2</button>
+        <button class="btn-num" data-action="sci" data-key="3">3</button>
+        <button class="btn-op" data-action="sci" data-key="-">−</button>
+        <button class="btn-silver" data-action="sci" data-key="DEL">DEL</button>
 
-        <button class="btn-num" onclick="sciAppend('0')">0</button>
-        <button class="btn-num" onclick="sciAppend('.')">.</button>
-        <button class="btn-op" onclick="sciAppend('+')">+</button>
-        <button class="btn-silver" onclick="sciAppend('π')">π</button>
-        <button class="btn-silver" onclick="sciAppend('e')">e</button>
+        <button class="btn-num" data-action="sci" data-key="0">0</button>
+        <button class="btn-num" data-action="sci" data-key=".">.</button>
+        <button class="btn-op" data-action="sci" data-key="+">+</button>
+        <button class="btn-silver" data-action="sci" data-key="π">π</button>
+        <button class="btn-silver" data-action="sci" data-key="e">e</button>
 
-        <button class="btn-equal" style="grid-column: span 5;" onclick="sciEquals()">=</button>
+        <button class="btn-equal span-5" data-action="sci-equals">=</button>
       </div>
     </div>
   </div>
-</div>
+</dialog>
 
-<!-- HISTORY DIALOG -->
-<dialog id="historyDialog">
-  <div style="padding:20px;">
-    <h2 style="margin:0 0 16px; font-size:18px; display:flex; justify-content:space-between;">
-      Calculator History
-      <button onclick="clearHistory()" style="background:transparent; border:none; color:var(--danger); cursor:pointer; font-size:12px;">Clear</button>
-    </h2>
-    <div id="historyList" style="max-height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
-    <button class="app-btn primary" style="margin-top:20px; width:100%;" onclick="document.getElementById('historyDialog').close()">Close</button>
+<!-- ============ HISTORY DIALOG ============ -->
+<dialog id="historyDialog" class="sheet" aria-labelledby="historyTitle">
+  <div class="sheet-head">
+    <h2 id="historyTitle">Calculator History</h2>
+    <button class="app-btn danger" data-action="clear-history">Clear all</button>
+  </div>
+  <div id="historyList" class="history-list"></div>
+  <div class="sheet-foot">
+    <button class="app-btn primary" data-action="close-dialog" data-target="historyDialog">Close</button>
   </div>
 </dialog>
 
-<button class="chat-fab" id="chatFab" onclick="openChat()" aria-label="Open chat"><i data-lucide="message-square"></i></button>
+<!-- ============ CITY CHOOSER ============ -->
+<dialog id="cityDialog" class="sheet" aria-labelledby="cityTitle">
+  <div class="sheet-head"><h2 id="cityTitle">Select a location</h2></div>
+  <div id="cityList" class="history-list"></div>
+  <div class="sheet-foot">
+    <button class="app-btn" data-action="close-dialog" data-target="cityDialog">Cancel</button>
+  </div>
+</dialog>
 
-<div class="chat-panel" id="chatPanel" role="dialog" aria-modal="true">
+<!-- ============ SHORTCUTS ============ -->
+<dialog id="shortcutsDialog" class="sheet" aria-labelledby="shortcutsTitle">
+  <div class="sheet-head"><h2 id="shortcutsTitle">Keyboard Shortcuts</h2></div>
+  <div class="shortcut-list">
+    <div><kbd>?</kbd><span>Show this overlay</span></div>
+    <div><kbd>/</kbd><span>Focus search</span></div>
+    <div><kbd>t</kbd><span>Toggle theme</span></div>
+    <div><kbd>n</kbd><span>New note</span></div>
+    <div><kbd>Esc</kbd><span>Close top layer</span></div>
+    <div><kbd>Ctrl</kbd>+<kbd>K</kbd><span>Calculator history</span></div>
+    <div><kbd>s</kbd><span>Swap converter units</span></div>
+  </div>
+  <div class="sheet-foot">
+    <button class="app-btn primary" data-action="close-dialog" data-target="shortcutsDialog">Got it</button>
+  </div>
+</dialog>
+
+<!-- ============ CONFIRM ============ -->
+<dialog id="confirmDialog" class="sheet" aria-labelledby="confirmTitle">
+  <div class="sheet-head"><h2 id="confirmTitle">Are you sure?</h2></div>
+  <p id="confirmBody" class="confirm-body"></p>
+  <div class="sheet-foot">
+    <button class="app-btn" data-action="confirm-no">Cancel</button>
+    <button class="app-btn danger" data-action="confirm-yes">Confirm</button>
+  </div>
+</dialog>
+
+<!-- ============ CHAT ============ -->
+<button class="chat-fab" id="chatFab" data-action="open-chat" aria-label="Open assistant">
+  <i data-lucide="message-square"></i>
+</button>
+
+<dialog class="app-window chat-panel" id="chatPanel" aria-labelledby="chatTitle">
   <div class="chat-head">
-    <div style="display:flex; align-items:center; gap:12px;">
-      <div style="width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg, var(--cyan-400), var(--cyan-600)); display:flex; align-items:center; justify-content:center; font-weight:900; color:#fff;">ZJ</div>
-      <div><div style="font-weight:800; font-size:15px;">ZJ Chatbot</div><div style="color:var(--cyan-400); font-size:12px;" id="chatSub">Online</div></div>
+    <div class="chat-identity">
+      <div class="chat-avatar">ZJ</div>
+      <div>
+        <div class="chat-name" id="chatTitle">ZJ Assistant</div>
+        <div class="chat-sub" id="chatSub">Offline · no data leaves your device</div>
+      </div>
     </div>
-    <div style="display:flex; gap:6px;">
-      <button class="icon-btn" onclick="newChat()" data-tooltip="New Chat"><i data-lucide="plus"></i></button>
-      <button class="icon-btn" onclick="showChatHistory()" data-tooltip="Chat History"><i data-lucide="history"></i></button>
-      <button class="icon-btn" onclick="clearChat()" data-tooltip="Clear Chat"><i data-lucide="trash-2"></i></button>
-      <button class="icon-btn" onclick="closeChat()" data-tooltip="Close"><i data-lucide="x"></i></button>
+    <div class="head-actions">
+      <button class="icon-btn" data-action="new-chat" data-tooltip="New chat"><i data-lucide="plus"></i></button>
+      <button class="icon-btn" data-action="chat-history" data-tooltip="History"><i data-lucide="history"></i></button>
+      <button class="icon-btn" data-action="clear-chat" data-tooltip="Clear chat"><i data-lucide="trash-2"></i></button>
+      <button class="icon-btn" data-action="close-window" data-target="chatPanel" data-tooltip="Close"><i data-lucide="x"></i></button>
     </div>
   </div>
-  <div class="chat-window" id="chatWindow"></div>
+
+  <div class="chat-window" id="chatWindow" aria-live="polite"></div>
+
   <div class="chat-input-area">
     <div class="chat-input-row">
-      <input type="text" id="chatInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter'){event.preventDefault();sendMessage();}">
-      <button class="chat-send" id="chatSendBtn" onclick="sendMessage()"><i data-lucide="send"></i></button>
+      <input type="text" id="chatInput" placeholder="Ask me something…"
+             autocomplete="off" enterkeyhint="send" autocapitalize="sentences"
+             aria-label="Message">
+      <button class="chat-send" id="chatSendBtn" data-action="send-message" aria-label="Send">
+        <i data-lucide="send"></i>
+      </button>
     </div>
   </div>
-</div>
+</dialog>
 
-<script>
-'use strict';
-lucide.createIcons();
-
-const $ = (sel) => document.querySelector(sel);
-const $$ = (sel) => Array.from(document.querySelectorAll(sel));
-
-function showToast(msg, type = 'success') {
-  const c = $('#toastContainer'); if (!c) return;
-  const t = document.createElement('div'); t.className = 'toast ' + type; t.textContent = msg;
-  c.appendChild(t); setTimeout(() => t.remove(), 3100);
-}
-function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-
-/* ===== DB WRAPPER ===== */
-const DB_NAME = 'zj_db'; let db;
-function initDB() {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, 1);
-    req.onupgradeneeded = e => { const db = e.target.result; if (!db.objectStoreNames.contains('data')) db.createObjectStore('data'); };
-    req.onsuccess = e => { db = e.target.result; resolve(db); };
-    req.onerror = e => reject(e.target.error);
-  });
-}
-const DB = {
-  async get(key, fallback) {
-    await initDB();
-    return new Promise(resolve => {
-      const tx = db.transaction('data', 'readonly'); const req = tx.objectStore('data').get(key);
-      req.onsuccess = () => resolve(req.result !== undefined ? req.result : fallback);
-      req.onerror = () => resolve(fallback);
-    });
-  },
-  async set(key, val) {
-    await initDB();
-    return new Promise(resolve => {
-      const tx = db.transaction('data', 'readwrite'); tx.objectStore('data').put(val, key);
-      tx.oncomplete = () => resolve(true); tx.onerror = () => resolve(false);
-    });
-  }
-};
-
-/* ===== THEME & GREETING ===== */
-function updateGreeting() {
-  const hr = new Date().getHours();
-  let g = 'Good evening';
-  if (hr < 12) g = 'Good morning';
-  else if (hr < 18) g = 'Good afternoon';
-  $('#greeting').textContent = `${g}, ZJ`;
-}
-function toggleTheme() {
-  const isLight = document.body.classList.toggle('light-theme');
-  DB.set('theme', isLight ? 'light' : 'dark');
-  $('#themeToggle').innerHTML = isLight ? '<i data-lucide="sun"></i>' : '<i data-lucide="moon"></i>';
-  lucide.createIcons();
-}
-DB.get('theme', 'dark').then(t => {
-  if (t === 'light') { document.body.classList.add('light-theme'); $('#themeToggle').innerHTML = '<i data-lucide="sun"></i>'; lucide.createIcons(); }
-});
-updateGreeting();
-
-/* ===== CLOCK ===== */
-setInterval(() => {
-  const d = new Date(); const pad = n => String(n).padStart(2, '0');
-  $('#liveClock').textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
-}, 1000);
-
-/* ===== NAV ===== */
-function toggleSidebar() { $('#sidebar').classList.toggle('open'); $('#sidebarBackdrop').classList.toggle('open'); }
-function closeSidebar() { $('#sidebar').classList.remove('open'); $('#sidebarBackdrop').classList.remove('open'); }
-function scrollToCard(id, btn) { if (btn) { $$('.nav-item').forEach(el => el.classList.remove('active')); btn.classList.add('active'); } const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth' }); closeSidebar(); }
-function openWindow(id, btn) { if (btn) { $$('.nav-item').forEach(el => el.classList.remove('active')); btn.classList.add('active'); } closeSidebar(); const win = document.getElementById(id); if (win) { win.classList.add('open'); document.body.style.overflow = 'hidden'; } }
-function closeWindow(id) { const win = document.getElementById(id); if (win) { win.classList.remove('open'); document.body.style.overflow = ''; } }
-
-/* ===== CALCULATOR ENGINE ===== */
-function preprocess(expr) {
-  return String(expr).replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-').replace(/√/g, 'sqrt')
-    .replace(/π/g, '(3.141592653589793)').replace(/(\d|\))%(?![0-9])/g, '$1/100');
-}
-function tokenize(expr) {
-  const tokens = []; let i = 0;
-  while (i < expr.length) {
-    const c = expr[i];
-    if (/\s/.test(c)) { i++; continue; }
-    if (/[0-9.]/.test(c)) { let j = i, dot = false; while (j < expr.length && /[0-9.]/.test(expr[j])) { if (expr[j] === '.') { if (dot) break; dot = true; } j++; } tokens.push({ type: 'num', value: parseFloat(expr.slice(i, j)) }); i = j; continue; }
-    if (/[a-zA-Z]/.test(c)) { let j = i; while (j < expr.length && /[a-zA-Z]/.test(expr[j])) j++; tokens.push({ type: 'func', value: expr.slice(i, j).toLowerCase() }); i = j; continue; }
-    if ('+-*/^%()'.includes(c)) { tokens.push({ type: 'op', value: c }); i++; continue; }
-    throw new Error('Invalid');
-  }
-  return tokens;
-}
-function toRPN(tokens) {
-  const out = [], ops = []; const prec = { '+':1, '-':1, '*':2, '/':2, '%':2, '^':3 }; let prev = null;
-  for (const t of tokens) {
-    if (t.type === 'num') out.push(t);
-    else if (t.type === 'func') ops.push(t);
-    else if (t.value === '(') ops.push(t);
-    else if (t.value === ')') { while (ops.length && ops[ops.length - 1].value !== '(') out.push(ops.pop()); if (!ops.length) throw new Error('Err'); ops.pop(); if (ops.length && ops[ops.length - 1].type === 'func') out.push(ops.pop()); }
-    else {
-      if (t.value === '-' && (prev === null || (prev.type === 'op' && prev.value !== ')') || prev.type === 'func')) out.push({ type: 'num', value: 0 });
-      while (ops.length) { const top = ops[ops.length - 1]; if (top.type === 'func' || top.value === '(') break; if (prec[top.value] > prec[t.value] || (prec[top.value] === prec[t.value] && t.value !== '^')) out.push(ops.pop()); else break; }
-      ops.push(t);
-    }
-    prev = t;
-  }
-  while (ops.length) { const op = ops.pop(); if (op.value === '(') throw new Error('Err'); out.push(op); }
-  return out;
-}
-function evalRPN(rpn) {
-  const stack = [];
-  for (const t of rpn) {
-    if (t.type === 'num') { stack.push(t.value); continue; }
-    if (t.type === 'func') { const a = stack.pop(); let r; switch (t.value) { case 'sin': r = Math.sin(a); break; case 'cos': r = Math.cos(a); break; case 'tan': r = Math.tan(a); break; case 'sqrt': r = Math.sqrt(a); break; case 'log': r = Math.log10(a); break; case 'ln': r = Math.log(a); break; default: throw new Error('Err'); } stack.push(r); continue; }
-    const b = stack.pop(), a = stack.pop();
-    switch (t.value) { case '+': stack.push(a + b); break; case '-': stack.push(a - b); break; case '*': stack.push(a * b); break; case '/': if (b === 0) throw new Error('Div0'); stack.push(a / b); break; case '%': if (b === 0) throw new Error('Div0'); stack.push(a % b); break; case '^': stack.push(Math.pow(a, b)); break; }
-  }
-  return Math.round(stack[0] * 1e12) / 1e12;
-}
-function evaluate(expr) { return evalRPN(toRPN(tokenize(preprocess(expr)))); }
-
-let calcHistory = [];
-DB.get('calc_history', []).then(d => { calcHistory = d; });
-
-let calcExpr = '0';
-function updateCalcDisplay() { $('#calcDisplay').value = calcExpr || '0'; }
-function appendCalc(ch) {
-  if (ch === 'AC') { calcExpr = '0'; updateCalcDisplay(); return; }
-  if (ch === 'DEL') { calcExpr = calcExpr.slice(0, -1) || '0'; updateCalcDisplay(); return; }
-  if (calcExpr === '0' && /[0-9.]/.test(ch)) calcExpr = ch;
-  else if (ch === '.') { if (!(calcExpr.match(/[0-9.]*$/) || [''])[0].includes('.')) calcExpr += ch; }
-  else if ('+-×÷^%'.includes(ch)) { if ('+-÷^%'.includes(calcExpr.slice(-1))) calcExpr = calcExpr.slice(0, -1) + ch; else calcExpr += ch; }
-  else calcExpr += ch;
-  updateCalcDisplay();
-}
-function calcEquals() {
-  try { 
-    const orig = calcExpr;
-    calcExpr = String(evaluate(calcExpr)); 
-    updateCalcDisplay(); 
-    calcHistory.push({ expr: orig, result: calcExpr });
-    DB.set('calc_history', calcHistory);
-  }
-  catch (e) { $('#calcDisplay').value = e.message; setTimeout(() => { calcExpr = '0'; updateCalcDisplay(); }, 1500); }
-}
-
-let sciExpr = '0';
-function updateSciDisplay() { $('#sciDisplay').value = sciExpr || '0'; }
-function sciAppend(ch) {
-  if (ch === 'AC') { sciExpr = '0'; updateSciDisplay(); return; }
-  if (ch === 'DEL') { sciExpr = sciExpr.slice(0, -1) || '0'; updateSciDisplay(); return; }
-  if (sciExpr === '0' && /[0-9.]/.test(ch)) sciExpr = ch;
-  else if (ch === '.') { if (!(sciExpr.match(/[0-9.]*$/) || [''])[0].includes('.')) sciExpr += ch; }
-  else sciExpr += ch;
-  updateSciDisplay();
-}
-function sciEquals() {
-  try { 
-    const orig = sciExpr;
-    sciExpr = String(evaluate(sciExpr)); 
-    updateSciDisplay(); 
-    calcHistory.push({ expr: orig, result: sciExpr });
-    DB.set('calc_history', calcHistory);
-  }
-  catch (e) { $('#sciDisplay').value = e.message; setTimeout(() => { sciExpr = '0'; updateSciDisplay(); }, 1500); }
-}
-
-function openHistory() {
-  const list = $('#historyList'); list.innerHTML = '';
-  if (!calcHistory.length) { list.innerHTML = '<div style="text-align:center; color:var(--text-tertiary);">No history yet.</div>'; }
-  else {
-    calcHistory.slice().reverse().forEach(h => {
-      list.innerHTML += `<div style="background:var(--bg-2); padding:10px; border-radius:8px; cursor:pointer; text-align:right;" onclick="document.getElementById('historyDialog').close(); calcExpr='${h.result}'; updateCalcDisplay();">
-        <div style="color:var(--text-tertiary); font-size:12px;">${escapeHtml(h.expr)}</div>
-        <div style="color:var(--gold-400); font-weight:800; font-size:16px;">= ${escapeHtml(h.result)}</div>
-      </div>`;
-    });
-  }
-  $('#historyDialog').showModal();
-}
-function clearHistory() { calcHistory = []; DB.set('calc_history', []); openHistory(); }
-
-function toggleRadDeg() { isRad = !isRad; $('#radDegToggle').textContent = isRad ? 'RAD' : 'DEG'; }
-let isRad = false;
-
-/* ===== WEATHER ===== */
-const WMO = {
-  0: { desc: 'Clear Sky', icon: '☀️', night: '🌙' }, 1: { desc: 'Mainly Clear', icon: '🌤️', night: '🌙' }, 2: { desc: 'Partly Cloudy', icon: '⛅', night: '☁️' },
-  3: { desc: 'Overcast', icon: '☁️', night: '☁️' }, 45: { desc: 'Fog', icon: '🌫️', night: '🌫️' }, 48: { desc: 'Rime Fog', icon: '🌫️', night: '🌫️' },
-  51: { desc: 'Light Drizzle', icon: '🌦️', night: '🌦️' }, 53: { desc: 'Drizzle', icon: '🌦️', night: '🌦️' }, 55: { desc: 'Heavy Drizzle', icon: '🌧️', night: '🌧️' },
-  56: { desc: 'Freezing Drizzle', icon: '🌨️', night: '🌨️' }, 57: { desc: 'Freezing Drizzle', icon: '🌨️', night: '🌨️' },
-  61: { desc: 'Light Rain', icon: '🌦️', night: '🌦️' }, 63: { desc: 'Rain', icon: '🌧️', night: '🌧️' }, 65: { desc: 'Heavy Rain', icon: '🌧️', night: '🌧️' },
-  66: { desc: 'Freezing Rain', icon: '🌨️', night: '🌨️' }, 67: { desc: 'Freezing Rain', icon: '🌨️', night: '🌨️' },
-  71: { desc: 'Light Snow', icon: '🌨️', night: '🌨️' }, 73: { desc: 'Snow', icon: '🌨️', night: '🌨️' }, 75: { desc: 'Heavy Snow', icon: '❄️', night: '❄️' },
-  77: { desc: 'Snow Grains', icon: '❄️', night: '❄️' }, 80: { desc: 'Rain Showers', icon: '🌦️', night: '🌦️' }, 81: { desc: 'Showers', icon: '🌧️', night: '🌧️' },
-  82: { desc: 'Violent Showers', icon: '⛈️', night: '⛈️' }, 85: { desc: 'Snow Showers', icon: '🌨️', night: '🌨️' }, 86: { desc: 'Heavy Snow Showers', icon: '❄️', night: '❄️' },
-  95: { desc: 'Thunderstorm', icon: '⛈️', night: '⛈️' }, 96: { desc: 'Thunderstorm + Hail', icon: '⛈️', night: '⛈️' }, 99: { desc: 'Thunderstorm + Heavy Hail', icon: '⛈️', night: '⛈️' }
-};
-function getWeatherIcon(code, isNight) { const c = WMO[code] || { icon: '❓', desc: 'Unknown' }; return isNight && c.night ? c.night : c.icon; }
-let isCelsius = true;
-let lastWeatherData = null;
-function toggleTempUnit() { isCelsius = !isCelsius; if (lastWeatherData) updateWeatherUI(); }
-function updateWeatherUI() {
-  if (!lastWeatherData) return;
-  const cur = lastWeatherData.current_weather; const daily = lastWeatherData.daily;
-  const curTime = new Date(cur.time); const sunrise = new Date(daily.sunrise[0]); const sunset = new Date(daily.sunset[0]);
-  const isNight = curTime < sunrise || curTime > sunset;
-  $('#wIcon').textContent = getWeatherIcon(cur.weathercode, isNight);
-  const tempC = cur.temperature; const temp = isCelsius ? tempC : (tempC * 9/5) + 32;
-  $('#temp').innerHTML = `${Math.round(temp)}° <span class="temp-toggle" onclick="toggleTempUnit()">${isCelsius ? '°C' : '°F'}</span>`;
-  $('#wDesc').textContent = (WMO[cur.weathercode]?.desc || 'Unknown') + (isNight ? ' (Night)' : '');
-  let humidity = '--';
-  if (lastWeatherData.hourly && lastWeatherData.hourly.time) { const idx = lastWeatherData.hourly.time.indexOf(cur.time); if (idx !== -1) humidity = lastWeatherData.hourly.relative_humidity_2m[idx]; }
-  $('#wRain').textContent = (daily.precipitation_probability_max[0] ?? '--') + '%';
-  $('#wUv').textContent = daily.uv_index_max[0] ?? '--';
-  $('#wHum').textContent = humidity + '%';
-  $('#wWind').textContent = cur.windspeed + ' km/h';
-  const fcEl = $('#wForecast'); fcEl.innerHTML = '';
-  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(daily.time[i] + 'T00:00'); const div = document.createElement('div'); div.className = 'fc-day';
-    const max = isCelsius ? daily.temperature_2m_max[i] : (daily.temperature_2m_max[i] * 9/5) + 32;
-    const min = isCelsius ? daily.temperature_2m_min[i] : (daily.temperature_2m_min[i] * 9/5) + 32;
-    div.innerHTML = `<div class="fc-name">${i === 0 ? 'Today' : dayNames[d.getDay()]}</div><div class="fc-icon">${getWeatherIcon(daily.weathercode[i], false)}</div><div class="fc-temps"><span>${Math.round(max)}°</span><span style="color:var(--text-tertiary);">${Math.round(min)}°</span></div>`;
-    fcEl.appendChild(div);
-  }
-  $('#wUpdated').textContent = 'Updated: ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
-async function fetchWeatherData(lat, lon, name) {
-  $('#temp').innerHTML = '<span style="display:inline-block; width:60px; height:30px; background:var(--border); border-radius:8px; animation:pulse 1s infinite;"></span>';
-  $('#wIcon').textContent = '⏳'; $('#wDesc').textContent = 'Fetching...';
-  try {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max&hourly=relative_humidity_2m&timezone=auto&forecast_days=7`;
-    const res = await fetch(url, { signal: AbortSignal.timeout(8000) }); const data = await res.json();
-    lastWeatherData = data; $('#wLoc').textContent = name; updateWeatherUI();
-    DB.set('lastWeather', { lat, lon, name, data, ts: Date.now() });
-  } catch (e) { $('#temp').textContent = '--°'; $('#wIcon').textContent = '⚠️'; $('#wDesc').textContent = 'Error'; $('#wLoc').textContent = 'Try again'; }
-}
-function searchWeather() {
-  const city = $('#cityInput').value.trim(); if (!city) return;
-  $('#temp').innerHTML = '<span style="display:inline-block; width:60px; height:30px; background:var(--border); border-radius:8px; animation:pulse 1s infinite;"></span>';
-  $('#wIcon').textContent = '🔍'; $('#wDesc').textContent = 'Searching...';
-  fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=5&language=en&format=json`, { signal: AbortSignal.timeout(8000) })
-    .then(res => res.json()).then(data => {
-      if (!data.results || data.results.length === 0) { showToast('City not found', 'error'); $('#wDesc').textContent = 'Not found'; $('#wIcon').textContent = '⚠️'; return; }
-      if (data.results.length === 1) { const r = data.results[0]; fetchWeatherData(r.latitude, r.longitude, `${r.name}, ${r.country_code}`); } else { showCityChooser(data.results); }
-    }).catch(() => showToast('Network error', 'error'));
-}
-function showCityChooser(results) {
-  const dialog = document.createElement('dialog'); dialog.id = 'cityChooser';
-  let listHtml = results.map((r, i) => `<button class="app-btn" data-index="${i}" style="width:100%; justify-content:space-between; margin-bottom:8px; text-align:left;"><span>${escapeHtml(r.name)}</span><span style="color:var(--text-tertiary); font-size:12px;">${r.admin1 ? escapeHtml(r.admin1) + ', ' : ''}${escapeHtml(r.country)}</span></button>`).join('');
-  dialog.innerHTML = `<div style="padding:20px;"><h2 style="margin:0 0 16px; font-size:18px;">Select Location</h2>${listHtml}<button class="app-btn" style="width:100%;" onclick="this.closest('dialog').close()">Cancel</button></div>`;
-  document.body.appendChild(dialog); dialog.showModal();
-  dialog.querySelectorAll('[data-index]').forEach(btn => { btn.onclick = () => { const r = results[parseInt(btn.getAttribute('data-index'))]; dialog.close(); fetchWeatherData(r.latitude, r.longitude, `${r.name}, ${r.country_code || r.country}`); }; });
-}
-function getLocationWeather() {
-  if (navigator.geolocation) {
-    $('#temp').innerHTML = '<span style="display:inline-block; width:60px; height:30px; background:var(--border); border-radius:8px;"></span>';
-    $('#wIcon').textContent = '📍'; $('#wDesc').textContent = 'Locating...';
-    navigator.geolocation.getCurrentPosition(pos => fetchWeatherData(pos.coords.latitude, pos.coords.longitude, 'My Location'), () => { showToast('Location denied. Defaulting.', 'error'); fetchWeatherData(51.5074, -0.1278, 'London, UK'); });
-  } else { fetchWeatherData(51.5074, -0.1278, 'London, UK'); }
-}
-DB.get('lastWeather', null).then(saved => {
-  if (saved) { lastWeatherData = saved.data; $('#wLoc').textContent = saved.name; updateWeatherUI(); if (Date.now() - saved.ts > 600000) fetchWeatherData(saved.lat, saved.lon, saved.name); }
-  else { getLocationWeather(); }
-});
-
-/* ===== NOTES / TODO ===== */
-let notes = [];
-DB.get('notes', []).then(d => { notes = d; renderNotes(); });
-function renderNotes() {
-  const list = $('#notesList'); list.innerHTML = '';
-  if (!notes.length) { list.innerHTML = `<div class="empty-state"><i data-lucide="sticky-note"></i><p>No notes yet.</p></div>`; lucide.createIcons(); return; }
-  notes.forEach(n => {
-    list.innerHTML += `<div class="metal-card"><div style="flex:1"><div style="white-space:pre-wrap;">${escapeHtml(n.text)}</div><div style="font-size:11px;color:var(--text-tertiary);">${new Date(n.ts).toLocaleString()}</div></div><button class="del-btn" onclick="delNote('${n.id}')"><i data-lucide="trash-2"></i></button></div>`;
-  });
-  lucide.createIcons();
-}
-function addNote() { const text = $('#noteInput').value.trim(); if (!text) return; notes.unshift({ id: 'n_' + Date.now(), text: text, ts: Date.now() }); DB.set('notes', notes); $('#noteInput').value = ''; renderNotes(); showToast('Note added'); }
-function delNote(id) { notes = notes.filter(x => x.id !== id); DB.set('notes', notes); renderNotes(); }
-
-let todos = []; let currentTodoFilter = 'all';
-DB.get('todos', []).then(d => { todos = d; renderTodos(); });
-function renderTodos() {
-  const list = $('#todoList'); list.innerHTML = '';
-  if (!todos.length) { list.innerHTML = `<div class="empty-state"><i data-lucide="check-square"></i><p>No tasks yet.</p></div>`; lucide.createIcons(); return; }
-  todos.forEach(t => {
-    list.innerHTML += `<div class="todo-item ${t.done ? 'done' : ''}"><input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTodo('${t.id}')"><div class="todo-text" style="flex:1; ${t.done ? 'text-decoration:line-through; color:var(--text-tertiary);' : ''}">${escapeHtml(t.text)}</div><button class="del-btn" onclick="delTodo('${t.id}')"><i data-lucide="trash-2"></i></button></div>`;
-  });
-  lucide.createIcons();
-}
-function addTodo() { const text = $('#todoInput').value.trim(); if (!text) return; todos.push({ id: 't_' + Date.now(), text: text, done: false }); DB.set('todos', todos); $('#todoInput').value = ''; renderTodos(); }
-function toggleTodo(id) { const t = todos.find(x => x.id === id); if (t) t.done = !t.done; DB.set('todos', todos); renderTodos(); }
-function delTodo(id) { todos = todos.filter(x => x.id !== id); DB.set('todos', todos); renderTodos(); }
-
-/* ===== REAL CHATBOT LOGIC ===== */
-const BOT_API = '/chat';
-const WELCOME_MSG = "Hi! I'm ZJ Bot 👋 How can I help you today?";
-let chatSessions = [];
-let currentChatId = null;
-
-DB.get('chat_sessions', []).then(d => { chatSessions = d; });
-DB.get('current_chat', null).then(id => { currentChatId = id; });
-
-function persistChats() { 
-  DB.set('chat_sessions', chatSessions); 
-  DB.set('current_chat', currentChatId || ''); 
-}
-function getCurrentSession() { return chatSessions.find(s => s.id === currentChatId) || null; }
-
-function createNewSession() { 
-  const id = 'chat_' + Date.now(); 
-  const session = { id: id, title: 'New Chat', messages: [{ sender: 'bot', text: WELCOME_MSG }] }; 
-  chatSessions.unshift(session); 
-  currentChatId = id; 
-  persistChats(); 
-  return session; 
-}
-
-function formatMarkdown(text) {
-  let s = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/(^|[^*])\*([^*]+)\*/g, '$1<em>$2</em>')
-       .replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\n/g, '<br>');
-  return s;
-}
-
-function renderChat() {
-  const chatWindow = $('#chatWindow'); chatWindow.innerHTML = ''; 
-  const session = getCurrentSession(); if (!session) return;
-  
-  session.messages.forEach(m => {
-    const wrapper = document.createElement('div'); wrapper.className = 'msg-wrapper ' + m.sender;
-    const msgDiv = document.createElement('div'); msgDiv.className = 'msg ' + m.sender;
-    if (m.sender === 'bot') msgDiv.innerHTML = formatMarkdown(m.text); else msgDiv.textContent = m.text;
-    wrapper.appendChild(msgDiv); chatWindow.appendChild(wrapper);
-  });
-  chatWindow.scrollTop = chatWindow.scrollHeight;
-}
-
-function pushMessage(sender, text) {
-  let session = getCurrentSession(); if (!session) session = createNewSession();
-  session.messages.push({ sender: sender, text: text }); persistChats();
-  
-  const chatWindow = $('#chatWindow');
-  const wrapper = document.createElement('div'); wrapper.className = 'msg-wrapper ' + sender;
-  const msgDiv = document.createElement('div'); msgDiv.className = 'msg ' + sender;
-  if (sender === 'bot') msgDiv.innerHTML = formatMarkdown(text); else msgDiv.textContent = text;
-  wrapper.appendChild(msgDiv); chatWindow.appendChild(wrapper);
-  chatWindow.scrollTop = chatWindow.scrollHeight;
-}
-
-function openChat() { 
-  if (!currentChatId) createNewSession(); 
-  $('#chatPanel').classList.add('open'); 
-  document.body.style.overflow = 'hidden'; 
-  renderChat(); 
-  setTimeout(() => $('#chatInput').focus(), 300);
-}
-
-function closeChat() { 
-  $('#chatPanel').classList.remove('open'); 
-  document.body.style.overflow = ''; 
-}
-
-function newChat() { createNewSession(); renderChat(); showToast('New chat started'); }
-
-function clearChat() {
-  const session = getCurrentSession(); if (!session) return;
-  if (!confirm('Clear all messages in this chat?')) return;
-  session.messages = [{ sender: 'bot', text: WELCOME_MSG }];
-  session.title = 'New Chat'; persistChats(); renderChat();
-}
-
-function showChatHistory() {
-  if (chatSessions.length === 0) return showToast('No history yet.', 'info');
-  const titles = chatSessions.map((s, i) => `${i + 1}. ${s.title} (${s.messages.length} msgs)`).join('\n');
-  const choice = prompt(`Chat History:\n\n${titles}\n\nEnter number to load, or type "del X" to delete:`, "1");
-  
-  if (!choice) return;
-  if (choice.startsWith('del ')) {
-    const idx = parseInt(choice.replace('del ', '')) - 1;
-    if (chatSessions[idx]) {
-      chatSessions.splice(idx, 1);
-      persistChats();
-      if (currentChatId === chatSessions[idx]?.id) currentChatId = null;
-      renderChat();
-      showToast('Chat deleted');
-    }
-    return;
-  }
-  const idx = parseInt(choice) - 1;
-  if (chatSessions[idx]) {
-    currentChatId = chatSessions[idx].id;
-    persistChats();
-    renderChat();
-  }
-}
-
-async function sendMessage() {
-  const chatInput = $('#chatInput'); 
-  const text = chatInput.value.trim(); if (!text) return;
-  if (!currentChatId) createNewSession();
-  
-  pushMessage('user', text); 
-  chatInput.value = '';
-  const btn = $('#chatSendBtn');
-  btn.disabled = true;
-  
-  const session = getCurrentSession();
-  if (session && session.title === 'New Chat') { session.title = text.slice(0, 24); persistChats(); }
-  
-  const typingWrap = document.createElement('div'); 
-  typingWrap.className = 'msg-wrapper bot'; 
-  typingWrap.innerHTML = '<div class="msg bot typing">ZJ is typing...</div>';
-  $('#chatWindow').appendChild(typingWrap); 
-  $('#chatWindow').scrollTop = $('#chatWindow').scrollHeight;
-
-  try {
-    const res = await fetch(BOT_API, { 
-      method: 'POST', 
-      headers: { 'Content-Type': 'application/json' }, 
-      body: JSON.stringify({ message: text }) 
-    });
-    if (!res.ok) throw new Error('Server error');
-    const data = await res.json(); 
-    typingWrap.remove(); 
-    pushMessage('bot', data.reply || 'No response');
-  } catch (e) {
-    typingWrap.remove(); 
-    pushMessage('bot', '⚠️ Cannot reach chatbot server. Check your API key on Vercel.');
-  } finally {
-    btn.disabled = false; 
-    chatInput.focus();
-  }
-}
-
-/* ===== POMODORO / CONVERTER ===== */
-function updatePomoDisplay() { $('#pomoTime').textContent = '25:00'; }
-function setPomoMode(btn, min, mode) { 
-  document.querySelectorAll('.pomo-btn').forEach(b => { b.style.background = 'transparent'; b.style.color = 'var(--text-tertiary)'; }); 
-  btn.style.background = 'linear-gradient(180deg,var(--cyan-400),var(--cyan-600))'; 
-  btn.style.color = '#fff'; 
-}
-function editPomoTime() { showToast('Edit timer clicked', 'info'); }
-function togglePomo() { showToast('Pomodoro started', 'success'); }
-function resetPomo() { showToast('Pomodoro reset', 'info'); }
-
-function updateConvUnits() {}
-function doConvert() {}
-function swapConv() {}
-
-/* ===== GLOBAL KEYBOARD ===== */
-document.addEventListener('keydown', e => {
-  const tag = document.activeElement.tagName;
-  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-  if (e.key === '?' && !e.ctrlKey) { alert('Shortcuts:\nCtrl+K - Search\nt - Theme\nn - New Note\nEsc - Close'); }
-  if (e.key === 't' && !e.ctrlKey) { toggleTheme(); }
-  if (e.key === 'n' && !e.ctrlKey) { openWindow('notesWin'); $('#noteInput').focus(); }
-  if (e.key === 'Escape') { if ($('.app-window.open')) closeWindow($('.app-window.open').id); else if ($('#chatPanel').classList.contains('open')) closeChat(); }
-});
-</script>
 </body>
 </html>
