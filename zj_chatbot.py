@@ -6,8 +6,12 @@ import os
 app = Flask(__name__, static_folder=None)
 CORS(app)
 
-# MUST USE ENVIRONMENT VARIABLE
+# --- SECURE: Reads from Vercel Environment Variables ---
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+
+# Check if key is missing and print a warning in the terminal
+if not GROQ_API_KEY:
+    print("⚠️ WARNING: GROQ_API_KEY environment variable is missing!")
 
 client = OpenAI(
     base_url="https://api.groq.com/openai/v1",
@@ -15,7 +19,7 @@ client = OpenAI(
 )
 
 MODEL = "llama-3.1-8b-instant"
-SYSTEM_PROMPT = "You are ZJ Bot, a helpful AI assistant."
+SYSTEM_PROMPT = "You are ZJ Bot, a helpful AI assistant. Respond in plain conversational text only."
 
 @app.route('/')
 def home():
@@ -32,6 +36,10 @@ def chat():
 
     if not user_message:
         return jsonify({'reply': 'Please type a message.'})
+
+    # If key is missing, return a clean error
+    if not GROQ_API_KEY:
+        return jsonify({'reply': '⚠️ Server API key is not configured.'}), 500
 
     try:
         response = client.chat.completions.create(
