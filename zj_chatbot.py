@@ -1,15 +1,14 @@
-# api/index.py  (local dev: also works as chatbot.py)
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from openai import OpenAI
 import os
+import traceback
 
-# Absolute path to the project root (one level up from api/), so
-# send_from_directory works regardless of the process cwd.
+# Absolute path to the project root
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 app = Flask(__name__, static_folder=None)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # --- SECURE: reads from Vercel Environment Variables ---
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
@@ -28,21 +27,24 @@ SYSTEM_PROMPT = (
     "Respond in plain conversational text only. Keep responses concise."
 )
 
-
-# ----- Static file serving (used locally; unused on Vercel) -----
+# ----- Static file serving -----
 @app.route('/')
 def home():
     return send_from_directory(BASE_DIR, 'index.html')
 
-
+# FIXED: was incorrectly @app.route('/')
 @app.route('/<path:filename>')
 def static_files(filename):
     return send_from_directory(BASE_DIR, filename)
 
 
-# ----- API endpoint -----
-@app.route('/chat', methods=['POST'])
+# ----- API endpoint (Handles BOTH /chat and /api/chat) -----
+@app.route('/chat', methods=['POST', 'OPTIONS'])
+@app.route('/api/chat', methods=['POST', 'OPTIONS'])
 def chat():
+    if request.method == 'OPTIONS':
+        return jsonify({'status': 'ok'}), 200
+
     data = request.get_json(silent=True) or {}
     user_message = data.get('message', '').strip()
 
@@ -69,10 +71,10 @@ def chat():
         return jsonify({'reply': reply})
 
     except Exception as e:
-        # Server-side detail goes to logs; user gets a safe message.
-        print(f"Error calling Groq API: {type(e).__name__}: {e}")
+        print("--- CHAT ERROR ---")
+        traceback.print_exc()
         return jsonify({
-            'reply': '⚠️ Cannot connect to AI. Check server logs.'
+            'reply': f'⚠️ Cannot connect to AI. Error: {str(e)}'
         }), 500
 
 
