@@ -1,486 +1,892 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
-<meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#080C10">
-<meta name="description" content="ZJ Dashboard — calculator, live weather, notes, todos, pomodoro, unit converter, gallery and an offline assistant. No analytics, no tracking.">
-<meta name="author" content="ZJ">
-<meta name="application-name" content="ZJ Dashboard">
-<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ZJ Dashboard</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2300A3CC'/%3E%3Ctext x='50' y='69' font-size='50' font-family='Georgia,serif' font-weight='900' text-anchor='middle' fill='white'%3EZJ%3C/text%3E%3C/svg%3E">
+<!-- Fonts & Icons -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap">
-<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="script.js" defer></script>
+
+<style>
+  /* =========================================
+     CSS VARIABLES & RESET
+  ========================================= */
+  :root {
+    --bg-body: #050608;
+    --bg-sidebar: #080a0f;
+    --bg-card: #0d1117;
+    --bg-hover: #161b22;
+    
+    --border-color: #21262d;
+    --border-light: #30363d;
+    
+    --text-main: #e6edf3;
+    --text-muted: #8b949e;
+    
+    --accent-cyan: #00c4f4;
+    --accent-cyan-hover: #00a8d6;
+    --accent-yellow: #f0c000;
+    --accent-red: #e63946;
+    
+    --font-family: 'Inter', sans-serif;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: var(--font-family);
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+    color: inherit;
+  }
+
+  input {
+    font-family: inherit;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+
+  /* =========================================
+     SIDEBAR
+  ========================================= */
+  .sidebar {
+    width: 240px;
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex-shrink: 0;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    border-bottom: 1px solid transparent;
+  }
+
+  .brand-logo {
+    width: 32px;
+    height: 32px;
+    background: var(--accent-cyan);
+    color: #000;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+  }
+
+  .brand-name {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .nav-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 0;
+  }
+
+  .nav-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 15px 20px 5px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-main);
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .nav-item:hover {
+    background-color: var(--bg-hover);
+  }
+
+  .nav-item.active {
+    border-left-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    background-color: rgba(0, 196, 244, 0.05);
+  }
+
+  /* =========================================
+     MAIN CONTENT
+  ========================================= */
+  .main-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  /* Topbar */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--bg-sidebar);
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-body);
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 13px;
+    width: 250px;
+  }
+
+  .search-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-main);
+    width: 100%;
+  }
+
+  .search-shortcut {
+    background: var(--bg-hover);
+    border: 1px solid var(--border-color);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+
+  .theme-btn {
+    color: var(--accent-yellow);
+    background: var(--bg-body);
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Hero Area */
+  .hero {
+    padding: 40px 30px 20px;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .clock-badge {
+    background: var(--accent-yellow);
+    color: #000;
+    font-family: monospace;
+    font-size: 20px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 700;
+  }
+
+  .hero p {
+    color: var(--accent-cyan);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 10px;
+  }
+
+  /* Dashboard Grid */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 0 30px 30px;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 520px; /* Fixed height for alignment based on screenshot */
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot.cyan { background: var(--accent-cyan); }
+  .dot.yellow { background: var(--accent-yellow); }
+
+  .icon-btn {
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 4px;
+  }
+  .icon-btn:hover { background: var(--bg-hover); color: var(--text-main); }
+
+  /* =========================================
+     CALCULATOR CARD
+  ========================================= */
+  .calc-history {
+    padding: 10px 20px;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: right;
+    border-bottom: 1px solid var(--border-color);
+    min-height: 60px;
+  }
+  .calc-history div { margin-bottom: 4px; }
+
+  .calc-display {
+    padding: 20px;
+    text-align: right;
+    font-size: 32px;
+    font-weight: 600;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 0 20px 20px;
+    flex: 1;
+  }
+
+  .calc-btn {
+    background: var(--bg-hover);
+    border-radius: var(--radius-md);
+    font-size: 18px;
+    font-weight: 500;
+    transition: filter 0.1s;
+  }
+  .calc-btn:active { filter: brightness(0.8); }
+  
+  .calc-btn.op { background: var(--accent-cyan); color: #000; font-weight: 600; }
+  .calc-btn.equal { background: var(--accent-yellow); color: #000; font-weight: 700; grid-column: span 2; }
+  .calc-btn.silver { background: #21262d; }
+
+  /* =========================================
+     WEATHER CARD
+  ========================================= */
+  .weather-search {
+    padding: 15px 20px;
+    display: flex;
+    gap: 10px;
+  }
+  .weather-search input {
+    flex: 1;
+    background: var(--bg-body);
+    border: 1px solid var(--border-color);
+    padding: 10px 15px;
+    border-radius: var(--radius-md);
+    color: var(--text-main);
+    outline: none;
+  }
+  .weather-search button {
+    background: var(--accent-cyan);
+    color: #000;
+    padding: 0 15px;
+    border-radius: var(--radius-md);
+  }
+
+  .weather-main {
+    text-align: center;
+    padding: 10px;
+  }
+  .weather-main .sun-icon { color: var(--accent-yellow); width: 48px; height: 48px; margin: 0 auto 10px; }
+  .weather-temp { font-size: 48px; font-weight: 700; display: flex; align-items: flex-start; justify-content: center; gap: 5px; }
+  .weather-temp span { font-size: 16px; background: var(--bg-hover); padding: 2px 8px; border-radius: 4px; margin-top: 10px; color: var(--text-muted); }
+  .weather-desc { color: var(--accent-cyan); font-size: 14px; font-weight: 500; margin-top: 5px; }
+  .weather-loc { color: var(--text-muted); font-size: 12px; margin-top: 5px; letter-spacing: 1px; }
+
+  .weather-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 15px 20px;
+  }
+  .stat-box {
+    background: var(--bg-body);
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    border-radius: var(--radius-md);
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .stat-box strong { display: block; font-size: 14px; color: var(--text-main); margin-top: 4px; }
+
+  .forecast {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-top: 1px solid var(--border-color);
+    margin-top: auto;
+  }
+  .forecast-day { text-align: center; font-size: 11px; color: var(--text-muted); }
+  .forecast-day .sun-mini { color: var(--accent-yellow); margin: 8px 0; }
+  .forecast-day .temps { font-size: 10px; }
+
+  /* =========================================
+     GALLERY CARD
+  ========================================= */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 20px;
+    height: 100%;
+  }
+  .gallery-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+  }
+  .gallery-grid img:first-child { grid-row: span 2; height: 100%; }
+
+  /* =========================================
+     CHAT FAB
+  ========================================= */
+  .chat-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 196, 244, 0.4);
+    z-index: 100;
+    transition: transform 0.2s;
+  }
+  .chat-fab:hover { transform: scale(1.05); }
+
+  /* =========================================
+     CHAT OVERLAY (Screenshot 2)
+  ========================================= */
+  .chat-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+  }
+  .chat-overlay.active { display: flex; }
+
+  .chat-container {
+    width: 100%;
+    max-width: 900px;
+    height: 100%;
+    max-height: 800px;
+    background: #000;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Chat Header */
+  .chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #080a0f;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .chat-identity { display: flex; align-items: center; gap: 12px; }
+  .chat-avatar {
+    width: 36px;
+    height: 36px;
+    background: var(--accent-cyan);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-weight: 800;
+  }
+  .chat-title h3 { font-size: 14px; margin-bottom: 2px; }
+  .chat-title p { font-size: 12px; color: var(--accent-cyan); }
+  
+  .chat-actions { display: flex; gap: 10px; }
+  .chat-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-main);
+    transition: background 0.2s;
+  }
+  .chat-btn:hover { background: var(--bg-hover); }
+  .chat-btn.close { border-color: #444; }
+
+  /* Chat Messages Area */
+  .chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: #000;
+  }
+
+  .msg-system {
+    background: #111;
+    border: 1px solid #333;
+    color: #ccc;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .msg-system i { color: var(--accent-yellow); }
+
+  .msg-row { display: flex; width: 100%; }
+  .msg-row.user { justify-content: flex-end; }
+
+  .bubble {
+    max-width: 70%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .msg-row.bot .bubble {
+    background: #111;
+    border: 1px solid #333;
+    color: #e0e0e0;
+    border-bottom-left-radius: 4px;
+  }
+
+  .msg-row.user .bubble {
+    background: var(--accent-cyan);
+    color: #000;
+    border-bottom-right-radius: 4px;
+  }
+
+  /* Chat Input Area */
+  .chat-input-area {
+    padding: 15px 20px;
+    background: #080a0f;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 12px;
+  }
+  .chat-input-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: #000;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 0 15px;
+  }
+  .chat-input-wrapper input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    padding: 14px 0;
+    font-size: 14px;
+  }
+  .chat-input-wrapper i { color: var(--text-muted); cursor: pointer; }
+  
+  .chat-send-btn {
+    background: var(--accent-cyan);
+    color: #000;
+    font-weight: 700;
+    padding: 0 25px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  .chat-send-btn:hover { background: var(--accent-cyan-hover); }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .sidebar { display: none; } /* Simple hide for mobile in this demo */
+  }
+</style>
 </head>
-
 <body>
-<a href="#main-content" class="skip-link">Skip to main content</a>
 
-<div class="toast-container" id="toastContainer" role="status" aria-live="polite"></div>
-
-<div class="sidebar-backdrop" id="sidebarBackdrop" data-action="close-sidebar"></div>
-
-<!-- ============ SIDEBAR ============ -->
-<aside class="sidebar" id="sidebar" aria-label="Main navigation">
-  <div class="brand">
-    <div class="brand-logo">ZJ</div>
-    <div class="brand-name">ZJ WEBSITE</div>
-  </div>
-
-  <div class="nav-label">Main Menu</div>
-  <button class="nav-item active" data-action="nav-scroll" data-target="calcCard">
-    <i data-lucide="calculator"></i> Calculator
-  </button>
-  <button class="nav-item" data-action="nav-scroll" data-target="weatherCard">
-    <i data-lucide="cloud-sun"></i> Weather
-  </button>
-  <button class="nav-item" data-action="nav-scroll" data-target="galleryCard">
-    <i data-lucide="image"></i> Gallery
-  </button>
-
-  <div class="nav-label">Professional Apps</div>
-  <button class="nav-item" data-action="open-window" data-target="notesWin">
-    <i data-lucide="sticky-note"></i> Notes
-  </button>
-  <button class="nav-item" data-action="open-window" data-target="todoWin">
-    <i data-lucide="check-square"></i> Todo List
-  </button>
-  <button class="nav-item" data-action="open-window" data-target="pomoWin">
-    <i data-lucide="timer"></i> Pomodoro
-  </button>
-  <button class="nav-item" data-action="open-window" data-target="convWin">
-    <i data-lucide="arrow-left-right"></i> Unit Converter
-  </button>
-  <button class="nav-item" data-action="open-chat">
-    <i data-lucide="message-square"></i> Assistant
-  </button>
-
-  <div class="nav-label">Help</div>
-  <button class="nav-item" data-action="open-shortcuts">
-    <i data-lucide="keyboard"></i> Shortcuts
-  </button>
-</aside>
-
-<!-- ============ TOPBAR ============ -->
-<header class="topbar">
-  <button class="menu-toggle" data-action="toggle-sidebar" aria-label="Open menu">
-    <i data-lucide="menu"></i>
-  </button>
-  <div class="topbar-right">
-    <button class="install-pill" id="installPill" data-action="install-app" hidden>
-      <i data-lucide="download"></i> Install
-    </button>
-    <button class="theme-toggle" id="themeToggle" data-action="toggle-theme" data-tooltip="Toggle theme">
-      <i data-lucide="moon"></i>
-    </button>
-  </div>
-</header>
-
-<!-- ============ MAIN ============ -->
-<main class="main" id="main-content">
-  <div class="hero">
-    <div class="hero-row">
-      <h1 id="greeting">Welcome back, ZJ</h1>
-      <time class="digital-clock" id="liveClock">00:00:00</time>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">ZJ</div>
+      <div class="brand-name">ZJ WEBSITE</div>
     </div>
-    <h2 id="heroDate">Your all-in-one dashboard</h2>
-  </div>
 
-  <div class="main-layout" id="dashboard">
+    <div class="nav-scroll">
+      <div class="nav-label">Main Menu</div>
+      <div class="nav-item active">Dashboard</div>
+      <div class="nav-item">Calculator</div>
+      <div class="nav-item">Weather</div>
+      <div class="nav-item">Gallery</div>
 
-    <!-- CALCULATOR -->
-    <section class="frame" id="calcCard" aria-label="Calculator">
-      <div class="card-head">
-        <div class="card-title"><span class="dot silver"></span>Calculator</div>
-        <div class="card-tools">
-          <button class="icon-btn" data-action="open-history" data-tooltip="History">
-            <i data-lucide="history"></i>
-          </button>
-          <button class="icon-btn" data-action="open-window" data-target="sciCalcWin" data-tooltip="Scientific mode">
-            <i data-lucide="flask-conical"></i>
-          </button>
-        </div>
+      <div class="nav-label">Professional Apps</div>
+      <div class="nav-item">Notes</div>
+      <div class="nav-item">Todo List</div>
+      <div class="nav-item">Pomodoro</div>
+      <div class="nav-item">Unit Converter</div>
+      <div class="nav-item" onclick="toggleChat()">Chatbot</div>
+
+      <div class="nav-label">Data</div>
+      <div class="nav-item">Export JSON</div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-wrapper">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="search-box">
+        <i data-lucide="search" size="16"></i>
+        <input type="text" placeholder="Search">
+        <span class="search-shortcut">Ctrl K</span>
       </div>
-      <div class="calc-body">
-        <output class="calc-display" id="calcDisplay" aria-live="polite">0</output>
+      <button class="theme-btn">
+        <i data-lucide="moon" size="18"></i>
+      </button>
+    </header>
+
+    <!-- HERO -->
+    <div class="hero">
+      <h1>
+        Your All-in-One Dashboard
+        <span class="clock-badge" id="liveClock">00:00:00</span>
+      </h1>
+      <p>Stay productive, informed, and connected.</p>
+    </div>
+
+    <!-- DASHBOARD GRID -->
+    <div class="dashboard-grid">
+      
+      <!-- CALCULATOR CARD -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="dot" style="background: #fff;"></span> CALCULATOR</div>
+          <button class="icon-btn"><i data-lucide="maximize-2" size="16"></i></button>
+        </div>
+        <div class="calc-history">
+          <div>62 = 62</div>
+          <div>0 + 6 = 0</div>
+        </div>
+        <div class="calc-display">0</div>
         <div class="calc-grid">
-          <button class="btn-silver" data-action="calc" data-key="AC">AC</button>
-          <button class="btn-silver" data-action="calc" data-key="DEL">DEL</button>
-          <button class="btn-silver" data-action="calc" data-key="%">%</button>
-          <button class="btn-op" data-action="calc" data-key="÷">÷</button>
-
-          <button class="btn-num" data-action="calc" data-key="7">7</button>
-          <button class="btn-num" data-action="calc" data-key="8">8</button>
-          <button class="btn-num" data-action="calc" data-key="9">9</button>
-          <button class="btn-op" data-action="calc" data-key="×">×</button>
-
-          <button class="btn-num" data-action="calc" data-key="4">4</button>
-          <button class="btn-num" data-action="calc" data-key="5">5</button>
-          <button class="btn-num" data-action="calc" data-key="6">6</button>
-          <button class="btn-op" data-action="calc" data-key="-">−</button>
-
-          <button class="btn-num" data-action="calc" data-key="1">1</button>
-          <button class="btn-num" data-action="calc" data-key="2">2</button>
-          <button class="btn-num" data-action="calc" data-key="3">3</button>
-          <button class="btn-op" data-action="calc" data-key="+">+</button>
-
-          <button class="btn-num" data-action="calc" data-key="0">0</button>
-          <button class="btn-num" data-action="calc" data-key=".">.</button>
-          <button class="btn-equal" data-action="calc-equals">=</button>
+          <button class="calc-btn silver">AC</button>
+          <button class="calc-btn silver">DEL</button>
+          <button class="calc-btn silver">%</button>
+          <button class="calc-btn op">÷</button>
+          
+          <button class="calc-btn">7</button>
+          <button class="calc-btn">8</button>
+          <button class="calc-btn">9</button>
+          <button class="calc-btn op">×</button>
+          
+          <button class="calc-btn">4</button>
+          <button class="calc-btn">5</button>
+          <button class="calc-btn">6</button>
+          <button class="calc-btn op">−</button>
+          
+          <button class="calc-btn">1</button>
+          <button class="calc-btn">2</button>
+          <button class="calc-btn">3</button>
+          <button class="calc-btn op">+</button>
+          
+          <button class="calc-btn">0</button>
+          <button class="calc-btn">.</button>
+          <button class="calc-btn equal">=</button>
         </div>
       </div>
-    </section>
 
-    <!-- WEATHER -->
-    <section class="frame" id="weatherCard" aria-label="Weather">
-      <div class="card-head">
-        <div class="card-title"><span class="dot cyan"></span>Weather</div>
-        <button class="icon-btn" data-action="geo-weather" data-tooltip="Use my location">
-          <i data-lucide="map-pin"></i>
-        </button>
-      </div>
-      <div class="weather-inner">
+      <!-- WEATHER CARD -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="dot cyan"></span> WEATHER</div>
+          <button class="icon-btn"><i data-lucide="map-pin" size="16"></i></button>
+        </div>
         <div class="weather-search">
-          <input type="text" id="cityInput" placeholder="City (e.g. Hyderabad)"
-                 autocomplete="off" autocapitalize="words" enterkeyhint="search"
-                 aria-label="Search city">
-          <button data-action="search-weather" aria-label="Search">
-            <i data-lucide="search"></i>
-          </button>
+          <input type="text" placeholder="City (e.g. Hyderabad)">
+          <button><i data-lucide="search" size="16"></i></button>
         </div>
-
+        
         <div class="weather-main">
-          <div class="weather-icon-large" id="wIcon" aria-hidden="true">
-            <i data-lucide="cloud-sun"></i>
-          </div>
-          <div class="temp" id="temp">--°</div>
-          <div class="w-desc" id="wDesc">Loading…</div>
-          <div class="w-loc" id="wLoc">Detecting…</div>
+          <i data-lucide="sun" class="sun-icon"></i>
+          <div class="weather-temp">36° <span>°C</span></div>
+          <div class="weather-desc">Clear Sky</div>
+          <div class="weather-loc">HYDERABAD, PK</div>
         </div>
 
         <div class="weather-stats">
-          <div class="stat-box">Feels like <strong id="wFeels">--°</strong></div>
-          <div class="stat-box">Humidity <strong id="wHum">--%</strong></div>
-          <div class="stat-box">Rain <strong id="wRain">--%</strong></div>
-          <div class="stat-box">Wind <strong id="wWind">-- km/h</strong></div>
-          <div class="stat-box">UV <strong id="wUv">--</strong></div>
-          <div class="stat-box">Sun <strong id="wSun">--</strong></div>
+          <div class="stat-box">Rain chance <strong>0%</strong></div>
+          <div class="stat-box">UV <strong>4.85</strong></div>
+          <div class="stat-box">Humidity <strong>-- %</strong></div>
+          <div class="stat-box">Wind <strong>7.5 km/h</strong></div>
         </div>
 
-        <div class="forecast" id="wForecast"></div>
-        <div class="w-updated" id="wUpdated"></div>
-      </div>
-    </section>
-
-    <!-- GALLERY -->
-    <section class="frame" id="galleryCard" aria-label="Gallery">
-      <div class="card-head">
-        <div class="card-title"><span class="dot gold"></span>Gallery</div>
-        <div class="card-tools">
-          <button class="icon-btn" data-action="toggle-gallery-motion" data-tooltip="Pause / play">
-            <i data-lucide="pause"></i>
-          </button>
+        <div class="forecast">
+          <div class="forecast-day">
+            <div>TODAY</div>
+            <i data-lucide="sun" class="sun-mini" size="16"></i>
+            <div class="temps">36° 22°</div>
+          </div>
+          <div class="forecast-day">
+            <div>MON</div>
+            <i data-lucide="sun" class="sun-mini" size="16"></i>
+            <div class="temps">36° 23°</div>
+          </div>
+          <div class="forecast-day">
+            <div>TUE</div>
+            <i data-lucide="sun" class="sun-mini" size="16"></i>
+            <div class="temps">37° 23°</div>
+          </div>
+          <div class="forecast-day">
+            <div>WED</div>
+            <i data-lucide="sun" class="sun-mini" size="16"></i>
+            <div class="temps">36° 23°</div>
+          </div>
+          <div class="forecast-day">
+            <div>THU</div>
+            <i data-lucide="sun" class="sun-mini" size="16"></i>
+            <div class="temps">37° 22°</div>
+          </div>
+          <div class="forecast-day">
+            <div>FRI</div>
+            <i data-lucide="sun" class="sun-mini" size="16"></i>
+            <div class="temps">36° 22°</div>
+          </div>
+          <div class="forecast-day">
+            <div>SAT</div>
+            <i data-lucide="sun" class="sun-mini" size="16"></i>
+            <div class="temps">36° 22°</div>
+          </div>
         </div>
       </div>
-      <div class="slider-wrap">
-        <div class="slides" id="gallerySlides">
-          <img src="ZJPP.jpeg" alt="ZJ portrait" width="280" height="320" loading="lazy"
-               onerror="this.src='https://picsum.photos/400/600?random=1'">
-          <img src="bmw.jpeg" alt="BMW car" width="280" height="320" loading="lazy"
-               onerror="this.src='https://picsum.photos/400/600?random=2'">
-          <img src="ZJPP.jpeg" alt="ZJ portrait" width="280" height="320" loading="lazy" aria-hidden="true"
-               onerror="this.src='https://picsum.photos/400/600?random=1'">
-          <img src="bmw.jpeg" alt="BMW car" width="280" height="320" loading="lazy" aria-hidden="true"
-               onerror="this.src='https://picsum.photos/400/600?random=2'">
+
+      <!-- GALLERY CARD -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="dot yellow"></span> GALLERY</div>
+        </div>
+        <div class="gallery-grid">
+          <!-- Using placeholder images that match the vibe of your screenshot -->
+          <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=500&q=80" alt="BMW">
+          <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=500&q=80" alt="Tech 1">
+          <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&q=80" alt="Tech 2">
         </div>
       </div>
-    </section>
-  </div>
 
-  <footer class="site-footer">
-    <span class="badge">v2.0.0</span>
-    <span>Made by ZJ</span>
-    <span class="sep">·</span>
-    <span>Storage: <strong id="storageUsage">—</strong></span>
-    <span class="sep">·</span>
-    <span>No analytics, no tracking. Everything stays on your device.</span>
-  </footer>
-</main>
-
-<!-- ============ NOTES WINDOW ============ -->
-<dialog class="app-window" id="notesWin" aria-labelledby="notesTitle">
-  <div class="app-head">
-    <div class="app-title" id="notesTitle"><i data-lucide="sticky-note"></i> Notes</div>
-    <button class="app-btn" data-action="close-window" data-target="notesWin">Close</button>
-  </div>
-  <div class="app-body">
-    <textarea id="noteInput" class="metal-input" placeholder="Write a note…" rows="4"
-              autocapitalize="sentences" spellcheck="true"></textarea>
-    <div class="row-actions">
-      <button class="app-btn primary" data-action="add-note">Add Note</button>
-      <span class="hint" id="noteCount"></span>
     </div>
-    <div id="notesList"></div>
-  </div>
-</dialog>
+  </main>
 
-<!-- ============ TODO WINDOW ============ -->
-<dialog class="app-window" id="todoWin" aria-labelledby="todoTitle">
-  <div class="app-head">
-    <div class="app-title" id="todoTitle"><i data-lucide="check-square"></i> Todo List</div>
-    <button class="app-btn" data-action="close-window" data-target="todoWin">Close</button>
-  </div>
-  <div class="app-body">
-    <div class="row-actions">
-      <input id="todoInput" class="metal-input" placeholder="Add a new task…"
-             autocapitalize="sentences" enterkeyhint="done">
-      <button class="app-btn primary" data-action="add-todo">Add</button>
-    </div>
-    <div class="segmented" id="todoFilters" role="tablist">
-      <button class="seg-btn active" data-action="todo-filter" data-filter="all" role="tab">All</button>
-      <button class="seg-btn" data-action="todo-filter" data-filter="active" role="tab">Active</button>
-      <button class="seg-btn" data-action="todo-filter" data-filter="done" role="tab">Done</button>
-    </div>
-    <div id="todoList"></div>
-  </div>
-</dialog>
+  <!-- CHAT FAB -->
+  <button class="chat-fab" onclick="toggleChat()">
+    <i data-lucide="message-square" size="24"></i>
+  </button>
 
-<!-- ============ POMODORO WINDOW ============ -->
-<dialog class="app-window" id="pomoWin" aria-labelledby="pomoTitle">
-  <div class="app-head">
-    <div class="app-title" id="pomoTitle"><i data-lucide="timer"></i> Pomodoro Timer</div>
-    <button class="app-btn" data-action="close-window" data-target="pomoWin">Close</button>
-  </div>
-  <div class="app-body pomo-body">
-    <div class="segmented" role="tablist">
-      <button class="seg-btn active" data-action="pomo-mode" data-mode="focus" data-min="25">Focus</button>
-      <button class="seg-btn" data-action="pomo-mode" data-mode="short" data-min="5">Short Break</button>
-      <button class="seg-btn" data-action="pomo-mode" data-mode="long" data-min="15">Long Break</button>
-    </div>
-
-    <div class="pomo-ring-wrap">
-      <svg class="pomo-ring" viewBox="0 0 200 200" aria-hidden="true">
-        <circle class="ring-bg" cx="100" cy="100" r="88"></circle>
-        <circle class="ring-fg" id="pomoRing" cx="100" cy="100" r="88"></circle>
-      </svg>
-      <div class="pomo-time" id="pomoTime" role="timer" aria-live="off">25:00</div>
-    </div>
-
-    <div class="pomo-actions">
-      <button class="app-btn primary" id="pomoToggle" data-action="pomo-toggle">Start</button>
-      <button class="app-btn" data-action="pomo-reset">Reset</button>
-    </div>
-
-    <div class="pomo-stats">
-      <div class="stat-box">Sessions today <strong id="pomoSessions">0</strong></div>
-      <div class="stat-box">Focus minutes <strong id="pomoMinutes">0</strong></div>
-    </div>
-  </div>
-</dialog>
-
-<!-- ============ CONVERTER WINDOW ============ -->
-<dialog class="app-window" id="convWin" aria-labelledby="convTitle">
-  <div class="app-head">
-    <div class="app-title" id="convTitle"><i data-lucide="arrow-left-right"></i> Unit Converter</div>
-    <button class="app-btn" data-action="close-window" data-target="convWin">Close</button>
-  </div>
-  <div class="app-body conv-body">
-    <select class="metal-input" id="convCat" aria-label="Category">
-      <option value="length">Length</option>
-      <option value="mass">Mass</option>
-      <option value="temperature">Temperature</option>
-      <option value="data">Data</option>
-      <option value="time">Time</option>
-      <option value="area">Area</option>
-      <option value="volume">Volume</option>
-      <option value="speed">Speed</option>
-      <option value="pressure">Pressure</option>
-      <option value="energy">Energy</option>
-      <option value="power">Power</option>
-      <option value="angle">Angle</option>
-    </select>
-
-    <div class="conv-row">
-      <input type="number" id="convInput" value="1" inputmode="decimal" autocomplete="off" aria-label="From value">
-      <select id="convFrom" aria-label="From unit"></select>
-    </div>
-
-    <button class="conv-swap" data-action="conv-swap" aria-label="Swap units">
-      <i data-lucide="arrow-down-up"></i>
-    </button>
-
-    <div class="conv-row">
-      <output id="convOutput" aria-live="polite">—</output>
-      <select id="convTo" aria-label="To unit"></select>
-    </div>
-  </div>
-</dialog>
-
-<!-- ============ SCIENTIFIC CALCULATOR ============ -->
-<dialog class="app-window" id="sciCalcWin" aria-labelledby="sciTitle">
-  <div class="app-head">
-    <div class="app-title" id="sciTitle"><i data-lucide="flask-conical"></i> Scientific Calculator</div>
-    <div class="head-actions">
-      <button class="app-btn" id="angleToggle" data-action="toggle-angle">DEG</button>
-      <button class="app-btn" data-action="open-history"><i data-lucide="history"></i></button>
-      <button class="app-btn" data-action="close-window" data-target="sciCalcWin">Close</button>
-    </div>
-  </div>
-  <div class="app-body">
-    <div class="sci-calc-container">
-      <output class="sci-display" id="sciDisplay" aria-live="polite">0</output>
-      <div class="sci-grid">
-        <button class="btn-func" data-action="sci" data-key="sin(">sin</button>
-        <button class="btn-func" data-action="sci" data-key="cos(">cos</button>
-        <button class="btn-func" data-action="sci" data-key="tan(">tan</button>
-        <button class="btn-func" data-action="sci" data-key="log(">log</button>
-        <button class="btn-func" data-action="sci" data-key="ln(">ln</button>
-
-        <button class="btn-func" data-action="sci" data-key="^2">x²</button>
-        <button class="btn-func" data-action="sci" data-key="^">x^y</button>
-        <button class="btn-func" data-action="sci" data-key="√(">√</button>
-        <button class="btn-func" data-action="sci" data-key="(">(</button>
-        <button class="btn-func" data-action="sci" data-key=")">)</button>
-
-        <button class="btn-num" data-action="sci" data-key="7">7</button>
-        <button class="btn-num" data-action="sci" data-key="8">8</button>
-        <button class="btn-num" data-action="sci" data-key="9">9</button>
-        <button class="btn-op" data-action="sci" data-key="÷">÷</button>
-        <button class="btn-silver" data-action="sci" data-key="%">%</button>
-
-        <button class="btn-num" data-action="sci" data-key="4">4</button>
-        <button class="btn-num" data-action="sci" data-key="5">5</button>
-        <button class="btn-num" data-action="sci" data-key="6">6</button>
-        <button class="btn-op" data-action="sci" data-key="×">×</button>
-        <button class="btn-silver" data-action="sci" data-key="AC">AC</button>
-
-        <button class="btn-num" data-action="sci" data-key="1">1</button>
-        <button class="btn-num" data-action="sci" data-key="2">2</button>
-        <button class="btn-num" data-action="sci" data-key="3">3</button>
-        <button class="btn-op" data-action="sci" data-key="-">−</button>
-        <button class="btn-silver" data-action="sci" data-key="DEL">DEL</button>
-
-        <button class="btn-num" data-action="sci" data-key="0">0</button>
-        <button class="btn-num" data-action="sci" data-key=".">.</button>
-        <button class="btn-op" data-action="sci" data-key="+">+</button>
-        <button class="btn-silver" data-action="sci" data-key="π">π</button>
-        <button class="btn-silver" data-action="sci" data-key="e">e</button>
-
-        <button class="btn-equal span-5" data-action="sci-equals">=</button>
-      </div>
-    </div>
-  </div>
-</dialog>
-
-<!-- ============ HISTORY DIALOG ============ -->
-<dialog id="historyDialog" class="sheet" aria-labelledby="historyTitle">
-  <div class="sheet-head">
-    <h2 id="historyTitle">Calculator History</h2>
-    <button class="app-btn danger" data-action="clear-history">Clear all</button>
-  </div>
-  <div id="historyList" class="history-list"></div>
-  <div class="sheet-foot">
-    <button class="app-btn primary" data-action="close-dialog" data-target="historyDialog">Close</button>
-  </div>
-</dialog>
-
-<!-- ============ CITY CHOOSER ============ -->
-<dialog id="cityDialog" class="sheet" aria-labelledby="cityTitle">
-  <div class="sheet-head"><h2 id="cityTitle">Select a location</h2></div>
-  <div id="cityList" class="history-list"></div>
-  <div class="sheet-foot">
-    <button class="app-btn" data-action="close-dialog" data-target="cityDialog">Cancel</button>
-  </div>
-</dialog>
-
-<!-- ============ SHORTCUTS ============ -->
-<dialog id="shortcutsDialog" class="sheet" aria-labelledby="shortcutsTitle">
-  <div class="sheet-head"><h2 id="shortcutsTitle">Keyboard Shortcuts</h2></div>
-  <div class="shortcut-list">
-    <div><kbd>?</kbd><span>Show this overlay</span></div>
-    <div><kbd>/</kbd><span>Focus search</span></div>
-    <div><kbd>t</kbd><span>Toggle theme</span></div>
-    <div><kbd>n</kbd><span>New note</span></div>
-    <div><kbd>Esc</kbd><span>Close top layer</span></div>
-    <div><kbd>Ctrl</kbd>+<kbd>K</kbd><span>Calculator history</span></div>
-    <div><kbd>s</kbd><span>Swap converter units</span></div>
-  </div>
-  <div class="sheet-foot">
-    <button class="app-btn primary" data-action="close-dialog" data-target="shortcutsDialog">Got it</button>
-  </div>
-</dialog>
-
-<!-- ============ CONFIRM ============ -->
-<dialog id="confirmDialog" class="sheet" aria-labelledby="confirmTitle">
-  <div class="sheet-head"><h2 id="confirmTitle">Are you sure?</h2></div>
-  <p id="confirmBody" class="confirm-body"></p>
-  <div class="sheet-foot">
-    <button class="app-btn" data-action="confirm-no">Cancel</button>
-    <button class="app-btn danger" data-action="confirm-yes">Confirm</button>
-  </div>
-</dialog>
-
-<!-- ============ CHAT ============ -->
-<button class="chat-fab" id="chatFab" data-action="open-chat" aria-label="Open assistant">
-  <i data-lucide="message-square"></i>
-</button>
-
-<dialog class="app-window chat-panel" id="chatPanel" aria-labelledby="chatTitle">
-  <div class="chat-head">
-    <div class="chat-identity">
-      <div class="chat-avatar">ZJ</div>
-      <div>
-        <div class="chat-name" id="chatTitle">ZJ Chatbot</div>
-        <div class="chat-sub online">
-          <span class="online-dot"></span> Online
+  <!-- CHAT OVERLAY -->
+  <div class="chat-overlay" id="chatOverlay">
+    <div class="chat-container">
+      
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <div class="chat-identity">
+          <div class="chat-avatar">ZJ</div>
+          <div class="chat-title">
+            <h3>ZJ Chatbot</h3>
+            <p>Demo mode</p>
+          </div>
+        </div>
+        <div class="chat-actions">
+          <button class="chat-btn"><i data-lucide="plus" size="14"></i> NEW</button>
+          <button class="chat-btn"><i data-lucide="clock" size="14"></i> HISTORY</button>
+          <button class="chat-btn"><i data-lucide="trash-2" size="14"></i></button>
+          <button class="chat-btn close" onclick="toggleChat()"><i data-lucide="x" size="14"></i> CLOSE</button>
         </div>
       </div>
-    </div>
-    <div class="head-actions chat-actions">
-      <button class="icon-btn action-plus" data-action="new-chat" data-tooltip="New chat">
-        <i data-lucide="plus"></i>
-      </button>
-      <button class="icon-btn action-clock" data-action="chat-history" data-tooltip="History">
-        <i data-lucide="clock"></i>
-      </button>
-      <button class="icon-btn action-trash" data-action="clear-chat" data-tooltip="Clear chat">
-        <i data-lucide="trash-2"></i>
-      </button>
-      <button class="icon-btn action-close" data-action="close-window" data-target="chatPanel" data-tooltip="Close">
-        <i data-lucide="x"></i>
-      </button>
-    </div>
-  </div>
 
-  <div class="chat-window" id="chatWindow" aria-live="polite">
-    <!-- Initial Bot Message -->
-    <div class="chat-msg bot">
-      <div class="msg-bubble">
-        Hi! I'm ZJ Bot 👋 How can I help you today?
+      <!-- Chat Messages -->
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg-system">
+          <i data-lucide="alert-triangle" size="16"></i>
+          Cannot reach chatbot server. Check your API key on Vercel.
+        </div>
+
+        <div class="msg-row bot">
+          <div class="bubble">Hey there! 👋 What can I do for you?</div>
+        </div>
+
+        <div class="msg-row user">
+          <div class="bubble">hi</div>
+        </div>
+
+        <div class="msg-row bot">
+          <div class="bubble">Hey there! 👋 What can I do for you?</div>
+        </div>
+
+        <div class="msg-row user">
+          <div class="bubble">hi</div>
+        </div>
+
+        <div class="msg-row user">
+          <div class="bubble">how are you doing</div>
+        </div>
+
+        <div class="msg-row bot">
+          <div class="bubble">I'm running smoothly — thanks for asking! 😊</div>
+        </div>
       </div>
-      <button class="msg-copy" onclick="navigator.clipboard.writeText('Hi! I\'m ZJ Bot 👋 How can I help you today?')">
-        <i data-lucide="copy" size="14"></i> Copy
-      </button>
+
+      <!-- Chat Input -->
+      <div class="chat-input-area">
+        <div class="chat-input-wrapper">
+          <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleChatEnter(event)">
+          <i data-lucide="mic" size="18"></i>
+        </div>
+        <button class="chat-send-btn" onclick="sendMessage()">Send</button>
+      </div>
+
     </div>
   </div>
 
-  <div class="chat-input-area">
-    <div class="chat-input-row">
-      <input type="text" id="chatInput" placeholder="Type a message..."
-             autocomplete="off" enterkeyhint="send" autocapitalize="sentences"
-             aria-label="Message">
-      <button class="chat-send" id="chatSendBtn" data-action="send-message" aria-label="Send">
-        Send
-      </button>
-    </div>
-  </div>
-</dialog>
+  <!-- SCRIPTS -->
+  <script>
+    // Initialize Icons
+    lucide.createIcons();
 
+    // Live Clock
+    function updateClock() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('en-GB', { hour12: false });
+      document.getElementById('liveClock').textContent = timeString;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Chat Toggle
+    function toggleChat() {
+      const overlay = document.getElementById('chatOverlay');
+      overlay.classList.toggle('active');
+    }
+
+    // Basic Chat Logic
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const messagesContainer = document.getElementById('chatMessages');
+
+      // Add User Message
+      const userMsg = document.createElement('div');
+      userMsg.className = 'msg-row user';
+      userMsg.innerHTML = `<div class="bubble">${text}</div>`;
+      messagesContainer.appendChild(userMsg);
+
+      // Clear Input
+      input.value = '';
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      // Simulate Bot Reply
+      setTimeout(() => {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'msg-row bot';
+        botMsg.innerHTML = `<div class="bubble">This is a demo response. The API is currently offline.</div>`;
+        messagesContainer.appendChild(botMsg);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }, 1000);
+    }
+
+    function handleChatEnter(e) {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    }
+  </script>
 </body>
 </html>
