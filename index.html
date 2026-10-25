@@ -255,7 +255,6 @@
     padding: 12px; background: var(--bg-body); border: 1px solid var(--border-color);
     border-radius: var(--radius-md); margin-bottom: 10px; font-size: 14px;
   }
-  .list-item-actions { display: flex; gap: 10px; }
 
   /* Tabs */
   .tabs { display: flex; background: var(--bg-body); border-radius: var(--radius-md); padding: 4px; margin-bottom: 15px; }
@@ -320,7 +319,7 @@
   
   .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
   .msg-system { background: #111; border: 1px solid #333; color: #ccc; padding: 12px 16px; border-radius: 8px; font-size: 13px; display: flex; align-items: center; gap: 8px; }
-  .msg-system i { color: var(--accent-yellow); }
+  .msg-system i { color: var(--accent-green); }
   .msg-row { display: flex; width: 100%; }
   .msg-row.user { justify-content: flex-end; }
   .bubble { max-width: 70%; padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.5; }
@@ -331,6 +330,13 @@
   .chat-input-wrapper { flex: 1; display: flex; align-items: center; background: #000; border: 1px solid var(--border-light); border-radius: 8px; padding: 0 15px; }
   .chat-input-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: #fff; padding: 14px 0; font-size: 14px; }
   .chat-send-btn { background: var(--accent-cyan); color: #000; font-weight: 700; padding: 0 25px; border-radius: 8px; font-size: 14px; }
+
+  /* Typing Indicator */
+  .typing-indicator { display: flex; gap: 4px; padding: 12px 16px; background: #111; border: 1px solid #333; border-radius: 12px; border-bottom-left-radius: 4px; width: fit-content; }
+  .typing-indicator span { width: 6px; height: 6px; background: #666; border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+  .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+  .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+  @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
   /* Toast Notifications */
   #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
@@ -629,7 +635,7 @@
           <div class="chat-avatar">ZJ</div>
           <div class="chat-title">
             <h3>ZJ Chatbot</h3>
-            <p>Demo mode</p>
+            <p>Online</p>
           </div>
         </div>
         <div class="chat-actions">
@@ -642,11 +648,11 @@
 
       <div class="chat-messages" id="chatMessages">
         <div class="msg-system">
-          <i data-lucide="alert-triangle" size="16"></i>
-          Cannot reach chatbot server. Check your API key on Vercel.
+          <i data-lucide="check-circle" size="16"></i>
+          Connected to AI via Vercel Backend.
         </div>
         <div class="msg-row bot">
-          <div class="bubble">Hey there! 👋 What can I do for you?</div>
+          <div class="bubble">Hey there! 👋 I'm ZJ Bot. How can I help you today?</div>
         </div>
       </div>
 
@@ -654,7 +660,7 @@
         <div class="chat-input-wrapper">
           <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleChatEnter(event)">
         </div>
-        <button class="chat-send-btn" onclick="sendMessage()">Send</button>
+        <button class="chat-send-btn" id="chatSendBtn" onclick="sendMessage()">Send</button>
       </div>
     </div>
   </div>
@@ -983,15 +989,10 @@
       const s = pomoTime % 60;
       document.getElementById('pomoTime').textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
       
-      const total = (pomoRunning ? pomoTime : (document.getElementById('pomoTime').textContent.startsWith('25') ? 1500 : 300)); // Simplified
-      const ring = document.getElementById('pomoRing');
-      const maxDash = 553;
-      const percent = pomoTime / (parseInt(document.getElementById('pomoTime').textContent.replace(':','')) || 1500); // rough estimate
-      
-      // Better ring logic:
       const currentTotal = parseInt(document.getElementById('pomoStartBtn').dataset.total || 1500);
+      const maxDash = 553;
       const offset = maxDash - (pomoTime / currentTotal) * maxDash;
-      ring.style.strokeDashoffset = offset;
+      document.getElementById('pomoRing').style.strokeDashoffset = offset;
     }
 
     function setPomoMode(minutes, el) {
@@ -1018,7 +1019,6 @@
             pomoRunning = false;
             btn.textContent = 'Start';
             showToast('Timer finished!');
-            // Play sound (optional)
             try { new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play(); } catch(e){}
           }
         }, 1000);
@@ -1037,7 +1037,6 @@
       pomoTime = min * 60;
       updatePomoDisplay();
     }
-    // Init ring
     document.getElementById('pomoStartBtn').dataset.total = 1500;
     updatePomoDisplay();
 
@@ -1047,7 +1046,7 @@
     const convData = {
       length: { m: 1, km: 0.001, cm: 100, mm: 1000, inch: 39.37, ft: 3.28, mi: 0.000621 },
       mass: { kg: 1, g: 1000, mg: 1000000, lb: 2.204, oz: 35.27 },
-      temperature: { C: 1, F: 1, K: 1 }, // Handled custom
+      temperature: { C: 1, F: 1, K: 1 }, 
       data: { B: 1, KB: 0.001, MB: 0.000001, GB: 0.000000001 }
     };
 
@@ -1080,7 +1079,6 @@
         if (to === 'F') result = (c * 9/5) + 32;
         if (to === 'K') result = c + 273.15;
       } else {
-        // Convert to base, then to target
         const baseVal = val / convData[cat][from];
         result = baseVal * convData[cat][to];
       }
@@ -1099,7 +1097,7 @@
     updateConvUnits();
 
     // =========================================
-    // CHAT LOGIC
+    // CHAT LOGIC (Connected to Flask Backend)
     // =========================================
     function toggleChat() {
       document.getElementById('chatOverlay').classList.toggle('active');
@@ -1109,24 +1107,25 @@
       const container = document.getElementById('chatMessages');
       container.innerHTML = `
         <div class="msg-system">
-          <i data-lucide="alert-triangle" size="16"></i>
-          Cannot reach chatbot server. Check your API key on Vercel.
+          <i data-lucide="check-circle" size="16"></i>
+          Connected to AI via Vercel Backend.
         </div>
         <div class="msg-row bot">
-          <div class="bubble">Hey there! 👋 What can I do for you?</div>
+          <div class="bubble">Hey there! 👋 I'm ZJ Bot. How can I help you today?</div>
         </div>
       `;
       lucide.createIcons();
     }
 
-    function sendMessage() {
+    async function sendMessage() {
       const input = document.getElementById('chatInput');
+      const sendBtn = document.getElementById('chatSendBtn');
       const text = input.value.trim();
       if (!text) return;
 
       const container = document.getElementById('chatMessages');
       
-      // Add User Message
+      // 1. Add User Message
       const userMsg = document.createElement('div');
       userMsg.className = 'msg-row user';
       userMsg.innerHTML = `<div class="bubble">${text}</div>`;
@@ -1134,23 +1133,58 @@
       
       input.value = '';
       container.scrollTop = container.scrollHeight;
+      
+      // 2. Disable input and show typing indicator
+      input.disabled = true;
+      sendBtn.disabled = true;
+      sendBtn.style.opacity = '0.5';
 
-      // Bot response (Demo logic)
-      setTimeout(() => {
-        let reply = "I'm just a demo bot right now since the API is disconnected. Try asking me about the weather!";
-        const lower = text.toLowerCase();
-        if (lower.includes('hi') || lower.includes('hello')) reply = "Hey there! 👋 What can I do for you?";
-        else if (lower.includes('how are you')) reply = "I'm running smoothly — thanks for asking! 😊";
-        else if (lower.includes('weather')) reply = "You can check the weather widget on your dashboard!";
-        else if (lower.includes('calculator')) reply = "I see you have a calculator right on the dashboard. Pretty handy!";
-        else if (lower.includes('note') || lower.includes('todo')) reply = "You can manage your tasks by opening the apps in the sidebar.";
+      const typingIndicator = document.createElement('div');
+      typingIndicator.className = 'msg-row bot';
+      typingIndicator.id = 'typingIndicator';
+      typingIndicator.innerHTML = `
+        <div class="typing-indicator">
+          <span></span><span></span><span></span>
+        </div>
+      `;
+      container.appendChild(typingIndicator);
+      container.scrollTop = container.scrollHeight;
 
+      // 3. Call the Flask Backend
+      try {
+        const response = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+
+        const data = await response.json();
+        
+        // Remove typing indicator
+        document.getElementById('typingIndicator').remove();
+
+        // Add Bot Message
         const botMsg = document.createElement('div');
         botMsg.className = 'msg-row bot';
-        botMsg.innerHTML = `<div class="bubble">${reply}</div>`;
+        botMsg.innerHTML = `<div class="bubble">${data.reply}</div>`;
         container.appendChild(botMsg);
+
+      } catch (error) {
+        console.error('Chat Error:', error);
+        document.getElementById('typingIndicator').remove();
+        
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'msg-row bot';
+        errorMsg.innerHTML = `<div class="bubble" style="color: var(--accent-red);">⚠️ Failed to connect to server. Make sure Flask is running.</div>`;
+        container.appendChild(errorMsg);
+      } finally {
+        // Re-enable input
+        input.disabled = false;
+        sendBtn.disabled = false;
+        sendBtn.style.opacity = '1';
+        input.focus();
         container.scrollTop = container.scrollHeight;
-      }, 1000);
+      }
     }
 
     function handleChatEnter(e) {
