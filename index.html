@@ -1,1456 +1,1122 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="ZJ NEXUS - A futuristic 2030 productivity dashboard.">
-    <title>ZJ NEXUS | 2030 Dashboard</title>
+    <title>ZJ WEBSITE // Cyber Dashboard 2030</title>
     
-    <!-- Fonts & Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            cyan: '#00f2fe',
+                            blue: '#4facfe',
+                            teal: '#00d2ff',
+                            dark: '#080c14',
+                            sidebar: '#0c121e',
+                            card: 'rgba(12, 20, 36, 0.75)',
+                            border: 'rgba(0, 242, 254, 0.25)',
+                            borderGlow: 'rgba(0, 242, 254, 0.6)'
+                        }
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        rajdhani: ['Rajdhani', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
-        /* ============================================================
-           ZJ NEXUS — OFFICIAL 2030 PALETTE
-           ============================================================ */
-        :root {
-            /* Surfaces */
-            --bg:            #0A0E12;
-            --bg-elevated:   #0F151B;
-            --card:          #141B23;
-            --card-hover:    #19222C;
-            --field:         #1E2833;
-            --field-hover:   #27333F;
-            --border:        #263340;
-            --border-light:  #33424F;
+        * { user-select: none; scrollbar-width: thin; scrollbar-color: #00f2fe #080c14; }
+        body { background-color: #080c14; color: #e2e8f0; font-family: 'Rajdhani', sans-serif; overflow-x: hidden; }
 
-            /* Text */
-            --text:            #F2F6FA;
-            --text-secondary:  #C6D2DE;
-            --muted:           #8B9BAD;
-            --muted-soft:      #64717F;
-
-            /* Neon Cyan */
-            --cyan:        #22D3EE;
-            --cyan-hover:  #5CE1F5;
-            --cyan-dark:   #0EA5C4;
-            --cyan-soft:   rgba(34, 211, 238, 0.14);
-            --cyan-glow:   0 0 24px rgba(34, 211, 238, 0.35);
-
-            /* Metallic Gold */
-            --gold:        #F2C14E;
-            --gold-hover:  #FFD36B;
-            --gold-dark:   #C9992F;
-            --gold-soft:   rgba(242, 193, 78, 0.14);
-            --gold-glow:   0 0 24px rgba(242, 193, 78, 0.30);
-
-            /* Danger */
-            --danger:      #FF5C5C;
-            --danger-soft: rgba(255, 92, 92, 0.12);
-
-            /* Gradients */
-            --grad-brand:    linear-gradient(135deg, var(--cyan), var(--gold));
-            --grad-primary:  linear-gradient(135deg, var(--cyan), var(--cyan-dark));
-            --grad-reward:   linear-gradient(135deg, var(--gold), var(--gold-dark));
-            --grad-progress: linear-gradient(90deg, var(--cyan), var(--gold));
-
-            /* Shadows */
-            --shadow-sm:    0 1px 3px rgba(0, 0, 0, 0.35);
-            --shadow-md:    0 4px 12px rgba(0, 0, 0, 0.45);
-            --shadow-lg:    0 12px 32px rgba(0, 0, 0, 0.55);
-            --shadow-glow-dual: 0 0 24px rgba(34, 211, 238, 0.30), 0 0 8px rgba(242, 193, 78, 0.20);
-            
-            /* Typography */
-            --font-main: 'Inter', system-ui, sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
+        .glass-panel {
+            background: rgba(10, 17, 30, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(0, 242, 254, 0.05);
         }
 
-        [data-theme="light"] {
-            --bg:            #F4F7FA;
-            --bg-elevated:   #FFFFFF;
-            --card:          #FFFFFF;
-            --card-hover:    #F8FAFC;
-            --field:         #EDF1F5;
-            --field-hover:   #E2E8F0;
-            --border:        #D6DEE6;
-            --border-light:  #C2CDD8;
-            --text:            #0B1117;
-            --text-secondary:  #2A3542;
-            --muted:           #5A6979;
-            --muted-soft:      #7C8896;
-            --cyan:        #0E8FA8;
-            --cyan-hover:  #0A6B80;
-            --cyan-dark:   #084F5F;
-            --cyan-soft:   rgba(14, 143, 168, 0.10);
-            --cyan-glow:   0 0 20px rgba(14, 143, 168, 0.20);
-            --gold:        #A67C1A;
-            --gold-hover:  #7C5C10;
-            --gold-dark:   #5C4408;
-            --gold-soft:   rgba(166, 124, 26, 0.10);
-            --gold-glow:   0 0 20px rgba(166, 124, 26, 0.18);
-            --danger:      #C9302C;
-            --danger-soft: rgba(201, 48, 44, 0.10);
-            --shadow-sm:    0 1px 2px rgba(0, 0, 0, 0.06);
-            --shadow-md:    0 4px 12px rgba(0, 0, 0, 0.08);
-            --shadow-lg:    0 12px 32px rgba(0, 0, 0, 0.12);
-            --shadow-glow-dual: 0 0 24px rgba(14, 143, 168, 0.20), 0 0 8px rgba(166, 124, 26, 0.15);
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 242, 254, 0.06) 100%);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 242, 254, 0.18);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* ============================================================
-           RESET & BASE
-           ============================================================ */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: var(--font-main);
-            background-color: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            overflow: hidden; /* Hide overflow for 3D background */
-            perspective: 1000px;
-            transition: background-color 0.3s, color 0.3s;
+        .glass-card:hover {
+            border-color: rgba(0, 242, 254, 0.6);
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.25), inset 0 0 15px rgba(0, 242, 254, 0.1);
         }
 
-        /* 3D Space Grid Background */
-        .bg-grid {
-            position: fixed;
-            inset: -50%;
-            z-index: -1;
-            background-image: 
-                linear-gradient(rgba(34, 211, 238, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(34, 211, 238, 0.05) 1px, transparent 1px);
-            background-size: 60px 60px;
-            transform: rotateX(60deg) translateY(-100px) translateZ(-300px);
-            animation: gridMove 20s linear infinite;
-            opacity: 0.6;
-        }
-        @keyframes gridMove {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 60px; }
+        .glow-cyan { text-shadow: 0 0 12px rgba(0, 242, 254, 0.7), 0 0 24px rgba(0, 242, 254, 0.4); }
+
+        .scanline-overlay {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
         }
 
-        button, input, textarea, select { font-family: inherit; color: inherit; }
-        button { cursor: pointer; border: none; background: none; }
-        :focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
-
-        /* Scrollbars */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--cyan-soft); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
-
-        /* ============================================================
-           LAYOUT & GLASSMORPHISM
-           ============================================================ */
-        .app-container {
-            max-width: 1200px; margin: 0 auto; padding: 20px; height: 100vh;
-            display: flex; flex-direction: column;
+        .cyber-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(0, 242, 254, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 242, 254, 0.04) 1px, transparent 1px);
         }
 
-        header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px; margin-bottom: 20px;
-            background: rgba(20, 27, 35, 0.65); backdrop-filter: blur(16px);
-            border: 1px solid rgba(34, 211, 238, 0.2); border-radius: 16px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-            z-index: 10;
-        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #080c14; }
+        ::-webkit-scrollbar-thumb { background: #00f2fe; border-radius: 3px; }
 
-        .brand { display: flex; align-items: center; gap: 16px; }
-        .logo {
-            width: 48px; height: 48px; border-radius: 12px;
-            background: var(--grad-brand); color: #05080A;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 900; font-size: 20px; box-shadow: var(--cyan-glow);
-            transform: rotate(-5deg); transition: transform 0.3s;
-        }
-        .logo:hover { transform: rotate(5deg) scale(1.05); }
-        h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; background: var(--grad-brand); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .sub { color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+        .hud-corner { position: absolute; width: 10px; height: 10px; border-color: #00f2fe; pointer-events: none; }
+        .hud-tl { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
+        .hud-tr { top: -1px; right: -1px; border-top: 2px solid; border-right: 2px solid; }
+        .hud-bl { bottom: -1px; left: -1px; border-bottom: 2px solid; border-left: 2px solid; }
+        .hud-br { bottom: -1px; right: -1px; border-bottom: 2px solid; border-right: 2px solid; }
 
-        .actions { display: flex; gap: 12px; }
-        button, .btn {
-            background: var(--field); border: 1px solid var(--border);
-            padding: 10px 20px; border-radius: 8px; font-weight: 600;
-            transition: all 0.2s; backdrop-filter: blur(5px); color: var(--text);
-        }
-        button:hover { border-color: var(--cyan); box-shadow: var(--cyan-soft); }
-        button.primary { background: var(--grad-primary); color: #05080A; border: none; font-weight: 700; }
-        button.primary:hover { box-shadow: var(--cyan-glow); transform: translateY(-2px); }
-        button.danger { background: var(--danger-soft); color: var(--danger); border-color: var(--danger); }
-        button.danger:hover { background: var(--danger); color: #fff; }
-
-        /* ============================================================
-           3D DASHBOARD GRID
-           ============================================================ */
-        .dashboard-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px;
-            overflow-y: auto; padding: 10px; flex: 1;
-        }
-
-        .app-card {
-            background: rgba(20, 27, 35, 0.65); backdrop-filter: blur(10px);
-            border: 1px solid var(--border); border-radius: 16px;
-            padding: 30px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;
-            cursor: pointer; position: relative; overflow: hidden;
-            transform-style: preserve-3d; transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .app-card::before {
-            content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 0%, var(--cyan-soft), transparent 70%);
-            opacity: 0; transition: opacity 0.3s;
-        }
-        .app-card:hover { border-color: var(--cyan); box-shadow: var(--cyan-glow); }
-        .app-card:hover::before { opacity: 1; }
-        
-        .icon-wrapper {
-            width: 60px; height: 60px; border-radius: 50%; background: rgba(34, 211, 238, 0.1);
-            display: flex; align-items: center; justify-content: center; font-size: 28px;
-            transform: translateZ(30px); border: 1px solid var(--cyan-soft); transition: transform 0.3s;
-        }
-        .app-card:hover .icon-wrapper { transform: translateZ(50px) scale(1.1); border-color: var(--cyan); }
-        .app-card h3 { font-size: 16px; font-weight: 700; transform: translateZ(20px); text-align: center; color: var(--text); }
-        .app-card p { font-size: 12px; color: var(--muted); text-align: center; transform: translateZ(10px); }
-
-        /* ============================================================
-           HOLOGRAPHIC MODALS
-           ============================================================ */
-        dialog.app-window {
-            border: 1px solid var(--cyan); background: rgba(15, 21, 27, 0.95);
-            backdrop-filter: blur(20px); color: var(--text);
-            border-radius: 16px; padding: 0; width: 90%; max-width: 600px; margin: auto;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px var(--cyan-soft);
-            opacity: 0; transform: scale(0.9) translateY(20px); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        dialog.app-window[open] { opacity: 1; transform: scale(1) translateY(0); }
-        dialog.app-window::backdrop { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); }
-
-        .modal-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px; border-bottom: 1px solid var(--border);
-            background: linear-gradient(to right, rgba(34, 211, 238, 0.05), transparent);
-        }
-        .modal-title { font-weight: 800; font-size: 18px; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; }
-        .modal-close { padding: 8px; border-radius: 50%; color: var(--muted); font-size: 18px; transition: all 0.2s; }
-        .modal-close:hover { background: var(--danger); color: white; }
-        .modal-body { padding: 24px; max-height: 75vh; overflow-y: auto; }
-
-        /* ============================================================
-           APP SPECIFIC STYLES
-           ============================================================ */
-        /* Calculator */
-        .calc-display {
-            background: var(--bg); padding: 20px; text-align: right; font-size: 36px;
-            font-family: var(--font-mono); font-weight: 700; border-radius: 8px;
-            margin-bottom: 20px; border: 1px solid var(--border); color: var(--cyan);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5); overflow-x: auto; white-space: nowrap;
-        }
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .calc-grid button {
-            padding: 18px 0; font-size: 20px; font-weight: 700; border-radius: 8px;
-            background: var(--field); border: 1px solid var(--border);
-        }
-        .calc-grid button:hover { background: var(--field-hover); border-color: var(--cyan); }
-        .calc-grid button.op { color: var(--cyan); background: var(--cyan-soft); }
-        .calc-grid button.equal { background: var(--grad-reward); color: #1A1200; grid-column: span 2; }
-
-        /* Converter & Forms */
-        .field { display: grid; gap: 8px; margin-bottom: 20px; }
-        label { font-size: 12px; color: var(--cyan); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        input, select, textarea {
-            width: 100%; background: var(--field); border: 1px solid var(--border);
-            padding: 14px; border-radius: 8px; font-size: 15px; color: var(--text); transition: all 0.2s;
-        }
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--cyan); box-shadow: 0 0 15px var(--cyan-soft); outline: none;
-        }
-        .row { display: flex; gap: 12px; align-items: center; }
-        .grow { flex: 1; }
-        .status { padding: 14px; background: var(--field); border-radius: 8px; font-size: 13px; margin-top: 16px; border-left: 3px solid var(--border); font-weight: 600; }
-        .status.error { color: var(--danger); border-left-color: var(--danger); background: var(--danger-soft); }
-        .status.success { color: var(--cyan); border-left-color: var(--cyan); background: var(--cyan-soft); }
-
-        /* Lists */
-        .list { display: grid; gap: 12px; margin-top: 20px; }
-        .item {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 8px; padding: 16px; display: flex; gap: 12px; align-items: flex-start; transition: background 0.2s;
-        }
-        .item:hover { background: var(--card-hover); }
-        .item-body { flex: 1; min-width: 0; }
-        .item-body strong { display: block; margin-bottom: 6px; color: var(--text); font-size: 15px; }
-        .item-body div { color: var(--text-secondary); font-size: 14px; word-break: break-word; }
-        .item small { color: var(--cyan); font-size: 11px; margin-top: 6px; display: block; font-family: var(--font-mono); }
-        .item button { padding: 6px 12px; font-size: 12px; color: var(--danger); border: 1px solid var(--danger); border-radius: 8px; background: transparent; }
-        .item button:hover { background: var(--danger); color: white; }
-        .done { text-decoration: line-through; color: var(--gold) !important; opacity: 0.7; }
-        .priority-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; text-transform: uppercase; margin-top: 8px; letter-spacing: 1px; }
-        .priority-badge.high { background: var(--danger-soft); color: var(--danger); }
-        .priority-badge.medium { background: var(--gold-soft); color: var(--gold); }
-        .priority-badge.low { background: var(--cyan-soft); color: var(--cyan); }
-
-        /* Timer & Clock */
-        .timer-display { font-size: 64px; font-family: var(--font-mono); font-weight: 800; text-align: center; color: var(--cyan); margin: 30px 0; text-shadow: 0 0 30px var(--cyan-soft); }
-        .timer-progress { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; margin-bottom: 30px; border: 1px solid var(--border); }
-        .timer-progress-bar { height: 100%; background: var(--grad-progress); transition: width 0.3s; box-shadow: var(--cyan-glow); }
-
-        .clock-tabs { display: flex; gap: 8px; background: var(--bg); padding: 6px; border-radius: 8px; margin-bottom: 20px; }
-        .clock-tabs button { flex: 1; padding: 10px; border: none; background: transparent; color: var(--muted); border-radius: 8px; font-size: 13px; font-weight: 700; }
-        .clock-tabs button.active { background: var(--card); color: var(--cyan); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .clock-panel { display: none; }
-        .clock-panel.active { display: block; animation: fadeIn 0.3s; }
+        /* Chat Bubble Animations */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .analog-clock { width: 240px; height: 240px; margin: 0 auto 20px; display: block; filter: drop-shadow(0 0 20px var(--cyan-soft)); }
-        .digital-time { font-size: 52px; font-family: var(--font-mono); font-weight: 800; text-align: center; color: var(--cyan); text-shadow: var(--cyan-glow); }
-        .digital-time .ampm { color: var(--gold); font-size: 20px; margin-left: 10px; text-shadow: var(--gold-glow); }
-        .digital-date { text-align: center; color: var(--text-secondary); font-size: 16px; margin-top: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
-
-        .world-clock-item { display: flex; justify-content: space-between; padding: 16px; background: var(--field); border-radius: 8px; border: 1px solid var(--border); margin-bottom: 10px; }
-        .world-clock-item .time { color: var(--cyan); font-family: var(--font-mono); font-weight: 700; font-size: 18px; }
-
-        /* Chatbot */
-        .chat-fab {
-            position: fixed; bottom: 30px; right: 30px; width: 64px; height: 64px;
-            border-radius: 50%; background: var(--grad-brand); color: #05080A;
-            display: flex; align-items: center; justify-content: center; font-size: 28px;
-            box-shadow: 0 0 30px var(--cyan-soft), 0 0 10px var(--gold-soft);
-            cursor: pointer; z-index: 1000; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            animation: float 3s ease-in-out infinite;
-        }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .chat-fab:hover { transform: scale(1.1) rotate(10deg); }
-
-        .chat-overlay {
-            position: fixed; inset: 0; background: rgba(10, 14, 18, 0.9); backdrop-filter: blur(10px);
-            z-index: 1001; display: none; justify-content: center; align-items: center;
-        }
-        .chat-overlay.active { display: flex; animation: fadeIn 0.3s; }
-        .chat-container {
-            width: 100%; max-width: 800px; height: 100%; max-height: 800px;
-            background: var(--bg-elevated); border: 1px solid var(--cyan); border-radius: 16px;
-            display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 50px var(--cyan-soft);
-        }
-        .chat-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--bg); border-bottom: 1px solid var(--border); }
-        .chat-identity { display: flex; align-items: center; gap: 15px; }
-        .chat-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--grad-brand); color: #05080A; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; box-shadow: var(--cyan-glow); }
-        .chat-title h3 { font-size: 16px; margin-bottom: 4px; color: var(--text); }
-        .chat-title p { font-size: 13px; color: var(--cyan); font-family: var(--font-mono); }
-        .chat-actions { display: flex; gap: 10px; }
-        .chat-btn { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-weight: 700; color: var(--text); background: transparent; transition: all 0.2s; }
-        .chat-btn:hover { background: var(--cyan-soft); border-color: var(--cyan); }
-        .chat-btn.close { border-color: var(--danger); color: var(--danger); }
-        .chat-btn.close:hover { background: var(--danger); color: white; }
-        .chat-messages { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
-        .msg-system { background: var(--cyan-soft); border: 1px solid var(--cyan); color: var(--cyan); padding: 12px 20px; border-radius: 8px; font-size: 13px; text-align: center; font-family: var(--font-mono); }
-        .bubble { max-width: 80%; padding: 16px 20px; border-radius: 12px; font-size: 15px; line-height: 1.6; word-wrap: break-word; }
-        .msg-row { display: flex; width: 100%; }
-        .msg-row.user { justify-content: flex-end; }
-        .msg-row.user .bubble { background: var(--grad-primary); color: #05080A; border-bottom-right-radius: 4px; box-shadow: 0 4px 15px var(--cyan-soft); }
-        .msg-row.bot .bubble { background: var(--card); border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 4px; backdrop-filter: blur(5px); }
-        .chat-input-area { padding: 20px; background: var(--bg); border-top: 1px solid var(--border); display: flex; gap: 15px; }
-        .chat-input-wrapper { flex: 1; display: flex; align-items: center; background: var(--field); border: 1px solid var(--border); border-radius: 8px; padding: 0 20px; transition: all 0.2s; }
-        .chat-input-wrapper:focus-within { border-color: var(--cyan); box-shadow: 0 0 20px var(--cyan-soft); }
-        .chat-input-wrapper textarea { flex: 1; background: transparent; border: none; color: var(--text); padding: 16px 0; font-size: 15px; outline: none; box-shadow: none; resize: none; max-height: 100px; }
-        .chat-send-btn { background: var(--cyan); color: #05080A; font-weight: 800; padding: 0 30px; border-radius: 8px; border: none; transition: all 0.2s; }
-        .chat-send-btn:hover { background: var(--cyan-hover); box-shadow: var(--cyan-glow); }
-        .typing-indicator { display: flex; gap: 6px; padding: 16px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; border-bottom-left-radius: 4px; width: fit-content; }
-        .typing-indicator span { width: 8px; height: 8px; background: var(--cyan); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; box-shadow: var(--cyan-glow); }
-        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+        .msg-anim { animation: fadeIn 0.3s ease-out forwards; }
+        
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
-
-        /* Toasts & Lightbox */
-        .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .toast { background: var(--bg-elevated); border: 1px solid var(--cyan); padding: 14px 28px; border-radius: 8px; box-shadow: var(--cyan-glow); color: var(--text); font-size: 14px; font-weight: 700; animation: slideUp 0.3s; backdrop-filter: blur(10px); }
-        .toast.error { border-color: var(--danger); box-shadow: 0 0 20px var(--danger-soft); }
-        .toast.success { border-color: var(--gold); box-shadow: var(--gold-glow); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 20px; cursor: zoom-out; }
-        .lightbox.active { display: flex; }
-        .lightbox img { max-width: 90%; max-height: 90%; border-radius: 16px; border: 2px solid var(--cyan); box-shadow: 0 0 50px var(--cyan); }
-
-        @media (max-width: 600px) {
-            .dashboard-grid { grid-template-columns: 1fr 1fr; }
-            dialog.app-window { width: 100%; height: 100%; max-height: 100vh; border-radius: 0; border: none; }
-            .modal-header { border-radius: 0; }
-            .chat-container { border-radius: 0; border: none; }
-            .chat-actions .chat-btn { padding: 8px; font-size: 0; }
-            .chat-actions .chat-btn::before { content: '⚙️'; font-size: 16px; }
-            .chat-actions .chat-btn.close::before { content: '✕'; }
-        }
+        .typing-dot { animation: bounce 1.4s infinite ease-in-out both; }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
     </style>
 </head>
-<body>
+<body class="cyber-grid relative min-h-screen selection:bg-cyber-cyan selection:text-black flex">
 
-<div class="bg-grid"></div>
+    <div class="fixed inset-0 scanline-overlay z-50 pointer-events-none opacity-30"></div>
+    <canvas id="bg-canvas" class="fixed inset-0 w-full h-full z-0 pointer-events-none"></canvas>
 
-<div class="app-container">
-    <header>
-        <div class="brand">
-            <div class="logo">ZJ</div>
-            <div>
-                <h1>ZJ NEXUS</h1>
-                <div class="sub">Holographic Workspace</div>
+    <!-- SEARCH MODAL -->
+    <div id="search-modal" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="w-full max-w-lg glass-panel rounded-2xl p-6 border border-cyber-cyan/50 space-y-4">
+            <div class="flex justify-between items-center border-b border-cyber-border pb-3">
+                <span class="font-orbitron font-bold text-cyber-cyan text-sm flex items-center gap-2">
+                    <i data-lucide="search" class="w-4 h-4"></i> COMMAND SEARCH
+                </span>
+                <button onclick="toggleSearchModal(false)" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
+            <input type="text" id="search-input" placeholder="Type module name (e.g. Weather, Calculator, Chatbot)..." oninput="handleSearch(this.value)" class="w-full bg-cyber-dark/90 border border-cyber-border rounded-xl px-4 py-3 text-cyber-cyan placeholder-gray-500 outline-none font-mono text-sm focus:border-cyber-cyan">
+            <div id="search-results" class="space-y-2 max-h-60 overflow-y-auto font-mono text-xs"></div>
         </div>
-        <div class="actions">
-            <button id="themeBtn" onclick="toggleTheme()">☀️ Light</button>
-        </div>
-    </header>
+    </div>
 
-    <div class="dashboard-grid">
-        <div class="app-card" onclick="openApp('calcModal')">
-            <div class="icon-wrapper">🧮</div>
-            <h3>Calculator</h3>
-            <p>Arithmetic Engine</p>
-        </div>
-        <div class="app-card" onclick="openApp('convModal')">
-            <div class="icon-wrapper">⇄</div>
-            <h3>Converter</h3>
-            <p>Universal Units</p>
-        </div>
-        <div class="app-card" onclick="openApp('notesModal')">
-            <div class="icon-wrapper">▤</div>
-            <h3>Notes</h3>
-            <p>Data Vault</p>
-        </div>
-        <div class="app-card" onclick="openApp('tasksModal')">
-            <div class="icon-wrapper">✓</div>
-            <h3>Tasks</h3>
-            <p>Objective Tracker</p>
-        </div>
-        <div class="app-card" onclick="openApp('timerModal')">
-            <div class="icon-wrapper">◷</div>
-            <h3>Focus Timer</h3>
-            <p>Productivity Sync</p>
-        </div>
-        <div class="app-card" onclick="openApp('clockModal')">
-            <div class="icon-wrapper">🕐</div>
-            <h3>Clock</h3>
-            <p>Chronos Module</p>
-        </div>
-        <div class="app-card" onclick="openApp('weatherModal')">
-            <div class="icon-wrapper">☼</div>
-            <h3>Weather</h3>
-            <p>Atmospheric Scan</p>
-        </div>
-        <div class="app-card" onclick="openApp('galleryModal')">
-            <div class="icon-wrapper">🖼️</div>
-            <h3>Gallery</h3>
-            <p>Visual Archives</p>
-        </div>
-    </div>
-</div>
+    <!-- MAIN WRAPPER -->
+    <div class="relative z-10 flex w-full min-h-screen">
 
-<!-- ================= MODALS ================= -->
+        <!-- SIDEBAR -->
+        <aside class="w-64 bg-cyber-sidebar/90 border-r border-cyber-border/40 backdrop-blur-xl flex flex-col justify-between p-4 flex-shrink-0 fixed lg:relative z-40 h-full -translate-x-full lg:translate-x-0 transition-transform duration-300" id="sidebar">
+            <div class="space-y-6">
+                <div class="flex items-center justify-between pb-4 border-b border-cyber-border/30">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-cyber-cyan/20 border border-cyber-cyan flex items-center justify-center text-cyber-cyan shadow-[0_0_15px_rgba(0,242,254,0.4)]">
+                            <span class="font-orbitron font-black text-xs">ZJ</span>
+                        </div>
+                        <div>
+                            <h1 class="font-orbitron font-bold text-lg text-white tracking-wider">ZJ WEBSITE</h1>
+                            <p class="text-[10px] font-mono text-cyber-cyan/70 uppercase tracking-widest">CYBER OS v2030</p>
+                        </div>
+                    </div>
+                </div>
 
-<!-- Calculator -->
-<dialog id="calcModal" class="app-window">
-    <div class="modal-header">
-        <div class="modal-title">🧮 CALCULATOR</div>
-        <button class="modal-close" onclick="closeApp('calcModal')">✕</button>
-    </div>
-    <div class="modal-body">
-        <div id="calcDisplay" class="calc-display">0</div>
-        <div id="calcButtons" class="calc-grid">
-            <button data-v="AC" class="op">AC</button><button data-v="DEL" class="op">⌫</button><button data-v="(" class="op">(</button><button data-v=")" class="op">)</button>
-            <button data-v="7">7</button><button data-v="8">8</button><button data-v="9">9</button><button data-v="/" class="op">÷</button>
-            <button data-v="4">4</button><button data-v="5">5</button><button data-v="6">6</button><button data-v="*" class="op">×</button>
-            <button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="-" class="op">−</button>
-            <button data-v="0">0</button><button data-v=".">.</button><button data-v="=" class="equal">=</button><button data-v="+" class="op">+</button>
-        </div>
-        <div class="field" style="margin-top:20px;">
-            <label>Memory Log</label>
-            <input id="calcHistory" readonly value="Awaiting input..." style="font-family:var(--font-mono); font-size:12px;">
-        </div>
-    </div>
-</dialog>
+                <div class="space-y-6 overflow-y-auto max-h-[calc(100vh-180px)] pr-1">
+                    <div>
+                        <div class="text-[11px] font-mono text-gray-500 uppercase tracking-wider mb-2 font-semibold">MAIN MENU</div>
+                        <nav class="space-y-1 font-rajdhani text-sm font-semibold">
+                            <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-btn active w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-cyber-cyan bg-cyber-cyan/10 border border-cyber-cyan/40 transition-all">
+                                <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
+                            </button>
+                            <button onclick="switchTab('calculator')" data-tab="calculator" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
+                                <i data-lucide="calculator" class="w-4 h-4"></i> Calculator
+                            </button>
+                            <button onclick="switchTab('weather')" data-tab="weather" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
+                                <i data-lucide="cloud-sun" class="w-4 h-4"></i> Weather
+                            </button>
+                            <button onclick="switchTab('gallery')" data-tab="gallery" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
+                                <i data-lucide="image" class="w-4 h-4"></i> Gallery
+                            </button>
+                        </nav>
+                    </div>
 
-<!-- Converter -->
-<dialog id="convModal" class="app-window">
-    <div class="modal-header">
-        <div class="modal-title">⇄ CONVERTER</div>
-        <button class="modal-close" onclick="closeApp('convModal')">✕</button>
-    </div>
-    <div class="modal-body">
-        <div class="field">
-            <label>Dimension</label>
-            <select id="category">
-                <option value="length">Length</option><option value="weight">Mass</option>
-                <option value="temperature">Temperature</option><option value="area">Area</option>
-                <option value="volume">Volume</option><option value="speed">Speed</option>
-                <option value="data">Data</option><option value="time">Time</option>
-            </select>
-        </div>
-        <div class="field">
-            <label>Input Value</label>
-            <input id="convValue" type="number" value="1" step="any">
-        </div>
-        <div class="row">
-            <div class="field grow"><label>Origin</label><select id="fromUnit"></select></div>
-            <button id="swapBtn" style="margin-top:20px; font-size:18px;">⇄</button>
-            <div class="field grow"><label>Target</label><select id="toUnit"></select></div>
-        </div>
-        <button id="convertBtn" class="primary" style="width:100%; margin-top:10px;">Execute</button>
-        <div id="convResult" class="status">Ready.</div>
-    </div>
-</dialog>
+                    <div>
+                        <div class="text-[11px] font-mono text-gray-500 uppercase tracking-wider mb-2 font-semibold">PROFESSIONAL APPS</div>
+                        <nav class="space-y-1 font-rajdhani text-sm font-semibold">
+                            <button onclick="switchTab('notes')" data-tab="notes" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
+                                <i data-lucide="file-text" class="w-4 h-4"></i> Notes
+                            </button>
+                            <button onclick="switchTab('todo')" data-tab="todo" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
+                                <i data-lucide="check-square" class="w-4 h-4"></i> Todo List
+                            </button>
+                            <button onclick="switchTab('pomodoro')" data-tab="pomodoro" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
+                                <i data-lucide="timer" class="w-4 h-4"></i> Pomodoro
+                            </button>
+                            <button onclick="switchTab('converter')" data-tab="converter" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
+                                <i data-lucide="arrow-left-right" class="w-4 h-4"></i> Unit Converter
+                            </button>
+                            <button onclick="switchTab('chatbot')" data-tab="chatbot" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
+                                <div class="flex items-center gap-3">
+                                    <i data-lucide="message-square" class="w-4 h-4"></i> Chatbot
+                                </div>
+                                <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse"></span>
+                            </button>
+                        </nav>
+                    </div>
 
-<!-- Notes -->
-<dialog id="notesModal" class="app-window">
-    <div class="modal-header">
-        <div class="modal-title">▤ NOTES</div>
-        <button class="modal-close" onclick="closeApp('notesModal')">✕</button>
-    </div>
-    <div class="modal-body">
-        <form id="noteForm">
-            <div class="field"><label>Identifier</label><input id="noteTitle" maxlength="120" required placeholder="Note title"></div>
-            <div class="field"><label>Content</label><textarea id="noteBody" maxlength="10000" placeholder="Data entry..." style="min-height:100px;"></textarea></div>
-            <button type="submit" class="primary" style="width:100%;" id="noteSubmitBtn">Save to Vault</button>
-        </form>
-        <div class="field" style="margin-top:20px;"><input id="noteSearch" placeholder="🔍 Search archives..." oninput="renderNotes()"></div>
-        <div id="notesList" class="list"></div>
-    </div>
-</dialog>
-
-<!-- Tasks -->
-<dialog id="tasksModal" class="app-window">
-    <div class="modal-header">
-        <div class="modal-title">✓ OBJECTIVES</div>
-        <button class="modal-close" onclick="closeApp('tasksModal')">✕</button>
-    </div>
-    <div class="modal-body">
-        <form id="taskForm" class="row" style="flex-wrap: wrap;">
-            <input id="taskInput" class="grow" maxlength="240" required placeholder="New objective...">
-            <select id="taskPriority" style="max-width:100px;">
-                <option value="low">Low</option><option value="medium" selected>Med</option><option value="high">High</option>
-            </select>
-            <button class="primary">Add</button>
-        </form>
-        <div id="tasksList" class="list"></div>
-    </div>
-</dialog>
-
-<!-- Timer -->
-<dialog id="timerModal" class="app-window">
-    <div class="modal-header">
-        <div class="modal-title">◷ FOCUS SYNC</div>
-        <button class="modal-close" onclick="closeApp('timerModal')">✕</button>
-    </div>
-    <div class="modal-body text-center">
-        <div class="field"><label>Duration (Minutes)</label><input id="timerMinutes" type="number" min="1" max="240" value="25" style="text-align:center;"></div>
-        <div id="timerDisplay" class="timer-display">25:00</div>
-        <div class="timer-progress"><div class="timer-progress-bar" id="timerBar" style="width:100%;"></div></div>
-        <div class="row" style="justify-content:center; gap:15px;">
-            <button id="timerStart" class="primary">Initialize</button>
-            <button id="timerPause" disabled>Hold</button>
-            <button id="timerReset">Reset</button>
-        </div>
-        <div id="timerStatus" class="status" style="text-align:left; margin-top:20px;">System ready.</div>
-    </div>
-</dialog>
-
-<!-- Clock -->
-<dialog id="clockModal" class="app-window" style="max-width:700px;">
-    <div class="modal-header">
-        <div class="modal-title">🕐 CHRONOS</div>
-        <button class="modal-close" onclick="closeApp('clockModal')">✕</button>
-    </div>
-    <div class="modal-body">
-        <div class="clock-tabs">
-            <button class="active" data-clock="main">Main</button>
-            <button data-clock="world">World</button>
-            <button data-clock="stopwatch">Stopwatch</button>
-            <button data-clock="alarm">Alarms</button>
-        </div>
-        <div class="clock-panel active" data-panel="main">
-            <svg class="analog-clock" viewBox="0 0 200 200">
-                <circle cx="100" cy="100" r="95" fill="var(--bg)" stroke="var(--cyan)" stroke-width="1"></circle>
-                <g id="clockTicks"></g><g id="clockNumbers"></g>
-                <line id="handHour" x1="100" y1="100" x2="100" y2="55" stroke="var(--text)" stroke-width="6" stroke-linecap="round"></line>
-                <line id="handMinute" x1="100" y1="100" x2="100" y2="35" stroke="var(--text)" stroke-width="4" stroke-linecap="round"></line>
-                <line id="handSecond" x1="100" y1="100" x2="100" y2="30" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round"></line>
-                <circle cx="100" cy="100" r="6" fill="var(--cyan)"></circle>
-            </svg>
-            <div class="digital-time" id="digitalTime">00:00:00 <span class="ampm" id="dAmPm">AM</span></div>
-            <div class="digital-date" id="digitalDate"></div>
-        </div>
-        <div class="clock-panel" data-panel="world">
-            <button id="addWorldClockBtn" class="primary" style="width:100%; margin-bottom:16px;">+ Add Sector</button>
-            <div class="world-clocks" id="worldClocksList"></div>
-        </div>
-        <div class="clock-panel" data-panel="stopwatch">
-            <div class="timer-display" id="stopwatchDisplay">00:00:00.00</div>
-            <div class="row" style="justify-content:center;">
-                <button id="stopwatchStart" class="primary">Start</button>
-                <button id="stopwatchLap" disabled>Record</button>
-                <button id="stopwatchReset">Reset</button>
-            </div>
-            <div class="list" id="stopwatchLaps"></div>
-        </div>
-        <div class="clock-panel" data-panel="alarm">
-            <form id="alarmForm" class="row" style="margin-bottom:16px;">
-                <input id="alarmTime" type="time" required style="flex:1;">
-                <input id="alarmLabel" placeholder="Label" style="flex:2;">
-                <button class="primary">Set</button>
-            </form>
-            <div id="alarmsList"></div>
-        </div>
-    </div>
-</dialog>
-
-<!-- Weather -->
-<dialog id="weatherModal" class="app-window">
-    <div class="modal-header">
-        <div class="modal-title">☼ ATMOSPHERIC SCAN</div>
-        <button class="modal-close" onclick="closeApp('weatherModal')">✕</button>
-    </div>
-    <div class="modal-body">
-        <div class="row" style="margin-bottom:16px;">
-            <div class="field grow"><label>Latitude</label><input id="latitude" type="number" step="any" value="25.396"></div>
-            <div class="field grow"><label>Longitude</label><input id="longitude" type="number" step="any" value="68.358"></div>
-        </div>
-        <div class="row" style="margin-bottom:16px;">
-            <button id="weatherBtn" class="primary" style="flex:1;">Scan</button>
-            <button id="locateBtn" style="flex:1;">Auto-Locate</button>
-        </div>
-        <div id="weatherStatus" class="status">Awaiting co-ordinates.</div>
-        <div id="weatherHero" class="text-center hidden" style="margin:20px 0; display:none;">
-            <div id="weatherTemp" style="font-size:64px; font-weight:800; color:var(--cyan); font-family:var(--font-mono);">--°</div>
-            <div id="weatherDesc" style="font-size:18px; color:var(--text-muted); font-weight:600; letter-spacing:1px;"></div>
-        </div>
-        <div id="weatherResult" class="grid hidden" style="display:none; grid-template-columns:1fr 1fr; gap:10px;"></div>
-    </div>
-</dialog>
-
-<!-- Gallery -->
-<dialog id="galleryModal" class="app-window">
-    <div class="modal-header">
-        <div class="modal-title">🖼️ ARCHIVES</div>
-        <button class="modal-close" onclick="closeApp('galleryModal')">✕</button>
-    </div>
-    <div class="modal-body">
-        <div class="gallery-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-            <div class="gallery-item" onclick="openLightbox('ZJPP.jpeg')" style="cursor:pointer; overflow:hidden; border-radius:12px; aspect-ratio:4/3; background:var(--field);">
-                <img src="ZJPP.jpeg" alt="ZJ" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80'">
-            </div>
-            <div class="gallery-item" onclick="openLightbox('BMW.jpeg')" style="cursor:pointer; overflow:hidden; border-radius:12px; aspect-ratio:4/3; background:var(--field);">
-                <img src="BMW.jpeg" alt="BMW" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80'">
-            </div>
-        </div>
-    </div>
-</dialog>
-
-<!-- CHATBOT FAB & OVERLAY -->
-<button class="chat-fab" onclick="toggleChat()">💬</button>
-<div class="chat-overlay" id="chatOverlay">
-    <div class="chat-container">
-        <div class="chat-header">
-            <div class="chat-identity">
-                <div class="chat-avatar">AI</div>
-                <div class="chat-title">
-                    <h3>Nexus Core</h3>
-                    <p>Online</p>
+                    <div>
+                        <div class="text-[11px] font-mono text-gray-500 uppercase tracking-wider mb-2 font-semibold">DATA MANAGEMENT</div>
+                        <nav class="space-y-1 font-rajdhani text-sm font-semibold">
+                            <button onclick="exportJSONData()" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
+                                <i data-lucide="download" class="w-4 h-4"></i> Export JSON
+                            </button>
+                            <button onclick="importJSONData()" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
+                                <i data-lucide="upload" class="w-4 h-4"></i> Import Data
+                            </button>
+                        </nav>
+                    </div>
                 </div>
             </div>
-            <div class="chat-actions">
-                <button class="chat-btn" onclick="clearChat()">NEW</button>
-                <button class="chat-btn close" onclick="toggleChat()">CLOSE</button>
+
+            <div class="pt-4 border-t border-cyber-border/30 font-mono text-[11px] text-gray-400 flex items-center justify-between">
+                <span class="flex items-center gap-1.5 text-emerald-400">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> SYSTEM OK
+                </span>
+                <span>LATENCY: 0.12ms</span>
             </div>
-        </div>
-        <div class="chat-messages" id="chatMessages">
-            <div class="msg-system">LINK ESTABLISHED.</div>
-            <div class="msg-row bot"><div class="bubble">Hello. I am the Nexus Core AI. How may I assist your workflow today?</div></div>
-        </div>
-        <div class="chat-input-area">
-            <div class="chat-input-wrapper">
-                <textarea id="chatInput" placeholder="Initialize command..." onkeydown="handleChatKey(event)"></textarea>
+        </aside>
+
+        <!-- MAIN DISPLAY AREA -->
+        <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+
+            <header class="sticky top-0 z-30 px-6 py-4 glass-panel border-b border-cyber-border/40 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleSidebar()" class="lg:hidden p-2 text-cyber-cyan border border-cyber-border rounded-xl">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="toggleSearchModal(true)" class="flex items-center gap-3 px-4 py-2 bg-cyber-dark/80 border border-cyber-border/50 rounded-xl text-gray-400 hover:text-cyber-cyan hover:border-cyber-cyan text-xs font-mono transition-all">
+                        <i data-lucide="search" class="w-4 h-4 text-cyber-cyan"></i>
+                        <span>Search</span>
+                        <kbd class="px-1.5 py-0.5 bg-cyber-cyan/20 text-cyber-cyan text-[10px] rounded border border-cyber-cyan/30">Ctrl K</kbd>
+                    </button>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button class="p-2.5 rounded-xl bg-cyber-dark/80 border border-cyber-border text-yellow-400 hover:text-cyber-cyan transition-all" title="Ambient Control">
+                        <i data-lucide="moon" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="p-6 space-y-6 max-w-7xl mx-auto w-full">
+
+                <!-- DASHBOARD TAB -->
+                <section id="tab-dashboard" class="tab-content space-y-6">
+                    <div class="text-center py-6 glass-panel rounded-2xl border border-cyber-cyan/30 relative overflow-hidden space-y-2">
+                        <div class="hud-corner hud-tl"></div>
+                        <div class="hud-corner hud-tr"></div>
+                        <div class="hud-corner hud-bl"></div>
+                        <div class="hud-corner hud-br"></div>
+                        <div class="flex items-center justify-center gap-4 flex-wrap">
+                            <h2 class="font-orbitron font-black text-2xl sm:text-4xl text-white tracking-wider glow-cyan">Your All-in-One Dashboard</h2>
+                            <div class="bg-cyber-cyan/10 border border-cyber-cyan/50 text-cyber-cyan px-4 py-1.5 rounded-xl font-orbitron font-bold text-lg shadow-[0_0_15px_rgba(0,242,254,0.3)]" id="live-clock">00:00:00</div>
+                        </div>
+                        <p class="font-mono text-xs text-cyber-cyan/80 tracking-widest uppercase">STAY PRODUCTIVE, INFORMED, AND CONNECTED.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <!-- CALCULATOR WIDGET -->
+                        <div class="lg:col-span-4 glass-panel rounded-2xl p-5 border border-cyber-cyan/30 relative flex flex-col justify-between">
+                            <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
+                            <div class="flex justify-between items-center mb-4 pb-2 border-b border-cyber-border/30">
+                                <div class="flex items-center gap-2 font-orbitron font-bold text-xs text-cyber-cyan tracking-wider"><span class="w-2 h-2 rounded-full bg-cyber-cyan"></span> CALCULATOR</div>
+                                <button onclick="clearCalcHistory()" class="text-gray-400 hover:text-cyber-cyan"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
+                            </div>
+                            <div class="bg-black/70 border border-cyber-border/50 rounded-xl p-3 mb-4 font-mono text-right space-y-1">
+                                <div id="calc-history" class="text-xs text-gray-500 h-4 overflow-hidden">0 = 0</div>
+                                <div id="calc-display" class="text-2xl font-bold text-cyber-cyan truncate">0</div>
+                            </div>
+                            <div class="grid grid-cols-4 gap-2 font-orbitron text-sm font-semibold">
+                                <button onclick="calcInput('AC')" class="p-3 rounded-xl bg-gray-800/80 hover:bg-gray-700 text-gray-200 border border-gray-700">AC</button>
+                                <button onclick="calcInput('DEL')" class="p-3 rounded-xl bg-gray-800/80 hover:bg-gray-700 text-gray-200 border border-gray-700">DEL</button>
+                                <button onclick="calcInput('%')" class="p-3 rounded-xl bg-gray-800/80 hover:bg-gray-700 text-cyber-cyan border border-gray-700">%</button>
+                                <button onclick="calcInput('/')" class="p-3 rounded-xl bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40 hover:bg-cyber-cyan/30">÷</button>
+                                <button onclick="calcInput('7')" class="p-3 rounded-xl bg-cyber-dark/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">7</button>
+                                <button onclick="calcInput('8')" class="p-3 rounded-xl bg-cyber-dark/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">8</button>
+                                <button onclick="calcInput('9')" class="p-3 rounded-xl bg-cyber-dark/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">9</button>
+                                <button onclick="calcInput('*')" class="p-3 rounded-xl bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40 hover:bg-cyber-cyan/30">×</button>
+                                <button onclick="calcInput('4')" class="p-3 rounded-xl bg-cyber-dark/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">4</button>
+                                <button onclick="calcInput('5')" class="p-3 rounded-xl bg-cyber-dark/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">5</button>
+                                <button onclick="calcInput('6')" class="p-3 rounded-xl bg-cyber-dark/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">6</button>
+                                <button onclick="calcInput('-')" class="p-3 rounded-xl bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40 hover:bg-cyber-cyan/30">-</button>
+                                <button onclick="calcInput('1')" class="p-3 rounded-xl bg-cyber-dark/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">1</button>
+                                <button onclick="calcInput('2')" class="p-3 rounded-xl bg-cyber-dark/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">2</button>
+                                <button onclick="calcInput('3')" class="p-3 rounded-xl bg-cyber-dark/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">3</button>
+                                <button onclick="calcInput('+')" class="p-3 rounded-xl bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40 hover:bg-cyber-cyan/30">+</button>
+                                <button onclick="calcInput('0')" class="col-span-2 p-3 rounded-xl bg-cyber-dark/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">0</button>
+                                <button onclick="calcInput('.')" class="p-3 rounded-xl bg-cyber-dark/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">.</button>
+                                <button onclick="calcInput('=')" class="p-3 rounded-xl bg-yellow-400 text-black font-bold hover:bg-yellow-300 shadow-[0_0_15px_rgba(250,204,21,0.4)]">=</button>
+                            </div>
+                        </div>
+
+                        <!-- WEATHER WIDGET -->
+                        <div class="lg:col-span-4 glass-panel rounded-2xl p-5 border border-cyber-cyan/30 relative flex flex-col justify-between space-y-4">
+                            <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
+                            <div class="flex justify-between items-center pb-2 border-b border-cyber-border/30">
+                                <div class="flex items-center gap-2 font-orbitron font-bold text-xs text-cyber-cyan tracking-wider"><span class="w-2 h-2 rounded-full bg-cyber-cyan"></span> WEATHER</div>
+                                <i data-lucide="map-pin" class="w-4 h-4 text-cyber-cyan"></i>
+                            </div>
+                            <div class="flex gap-2">
+                                <input type="text" id="weather-city-input" placeholder="City..." value="Hyderabad" class="w-full bg-cyber-dark/90 border border-cyber-border rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 font-mono focus:border-cyber-cyan outline-none" onkeypress="if(event.key==='Enter') fetchWeather()">
+                                <button onclick="fetchWeather()" class="px-3.5 py-2 bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan rounded-xl hover:bg-cyber-cyan/30 transition-all"><i data-lucide="search" class="w-4 h-4"></i></button>
+                            </div>
+                            <div class="text-center py-2 space-y-2">
+                                <div class="flex items-center justify-center gap-2">
+                                    <i data-lucide="cloud-sun" class="w-10 h-10 text-yellow-400" id="weather-icon"></i>
+                                    <div class="font-orbitron font-bold text-4xl text-white" id="weather-temp">--°<span class="text-cyber-cyan text-xl">C</span></div>
+                                </div>
+                                <div class="font-mono text-sm text-cyber-cyan font-bold" id="weather-desc">Loading...</div>
+                                <div class="font-mono text-xs text-gray-400 uppercase tracking-widest" id="weather-location">DETECTING...</div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 font-mono text-xs">
+                                <div class="bg-black/40 border border-cyber-border/30 rounded-xl p-2.5"><div class="text-gray-500 text-[10px]">RAIN CHANCE</div><div class="text-white font-bold" id="weather-rain">--%</div></div>
+                                <div class="bg-black/40 border border-cyber-border/30 rounded-xl p-2.5"><div class="text-gray-500 text-[10px]">UV INDEX</div><div class="text-white font-bold" id="weather-uv">--</div></div>
+                                <div class="bg-black/40 border border-cyber-border/30 rounded-xl p-2.5"><div class="text-gray-500 text-[10px]">HUMIDITY</div><div class="text-white font-bold" id="weather-humidity">--%</div></div>
+                                <div class="bg-black/40 border border-cyber-border/30 rounded-xl p-2.5"><div class="text-gray-500 text-[10px]">WIND</div><div class="text-white font-bold" id="weather-wind">-- km/h</div></div>
+                            </div>
+                            <div class="flex justify-between items-center pt-2 font-mono text-[10px] text-center text-gray-400 border-t border-cyber-border/30" id="forecast-container">
+                                <!-- Forecast populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- GALLERY WIDGET -->
+                        <div class="lg:col-span-4 glass-panel rounded-2xl p-5 border border-cyber-cyan/30 relative flex flex-col justify-between">
+                            <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
+                            <div class="flex justify-between items-center mb-4 pb-2 border-b border-cyber-border/30">
+                                <div class="flex items-center gap-2 font-orbitron font-bold text-xs text-cyber-cyan tracking-wider"><span class="w-2 h-2 rounded-full bg-yellow-400"></span> GALLERY</div>
+                                <button onclick="switchTab('gallery')" class="text-xs font-mono text-cyber-cyan hover:underline">VIEW ALL</button>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3 h-full min-h-[300px]">
+                                <div class="rounded-xl overflow-hidden border border-cyber-border/40 relative group">
+                                    <img src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=600&q=80" alt="Cyber Car" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent opacity-0 group-hover:opacity-100 transition-opacity p-2 flex items-end font-mono text-[10px] text-cyber-cyan">VEHICLE MATRIX</div>
+                                </div>
+                                <div class="rounded-xl overflow-hidden border border-cyber-border/40 relative group">
+                                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" alt="Cyber Workstation" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent opacity-0 group-hover:opacity-100 transition-opacity p-2 flex items-end font-mono text-[10px] text-cyber-cyan">NEURAL INTERFACE</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CALCULATOR FULL TAB -->
+                <section id="tab-calculator" class="tab-content hidden space-y-6">
+                    <div class="glass-panel rounded-2xl p-6 border border-cyber-cyan/30 max-w-xl mx-auto space-y-4">
+                        <h2 class="font-orbitron font-bold text-xl text-white flex items-center gap-2"><i data-lucide="calculator" class="text-cyber-cyan"></i> Quantum Calculator</h2>
+                        <div class="bg-black/80 border border-cyber-border rounded-xl p-4 font-mono text-right">
+                            <div id="full-calc-history" class="text-xs text-gray-500 h-5">0 = 0</div>
+                            <div id="full-calc-display" class="text-3xl font-bold text-cyber-cyan">0</div>
+                        </div>
+                        <div class="grid grid-cols-4 gap-3 font-orbitron font-semibold">
+                            <button onclick="calcInput('AC')" class="p-4 rounded-xl bg-gray-800 text-gray-200">AC</button>
+                            <button onclick="calcInput('DEL')" class="p-4 rounded-xl bg-gray-800 text-gray-200">DEL</button>
+                            <button onclick="calcInput('%')" class="p-4 rounded-xl bg-gray-800 text-cyber-cyan">%</button>
+                            <button onclick="calcInput('/')" class="p-4 rounded-xl bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40">÷</button>
+                            <button onclick="calcInput('7')" class="p-4 rounded-xl bg-cyber-dark text-white border border-cyber-border">7</button>
+                            <button onclick="calcInput('8')" class="p-4 rounded-xl bg-cyber-dark text-white border border-cyber-border">8</button>
+                            <button onclick="calcInput('9')" class="p-4 rounded-xl bg-cyber-dark text-white border border-cyber-border">9</button>
+                            <button onclick="calcInput('*')" class="p-4 rounded-xl bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40">×</button>
+                            <button onclick="calcInput('4')" class="p-4 rounded-xl bg-cyber-dark text-white border border-cyber-border">4</button>
+                            <button onclick="calcInput('5')" class="p-4 rounded-xl bg-cyber-dark text-white border border-cyber-border">5</button>
+                            <button onclick="calcInput('6')" class="p-4 rounded-xl bg-cyber-dark text-white border border-cyber-border">6</button>
+                            <button onclick="calcInput('-')" class="p-4 rounded-xl bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40">-</button>
+                            <button onclick="calcInput('1')" class="p-4 rounded-xl bg-cyber-dark text-white border border-cyber-border">1</button>
+                            <button onclick="calcInput('2')" class="p-4 rounded-xl bg-cyber-dark text-white border border-cyber-border">2</button>
+                            <button onclick="calcInput('3')" class="p-4 rounded-xl bg-cyber-dark text-white border border-cyber-border">3</button>
+                            <button onclick="calcInput('+')" class="p-4 rounded-xl bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40">+</button>
+                            <button onclick="calcInput('0')" class="col-span-2 p-4 rounded-xl bg-cyber-dark text-white border border-cyber-border">0</button>
+                            <button onclick="calcInput('.')" class="p-4 rounded-xl bg-cyber-dark text-white border border-cyber-border">.</button>
+                            <button onclick="calcInput('=')" class="p-4 rounded-xl bg-yellow-400 text-black font-bold">=</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- WEATHER FULL TAB -->
+                <section id="tab-weather" class="tab-content hidden space-y-6">
+                    <div class="glass-panel rounded-2xl p-6 border border-cyber-cyan/30 space-y-6">
+                        <h2 class="font-orbitron font-bold text-2xl text-white flex items-center gap-3"><i data-lucide="cloud-sun" class="text-cyber-cyan"></i> Global Satellite Weather Telemetry</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div class="flex gap-2">
+                                    <input type="text" id="weather-tab-input" placeholder="Enter City Name..." value="Hyderabad" class="w-full bg-cyber-dark border border-cyber-border rounded-xl px-4 py-3 text-sm text-white font-mono focus:border-cyber-cyan outline-none" onkeypress="if(event.key==='Enter') fetchWeatherTab()">
+                                    <button onclick="fetchWeatherTab()" class="px-6 py-3 bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan rounded-xl hover:bg-cyber-cyan/30 font-orbitron font-bold text-xs">SEARCH</button>
+                                </div>
+                                <div class="glass-card rounded-2xl p-6 text-center space-y-4">
+                                    <div class="font-orbitron text-5xl font-black text-white" id="tab-weather-temp">--°C</div>
+                                    <div class="font-mono text-lg text-cyber-cyan font-semibold" id="tab-weather-desc">Loading...</div>
+                                    <div class="font-mono text-sm text-gray-400" id="tab-weather-location">DETECTING...</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 font-mono">
+                                <div class="glass-card p-4 rounded-xl"><div class="text-gray-400 text-xs">HUMIDITY</div><div class="text-xl text-cyber-cyan font-bold" id="tab-weather-humidity">--%</div></div>
+                                <div class="glass-card p-4 rounded-xl"><div class="text-gray-400 text-xs">WIND SPEED</div><div class="text-xl text-cyber-cyan font-bold" id="tab-weather-wind">-- km/h</div></div>
+                                <div class="glass-card p-4 rounded-xl"><div class="text-gray-400 text-xs">PRECIPITATION</div><div class="text-xl text-cyber-cyan font-bold" id="tab-weather-rain">--%</div></div>
+                                <div class="glass-card p-4 rounded-xl"><div class="text-gray-400 text-xs">UV INDEX</div><div class="text-xl text-cyber-cyan font-bold" id="tab-weather-uv">--</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- GALLERY TAB -->
+                <section id="tab-gallery" class="tab-content hidden space-y-6">
+                    <div class="glass-panel rounded-2xl p-6 border border-cyber-cyan/30 space-y-6">
+                        <h2 class="font-orbitron font-bold text-2xl text-white flex items-center gap-3"><i data-lucide="image" class="text-cyber-cyan"></i> Holographic Asset Gallery</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                            <div class="glass-card rounded-xl overflow-hidden border border-cyber-border group">
+                                <img src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=800&q=80" alt="Futuristic Car" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+                                <div class="p-4 font-mono text-xs"><div class="text-cyber-cyan font-bold">CYBER-VEHICLE M3</div><div class="text-gray-400">Rendered in Octane Engine</div></div>
+                            </div>
+                            <div class="glass-card rounded-xl overflow-hidden border border-cyber-border group">
+                                <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80" alt="Cyber Interface" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+                                <div class="p-4 font-mono text-xs"><div class="text-cyber-cyan font-bold">NEURAL TERMINAL v4</div><div class="text-gray-400">Spatial Computing Node</div></div>
+                            </div>
+                            <div class="glass-card rounded-xl overflow-hidden border border-cyber-border group">
+                                <img src="https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=800&q=80" alt="Sci-Fi City" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+                                <div class="p-4 font-mono text-xs"><div class="text-cyber-cyan font-bold">NEO METROPOLIS</div><div class="text-gray-400">Grid Sector 07</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- NOTES TAB -->
+                <section id="tab-notes" class="tab-content hidden space-y-6">
+                    <div class="glass-panel rounded-2xl p-6 border border-cyber-cyan/30 space-y-6">
+                        <div class="flex justify-between items-center">
+                            <h2 class="font-orbitron font-bold text-2xl text-white flex items-center gap-3"><i data-lucide="file-text" class="text-cyber-cyan"></i> Neural Notes</h2>
+                            <button onclick="addNote()" class="px-4 py-2 bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan rounded-xl hover:bg-cyber-cyan/30 font-mono text-xs font-bold flex items-center gap-2">
+                                <i data-lucide="plus" class="w-4 h-4"></i> NEW NOTE
+                            </button>
+                        </div>
+                        <div id="notes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                    </div>
+                </section>
+
+                <!-- TODO LIST TAB -->
+                <section id="tab-todo" class="tab-content hidden space-y-6">
+                    <div class="glass-panel rounded-2xl p-6 border border-cyber-cyan/30 space-y-6 max-w-3xl mx-auto">
+                        <h2 class="font-orbitron font-bold text-2xl text-white flex items-center gap-3"><i data-lucide="check-square" class="text-cyber-cyan"></i> Task Matrix (Todo List)</h2>
+                        <form onsubmit="addTodo(event)" class="flex gap-2">
+                            <input type="text" id="todo-input" placeholder="Add new quantum task..." class="w-full bg-cyber-dark border border-cyber-border rounded-xl px-4 py-3 text-sm text-white font-mono focus:border-cyber-cyan outline-none">
+                            <button type="submit" class="px-6 py-3 bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan rounded-xl hover:bg-cyber-cyan/30 font-orbitron font-bold text-xs">ADD</button>
+                        </form>
+                        <div id="todo-list" class="space-y-2 font-mono text-sm"></div>
+                    </div>
+                </section>
+
+                <!-- POMODORO TIMER TAB -->
+                <section id="tab-pomodoro" class="tab-content hidden space-y-6">
+                    <div class="glass-panel rounded-2xl p-8 border border-cyber-cyan/30 text-center space-y-6 max-w-md mx-auto">
+                        <h2 class="font-orbitron font-bold text-2xl text-white flex items-center justify-center gap-3"><i data-lucide="timer" class="text-cyber-cyan"></i> Pomodoro Focus Core</h2>
+                        <div class="font-orbitron font-black text-6xl text-cyber-cyan glow-cyan" id="pomo-display">25:00</div>
+                        <div class="flex justify-center gap-4 font-orbitron font-semibold">
+                            <button onclick="startPomodoro()" class="px-6 py-3 bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan rounded-xl hover:bg-cyber-cyan/30">START</button>
+                            <button onclick="pausePomodoro()" class="px-6 py-3 bg-gray-800 border border-gray-700 text-gray-300 rounded-xl hover:bg-gray-700">PAUSE</button>
+                            <button onclick="resetPomodoro()" class="px-6 py-3 bg-red-500/20 border border-red-500/50 text-red-400 rounded-xl hover:bg-red-500/30">RESET</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- UNIT CONVERTER TAB -->
+                <section id="tab-converter" class="tab-content hidden space-y-6">
+                    <div class="glass-panel rounded-2xl p-6 border border-cyber-cyan/30 max-w-xl mx-auto space-y-6">
+                        <h2 class="font-orbitron font-bold text-2xl text-white flex items-center gap-3"><i data-lucide="arrow-left-right" class="text-cyber-cyan"></i> Cyber Unit Converter</h2>
+                        <div class="space-y-4 font-mono">
+                            <div><label class="text-xs text-gray-400">VALUE</label><input type="number" id="convert-val" value="100" oninput="runConversion()" class="w-full bg-cyber-dark border border-cyber-border rounded-xl px-4 py-3 text-white focus:border-cyber-cyan outline-none mt-1"></div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="text-xs text-gray-400">FROM</label><select id="convert-from" onchange="runConversion()" class="w-full bg-cyber-dark border border-cyber-border rounded-xl px-4 py-3 text-white outline-none mt-1"><option value="km">Kilometers (km)</option><option value="miles">Miles (mi)</option><option value="gb">Gigabytes (GB)</option><option value="tb">Terabytes (TB)</option></select></div>
+                                <div><label class="text-xs text-gray-400">TO</label><select id="convert-to" onchange="runConversion()" class="w-full bg-cyber-dark border border-cyber-border rounded-xl px-4 py-3 text-white outline-none mt-1"><option value="miles">Miles (mi)</option><option value="km">Kilometers (km)</option><option value="tb">Terabytes (TB)</option><option value="gb">Gigabytes (GB)</option></select></div>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl text-center"><div class="text-xs text-gray-400">RESULT</div><div class="font-orbitron font-bold text-2xl text-cyber-cyan mt-1" id="convert-result">62.137 Miles</div></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ZJ CHATBOT FULL TAB -->
+                <section id="tab-chatbot" class="tab-content hidden h-[calc(100vh-140px)] flex flex-col glass-panel rounded-2xl border border-cyber-cyan/40 overflow-hidden">
+                    <div class="bg-cyber-dark/90 px-6 py-4 border-b border-cyber-border flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-cyber-cyan/20 border border-cyber-cyan flex items-center justify-center text-cyber-cyan font-bold font-orbitron">ZJ</div>
+                            <div>
+                                <h3 class="font-orbitron font-bold text-white text-base">ZJ Chatbot</h3>
+                                <div class="flex items-center gap-2 text-xs font-mono text-emerald-400"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Online</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 font-mono text-xs">
+                            <button onclick="newChat()" class="px-3 py-1.5 rounded-lg border border-cyber-border bg-cyber-dark hover:border-cyber-cyan text-gray-300 flex items-center gap-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i> NEW</button>
+                            <button onclick="clearChatHistory()" class="px-3 py-1.5 rounded-lg border border-cyber-border bg-cyber-dark hover:border-cyber-cyan text-gray-300 flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5"></i> HISTORY</button>
+                            <button onclick="clearChatMessages()" class="p-1.5 rounded-lg border border-cyber-border bg-cyber-dark hover:text-red-400 text-gray-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    </div>
+
+                    <div id="chat-box" class="flex-1 p-6 overflow-y-auto space-y-4 font-sans text-sm">
+                        <div class="bg-amber-500/10 border border-amber-500/30 text-amber-300 px-4 py-3 rounded-xl flex items-center gap-3 text-xs font-mono">
+                            <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i>
+                            <span>Connected to ZJ Neural Engine v2030. Ready to assist!</span>
+                        </div>
+                        <div class="flex items-start gap-3 msg-anim">
+                            <div class="w-8 h-8 rounded-lg bg-cyber-cyan/20 border border-cyber-cyan flex items-center justify-center text-cyber-cyan text-xs font-bold font-orbitron flex-shrink-0">ZJ</div>
+                            <div class="bg-cyber-dark/80 border border-cyber-border text-gray-200 px-4 py-3 rounded-2xl max-w-md shadow-lg">Hey there! 👋 What can I do for you today?</div>
+                        </div>
+                    </div>
+
+                    <form onsubmit="sendChatMessage(event)" class="p-4 bg-cyber-dark/90 border-t border-cyber-border flex items-center gap-3">
+                        <div class="relative flex-1">
+                            <input type="text" id="chat-input" placeholder="Type a message..." autocomplete="off" class="w-full bg-black/60 border border-cyber-border rounded-xl px-4 py-3 pr-10 text-white placeholder-gray-500 font-mono text-sm focus:border-cyber-cyan outline-none">
+                            <button type="button" onclick="toggleVoiceInput()" class="absolute right-3 top-3 text-gray-400 hover:text-cyber-cyan"><i data-lucide="mic" class="w-4 h-4"></i></button>
+                        </div>
+                        <button type="submit" class="px-6 py-3 bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan font-orbitron font-bold rounded-xl hover:bg-cyber-cyan/30 transition-all flex items-center gap-2"><span>Send</span><i data-lucide="send" class="w-4 h-4"></i></button>
+                    </form>
+                </section>
+
             </div>
-            <button class="chat-send-btn" id="chatSendBtn" onclick="sendChat()">Send</button>
-        </div>
+        </main>
     </div>
-</div>
 
-<!-- Lightbox & Toasts -->
-<div id="lightbox" class="lightbox" onclick="closeLightbox()"><img id="lightboxImg" src="" alt=""></div>
-<div class="toast-container" id="toastContainer"></div>
+    <button onclick="switchTab('chatbot')" class="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan flex items-center justify-center shadow-[0_0_25px_rgba(0,242,254,0.5)] hover:scale-110 transition-transform">
+        <i data-lucide="message-square" class="w-6 h-6"></i>
+    </button>
 
-<script>
-'use strict';
-
-// ==========================================
-// 1. CORE UTILITIES & SECURITY
-// ==========================================
-const $ = s => document.querySelector(s);
-const $$ = s => Array.from(document.querySelectorAll(s));
-const STORAGE_KEY = 'zjNexusDashboardV1';
-
-// Safe local storage wrapper
-const Storage = {
-    get(key, fallback) {
-        try {
-            const item = localStorage.getItem(`${STORAGE_KEY}_${key}`);
-            return item ? JSON.parse(item) : fallback;
-        } catch (e) { console.error('Storage read error:', e); return fallback; }
-    },
-    set(key, value) {
-        try {
-            localStorage.setItem(`${STORAGE_KEY}_${key}`, JSON.stringify(value));
-        } catch (e) { 
-            console.error('Storage write error:', e); 
-            showToast('Failed to save data. Storage may be full.', 'error'); 
-        }
-    }
-};
-
-// State Management
-const state = {
-    notes: Storage.get('notes', []),
-    tasks: Storage.get('tasks', []),
-    alarms: Storage.get('alarms', []),
-    theme: Storage.get('theme', 'dark'),
-    calcHistory: Storage.get('calcHistory', 'Awaiting input...')
-};
-
-let editingNoteId = null;
-
-function showToast(msg, type = 'success') {
-    const container = $('#toastContainer');
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.textContent = msg;
-    container.appendChild(toast);
-    setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
-}
-
-// ==========================================
-// 2. THEME MANAGEMENT
-// ==========================================
-function applyTheme(theme, persist = true) {
-    state.theme = theme;
-    document.documentElement.dataset.theme = theme;
-    $('#themeBtn').textContent = theme === 'dark' ? '☀️ Light' : '🌙 Dark';
-    if (persist) Storage.set('theme', theme);
-}
-
-window.toggleTheme = () => applyTheme(state.theme === 'dark' ? 'light' : 'dark');
-
-// ==========================================
-// 3. UI & 3D EFFECTS
-// ==========================================
-window.openApp = function(id) {
-    const modal = document.getElementById(id);
-    if (modal) {
-        modal.showModal();
-        if (id === 'weatherModal' && $('#weatherStatus').textContent.includes('Awaiting')) getWeather();
-    }
-};
-
-window.closeApp = function(id) {
-    const modal = document.getElementById(id);
-    if (modal) modal.close();
-};
-
-// Close modal on backdrop click
-$$('dialog.app-window').forEach(dialog => {
-    dialog.addEventListener('click', (e) => {
-        const rect = dialog.getBoundingClientRect();
-        if (!(rect.top <= e.clientY && e.clientY <= rect.top + rect.height && rect.left <= e.clientX && e.clientX <= rect.left + rect.width)) {
-            dialog.close();
-        }
-    });
-});
-
-// 3D Tilt Effect for Cards
-$$('.app-card').forEach(card => {
-    card.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = ((y - centerY) / centerY) * -10;
-        const rotateY = ((x - centerX) / centerX) * 10;
-        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-    });
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`;
-    });
-});
-
-// ==========================================
-// 4. CALCULATOR (SAFE PARSER)
-// ==========================================
-let expression = '';
-
-function tokens(s) {
-    const out = []; let i = 0;
-    while (i < s.length) {
-        if (/\s/.test(s[i])) { i++; continue; }
-        if (/[0-9.]/.test(s[i])) {
-            let raw = '', dots = 0;
-            while (i < s.length && /[0-9.]/.test(s[i])) { if (s[i] === '.') dots++; raw += s[i++]; }
-            if (dots > 1 || raw === '.') throw Error('Invalid number');
-            out.push({ type: 'n', value: Number(raw) }); continue;
-        }
-        if ('+-*/()'.includes(s[i])) { out.push({ type: s[i], value: s[i++] }); continue; }
-        throw Error('Invalid character');
-    }
-    return out;
-}
-
-function calculate(s) {
-    const t = tokens(s); let p = 0;
-    if (!t.length) throw Error('Empty');
-    const peek = () => t[p];
-    const take = type => { if (!peek() || peek().type !== type) throw Error('Syntax Error'); return t[p++]; };
-    
-    function primary() {
-        if (peek() && (peek().type === '+' || peek().type === '-')) {
-            const sign = take(peek().type).type; const n = primary(); return sign === '-' ? -n : n;
-        }
-        if (peek()?.type === 'n') return take('n').value;
-        if (peek()?.type === '(') { take('('); const n = add(); take(')'); return n; }
-        throw Error('Expected number');
-    }
-    function mul() {
-        let n = primary();
-        while (peek() && (peek().type === '*' || peek().type === '/')) {
-            const op = t[p++].type, r = primary();
-            if (op === '/' && r === 0) throw Error('Divide by 0');
-            n = op === '*' ? n * r : n / r;
-        }
-        return n;
-    }
-    function add() {
-        let n = mul();
-        while (peek() && (peek().type === '+' || peek().type === '-')) {
-            const op = t[p++].type, r = mul(); n = op === '+' ? n + r : n - r;
-        }
-        return n;
-    }
-    
-    const result = add();
-    if (p !== t.length) throw Error('Syntax Error');
-    return Number(result.toPrecision(12)).toString();
-}
-
-function calc(value) {
-    if (value === 'AC') expression = '';
-    else if (value === 'DEL') expression = expression.slice(0, -1);
-    else if (value === '=') {
-        try {
-            const result = calculate(expression);
-            state.calcHistory = `${expression} = ${result}`;
-            $('#calcHistory').value = state.calcHistory;
-            Storage.set('calcHistory', state.calcHistory);
-            expression = result;
-        } catch (e) { showToast(`Calc: ${e.message}`, 'error'); }
-    } else if (/^[0-9.+\-*/()]$/.test(value) && expression.length < 180) {
-        expression += value;
-    }
-    $('#calcDisplay').textContent = expression || '0';
-}
-
-$('#calcButtons').addEventListener('click', e => {
-    const b = e.target.closest('[data-v]');
-    if (b) calc(b.dataset.v);
-});
-
-// ==========================================
-// 5. CONVERTER
-// ==========================================
-const units = {
-    length: { m: 1, km: 1000, cm: 0.01, mm: 0.001, mi: 1609.344, ft: 0.3048, in: 0.0254, yd: 0.9144 },
-    weight: { kg: 1, g: 0.001, mg: 0.000001, lb: 0.45359237, oz: 0.028349523125, t: 1000 },
-    area: { m2: 1, km2: 1000000, cm2: 0.0001, ha: 10000, acre: 4046.8564224, ft2: 0.09290304 },
-    volume: { l: 1, ml: 0.001, m3: 1000, gal: 3.785411784, cup: 0.2365882365 },
-    speed: { mps: 1, kph: 0.277778, mph: 0.44704, knot: 0.514444 },
-    data: { B: 1, KB: 1024, MB: 1048576, GB: 1073741824, TB: 1099511627776 },
-    time: { s: 1, min: 60, h: 3600, d: 86400, wk: 604800 },
-    temperature: { C: 1, F: 1, K: 1 }
-};
-
-function fillUnits() {
-    const cat = $('#category').value;
-    const from = $('#fromUnit'), to = $('#toUnit');
-    const oldF = from.value, oldT = to.value;
-    from.innerHTML = ''; to.innerHTML = '';
-    Object.keys(units[cat]).forEach(k => {
-        from.add(new Option(k.toUpperCase(), k));
-        to.add(new Option(k.toUpperCase(), k));
-    });
-    from.value = units[cat][oldF] ? oldF : Object.keys(units[cat])[0];
-    to.value = units[cat][oldT] && oldT !== from.value ? oldT : (Object.keys(units[cat])[1] || from.value);
-    convert();
-}
-
-function convert() {
-    const cat = $('#category').value;
-    const val = parseFloat($('#convValue').value);
-    const from = $('#fromUnit').value, to = $('#toUnit').value;
-    if (isNaN(val)) { $('#convResult').textContent = 'Invalid input.'; $('#convResult').className = 'status error'; return; }
-    let res;
-    if (cat === 'temperature') {
-        let c = from === 'C' ? val : from === 'F' ? (val - 32) * 5/9 : val - 273.15;
-        if (c < -273.15) { $('#convResult').textContent = 'Below absolute zero.'; $('#convResult').className = 'status error'; return; }
-        res = to === 'C' ? c : to === 'F' ? c * 9/5 + 32 : c + 273.15;
-    } else {
-        res = val * units[cat][from] / units[cat][to];
-    }
-    const formatted = new Intl.NumberFormat(undefined, { maximumSignificantDigits: 10 }).format(res);
-    $('#convResult').textContent = `${val} ${from.toUpperCase()} = ${formatted} ${to.toUpperCase()}`;
-    $('#convResult').className = 'status success';
-}
-
-$('#category').addEventListener('change', fillUnits);
-$('#convValue').addEventListener('input', convert);
-$('#fromUnit').addEventListener('change', convert);
-$('#toUnit').addEventListener('change', convert);
-$('#convertBtn').addEventListener('click', convert);
-$('#swapBtn').addEventListener('click', () => {
-    const a = $('#fromUnit').value; $('#fromUnit').value = $('#toUnit').value; $('#toUnit').value = a; convert();
-});
-
-// ==========================================
-// 6. NOTES
-// ==========================================
-function renderNotes() {
-    const root = $('#notesList');
-    const query = ($('#noteSearch')?.value || '').toLowerCase();
-    root.innerHTML = '';
-    let filtered = state.notes.filter(n => n.title.toLowerCase().includes(query) || n.body.toLowerCase().includes(query));
-    if (!filtered.length) { root.innerHTML = '<div class="sub" style="text-align:center;padding:20px;">No data found.</div>'; return; }
-    
-    filtered.slice().reverse().forEach(n => {
-        const el = document.createElement('div');
-        el.className = 'item';
-        
-        const body = document.createElement('div');
-        body.className = 'item-body';
-        body.innerHTML = `<strong></strong><div></div><small></small>`;
-        body.querySelector('strong').textContent = n.title;
-        body.querySelector('div').textContent = n.body;
-        body.querySelector('small').textContent = new Date(n.createdAt).toLocaleString();
-        
-        const editBtn = document.createElement('button');
-        editBtn.textContent = '✎';
-        editBtn.style.marginRight = '5px';
-        editBtn.onclick = () => {
-            $('#noteTitle').value = n.title;
-            $('#noteBody').value = n.body;
-            editingNoteId = n.id;
-            $('#noteSubmitBtn').textContent = 'Update Archive';
-            $('#noteTitle').focus();
+    <script>
+        // ==========================================
+        // 1. STATE & UTILITIES
+        // ==========================================
+        let appState = {
+            notes: JSON.parse(localStorage.getItem('zj_notes')) || [
+                { id: 1, title: 'Project Cyber OS 2030', content: 'Design futuristic dashboard with Three.js particle canvas.' }
+            ],
+            todos: JSON.parse(localStorage.getItem('zj_todos')) || [
+                { id: 1, text: 'Review 3D Quantum Engine', done: true },
+                { id: 2, text: 'Calibrate Weather Telemetry', done: false }
+            ],
+            pomoTime: 25 * 60,
+            pomoInterval: null,
+            pomoRunning: false,
+            pomoEndTime: 0
         };
-        
-        const delBtn = document.createElement('button');
-        delBtn.textContent = '✕';
-        delBtn.onclick = () => {
-            if(confirm('Delete this archive?')) {
-                state.notes = state.notes.filter(x => x.id !== n.id);
-                Storage.set('notes', state.notes);
-                renderNotes();
-                showToast('Archive deleted.');
+
+        // Safe Math Parser
+        const MathParser = {
+            evaluate: function(expression) {
+                if(!expression) return 0;
+                const tokens = this.tokenize(expression);
+                let pos = 0;
+                const peek = () => tokens[pos];
+                const consume = (type) => {
+                    const token = tokens[pos];
+                    if (!token || token.type !== type) throw new Error('Invalid syntax');
+                    pos++;
+                    return token.value;
+                };
+                
+                const parsePrimary = () => {
+                    if (peek() && (peek().type === '+' || peek().type === '-')) {
+                        const sign = consume(peek().type);
+                        const val = parsePrimary();
+                        return sign === '-' ? -val : val;
+                    }
+                    if (peek() && peek().type === 'NUMBER') return parseFloat(consume('NUMBER'));
+                    if (peek() && peek().type === '(') {
+                        consume('(');
+                        const val = parseExpression();
+                        consume(')');
+                        return val;
+                    }
+                    throw new Error('Expected number');
+                };
+                
+                const parseTerm = () => {
+                    let val = parsePrimary();
+                    while (peek() && (peek().type === '*' || peek().type === '/')) {
+                        const op = consume(peek().type);
+                        const right = parsePrimary();
+                        if (op === '*') val *= right;
+                        else {
+                            if (right === 0) throw new Error('Divide by zero');
+                            val /= right;
+                        }
+                    }
+                    return val;
+                };
+                
+                const parseExpression = () => {
+                    let val = parseTerm();
+                    while (peek() && (peek().type === '+' || peek().type === '-')) {
+                        const op = consume(peek().type);
+                        const right = parseTerm();
+                        if (op === '+') val += right;
+                        else val -= right;
+                    }
+                    return val;
+                };
+                
+                return parseExpression();
+            },
+            
+            tokenize: function(str) {
+                const regex = /\s*([\+\-\*\/\(\)]|\d*\.?\d+)/g;
+                const tokens = [];
+                let match;
+                let lastIndex = 0;
+                while ((match = regex.exec(str)) !== null) {
+                    if (match.index > lastIndex) throw new Error('Invalid character');
+                    const val = match[1];
+                    if (/^\d*\.?\d+$/.test(val)) tokens.push({ type: 'NUMBER', value: val });
+                    else tokens.push({ type: val, value: val });
+                    lastIndex = regex.lastIndex;
+                }
+                if (lastIndex < str.length) throw new Error('Invalid character');
+                return tokens;
             }
         };
-        
-        el.append(body, editBtn, delBtn);
-        root.appendChild(el);
-    });
-}
 
-$('#noteForm').addEventListener('submit', e => {
-    e.preventDefault();
-    const t = $('#noteTitle').value.trim(), b = $('#noteBody').value.trim();
-    if (!t) return;
-    
-    if (editingNoteId) {
-        const idx = state.notes.findIndex(n => n.id === editingNoteId);
-        if (idx > -1) {
-            state.notes[idx].title = t;
-            state.notes[idx].body = b;
-            state.notes[idx].updatedAt = new Date().toISOString();
-        }
-        editingNoteId = null;
-        $('#noteSubmitBtn').textContent = 'Save to Vault';
-    } else {
-        state.notes.push({ id: crypto.randomUUID(), title: t, body: b, createdAt: new Date().toISOString() });
-    }
-    
-    Storage.set('notes', state.notes);
-    renderNotes();
-    $('#noteForm').reset();
-    showToast('Data stored.');
-});
-
-// ==========================================
-// 7. TASKS
-// ==========================================
-function renderTasks() {
-    const root = $('#tasksList');
-    root.innerHTML = '';
-    if (!state.tasks.length) { root.innerHTML = '<div class="sub" style="text-align:center;padding:20px;">No objectives.</div>'; return; }
-    
-    state.tasks.slice().reverse().forEach(t => {
-        const el = document.createElement('div');
-        el.className = 'item';
-        
-        const cb = document.createElement('input');
-        cb.type = 'checkbox';
-        cb.checked = t.done;
-        cb.style.width = 'auto';
-        cb.style.marginTop = '4px';
-        cb.onchange = (e) => {
-            t.done = e.target.checked;
-            Storage.set('tasks', state.tasks);
-            renderTasks();
+        // ==========================================
+        // 2. INITIALIZATION
+        // ==========================================
+        window.onload = function() {
+            lucide.createIcons();
+            updateClock();
+            setInterval(updateClock, 1000);
+            renderNotes();
+            renderTodos();
+            initThreeJSBackground();
+            fetchWeather(); // Initial load
         };
-        
-        const body = document.createElement('div');
-        body.className = 'item-body';
-        
-        const title = document.createElement('div');
-        title.textContent = t.text;
-        if (t.done) title.className = 'done';
-        
-        const meta = document.createElement('small');
-        meta.textContent = t.done ? 'Complete' : 'Active';
-        
-        const badge = document.createElement('span');
-        badge.className = `priority-badge ${t.priority}`;
-        badge.textContent = t.priority;
-        
-        body.append(title, meta, badge);
-        
-        const delBtn = document.createElement('button');
-        delBtn.textContent = '✕';
-        delBtn.onclick = () => {
-            if(confirm('Delete this objective?')) {
-                state.tasks = state.tasks.filter(x => x.id !== t.id);
-                Storage.set('tasks', state.tasks);
-                renderTasks();
-                showToast('Objective deleted.');
+
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toTimeString().split(' ')[0];
+            document.getElementById('live-clock').textContent = timeStr;
+        }
+
+        // ==========================================
+        // 3. NAVIGATION & UI
+        // ==========================================
+        function switchTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Show target tab
+            const target = document.getElementById(`tab-${tabId}`);
+            if (target) target.classList.remove('hidden');
+
+            // Update nav button states
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-cyber-cyan', 'bg-cyber-cyan/10', 'border', 'border-cyber-cyan/40');
+                btn.classList.add('text-gray-400');
+                
+                if (btn.dataset.tab === tabId) {
+                    btn.classList.add('active', 'text-cyber-cyan', 'bg-cyber-cyan/10', 'border', 'border-cyber-cyan/40');
+                    btn.classList.remove('text-gray-400');
+                }
+            });
+
+            // Close mobile menu
+            if(window.innerWidth < 1024) {
+                document.getElementById('sidebar').classList.add('-translate-x-full');
             }
-        };
-        
-        el.append(cb, body, delBtn);
-        root.appendChild(el);
-    });
-}
-
-$('#taskForm').addEventListener('submit', e => {
-    e.preventDefault();
-    const text = $('#taskInput').value.trim();
-    if (!text) return;
-    state.tasks.push({ 
-        id: crypto.randomUUID(), 
-        text, 
-        done: false, 
-        priority: $('#taskPriority').value, 
-        createdAt: new Date().toISOString() 
-    });
-    Storage.set('tasks', state.tasks);
-    renderTasks();
-    $('#taskInput').value = '';
-    showToast('Objective added.');
-});
-
-// ==========================================
-// 8. FOCUS TIMER
-// ==========================================
-let timerId = null, timerEnd = 0, timerDuration = 25 * 60 * 1000, remaining = timerDuration, timerRunning = false;
-
-function renderTimer() {
-    const s = Math.max(0, Math.ceil(remaining / 1000));
-    $('#timerDisplay').textContent = `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
-    $('#timerBar').style.width = Math.max(0, Math.min(100, (remaining / timerDuration) * 100)) + '%';
-}
-
-function tickTimer() {
-    if (!timerRunning) return;
-    remaining = Math.max(0, timerEnd - Date.now());
-    renderTimer();
-    if (remaining <= 0) {
-        timerRunning = false; clearInterval(timerId);
-        $('#timerStart').disabled = false; $('#timerPause').disabled = true;
-        showToast('Sequence complete.', 'success');
-    }
-}
-
-$('#timerStart').addEventListener('click', () => {
-    if (timerRunning) return;
-    timerRunning = true; timerEnd = Date.now() + remaining;
-    $('#timerStart').disabled = true; $('#timerPause').disabled = false;
-    clearInterval(timerId); timerId = setInterval(tickTimer, 250); tickTimer();
-});
-
-$('#timerPause').addEventListener('click', () => {
-    timerRunning = false; clearInterval(timerId);
-    $('#timerStart').disabled = false; $('#timerPause').disabled = true;
-});
-
-$('#timerReset').addEventListener('click', () => {
-    timerRunning = false; clearInterval(timerId);
-    const m = parseInt($('#timerMinutes').value) || 25;
-    timerDuration = m * 60 * 1000; remaining = timerDuration; renderTimer();
-    $('#timerStart').disabled = false; $('#timerPause').disabled = true;
-});
-
-// ==========================================
-// 9. CLOCK APP
-// ==========================================
-function buildClock() {
-    const ticks = $('#clockTicks'), nums = $('#clockNumbers');
-    if (!ticks) return;
-    ticks.innerHTML = ''; nums.innerHTML = '';
-    for (let i = 0; i < 60; i++) {
-        const a = i * 6 * Math.PI / 180, major = i % 5 === 0;
-        const r1 = major ? 78 : 84, r2 = 88;
-        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', 100 + r1 * Math.sin(a)); line.setAttribute('y1', 100 - r1 * Math.cos(a));
-        line.setAttribute('x2', 100 + r2 * Math.sin(a)); line.setAttribute('y2', 100 - r2 * Math.cos(a));
-        line.setAttribute('stroke', major ? 'var(--cyan)' : 'rgba(255,255,255,0.2)');
-        line.setAttribute('stroke-width', major ? 2 : 1);
-        ticks.appendChild(line);
-    }
-    for (let i = 1; i <= 12; i++) {
-        const a = i * 30 * Math.PI / 180, r = 65;
-        const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        t.setAttribute('x', 100 + r * Math.sin(a)); t.setAttribute('y', 100 - r * Math.cos(a));
-        t.setAttribute('fill', 'var(--text)'); t.setAttribute('font-size', '18'); t.setAttribute('text-anchor', 'middle');
-        t.setAttribute('dominant-baseline', 'central'); t.setAttribute('font-family', 'sans-serif'); t.setAttribute('font-weight', 'bold');
-        t.textContent = i; nums.appendChild(t);
-    }
-}
-
-function updateClock() {
-    const now = new Date();
-    const h = now.getHours() % 12, m = now.getMinutes(), s = now.getSeconds();
-    $('#handHour').setAttribute('transform', `rotate(${h * 30 + m * 0.5} 100 100)`);
-    $('#handMinute').setAttribute('transform', `rotate(${m * 6 + s * 0.1} 100 100)`);
-    $('#handSecond').setAttribute('transform', `rotate(${s * 6} 100 100)`);
-    let h12 = now.getHours() % 12 || 12;
-    $('#digitalTime').innerHTML = `${String(h12).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} <span class="ampm">${now.getHours() >= 12 ? 'PM' : 'AM'}</span>`;
-    $('#digitalDate').textContent = now.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-}
-
-// World Clocks
-const cities = [
-    { name: 'London', tz: 'Europe/London' }, { name: 'New York', tz: 'America/New_York' },
-    { name: 'Tokyo', tz: 'Asia/Tokyo' }, { name: 'Dubai', tz: 'Asia/Dubai' },
-    { name: 'Sydney', tz: 'Australia/Sydney' }, { name: 'Karachi', tz: 'Asia/Karachi' }
-];
-let selectedCities = ['Europe/London', 'America/New_York', 'Asia/Tokyo'];
-
-function renderWorldClocks() {
-    const root = $('#worldClocksList'); root.innerHTML = '';
-    selectedCities.forEach(tz => {
-        const city = cities.find(c => c.tz === tz) || { name: tz, tz };
-        const div = document.createElement('div');
-        div.className = 'world-clock-item';
-        div.innerHTML = `<div><strong>${city.name}</strong><br><small style="color:var(--text-secondary);">${tz}</small></div><div class="time" data-tz="${tz}">--:--:--</div>`;
-        const btn = document.createElement('button');
-        btn.textContent = '✕'; btn.style.cssText = 'padding:4px 8px; border-color:var(--danger); color:var(--danger); background:transparent;';
-        btn.onclick = () => { selectedCities = selectedCities.filter(x => x !== tz); renderWorldClocks(); };
-        div.appendChild(btn); root.appendChild(div);
-    });
-    updateWorldClocks();
-}
-
-function updateWorldClocks() {
-    $$('#worldClocksList .time').forEach(el => {
-        try { el.textContent = new Date().toLocaleTimeString('en-US', { timeZone: el.dataset.tz, hour12: false }); } catch(e) {}
-    });
-}
-
-$('#addWorldClockBtn').addEventListener('click', () => {
-    const next = cities.find(c => !selectedCities.includes(c.tz));
-    if (next) { selectedCities.push(next.tz); renderWorldClocks(); } else showToast('All sectors added.', 'info');
-});
-
-// Stopwatch
-let stopwatchRunning = false, stopwatchStart = 0, stopwatchElapsed = 0, stopwatchLapTimes = [], stopwatchInterval = null;
-
-function formatSw(ms) {
-    const s = Math.floor(ms / 1000), cs = Math.floor((ms % 1000) / 10);
-    return `${String(Math.floor(s/3600)).padStart(2,'0')}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;
-}
-
-$('#stopwatchStart').addEventListener('click', () => {
-    if (stopwatchRunning) { stopwatchRunning = false; clearInterval(stopwatchInterval); $('#stopwatchStart').textContent = 'Resume'; }
-    else {
-        stopwatchRunning = true; stopwatchStart = Date.now() - stopwatchElapsed;
-        clearInterval(stopwatchInterval); stopwatchInterval = setInterval(() => {
-            stopwatchElapsed = Date.now() - stopwatchStart;
-            $('#stopwatchDisplay').textContent = formatSw(stopwatchElapsed);
-        }, 33);
-        $('#stopwatchStart').textContent = 'Hold';
-    }
-    $('#stopwatchLap').disabled = !stopwatchRunning;
-});
-
-$('#stopwatchReset').addEventListener('click', () => {
-    stopwatchRunning = false; clearInterval(stopwatchInterval);
-    stopwatchElapsed = 0; stopwatchLapTimes = [];
-    $('#stopwatchDisplay').textContent = '00:00:00.00';
-    $('#stopwatchStart').textContent = 'Start'; $('#stopwatchLap').disabled = true;
-    $('#stopwatchLaps').innerHTML = '';
-});
-
-$('#stopwatchLap').addEventListener('click', () => {
-    if (!stopwatchRunning) return;
-    stopwatchLapTimes.push(stopwatchElapsed);
-    const best = Math.min(...stopwatchLapTimes), worst = Math.max(...stopwatchLapTimes);
-    const root = $('#stopwatchLaps'); root.innerHTML = '';
-    stopwatchLapTimes.slice().reverse().forEach((t, i) => {
-        const el = document.createElement('div');
-        el.className = 'lap-item' + (t === best ? ' best' : t === worst ? ' worst' : '');
-        el.innerHTML = `<span>Lap ${stopwatchLapTimes.length - i}</span><span>${formatSw(t)}</span>`;
-        root.appendChild(el);
-    });
-});
-
-// Alarms
-function renderAlarms() {
-    const root = $('#alarmsList'); root.innerHTML = '';
-    if (!state.alarms.length) { root.innerHTML = '<div class="sub" style="text-align:center;">No alarms set.</div>'; return; }
-    state.alarms.forEach(a => {
-        const el = document.createElement('div');
-        el.className = 'alarm-item' + (a.active ? ' active' : '');
-        el.innerHTML = `<div><div class="alarm-time">${a.time}</div><div class="sub">${a.label}</div></div>`;
-        const toggle = document.createElement('input');
-        toggle.type = 'checkbox'; toggle.checked = a.active;
-        toggle.onchange = (e) => { a.active = e.target.checked; Storage.set('alarms', state.alarms); renderAlarms(); };
-        const del = document.createElement('button');
-        del.textContent = '✕'; del.style.cssText = 'padding:4px 8px; border-color:var(--danger); color:var(--danger); background:transparent;';
-        del.onclick = () => { state.alarms = state.alarms.filter(x => x.id !== a.id); Storage.set('alarms', state.alarms); renderAlarms(); };
-        el.append(toggle, del); root.appendChild(el);
-    });
-}
-
-$('#alarmForm').addEventListener('submit', e => {
-    e.preventDefault();
-    state.alarms.push({ id: crypto.randomUUID(), time: $('#alarmTime').value, label: $('#alarmLabel').value || 'Alarm', active: true });
-    Storage.set('alarms', state.alarms);
-    renderAlarms(); $('#alarmForm').reset(); showToast('Alarm synchronized.');
-});
-
-function checkAlarms() {
-    const now = new Date();
-    const time = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-    state.alarms.forEach(a => { if (a.active && a.time === time) { showToast('⏰ ' + a.label, 'info'); } });
-}
-
-// Clock Tabs
-$$('.clock-tabs button').forEach(btn => {
-    btn.addEventListener('click', () => {
-        $$('.clock-tabs button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        $$('.clock-panel').forEach(p => p.classList.remove('active'));
-        document.querySelector(`[data-panel="${btn.dataset.clock}"]`).classList.add('active');
-    });
-});
-
-// ==========================================
-// 10. WEATHER
-// ==========================================
-let weatherController = null;
-
-async function getWeather() {
-    const lat = Number($('#latitude').value), lon = Number($('#longitude').value);
-    if (isNaN(lat) || isNaN(lon)) { showToast('Invalid coords.', 'error'); return; }
-    if (weatherController) weatherController.abort();
-    weatherController = new AbortController();
-    
-    $('#weatherStatus').textContent = 'Scanning atmosphere...';
-    $('#weatherStatus').className = 'status';
-    $('#weatherResult').style.display = 'none';
-    $('#weatherHero').style.display = 'none';
-    
-    try {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&timezone=auto`, { signal: weatherController.signal });
-        const data = await res.json();
-        
-        const c = data.current;
-        $('#weatherTemp').textContent = Math.round(c.temperature_2m) + '°';
-        $('#weatherDesc').textContent = 'CODE: ' + c.weather_code;
-        $('#weatherHero').style.display = 'block';
-        
-        const cells = [
-            ['FEELS LIKE', c.apparent_temperature + '°C'],
-            ['HUMIDITY', c.relative_humidity_2m + '%'],
-            ['WIND', c.wind_speed_10m + ' km/h'],
-            ['PRECIP', c.precipitation + ' mm']
-        ];
-        const root = $('#weatherResult'); root.innerHTML = '';
-        cells.forEach(([l, v]) => {
-            const cell = document.createElement('div');
-            cell.style.cssText = 'background:var(--field); padding:15px; border-radius:8px; border:1px solid var(--border);';
-            cell.innerHTML = `<span style="font-size:11px; color:var(--text-secondary); font-weight:700;">${l}</span><strong style="display:block; font-size:18px; color:var(--cyan); margin-top:4px;">${v}</strong>`;
-            root.appendChild(cell);
-        });
-        root.style.display = 'grid';
-        $('#weatherStatus').textContent = 'Scan complete.';
-        $('#weatherStatus').className = 'status success';
-    } catch (e) {
-        if (e.name !== 'AbortError') {
-            $('#weatherStatus').textContent = 'Scan failed.';
-            $('#weatherStatus').className = 'status error';
-        }
-    }
-}
-
-$('#weatherBtn').addEventListener('click', getWeather);
-$('#locateBtn').addEventListener('click', () => {
-    if (!navigator.geolocation) return showToast('Geo-sensors offline.', 'error');
-    navigator.geolocation.getCurrentPosition(pos => {
-        $('#latitude').value = pos.coords.latitude;
-        $('#longitude').value = pos.coords.longitude;
-        getWeather();
-    }, () => showToast('Location denied.', 'error'));
-});
-
-// ==========================================
-// 11. GALLERY LIGHTBOX
-// ==========================================
-window.openLightbox = function(src) {
-    const lb = $('#lightbox');
-    const img = $('#lightboxImg');
-    img.src = src;
-    lb.classList.add('active');
-};
-
-window.closeLightbox = function() {
-    $('#lightbox').classList.remove('active');
-    setTimeout(() => { $('#lightboxImg').src = ''; }, 300);
-};
-
-// ==========================================
-// 12. CHATBOT (REAL API CONNECTION)
-// ==========================================
-let chatBusy = false;
-
-window.toggleChat = function() {
-    const overlay = $('#chatOverlay');
-    overlay.classList.toggle('active');
-    if (overlay.classList.contains('active')) $('#chatInput').focus();
-};
-
-window.clearChat = function() {
-    $('#chatMessages').innerHTML = `
-        <div class="msg-system">LINK ESTABLISHED.</div>
-        <div class="msg-row bot"><div class="bubble">Hello. I am the Nexus Core AI. How may I assist your workflow today?</div></div>
-    `;
-};
-
-window.handleChatKey = function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendChat();
-    }
-};
-
-window.sendChat = async function() {
-    if (chatBusy) return;
-    const input = $('#chatInput');
-    const text = input.value.trim();
-    if (!text) return;
-
-    chatBusy = true;
-    $('#chatSendBtn').disabled = true;
-    input.value = '';
-    input.style.height = 'auto';
-
-    // 1. Add User Message
-    const userRow = document.createElement('div');
-    userRow.className = 'msg-row user';
-    const userBubble = document.createElement('div');
-    userBubble.className = 'bubble';
-    userBubble.textContent = text;
-    userRow.appendChild(userBubble);
-    $('#chatMessages').appendChild(userRow);
-    $('#chatMessages').scrollTop = $('#chatMessages').scrollHeight;
-
-    // 2. Add Typing Indicator
-    const typing = document.createElement('div');
-    typing.className = 'typing-indicator';
-    typing.id = 'typingIndicator';
-    typing.innerHTML = '<span></span><span></span><span></span>';
-    $('#chatMessages').appendChild(typing);
-    $('#chatMessages').scrollTop = $('#chatMessages').scrollHeight;
-
-    let replyText = '';
-
-    try {
-        // --- REAL API CONNECTION ---
-        // Automatically detects local environment or uses the Vercel API route
-        const endpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-            ? 'http://localhost:5000/chat' 
-            : '/api/chat';
-
-        const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: text })
-        });
-
-        if (!response.ok) {
-            throw new Error(`Server responded with status ${response.status}`);
         }
 
-        const data = await response.json();
-        replyText = data.reply || "No response text provided.";
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
 
-    } catch (err) {
-        console.error('Chat Error:', err);
-        replyText = `⚠️ SYSTEM ERROR: Could not connect to the AI core. Ensure the backend is running. (${err.message})`;
-    } finally {
-        // 3. Remove Typing Indicator
-        const t = $('#typingIndicator');
-        if (t) t.remove();
+        function toggleSearchModal(show) {
+            const modal = document.getElementById('search-modal');
+            modal.classList.toggle('hidden', !show);
+            if(show) {
+                modal.classList.add('flex');
+                document.getElementById('search-input').focus();
+                handleSearch(''); // Reset search
+            } else {
+                modal.classList.remove('flex');
+            }
+        }
 
-        // 4. Add Bot Message
-        const botRow = document.createElement('div');
-        botRow.className = 'msg-row bot';
-        const botBubble = document.createElement('div');
-        botBubble.className = 'bubble';
-        botBubble.textContent = replyText;
-        botRow.appendChild(botBubble);
-        $('#chatMessages').appendChild(botRow);
-        $('#chatMessages').scrollTop = $('#chatMessages').scrollHeight;
-        
-        chatBusy = false;
-        $('#chatSendBtn').disabled = false;
-        input.focus();
-    }
-};
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                toggleSearchModal(true);
+            }
+            if (e.key === 'Escape') {
+                toggleSearchModal(false);
+            }
+        });
 
-// ==========================================
-// 13. INITIALIZATION
-// ==========================================
-function init() {
-    applyTheme(state.theme, false);
-    $('#calcHistory').value = state.calcHistory;
-    
-    fillUnits();
-    renderNotes();
-    renderTasks();
-    renderAlarms();
-    renderWorldClocks();
-    buildClock();
-    updateClock();
-    renderTimer();
-    
-    // Start intervals
-    setInterval(updateClock, 1000);
-    setInterval(updateWorldClocks, 1000);
-    setInterval(checkAlarms, 10000);
-}
+        function handleSearch(val) {
+            const resContainer = document.getElementById('search-results');
+            const tabs = [
+                { id: 'dashboard', name: 'Dashboard' },
+                { id: 'calculator', name: 'Calculator' },
+                { id: 'weather', name: 'Weather' },
+                { id: 'gallery', name: 'Gallery' },
+                { id: 'notes', name: 'Notes' },
+                { id: 'todo', name: 'Todo List' },
+                { id: 'pomodoro', name: 'Pomodoro' },
+                { id: 'converter', name: 'Unit Converter' },
+                { id: 'chatbot', name: 'Chatbot' }
+            ];
+            
+            const matches = tabs.filter(t => t.name.toLowerCase().includes(val.toLowerCase()));
+            
+            if(matches.length === 0) {
+                resContainer.innerHTML = '<div class="text-gray-500 p-2">No modules found.</div>';
+                return;
+            }
 
-init();
-</script>
+            resContainer.innerHTML = matches.map(m => `
+                <div onclick="switchTab('${m.id}'); toggleSearchModal(false);" class="p-2 hover:bg-cyber-cyan/20 rounded cursor-pointer text-cyber-cyan border border-cyber-border/30 transition-colors">
+                    Navigate to: ${m.name}
+                </div>
+            `).join('');
+        }
+
+        // ==========================================
+        // 4. CALCULATOR ENGINE
+        // ==========================================
+        let calcVal = '0';
+        let calcHist = '';
+
+        function calcInput(char) {
+            const display = document.getElementById('calc-display');
+            const history = document.getElementById('calc-history');
+            const fullDisplay = document.getElementById('full-calc-display');
+            const fullHistory = document.getElementById('full-calc-history');
+
+            if (char === 'AC') {
+                calcVal = '0';
+                calcHist = '';
+            } else if (char === 'DEL') {
+                calcVal = calcVal.length > 1 ? calcVal.slice(0, -1) : '0';
+            } else if (char === '=') {
+                try {
+                    calcHist = calcVal + ' =';
+                    // Use safe parser
+                    let parsed = MathParser.evaluate(calcVal);
+                    calcVal = Number(parsed.toPrecision(12)).toString();
+                } catch(e) {
+                    calcVal = 'Error';
+                }
+            } else {
+                if (calcVal === '0' && char !== '.') calcVal = char;
+                else if (calcVal === 'Error') calcVal = char;
+                else calcVal += char;
+            }
+
+            display.textContent = calcVal;
+            history.textContent = calcHist;
+            
+            if(fullDisplay) {
+                fullDisplay.textContent = calcVal;
+                fullHistory.textContent = calcHist;
+            }
+        }
+
+        function clearCalcHistory() {
+            calcHist = '';
+            document.getElementById('calc-history').textContent = '';
+            if(document.getElementById('full-calc-history')) document.getElementById('full-calc-history').textContent = '';
+        }
+
+        // ==========================================
+        // 5. WEATHER ENGINE (Real API)
+        // ==========================================
+        async function fetchWeather(cityName = null) {
+            const city = cityName || document.getElementById('weather-city-input').value || 'Hyderabad';
+            
+            try {
+                // Geocoding
+                const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`);
+                const geoData = await geoRes.json();
+                
+                if (!geoData.results || geoData.results.length === 0) {
+                    document.getElementById('weather-desc').textContent = 'City not found';
+                    return;
+                }
+                
+                const { latitude, longitude, name, country_code } = geoData.results[0];
+                
+                // Weather
+                const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relative_humidity_2m,precipitation_probability,uv_index&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`);
+                const wData = await wRes.json();
+                
+                const current = wData.current_weather;
+                const hourly = wData.hourly;
+                const daily = wData.daily;
+                
+                // Find current hour index
+                const now = new Date();
+                const timeStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}T${String(now.getHours()).padStart(2,'0')}:00`;
+                let hIdx = hourly.time.indexOf(timeStr);
+                if (hIdx === -1) hIdx = 0;
+
+                // Update UI
+                document.getElementById('weather-temp').innerHTML = `${Math.round(current.temperature)}°<span class="text-cyber-cyan text-xl">C</span>`;
+                document.getElementById('weather-desc').textContent = current.weathercode === 0 ? 'Clear Sky' : 'Cloudy';
+                document.getElementById('weather-location').textContent = `${name.toUpperCase()}, ${country_code}`;
+                
+                document.getElementById('weather-rain').textContent = `${hourly.precipitation_probability[hIdx] ?? 0}%`;
+                document.getElementById('weather-uv').textContent = (hourly.uv_index[hIdx] ?? 0).toFixed(1);
+                document.getElementById('weather-humidity').textContent = `${hourly.relative_humidity_2m[hIdx] ?? 0}%`;
+                document.getElementById('weather-wind').textContent = `${current.windspeed} km/h`;
+
+                // Forecast (Mini)
+                const forecastContainer = document.getElementById('forecast-container');
+                forecastContainer.innerHTML = '';
+                for(let i=0; i<5; i++) {
+                    const date = new Date(daily.time[i]);
+                    const day = date.toLocaleDateString('en-US', {weekday: 'short'}).toUpperCase();
+                    forecastContainer.innerHTML += `
+                        <div><div>${day}</div><i data-lucide="sun" class="w-3 h-3 text-yellow-400 mx-auto my-1"></i><div>${Math.round(daily.temperature_2m_max[i])}°/${Math.round(daily.temperature_2m_min[i])}°</div></div>
+                    `;
+                }
+                lucide.createIcons();
+
+                // Update Full Tab UI
+                document.getElementById('tab-weather-temp').textContent = `${Math.round(current.temperature)}°C`;
+                document.getElementById('tab-weather-desc').textContent = current.weathercode === 0 ? 'Clear Sky' : 'Cloudy';
+                document.getElementById('tab-weather-location').textContent = `${name.toUpperCase()}, ${country_code}`;
+                document.getElementById('tab-weather-humidity').textContent = `${hourly.relative_humidity_2m[hIdx] ?? 0}%`;
+                document.getElementById('tab-weather-wind').textContent = `${current.windspeed} km/h`;
+                document.getElementById('tab-weather-rain').textContent = `${hourly.precipitation_probability[hIdx] ?? 0}%`;
+                document.getElementById('tab-weather-uv').textContent = (hourly.uv_index[hIdx] ?? 0).toFixed(1);
+
+            } catch(e) {
+                console.error(e);
+                document.getElementById('weather-desc').textContent = 'Error loading weather';
+            }
+        }
+
+        function fetchWeatherTab() {
+            const city = document.getElementById('weather-tab-input').value;
+            document.getElementById('weather-city-input').value = city;
+            fetchWeather(city);
+        }
+
+        // ==========================================
+        // 6. NOTES ENGINE
+        // ==========================================
+        function renderNotes() {
+            const container = document.getElementById('notes-grid');
+            container.innerHTML = appState.notes.map(n => `
+                <div class="glass-card p-4 rounded-xl relative space-y-2">
+                    <div class="font-orbitron font-bold text-cyber-cyan text-sm">${n.title}</div>
+                    <div class="font-mono text-xs text-gray-300">${n.content}</div>
+                    <button onclick="deleteNote(${n.id})" class="text-red-400 hover:underline text-[10px] font-mono mt-2">DELETE</button>
+                </div>
+            `).join('');
+            localStorage.setItem('zj_notes', JSON.stringify(appState.notes));
+        }
+
+        function addNote() {
+            const title = prompt('Enter note title:');
+            if(!title) return;
+            const content = prompt('Enter note content:');
+            if(!content) return;
+            
+            appState.notes.push({ id: Date.now(), title, content });
+            renderNotes();
+        }
+
+        function deleteNote(id) {
+            if(!confirm('Delete this note?')) return;
+            appState.notes = appState.notes.filter(n => n.id !== id);
+            renderNotes();
+        }
+
+        // ==========================================
+        // 7. TODO ENGINE
+        // ==========================================
+        function renderTodos() {
+            const container = document.getElementById('todo-list');
+            container.innerHTML = appState.todos.map(t => `
+                <div class="flex items-center justify-between p-3 glass-card rounded-xl border border-cyber-border/30">
+                    <span class="${t.done ? 'line-through text-gray-500' : 'text-gray-200'} cursor-pointer" onclick="toggleTodo(${t.id})">
+                        ${t.text}
+                    </span>
+                    <button onclick="deleteTodo(${t.id})" class="text-red-400 hover:text-red-300">
+                        <i data-lucide="trash" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+            localStorage.setItem('zj_todos', JSON.stringify(appState.todos));
+        }
+
+        function addTodo(e) {
+            e.preventDefault();
+            const input = document.getElementById('todo-input');
+            if(input.value.trim()) {
+                appState.todos.push({ id: Date.now(), text: input.value.trim(), done: false });
+                input.value = '';
+                renderTodos();
+            }
+        }
+
+        function toggleTodo(id) {
+            appState.todos = appState.todos.map(t => t.id === id ? { ...t, done: !t.done } : t);
+            renderTodos();
+        }
+
+        function deleteTodo(id) {
+            appState.todos = appState.todos.filter(t => t.id !== id);
+            renderTodos();
+        }
+
+        // ==========================================
+        // 8. POMODORO ENGINE (Accurate Timer)
+        // ==========================================
+        function startPomodoro() {
+            if (appState.pomoRunning) return;
+            
+            appState.pomoRunning = true;
+            appState.pomoEndTime = Date.now() + appState.pomoTime * 1000;
+            
+            appState.pomoInterval = setInterval(() => {
+                const remaining = Math.max(0, Math.round((appState.pomoEndTime - Date.now()) / 1000));
+                appState.pomoTime = remaining;
+                
+                const mins = String(Math.floor(remaining / 60)).padStart(2, '0');
+                const secs = String(remaining % 60).padStart(2, '0');
+                document.getElementById('pomo-display').textContent = `${mins}:${secs}`;
+                
+                if (remaining <= 0) {
+                    clearInterval(appState.pomoInterval);
+                    appState.pomoRunning = false;
+                    alert('Pomodoro session completed!');
+                }
+            }, 250);
+        }
+
+        function pausePomodoro() {
+            clearInterval(appState.pomoInterval);
+            appState.pomoRunning = false;
+        }
+
+        function resetPomodoro() {
+            pausePomodoro();
+            appState.pomoTime = 25 * 60;
+            document.getElementById('pomo-display').textContent = '25:00';
+        }
+
+        // ==========================================
+        // 9. UNIT CONVERTER
+        // ==========================================
+        function runConversion() {
+            const val = parseFloat(document.getElementById('convert-val').value) || 0;
+            const from = document.getElementById('convert-from').value;
+            const to = document.getElementById('convert-to').value;
+            let result = 0;
+
+            if (from === 'km' && to === 'miles') result = val * 0.621371;
+            else if (from === 'miles' && to === 'km') result = val / 0.621371;
+            else if (from === 'gb' && to === 'tb') result = val / 1024;
+            else if (from === 'tb' && to === 'gb') result = val * 1024;
+            else result = val;
+
+            document.getElementById('convert-result').textContent = `${result.toFixed(2)} ${to.toUpperCase()}`;
+        }
+
+        // ==========================================
+        // 10. CHATBOT ENGINE
+        // ==========================================
+        async function sendChatMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const box = document.getElementById('chat-box');
+
+            // Render User Bubble
+            box.innerHTML += `
+                <div class="flex items-start justify-end gap-3 msg-anim">
+                    <div class="bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan px-4 py-3 rounded-2xl max-w-md shadow-lg">
+                        ${msg}
+                    </div>
+                </div>
+            `;
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
+
+            // Add Typing Indicator
+            const typingId = 'typing-' + Date.now();
+            box.innerHTML += `
+                <div class="flex items-start gap-3 msg-anim" id="${typingId}">
+                    <div class="w-8 h-8 rounded-lg bg-cyber-cyan/20 border border-cyber-cyan flex items-center justify-center text-cyber-cyan text-xs font-bold font-orbitron flex-shrink-0">ZJ</div>
+                    <div class="bg-cyber-dark/80 border border-cyber-border px-4 py-3 rounded-2xl flex gap-1 items-center">
+                        <span class="w-1.5 h-1.5 bg-cyber-cyan rounded-full typing-dot"></span>
+                        <span class="w-1.5 h-1.5 bg-cyber-cyan rounded-full typing-dot"></span>
+                        <span class="w-1.5 h-1.5 bg-cyber-cyan rounded-full typing-dot"></span>
+                    </div>
+                </div>
+            `;
+            box.scrollTop = box.scrollHeight;
+
+            let botReply = "";
+            try {
+                // Attempt to connect to your backend (Vercel / Localhost)
+                const endpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+                    ? 'http://localhost:5000/chat' 
+                    : '/api/chat';
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg })
+                });
+
+                if (!response.ok) throw new Error("Backend offline");
+                const data = await response.json();
+                botReply = data.reply;
+            } catch (err) {
+                // Fallback simulated response if backend is not reachable
+                await new Promise(r => setTimeout(r, 1000)); // Simulate network delay
+                const lower = msg.toLowerCase();
+                if(lower.includes('hi') || lower.includes('hello')) botReply = "Hey there! 👋 What can I do for you?";
+                else if(lower.includes('how are you')) botReply = "I'm running smoothly — thanks for asking! 😊";
+                else if(lower.includes('weather')) botReply = "You can check the live weather telemetry on the dashboard!";
+                else botReply = "I am currently in local simulation mode. The backend API is offline, but I can still chat!";
+            } finally {
+                // Remove typing indicator
+                const el = document.getElementById(typingId);
+                if(el) el.remove();
+
+                // Render Bot Bubble
+                box.innerHTML += `
+                    <div class="flex items-start gap-3 msg-anim">
+                        <div class="w-8 h-8 rounded-lg bg-cyber-cyan/20 border border-cyber-cyan flex items-center justify-center text-cyber-cyan text-xs font-bold font-orbitron flex-shrink-0">ZJ</div>
+                        <div class="bg-cyber-dark/80 border border-cyber-border text-gray-200 px-4 py-3 rounded-2xl max-w-md shadow-lg">
+                            ${botReply}
+                        </div>
+                    </div>
+                `;
+                box.scrollTop = box.scrollHeight;
+            }
+        }
+
+        function newChat() {
+            clearChatMessages();
+        }
+
+        function clearChatMessages() {
+            const box = document.getElementById('chat-box');
+            box.innerHTML = `
+                <div class="flex items-start gap-3 msg-anim">
+                    <div class="w-8 h-8 rounded-lg bg-cyber-cyan/20 border border-cyber-cyan flex items-center justify-center text-cyber-cyan text-xs font-bold font-orbitron flex-shrink-0">ZJ</div>
+                    <div class="bg-cyber-dark/80 border border-cyber-border text-gray-200 px-4 py-3 rounded-2xl max-w-md shadow-lg">
+                        Hey there! 👋 What can I do for you?
+                    </div>
+                </div>
+            `;
+        }
+
+        function clearChatHistory() {
+            alert("Chat history cleared.");
+        }
+
+        function toggleVoiceInput() {
+            alert("Voice recognition activated. Speak now...");
+        }
+
+        // ==========================================
+        // 11. DATA MANAGEMENT
+        // ==========================================
+        function exportJSONData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "ZJ_CyberOS_Data.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function importJSONData() {
+            const json = prompt("Paste your JSON data string:");
+            if(json) {
+                try {
+                    appState = JSON.parse(json);
+                    renderNotes();
+                    renderTodos();
+                    alert("Data loaded successfully!");
+                } catch(e) {
+                    alert("Invalid JSON data format.");
+                }
+            }
+        }
+
+        // ==========================================
+        // 12. THREE.JS BACKGROUND
+        // ==========================================
+        function initThreeJSBackground() {
+            const canvas = document.getElementById('bg-canvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 300;
+
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            const count = 800;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(count * 3);
+
+            for (let i = 0; i < count * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 800;
+                positions[i+1] = (Math.random() - 0.5) * 800;
+                positions[i+2] = (Math.random() - 0.5) * 800;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+            const material = new THREE.PointsMaterial({
+                color: 0x00f2fe,
+                size: 2,
+                transparent: true,
+                opacity: 0.6
+            });
+
+            const particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                particles.rotation.y += 0.001;
+                particles.rotation.x += 0.0005;
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+    </script>
 </body>
 </html>
