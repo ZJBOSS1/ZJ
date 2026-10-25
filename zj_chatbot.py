@@ -20,7 +20,7 @@ client = OpenAI(
     api_key=GROQ_API_KEY,
 )
 
-MODEL = "llama-3.1-8b-instant"
+MODEL = "openai/gpt-oss-20b"
 SYSTEM_PROMPT = "You are ZJ Bot, a helpful AI assistant. Respond in plain conversational text only. Keep responses concise."
 
 # ----- Serve the main HTML file -----
