@@ -1,13 +1,17 @@
+# api/index.py  (local dev: also works as chatbot.py)
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from openai import OpenAI
 import os
 
-# Initialize Flask. We set static_folder to None because we handle static files manually below.
+# Absolute path to the project root (one level up from api/), so
+# send_from_directory works regardless of the process cwd.
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 app = Flask(__name__, static_folder=None)
 CORS(app)
 
-# --- SECURE: Reads from Vercel Environment Variables ---
+# --- SECURE: reads from Vercel Environment Variables ---
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
 if not GROQ_API_KEY:
@@ -15,52 +19,66 @@ if not GROQ_API_KEY:
 
 client = OpenAI(
     base_url="https://api.groq.com/openai/v1",
-    api_key=GROQ_API_KEY
+    api_key=GROQ_API_KEY,
 )
 
 MODEL = "llama-3.1-8b-instant"
-SYSTEM_PROMPT = "You are ZJ Bot, a helpful AI assistant. Respond in plain conversational text only. Keep responses concise."
+SYSTEM_PROMPT = (
+    "You are ZJ Bot, a helpful AI assistant. "
+    "Respond in plain conversational text only. Keep responses concise."
+)
 
-# Serve the main HTML file
+
+# ----- Static file serving (used locally; unused on Vercel) -----
 @app.route('/')
 def home():
-    return send_from_directory('.', 'index.html')
+    return send_from_directory(BASE_DIR, 'index.html')
 
-# Serve other static files (CSS, JS, images if you had them separate)
+
 @app.route('/<path:filename>')
 def static_files(filename):
-    return send_from_directory('.', filename)
+    return send_from_directory(BASE_DIR, filename)
 
-# API Endpoint
+
+# ----- API endpoint -----
 @app.route('/chat', methods=['POST'])
 def chat():
     data = request.get_json(silent=True) or {}
     user_message = data.get('message', '').strip()
 
     if not user_message:
-        return jsonify({'reply': 'Please type a message.'})
+        return jsonify({'reply': 'Please type a message.'}), 400
 
-    # If key is missing, return a clean error
     if not GROQ_API_KEY:
-        return jsonify({'reply': '⚠️ Server API key is not configured. Please check Vercel settings.'}), 500
+        return jsonify({
+            'reply': '⚠️ Server API key is not configured. '
+                     'Add GROQ_API_KEY in the hosting dashboard and redeploy.'
+        }), 500
 
     try:
         response = client.chat.completions.create(
             model=MODEL,
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_message}
+                {"role": "user", "content": user_message},
             ],
             temperature=0.6,
-            max_tokens=300
+            max_tokens=300,
         )
         reply = response.choices[0].message.content
         return jsonify({'reply': reply})
 
     except Exception as e:
-        print(f"Error calling Groq API: {e}")
-        return jsonify({'reply': '⚠️ Cannot connect to AI. Check server logs.'}), 500
+        # Server-side detail goes to logs; user gets a safe message.
+        print(f"Error calling Groq API: {type(e).__name__}: {e}")
+        return jsonify({
+            'reply': '⚠️ Cannot connect to AI. Check server logs.'
+        }), 500
+
 
 if __name__ == '__main__':
-    # Run on port 5000 for local development
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(
+        host='0.0.0.0',
+        port=5000,
+        debug=os.environ.get('FLASK_DEBUG') == '1',
+    )
