@@ -6,7 +6,7 @@ import os
 app = Flask(__name__, static_folder=None)
 CORS(app)
 
-# --- SECURE: Reads from Environment Variables ---
+# MUST USE ENVIRONMENT VARIABLE
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
 client = OpenAI(
@@ -15,7 +15,7 @@ client = OpenAI(
 )
 
 MODEL = "llama-3.1-8b-instant"
-SYSTEM_PROMPT = "You are ZJ Bot, a helpful AI assistant. Respond in plain conversational text only. Do not use markdown or special characters."
+SYSTEM_PROMPT = "You are ZJ Bot, a helpful AI assistant."
 
 @app.route('/')
 def home():
