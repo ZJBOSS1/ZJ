@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="dark" data-accent="cyan">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -20,17 +20,16 @@
                         cyber: {
                             black: '#05070A',
                             dark: '#0A0E14',
-                            panel: 'rgba(16, 23, 36, 0.75)',
+                            panel: 'rgba(16, 23, 36, 0.85)',
                             sidebar: '#0C121E',
-                            cyan: '#00f2fe',
-                            cyanDark: '#00a8b5',
+                            accent: 'var(--accent-color)',
+                            accentDark: 'var(--accent-dark)',
                             gold: '#F2C14E',
                             goldDark: '#C9992F',
                             silver: '#C0C0C0',
                             silverDark: '#8B9BAD',
                             danger: '#FF5C5C',
-                            border: 'rgba(0, 242, 254, 0.25)',
-                            borderGlow: 'rgba(0, 242, 254, 0.6)'
+                            border: 'var(--border-color)',
                         }
                     },
                     fontFamily: {
@@ -43,176 +42,135 @@
     </script>
 
     <style>
-        * {
-            user-select: none;
-            scrollbar-width: thin;
-            scrollbar-color: #00f2fe #05070A;
+        /* Dynamic Theme Variables */
+        :root {
+            --accent-color: #00f2fe;
+            --accent-dark: #00a8b5;
+            --accent-glow: rgba(0, 242, 254, 0.4);
+            --border-color: rgba(0, 242, 254, 0.25);
+        }
+        [data-accent="gold"] {
+            --accent-color: #F2C14E;
+            --accent-dark: #C9992F;
+            --accent-glow: rgba(242, 193, 78, 0.4);
+            --border-color: rgba(242, 193, 78, 0.25);
+        }
+        [data-accent="silver"] {
+            --accent-color: #C0C0C0;
+            --accent-dark: #8B9BAD;
+            --accent-glow: rgba(192, 192, 192, 0.4);
+            --border-color: rgba(192, 192, 192, 0.25);
         }
 
-        body {
-            background-color: #05070A;
-            color: #E2E8F0;
-            font-family: 'Rajdhani', sans-serif;
-            overflow-x: hidden;
-        }
-
-        /* --- Glassmorphism & UI Panels --- */
+        * { user-select: none; scrollbar-width: thin; scrollbar-color: var(--accent-color) #05070A; }
+        body { background-color: #05070A; color: #E2E8F0; font-family: 'Rajdhani', sans-serif; overflow-x: hidden; }
+        
+        /* Glassmorphism */
         .glass-panel {
             background: rgba(10, 14, 20, 0.75);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(0, 242, 254, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(0, 242, 254, 0.05);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.02);
         }
-
         .glass-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 242, 254, 0.06) 100%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 242, 254, 0.18);
+            border: 1px solid var(--border-color);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
         .glass-card:hover {
-            border-color: rgba(0, 242, 254, 0.6);
-            box-shadow: 0 0 25px rgba(0, 242, 254, 0.25), inset 0 0 15px rgba(0, 242, 254, 0.1);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 25px var(--accent-glow);
         }
 
-        /* --- Typography & Glowing Text --- */
-        .glow-cyan {
-            text-shadow: 0 0 12px rgba(0, 242, 254, 0.7), 0 0 24px rgba(0, 242, 254, 0.4);
-        }
-        .glow-gold {
-            text-shadow: 0 0 12px rgba(242, 193, 78, 0.7), 0 0 24px rgba(242, 193, 78, 0.4);
-        }
-        .glow-silver {
-            text-shadow: 0 0 12px rgba(192, 192, 192, 0.5), 0 0 24px rgba(192, 192, 192, 0.3);
-        }
+        /* Text Glows */
+        .glow-accent { text-shadow: 0 0 12px var(--accent-glow), 0 0 24px var(--accent-glow); color: var(--accent-color); }
+        .glow-gold { text-shadow: 0 0 12px rgba(242, 193, 78, 0.7); color: #F2C14E; }
 
-        /* --- Cyber Grid Background --- */
+        /* Background Grid */
         .cyber-grid {
             background-size: 40px 40px;
-            background-image: 
-                linear-gradient(to right, rgba(0, 242, 254, 0.03) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 242, 254, 0.03) 1px, transparent 1px);
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
         }
 
-        /* --- Custom Scrollbar --- */
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #05070A; }
-        ::-webkit-scrollbar-thumb { background: #00f2fe; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #F2C14E; }
+        ::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 3px; }
 
-        /* --- HUD Corners --- */
-        .hud-corner {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border-color: #00f2fe;
-            pointer-events: none;
-            z-index: 10;
-        }
+        /* HUD Corners */
+        .hud-corner { position: absolute; width: 12px; height: 12px; border-color: var(--accent-color); pointer-events: none; z-index: 10; }
         .hud-tl { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
         .hud-tr { top: -1px; right: -1px; border-top: 2px solid; border-right: 2px solid; }
         .hud-bl { bottom: -1px; left: -1px; border-bottom: 2px solid; border-left: 2px solid; }
         .hud-br { bottom: -1px; right: -1px; border-bottom: 2px solid; border-right: 2px solid; }
 
-        /* --- Scanline Effect --- */
+        /* Scanline */
         .scanline-overlay {
-            background: linear-gradient(
-                rgba(18, 16, 16, 0) 50%, 
-                rgba(0, 0, 0, 0.25) 50%
-            ), linear-gradient(
-                90deg,
-                rgba(255, 0, 0, 0.02),
-                rgba(0, 255, 0, 0.01),
-                rgba(0, 0, 255, 0.02)
-            );
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
             background-size: 100% 4px, 6px 100%;
             pointer-events: none;
         }
 
-        /* --- Modals & Dialogs --- */
-        dialog {
-            opacity: 0;
-            transform: scale(0.95);
-            transition: opacity 0.2s, transform 0.2s;
-        }
-        dialog[open] {
-            opacity: 1;
-            transform: scale(1);
-        }
-        dialog::backdrop {
-            background: rgba(5, 7, 10, 0.85);
-            backdrop-filter: blur(5px);
-        }
+        /* Dialogs */
+        dialog { opacity: 0; transform: scale(0.95); transition: opacity 0.2s, transform 0.2s; }
+        dialog[open] { opacity: 1; transform: scale(1); }
+        dialog::backdrop { background: rgba(5, 7, 10, 0.85); backdrop-filter: blur(5px); }
 
-        /* --- Chat Animations --- */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .chat-msg-anim {
-            animation: fadeInUp 0.3s ease-out forwards;
-        }
-
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
-        .typing-dot {
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
+        /* Chat Animations */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .chat-msg-anim { animation: fadeInUp 0.3s ease-out forwards; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+        .typing-dot { animation: bounce 1.4s infinite ease-in-out both; }
         .typing-dot:nth-child(1) { animation-delay: -0.32s; }
         .typing-dot:nth-child(2) { animation-delay: -0.16s; }
 
-        /* --- Clock Hands --- */
-        .clock-hand {
-            transition: transform 0.1s cubic-bezier(0.4, 0.0, 0.2, 1);
-            transform-origin: 100px 100px;
-        }
+        /* Clock Hands */
+        .clock-hand { transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: 100px 100px; }
+        
+        /* Inputs */
+        input, textarea, select { outline: none; }
+        input:focus, textarea:focus, select:focus { border-color: var(--accent-color) !important; box-shadow: 0 0 10px var(--accent-glow); }
     </style>
 </head>
-<body class="cyber-grid relative min-h-screen selection:bg-cyber-cyan selection:text-cyber-black flex">
+<body class="cyber-grid relative min-h-screen selection:bg-cyber-accent selection:text-cyber-black flex">
 
-    <!-- Scanlines -->
     <div class="fixed inset-0 scanline-overlay z-50 pointer-events-none opacity-40"></div>
-
-    <!-- Three.js 3D Particles -->
     <canvas id="bg-canvas" class="fixed inset-0 w-full h-full z-0 pointer-events-none"></canvas>
 
-    <!-- ============================================== -->
-    <!-- CUSTOM MODAL SYSTEM (Replaces Native Prompts)  -->
-    <!-- ============================================== -->
-    <dialog id="cyber-modal" class="bg-cyber-panel border border-cyber-cyan/50 rounded-2xl p-6 w-full max-w-md mx-auto mt-[10vh] shadow-[0_0_50px_rgba(0,242,254,0.2)] font-rajdhani text-white relative">
-        <div class="hud-corner hud-tl"></div>
-        <div class="hud-corner hud-tr"></div>
-        <div class="hud-corner hud-bl"></div>
-        <div class="hud-corner hud-br"></div>
-        
-        <h3 class="font-orbitron font-bold text-lg text-cyber-cyan mb-2" id="modal-title">SYSTEM PROMPT</h3>
+    <!-- CUSTOM MODAL SYSTEM -->
+    <dialog id="cyber-modal" class="bg-cyber-panel border border-cyber-border rounded-2xl p-6 w-full max-w-md mx-auto mt-[10vh] shadow-[0_0_50px_var(--accent-glow)] font-rajdhani text-white relative">
+        <div class="hud-corner hud-tl"></div><div class="hud-corner hud-tr"></div><div class="hud-corner hud-bl"></div><div class="hud-corner hud-br"></div>
+        <h3 class="font-orbitron font-bold text-lg text-cyber-accent mb-2" id="modal-title">SYSTEM PROMPT</h3>
         <p class="text-sm text-gray-400 mb-4" id="modal-desc">Enter required data.</p>
         
-        <input type="text" id="modal-input" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-white outline-none focus:border-cyber-cyan mb-4 hidden" placeholder="Type here...">
-        <textarea id="modal-textarea" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-white outline-none focus:border-cyber-cyan mb-4 hidden h-24 resize-none" placeholder="Type here..."></textarea>
+        <!-- Single input -->
+        <input type="text" id="modal-input" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-white mb-4 hidden" placeholder="Type here...">
+        <!-- Double input for Notes (Title + Content) -->
+        <div id="modal-double" class="hidden space-y-3 mb-4">
+            <input type="text" id="modal-input-1" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-white" placeholder="Title">
+            <textarea id="modal-input-2" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-white h-24 resize-none" placeholder="Content..."></textarea>
+        </div>
+        <!-- Textarea only (JSON import) -->
+        <textarea id="modal-textarea" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-white mb-4 h-24 resize-none hidden" placeholder="Paste JSON here..."></textarea>
         
         <div class="flex justify-end gap-3 mt-6">
             <button id="modal-cancel" class="px-5 py-2 rounded-xl border border-gray-600 text-gray-300 hover:bg-gray-800 transition-all font-bold text-sm">CANCEL</button>
-            <button id="modal-confirm" class="px-5 py-2 rounded-xl bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan hover:bg-cyber-cyan/30 transition-all font-bold text-sm">CONFIRM</button>
+            <button id="modal-confirm" class="px-5 py-2 rounded-xl bg-cyber-accent text-black font-bold text-sm hover:opacity-80 transition-all">CONFIRM</button>
         </div>
     </dialog>
 
     <!-- SEARCH MODAL -->
     <div id="search-modal" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
-        <div class="w-full max-w-lg glass-panel rounded-2xl p-6 border border-cyber-cyan/50 space-y-4 relative">
-            <div class="hud-corner hud-tl"></div>
-            <div class="hud-corner hud-br"></div>
+        <div class="w-full max-w-lg glass-panel rounded-2xl p-6 border border-cyber-border space-y-4 relative">
+            <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
             <div class="flex justify-between items-center border-b border-cyber-border pb-3">
-                <span class="font-orbitron font-bold text-cyber-cyan text-sm flex items-center gap-2">
-                    <i data-lucide="search" class="w-4 h-4"></i> COMMAND SEARCH
-                </span>
+                <span class="font-orbitron font-bold text-cyber-accent text-sm flex items-center gap-2"><i data-lucide="search" class="w-4 h-4"></i> COMMAND SEARCH</span>
                 <button onclick="toggleSearchModal(false)" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
-            <input type="text" id="search-input" placeholder="Type module name..." oninput="handleSearch(this.value)" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-cyber-cyan placeholder-gray-500 outline-none font-mono text-sm focus:border-cyber-cyan">
+            <input type="text" id="search-input" placeholder="Type module name..." oninput="handleSearch(this.value)" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-cyber-accent placeholder-gray-500 font-mono text-sm">
             <div id="search-results" class="space-y-2 max-h-60 overflow-y-auto font-mono text-xs"></div>
         </div>
     </div>
@@ -220,337 +178,334 @@
     <!-- MAIN WRAPPER -->
     <div class="relative z-10 flex w-full min-h-screen">
 
-        <!-- LEFT SIDEBAR -->
-        <aside class="w-64 bg-cyber-sidebar/95 border-r border-cyber-border/40 backdrop-blur-xl flex flex-col justify-between p-4 flex-shrink-0 fixed lg:relative z-40 h-full -translate-x-full lg:translate-x-0 transition-transform duration-300" id="sidebar">
+        <!-- SIDEBAR -->
+        <aside class="w-64 bg-cyber-sidebar/95 border-r border-cyber-border backdrop-blur-xl flex flex-col justify-between p-4 flex-shrink-0 fixed lg:relative z-40 h-full -translate-x-full lg:translate-x-0 transition-transform duration-300" id="sidebar">
             <div class="space-y-6">
-                
-                <!-- Brand -->
-                <div class="flex items-center justify-between pb-4 border-b border-cyber-border/30">
+                <div class="flex items-center justify-between pb-4 border-b border-cyber-border">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-cyber-cyan/20 border border-cyber-cyan flex items-center justify-center text-cyber-cyan shadow-[0_0_15px_rgba(0,242,254,0.4)]">
+                        <div class="w-10 h-10 rounded-xl bg-cyber-accent/20 border border-cyber-accent flex items-center justify-center text-cyber-accent shadow-[0_0_15px_var(--accent-glow)]">
                             <span class="font-orbitron font-black text-sm">ZJ</span>
                         </div>
                         <div>
                             <h1 class="font-orbitron font-bold text-lg text-white tracking-wider">ZJ NEXUS</h1>
-                            <p class="text-[10px] font-mono text-cyber-gold uppercase tracking-widest">CYBER OS v2030</p>
+                            <p class="text-[10px] font-mono text-cyber-accent uppercase tracking-widest">CYBER OS v2030</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Nav Links -->
                 <div class="space-y-6 overflow-y-auto max-h-[calc(100vh-180px)] pr-1">
-                    
                     <div>
                         <div class="text-[11px] font-mono text-gray-500 uppercase tracking-wider mb-2 font-semibold">MAIN MENU</div>
                         <nav class="space-y-1 font-rajdhani text-sm font-semibold">
-                            <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-btn active w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-cyber-cyan bg-cyber-cyan/10 border border-cyber-cyan/40 transition-all">
-                                <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
-                            </button>
-                            <button onclick="switchTab('calculator')" data-tab="calculator" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
-                                <i data-lucide="calculator" class="w-4 h-4"></i> Calculator
-                            </button>
-                            <button onclick="switchTab('weather')" data-tab="weather" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
-                                <i data-lucide="cloud-sun" class="w-4 h-4"></i> Weather
-                            </button>
-                            <button onclick="switchTab('clock')" data-tab="clock" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
-                                <i data-lucide="clock" class="w-4 h-4"></i> Clock
-                            </button>
-                            <button onclick="switchTab('gallery')" data-tab="gallery" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
-                                <i data-lucide="image" class="w-4 h-4"></i> Gallery
-                            </button>
+                            <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-btn active w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-cyber-accent bg-cyber-accent/10 border border-cyber-accent/40 transition-all"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard</button>
+                            <button onclick="switchTab('calculator')" data-tab="calculator" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all"><i data-lucide="calculator" class="w-4 h-4"></i> Calculator</button>
+                            <button onclick="switchTab('weather')" data-tab="weather" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all"><i data-lucide="cloud-sun" class="w-4 h-4"></i> Weather</button>
+                            <button onclick="switchTab('clock')" data-tab="clock" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all"><i data-lucide="clock" class="w-4 h-4"></i> Clock</button>
+                            <button onclick="switchTab('gallery')" data-tab="gallery" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all"><i data-lucide="image" class="w-4 h-4"></i> Gallery</button>
                         </nav>
                     </div>
 
                     <div>
                         <div class="text-[11px] font-mono text-gray-500 uppercase tracking-wider mb-2 font-semibold">PRO APPS</div>
                         <nav class="space-y-1 font-rajdhani text-sm font-semibold">
-                            <button onclick="switchTab('notes')" data-tab="notes" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
-                                <i data-lucide="file-text" class="w-4 h-4"></i> Notes
-                            </button>
-                            <button onclick="switchTab('todo')" data-tab="todo" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
-                                <i data-lucide="check-square" class="w-4 h-4"></i> Todo List
-                            </button>
-                            <button onclick="switchTab('pomodoro')" data-tab="pomodoro" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
-                                <i data-lucide="timer" class="w-4 h-4"></i> Pomodoro
-                            </button>
-                            <button onclick="switchTab('converter')" data-tab="converter" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
-                                <i data-lucide="arrow-left-right" class="w-4 h-4"></i> Unit Converter
-                            </button>
-                            <button onclick="switchTab('chatbot')" data-tab="chatbot" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
-                                <div class="flex items-center gap-3">
-                                    <i data-lucide="message-square" class="w-4 h-4"></i> Chatbot
-                                </div>
-                                <span class="w-2 h-2 rounded-full bg-cyber-gold animate-pulse"></span>
-                            </button>
-                        </nav>
-                    </div>
-
-                    <div>
-                        <div class="text-[11px] font-mono text-gray-500 uppercase tracking-wider mb-2 font-semibold">DATA</div>
-                        <nav class="space-y-1 font-rajdhani text-sm font-semibold">
-                            <button onclick="exportJSONData()" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
-                                <i data-lucide="download" class="w-4 h-4"></i> Export JSON
-                            </button>
-                            <button onclick="importJSONData()" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-all">
-                                <i data-lucide="upload" class="w-4 h-4"></i> Import Data
+                            <button onclick="switchTab('notes')" data-tab="notes" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all"><i data-lucide="file-text" class="w-4 h-4"></i> Notes</button>
+                            <button onclick="switchTab('todo')" data-tab="todo" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all"><i data-lucide="check-square" class="w-4 h-4"></i> Todo List</button>
+                            <button onclick="switchTab('pomodoro')" data-tab="pomodoro" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all"><i data-lucide="timer" class="w-4 h-4"></i> Pomodoro</button>
+                            <button onclick="switchTab('converter')" data-tab="converter" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all"><i data-lucide="arrow-left-right" class="w-4 h-4"></i> Unit Converter</button>
+                            <button onclick="switchTab('chatbot')" data-tab="chatbot" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all">
+                                <div class="flex items-center gap-3"><i data-lucide="message-square" class="w-4 h-4"></i> Chatbot</div>
+                                <span class="w-2 h-2 rounded-full bg-cyber-accent animate-pulse"></span>
                             </button>
                         </nav>
                     </div>
                 </div>
             </div>
 
-            <!-- Sidebar Footer -->
-            <div class="pt-4 border-t border-cyber-border/30 font-mono text-[11px] text-gray-400 flex items-center justify-between">
-                <span class="flex items-center gap-1.5 text-cyber-cyan">
-                    <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse"></span> SYSTEM OK
-                </span>
-                <span>LATENCY: 0.12ms</span>
+            <!-- SIDEBAR FOOTER: SYSTEM STATS -->
+            <div class="pt-4 border-t border-cyber-border font-mono text-[11px] text-gray-400 flex flex-col gap-2">
+                <div class="flex justify-between items-center">
+                    <span class="flex items-center gap-1.5 text-cyber-accent"><i data-lucide="wifi" class="w-3 h-3"></i> NET: <span id="sys-net">ONLINE</span></span>
+                    <span id="sys-battery">BAT: --%</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="flex items-center gap-1.5 text-cyber-accent"><i data-lucide="activity" class="w-3 h-3"></i> LATENCY:</span>
+                    <span id="sys-latency">0.12ms</span>
+                </div>
             </div>
         </aside>
 
-        <!-- MAIN CONTENT AREA -->
+        <!-- MAIN CONTENT -->
         <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
-
             <!-- TOPBAR -->
-            <header class="sticky top-0 z-30 px-6 py-4 glass-panel border-b border-cyber-border/40 flex items-center justify-between gap-4">
+            <header class="sticky top-0 z-30 px-6 py-4 glass-panel border-b border-cyber-border flex items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
-                    <button onclick="toggleSidebar()" class="lg:hidden p-2 text-cyber-cyan border border-cyber-border rounded-xl">
-                        <i data-lucide="menu" class="w-5 h-5"></i>
-                    </button>
-                    <button onclick="toggleSearchModal(true)" class="flex items-center gap-3 px-4 py-2 bg-cyber-black/80 border border-cyber-border/50 rounded-xl text-gray-400 hover:text-cyber-cyan hover:border-cyber-cyan text-xs font-mono transition-all">
-                        <i data-lucide="search" class="w-4 h-4 text-cyber-cyan"></i>
+                    <button onclick="toggleSidebar()" class="lg:hidden p-2 text-cyber-accent border border-cyber-border rounded-xl"><i data-lucide="menu" class="w-5 h-5"></i></button>
+                    <button onclick="toggleSearchModal(true)" class="flex items-center gap-3 px-4 py-2 bg-cyber-black/80 border border-cyber-border rounded-xl text-gray-400 hover:text-cyber-accent hover:border-cyber-accent text-xs font-mono transition-all">
+                        <i data-lucide="search" class="w-4 h-4 text-cyber-accent"></i>
                         <span>Search</span>
-                        <kbd class="px-1.5 py-0.5 bg-cyber-cyan/20 text-cyber-cyan text-[10px] rounded border border-cyber-cyan/30">Ctrl K</kbd>
+                        <kbd class="px-1.5 py-0.5 bg-cyber-accent/20 text-cyber-accent text-[10px] rounded border border-cyber-accent/30">Ctrl K</kbd>
                     </button>
                 </div>
-                <div class="flex items-center gap-3">
-                    <div class="hidden sm:flex items-center gap-2 font-mono text-xs text-cyber-gold">
-                        <i data-lucide="shield-check" class="w-4 h-4"></i> SECURE
+                
+                <!-- THEME SWITCHER & SETTINGS -->
+                <div class="flex items-center gap-2">
+                    <div class="flex bg-cyber-black border border-cyber-border rounded-lg p-1">
+                        <button onclick="setTheme('cyan')" class="w-6 h-6 rounded-full bg-[#00f2fe] mx-1 border-2 border-transparent hover:scale-110 transition-transform" title="Cyan Theme"></button>
+                        <button onclick="setTheme('gold')" class="w-6 h-6 rounded-full bg-[#F2C14E] mx-1 border-2 border-transparent hover:scale-110 transition-transform" title="Gold Theme"></button>
+                        <button onclick="setTheme('silver')" class="w-6 h-6 rounded-full bg-[#C0C0C0] mx-1 border-2 border-transparent hover:scale-110 transition-transform" title="Silver Theme"></button>
                     </div>
+                    <button onclick="openSettings()" class="p-2.5 rounded-xl bg-cyber-black/80 border border-cyber-border text-cyber-accent hover:text-white transition-all"><i data-lucide="settings" class="w-4 h-4"></i></button>
                 </div>
             </header>
 
             <!-- TAB CONTENTS -->
             <div class="p-6 space-y-6 max-w-7xl mx-auto w-full">
 
-                <!-- ============================================== -->
-                <!-- TAB: DASHBOARD                                 -->
-                <!-- ============================================== -->
+                <!-- DASHBOARD -->
                 <section id="tab-dashboard" class="tab-content space-y-6">
-                    
-                    <div class="text-center py-8 glass-panel rounded-2xl border border-cyber-cyan/30 relative overflow-hidden space-y-3">
-                        <div class="hud-corner hud-tl"></div>
-                        <div class="hud-corner hud-tr"></div>
-                        <div class="hud-corner hud-bl"></div>
-                        <div class="hud-corner hud-br"></div>
-
+                    <div class="text-center py-8 glass-panel rounded-2xl border border-cyber-border relative overflow-hidden space-y-3">
+                        <div class="hud-corner hud-tl"></div><div class="hud-corner hud-tr"></div><div class="hud-corner hud-bl"></div><div class="hud-corner hud-br"></div>
                         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <h2 class="font-orbitron font-black text-3xl sm:text-5xl text-white tracking-wider glow-cyan">
-                                CYBER DASHBOARD
-                            </h2>
-                            <div class="bg-cyber-cyan/10 border border-cyber-cyan/50 text-cyber-cyan px-5 py-2 rounded-xl font-orbitron font-bold text-xl shadow-[0_0_15px_rgba(0,242,254,0.3)]" id="live-clock">
-                                00:00:00
-                            </div>
+                            <h2 class="font-orbitron font-black text-3xl sm:text-5xl text-white tracking-wider glow-accent">CYBER DASHBOARD</h2>
+                            <div class="bg-cyber-accent/10 border border-cyber-accent/50 text-cyber-accent px-5 py-2 rounded-xl font-orbitron font-bold text-xl shadow-[0_0_15px_var(--accent-glow)]" id="live-clock">00:00:00</div>
                         </div>
-                        <p class="font-mono text-xs text-cyber-gold/80 tracking-widest uppercase mt-2">
-                            SYSTEM INITIALIZED // WELCOME BACK
-                        </p>
+                        <p class="font-mono text-xs text-cyber-gold/80 tracking-widest uppercase mt-2">SYSTEM INITIALIZED // WELCOME BACK</p>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-                        <!-- CALCULATOR WIDGET -->
-                        <div class="lg:col-span-4 glass-panel rounded-2xl p-5 border border-cyber-cyan/30 relative flex flex-col justify-between">
-                            <div class="hud-corner hud-tl"></div>
-                            <div class="hud-corner hud-br"></div>
-                            <div class="flex justify-between items-center mb-4 pb-2 border-b border-cyber-border/30">
-                                <div class="flex items-center gap-2 font-orbitron font-bold text-xs text-cyber-cyan tracking-wider"><span class="w-2 h-2 rounded-full bg-cyber-cyan"></span> CALCULATOR</div>
-                                <button onclick="clearCalcHistory()" class="text-gray-400 hover:text-cyber-cyan"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
+                        <!-- CALCULATOR PREVIEW -->
+                        <div class="lg:col-span-4 glass-panel rounded-2xl p-5 border border-cyber-border relative flex flex-col justify-between">
+                            <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
+                            <div class="flex justify-between items-center mb-4 pb-2 border-b border-cyber-border">
+                                <div class="flex items-center gap-2 font-orbitron font-bold text-xs text-cyber-accent tracking-wider"><span class="w-2 h-2 rounded-full bg-cyber-accent"></span> CALCULATOR</div>
                             </div>
-                            <div class="bg-black/80 border border-cyber-border/50 rounded-xl p-3 mb-4 font-mono text-right space-y-1">
-                                <div id="calc-history" class="text-xs text-gray-500 h-4 overflow-hidden">0 = 0</div>
-                                <div id="calc-display" class="text-2xl font-bold text-cyber-cyan truncate">0</div>
+                            <div class="bg-cyber-black border border-cyber-border rounded-xl p-3 mb-4 font-mono text-right space-y-1">
+                                <div id="calc-history-widget" class="text-xs text-gray-500 h-4 overflow-hidden">0 = 0</div>
+                                <div id="calc-display-widget" class="text-2xl font-bold text-cyber-accent truncate">0</div>
                             </div>
                             <div class="grid grid-cols-4 gap-2 font-orbitron text-sm font-semibold">
                                 <button onclick="calcInput('AC')" class="p-3 rounded-xl bg-gray-800/80 hover:bg-gray-700 text-cyber-danger border border-gray-700">AC</button>
                                 <button onclick="calcInput('DEL')" class="p-3 rounded-xl bg-gray-800/80 hover:bg-gray-700 text-gray-200 border border-gray-700">DEL</button>
                                 <button onclick="calcInput('%')" class="p-3 rounded-xl bg-gray-800/80 hover:bg-gray-700 text-cyber-silver border border-gray-700">%</button>
-                                <button onclick="calcInput('/')" class="p-3 rounded-xl bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40 hover:bg-cyber-cyan/30">÷</button>
-                                <button onclick="calcInput('7')" class="p-3 rounded-xl bg-cyber-black/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">7</button>
-                                <button onclick="calcInput('8')" class="p-3 rounded-xl bg-cyber-black/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">8</button>
-                                <button onclick="calcInput('9')" class="p-3 rounded-xl bg-cyber-black/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">9</button>
-                                <button onclick="calcInput('*')" class="p-3 rounded-xl bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40 hover:bg-cyber-cyan/30">×</button>
-                                <button onclick="calcInput('4')" class="p-3 rounded-xl bg-cyber-black/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">4</button>
-                                <button onclick="calcInput('5')" class="p-3 rounded-xl bg-cyber-black/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">5</button>
-                                <button onclick="calcInput('6')" class="p-3 rounded-xl bg-cyber-black/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">6</button>
-                                <button onclick="calcInput('-')" class="p-3 rounded-xl bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40 hover:bg-cyber-cyan/30">-</button>
-                                <button onclick="calcInput('1')" class="p-3 rounded-xl bg-cyber-black/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">1</button>
-                                <button onclick="calcInput('2')" class="p-3 rounded-xl bg-cyber-black/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">2</button>
-                                <button onclick="calcInput('3')" class="p-3 rounded-xl bg-cyber-black/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">3</button>
-                                <button onclick="calcInput('+')" class="p-3 rounded-xl bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40 hover:bg-cyber-cyan/30">+</button>
-                                <button onclick="calcInput('0')" class="col-span-2 p-3 rounded-xl bg-cyber-black/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">0</button>
-                                <button onclick="calcInput('.')" class="p-3 rounded-xl bg-cyber-black/80 hover:bg-cyber-cyan/10 text-white border border-cyber-border/30">.</button>
-                                <button onclick="calcInput('=')" class="p-3 rounded-xl bg-cyber-gold text-black font-bold hover:bg-cyber-goldDark shadow-[0_0_15px_rgba(242,193,78,0.4)]">=</button>
+                                <button onclick="calcInput('/')" class="p-3 rounded-xl bg-cyber-accent/20 text-cyber-accent border border-cyber-accent/40 hover:bg-cyber-accent/30">÷</button>
+                                <button onclick="calcInput('7')" class="p-3 rounded-xl bg-cyber-black hover:bg-cyber-accent/10 text-white border border-cyber-border">7</button>
+                                <button onclick="calcInput('8')" class="p-3 rounded-xl bg-cyber-black hover:bg-cyber-accent/10 text-white border border-cyber-border">8</button>
+                                <button onclick="calcInput('9')" class="p-3 rounded-xl bg-cyber-black hover:bg-cyber-accent/10 text-white border border-cyber-border">9</button>
+                                <button onclick="calcInput('*')" class="p-3 rounded-xl bg-cyber-accent/20 text-cyber-accent border border-cyber-accent/40 hover:bg-cyber-accent/30">×</button>
+                                <button onclick="calcInput('4')" class="p-3 rounded-xl bg-cyber-black hover:bg-cyber-accent/10 text-white border border-cyber-border">4</button>
+                                <button onclick="calcInput('5')" class="p-3 rounded-xl bg-cyber-black hover:bg-cyber-accent/10 text-white border border-cyber-border">5</button>
+                                <button onclick="calcInput('6')" class="p-3 rounded-xl bg-cyber-black hover:bg-cyber-accent/10 text-white border border-cyber-border">6</button>
+                                <button onclick="calcInput('-')" class="p-3 rounded-xl bg-cyber-accent/20 text-cyber-accent border border-cyber-accent/40 hover:bg-cyber-accent/30">-</button>
+                                <button onclick="calcInput('1')" class="p-3 rounded-xl bg-cyber-black hover:bg-cyber-accent/10 text-white border border-cyber-border">1</button>
+                                <button onclick="calcInput('2')" class="p-3 rounded-xl bg-cyber-black hover:bg-cyber-accent/10 text-white border border-cyber-border">2</button>
+                                <button onclick="calcInput('3')" class="p-3 rounded-xl bg-cyber-black hover:bg-cyber-accent/10 text-white border border-cyber-border">3</button>
+                                <button onclick="calcInput('+')" class="p-3 rounded-xl bg-cyber-accent/20 text-cyber-accent border border-cyber-accent/40 hover:bg-cyber-accent/30">+</button>
+                                <button onclick="calcInput('0')" class="col-span-2 p-3 rounded-xl bg-cyber-black hover:bg-cyber-accent/10 text-white border border-cyber-border">0</button>
+                                <button onclick="calcInput('.')" class="p-3 rounded-xl bg-cyber-black hover:bg-cyber-accent/10 text-white border border-cyber-border">.</button>
+                                <button onclick="calcInput('=')" class="p-3 rounded-xl bg-cyber-gold text-black font-bold hover:bg-cyber-goldDark">=</button>
                             </div>
                         </div>
 
-                        <!-- WEATHER WIDGET -->
-                        <div class="lg:col-span-4 glass-panel rounded-2xl p-5 border border-cyber-cyan/30 relative flex flex-col justify-between space-y-4">
-                            <div class="hud-corner hud-tl"></div>
-                            <div class="hud-corner hud-br"></div>
-                            <div class="flex justify-between items-center pb-2 border-b border-cyber-border/30">
-                                <div class="flex items-center gap-2 font-orbitron font-bold text-xs text-cyber-cyan tracking-wider"><span class="w-2 h-2 rounded-full bg-cyber-cyan"></span> WEATHER</div>
+                        <!-- WEATHER PREVIEW -->
+                        <div class="lg:col-span-4 glass-panel rounded-2xl p-5 border border-cyber-border relative flex flex-col justify-between space-y-4">
+                            <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
+                            <div class="flex justify-between items-center pb-2 border-b border-cyber-border">
+                                <div class="flex items-center gap-2 font-orbitron font-bold text-xs text-cyber-accent tracking-wider"><span class="w-2 h-2 rounded-full bg-cyber-accent"></span> WEATHER</div>
                                 <i data-lucide="map-pin" class="w-4 h-4 text-cyber-gold"></i>
                             </div>
                             <div class="flex gap-2">
-                                <input type="text" id="weather-city-input" placeholder="City..." value="Hyderabad" class="w-full bg-cyber-black/90 border border-cyber-border rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 font-mono focus:border-cyber-cyan outline-none" onkeypress="if(event.key==='Enter') fetchWeather()">
-                                <button onclick="fetchWeather()" class="px-3.5 py-2 bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan rounded-xl hover:bg-cyber-cyan/30 transition-all"><i data-lucide="search" class="w-4 h-4"></i></button>
+                                <input type="text" id="weather-city-input-widget" placeholder="City..." value="Hyderabad" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-3 py-2 text-xs text-white font-mono focus:border-cyber-accent" onkeypress="if(event.key==='Enter') fetchWeatherWidget()">
+                                <button onclick="fetchWeatherWidget()" class="px-3.5 py-2 bg-cyber-accent/20 border border-cyber-accent text-cyber-accent rounded-xl hover:bg-cyber-accent/30"><i data-lucide="search" class="w-4 h-4"></i></button>
                             </div>
                             <div class="text-center py-2 space-y-2">
                                 <div class="flex items-center justify-center gap-2">
-                                    <i data-lucide="cloud-sun" class="w-10 h-10 text-cyber-gold" id="weather-icon"></i>
-                                    <div class="font-orbitron font-bold text-4xl text-white" id="weather-temp">--°<span class="text-cyber-cyan text-xl">C</span></div>
+                                    <i data-lucide="cloud-sun" class="w-10 h-10 text-cyber-gold" id="weather-icon-widget"></i>
+                                    <div class="font-orbitron font-bold text-4xl text-white" id="weather-temp-widget">--°<span class="text-cyber-accent text-xl">C</span></div>
                                 </div>
-                                <div class="font-mono text-sm text-cyber-cyan font-bold" id="weather-desc">Loading...</div>
-                                <div class="font-mono text-xs text-gray-400 uppercase tracking-widest" id="weather-location">DETECTING...</div>
+                                <div class="font-mono text-sm text-cyber-accent font-bold" id="weather-desc-widget">Loading...</div>
+                                <div class="font-mono text-xs text-gray-400 uppercase tracking-widest" id="weather-location-widget">DETECTING...</div>
                             </div>
                             <div class="grid grid-cols-2 gap-2 font-mono text-xs">
-                                <div class="bg-black/50 border border-cyber-border/30 rounded-xl p-2.5"><div class="text-gray-500 text-[10px]">RAIN</div><div class="text-white font-bold" id="weather-rain">--%</div></div>
-                                <div class="bg-black/50 border border-cyber-border/30 rounded-xl p-2.5"><div class="text-gray-500 text-[10px]">UV INDEX</div><div class="text-white font-bold" id="weather-uv">--</div></div>
-                                <div class="bg-black/50 border border-cyber-border/30 rounded-xl p-2.5"><div class="text-gray-500 text-[10px]">HUMIDITY</div><div class="text-white font-bold" id="weather-humidity">--%</div></div>
-                                <div class="bg-black/50 border border-cyber-border/30 rounded-xl p-2.5"><div class="text-gray-500 text-[10px]">WIND</div><div class="text-white font-bold" id="weather-wind">-- km/h</div></div>
+                                <div class="bg-black/50 border border-cyber-border rounded-xl p-2.5"><div class="text-gray-500 text-[10px]">RAIN</div><div class="text-white font-bold" id="weather-rain-widget">--%</div></div>
+                                <div class="bg-black/50 border border-cyber-border rounded-xl p-2.5"><div class="text-gray-500 text-[10px]">UV INDEX</div><div class="text-white font-bold" id="weather-uv-widget">--</div></div>
+                                <div class="bg-black/50 border border-cyber-border rounded-xl p-2.5"><div class="text-gray-500 text-[10px]">HUMIDITY</div><div class="text-white font-bold" id="weather-humidity-widget">--%</div></div>
+                                <div class="bg-black/50 border border-cyber-border rounded-xl p-2.5"><div class="text-gray-500 text-[10px]">WIND</div><div class="text-white font-bold" id="weather-wind-widget">-- km/h</div></div>
                             </div>
                         </div>
 
-                        <!-- CLOCK WIDGET -->
-                        <div class="lg:col-span-4 glass-panel rounded-2xl p-5 border border-cyber-cyan/30 relative flex flex-col items-center justify-center">
-                            <div class="hud-corner hud-tl"></div>
-                            <div class="hud-corner hud-br"></div>
-                            <div class="w-full flex justify-between items-center mb-4 pb-2 border-b border-cyber-border/30">
-                                <div class="flex items-center gap-2 font-orbitron font-bold text-xs text-cyber-cyan tracking-wider"><span class="w-2 h-2 rounded-full bg-cyber-silver"></span> CHRONOS</div>
+                        <!-- CLOCK PREVIEW -->
+                        <div class="lg:col-span-4 glass-panel rounded-2xl p-5 border border-cyber-border relative flex flex-col items-center justify-center">
+                            <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
+                            <div class="w-full flex justify-between items-center mb-4 pb-2 border-b border-cyber-border">
+                                <div class="flex items-center gap-2 font-orbitron font-bold text-xs text-cyber-accent tracking-wider"><span class="w-2 h-2 rounded-full bg-cyber-silver"></span> CHRONOS</div>
                             </div>
-                            <!-- Analog Clock SVG -->
-                            <svg class="w-48 h-48 drop-shadow-[0_0_15px_rgba(0,242,254,0.3)]" viewBox="0 0 200 200">
-                                <circle cx="100" cy="100" r="95" fill="rgba(0,0,0,0.5)" stroke="#00f2fe" stroke-width="2"></circle>
-                                <g id="clock-ticks"></g>
-                                <line id="hand-hour" class="clock-hand" x1="100" y1="100" x2="100" y2="55" stroke="#C0C0C0" stroke-width="6" stroke-linecap="round"></line>
-                                <line id="hand-minute" class="clock-hand" x1="100" y1="100" x2="100" y2="35" stroke="#00f2fe" stroke-width="4" stroke-linecap="round"></line>
-                                <line id="hand-second" class="clock-hand" x1="100" y1="100" x2="100" y2="25" stroke="#F2C14E" stroke-width="2" stroke-linecap="round"></line>
-                                <circle cx="100" cy="100" r="6" fill="#00f2fe"></circle>
+                            <svg class="w-48 h-48 drop-shadow-[0_0_15px_var(--accent-glow)]" viewBox="0 0 200 200">
+                                <circle cx="100" cy="100" r="95" fill="rgba(0,0,0,0.5)" stroke="var(--accent-color)" stroke-width="2"></circle>
+                                <g id="clock-ticks-widget"></g>
+                                <line id="hand-hour-widget" class="clock-hand" x1="100" y1="100" x2="100" y2="55" stroke="#C0C0C0" stroke-width="6" stroke-linecap="round"></line>
+                                <line id="hand-minute-widget" class="clock-hand" x1="100" y1="100" x2="100" y2="35" stroke="var(--accent-color)" stroke-width="4" stroke-linecap="round"></line>
+                                <line id="hand-second-widget" class="clock-hand" x1="100" y1="100" x2="100" y2="25" stroke="#F2C14E" stroke-width="2" stroke-linecap="round"></line>
+                                <circle cx="100" cy="100" r="6" fill="var(--accent-color)"></circle>
                             </svg>
                             <div class="mt-4 text-center">
-                                <div class="font-orbitron font-black text-2xl text-white tracking-widest" id="digital-time">00:00:00</div>
-                                <div class="font-mono text-xs text-cyber-gold mt-1" id="digital-date">JAN 01, 2030</div>
+                                <div class="font-orbitron font-black text-2xl text-white tracking-widest" id="digital-time-widget">00:00:00</div>
+                                <div class="font-mono text-xs text-cyber-gold mt-1" id="digital-date-widget">JAN 01, 2030</div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- ============================================== -->
-                <!-- TAB: CALCULATOR                                -->
-                <!-- ============================================== -->
+                <!-- CALCULATOR FULL -->
                 <section id="tab-calculator" class="tab-content hidden space-y-6">
-                    <div class="glass-panel rounded-2xl p-6 border border-cyber-cyan/30 max-w-xl mx-auto space-y-4 relative">
+                    <div class="glass-panel rounded-2xl p-6 border border-cyber-border max-w-xl mx-auto space-y-4 relative">
                         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
-                        <h2 class="font-orbitron font-bold text-xl text-white flex items-center gap-2"><i data-lucide="calculator" class="text-cyber-cyan"></i> Quantum Calculator</h2>
-                        <div class="bg-black/80 border border-cyber-border rounded-xl p-4 font-mono text-right">
-                            <div id="full-calc-history" class="text-xs text-gray-500 h-5">0 = 0</div>
-                            <div id="full-calc-display" class="text-3xl font-bold text-cyber-cyan">0</div>
+                        <div class="flex justify-between items-center">
+                            <h2 class="font-orbitron font-bold text-xl text-white flex items-center gap-2"><i data-lucide="calculator" class="text-cyber-accent"></i> Quantum Calculator</h2>
+                            <button onclick="clearCalcHistory()" class="text-gray-400 hover:text-cyber-danger text-xs font-mono border border-gray-600 rounded px-2 py-1">CLEAR HISTORY</button>
+                        </div>
+                        <div class="bg-cyber-black border border-cyber-border rounded-xl p-4 font-mono text-right">
+                            <div id="calc-history-full" class="text-xs text-gray-500 h-5">0 = 0</div>
+                            <div id="calc-display-full" class="text-3xl font-bold text-cyber-accent">0</div>
                         </div>
                         <div class="grid grid-cols-4 gap-3 font-orbitron font-semibold">
                             <button onclick="calcInput('AC')" class="p-4 rounded-xl bg-gray-800 text-cyber-danger">AC</button>
                             <button onclick="calcInput('DEL')" class="p-4 rounded-xl bg-gray-800 text-gray-200">DEL</button>
                             <button onclick="calcInput('%')" class="p-4 rounded-xl bg-gray-800 text-cyber-silver">%</button>
-                            <button onclick="calcInput('/')" class="p-4 rounded-xl bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40">÷</button>
+                            <button onclick="calcInput('/')" class="p-4 rounded-xl bg-cyber-accent/20 text-cyber-accent border border-cyber-accent/40">÷</button>
                             <button onclick="calcInput('7')" class="p-4 rounded-xl bg-cyber-black text-white border border-cyber-border">7</button>
                             <button onclick="calcInput('8')" class="p-4 rounded-xl bg-cyber-black text-white border border-cyber-border">8</button>
                             <button onclick="calcInput('9')" class="p-4 rounded-xl bg-cyber-black text-white border border-cyber-border">9</button>
-                            <button onclick="calcInput('*')" class="p-4 rounded-xl bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40">×</button>
+                            <button onclick="calcInput('*')" class="p-4 rounded-xl bg-cyber-accent/20 text-cyber-accent border border-cyber-accent/40">×</button>
                             <button onclick="calcInput('4')" class="p-4 rounded-xl bg-cyber-black text-white border border-cyber-border">4</button>
                             <button onclick="calcInput('5')" class="p-4 rounded-xl bg-cyber-black text-white border border-cyber-border">5</button>
                             <button onclick="calcInput('6')" class="p-4 rounded-xl bg-cyber-black text-white border border-cyber-border">6</button>
-                            <button onclick="calcInput('-')" class="p-4 rounded-xl bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40">-</button>
+                            <button onclick="calcInput('-')" class="p-4 rounded-xl bg-cyber-accent/20 text-cyber-accent border border-cyber-accent/40">-</button>
                             <button onclick="calcInput('1')" class="p-4 rounded-xl bg-cyber-black text-white border border-cyber-border">1</button>
                             <button onclick="calcInput('2')" class="p-4 rounded-xl bg-cyber-black text-white border border-cyber-border">2</button>
                             <button onclick="calcInput('3')" class="p-4 rounded-xl bg-cyber-black text-white border border-cyber-border">3</button>
-                            <button onclick="calcInput('+')" class="p-4 rounded-xl bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40">+</button>
+                            <button onclick="calcInput('+')" class="p-4 rounded-xl bg-cyber-accent/20 text-cyber-accent border border-cyber-accent/40">+</button>
                             <button onclick="calcInput('0')" class="col-span-2 p-4 rounded-xl bg-cyber-black text-white border border-cyber-border">0</button>
                             <button onclick="calcInput('.')" class="p-4 rounded-xl bg-cyber-black text-white border border-cyber-border">.</button>
                             <button onclick="calcInput('=')" class="p-4 rounded-xl bg-cyber-gold text-black font-bold">=</button>
                         </div>
+                        <div class="mt-4">
+                            <h3 class="text-xs font-mono text-gray-400 mb-2">HISTORY LOG</h3>
+                            <div id="calc-history-list" class="bg-cyber-black/50 border border-cyber-border rounded-xl p-3 h-32 overflow-y-auto font-mono text-sm text-gray-300 space-y-1"></div>
+                        </div>
                     </div>
                 </section>
 
-                <!-- ============================================== -->
-                <!-- TAB: WEATHER                                   -->
-                <!-- ============================================== -->
+                <!-- WEATHER FULL -->
                 <section id="tab-weather" class="tab-content hidden space-y-6">
-                    <div class="glass-panel rounded-2xl p-6 border border-cyber-cyan/30 space-y-6 relative">
+                    <div class="glass-panel rounded-2xl p-6 border border-cyber-border space-y-6 relative">
                         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
-                        <h2 class="font-orbitron font-bold text-2xl text-white flex items-center gap-3"><i data-lucide="cloud-sun" class="text-cyber-cyan"></i> Global Weather Telemetry</h2>
+                        <h2 class="font-orbitron font-bold text-2xl text-white flex items-center gap-3"><i data-lucide="cloud-sun" class="text-cyber-accent"></i> Global Weather Telemetry</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-4">
                                 <div class="flex gap-2">
-                                    <input type="text" id="weather-tab-input" placeholder="Enter City Name..." value="Hyderabad" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-sm text-white font-mono focus:border-cyber-cyan outline-none" onkeypress="if(event.key==='Enter') fetchWeatherTab()">
-                                    <button onclick="fetchWeatherTab()" class="px-6 py-3 bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan rounded-xl hover:bg-cyber-cyan/30 font-orbitron font-bold text-xs">SEARCH</button>
+                                    <input type="text" id="weather-tab-input" placeholder="Enter City Name..." value="Hyderabad" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-sm text-white font-mono" onkeypress="if(event.key==='Enter') fetchWeatherTab()">
+                                    <button onclick="fetchWeatherTab()" class="px-6 py-3 bg-cyber-accent/20 border border-cyber-accent text-cyber-accent rounded-xl hover:bg-cyber-accent/30 font-orbitron font-bold text-xs">SEARCH</button>
                                 </div>
                                 <div class="glass-card rounded-2xl p-8 text-center space-y-4">
                                     <div class="font-orbitron text-6xl font-black text-white" id="tab-weather-temp">--°C</div>
-                                    <div class="font-mono text-lg text-cyber-cyan font-semibold" id="tab-weather-desc">Loading...</div>
+                                    <div class="font-mono text-lg text-cyber-accent font-semibold" id="tab-weather-desc">Loading...</div>
                                     <div class="font-mono text-sm text-cyber-gold" id="tab-weather-location">DETECTING...</div>
                                 </div>
+                                <div class="grid grid-cols-2 gap-4 font-mono">
+                                    <div class="glass-card p-4 rounded-xl"><div class="text-gray-400 text-xs">HUMIDITY</div><div class="text-xl text-cyber-accent font-bold mt-1" id="tab-weather-humidity">--%</div></div>
+                                    <div class="glass-card p-4 rounded-xl"><div class="text-gray-400 text-xs">WIND SPEED</div><div class="text-xl text-cyber-accent font-bold mt-1" id="tab-weather-wind">-- km/h</div></div>
+                                    <div class="glass-card p-4 rounded-xl"><div class="text-gray-400 text-xs">PRECIPITATION</div><div class="text-xl text-cyber-accent font-bold mt-1" id="tab-weather-rain">--%</div></div>
+                                    <div class="glass-card p-4 rounded-xl"><div class="text-gray-400 text-xs">UV INDEX</div><div class="text-xl text-cyber-accent font-bold mt-1" id="tab-weather-uv">--</div></div>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-2 gap-4 font-mono">
-                                <div class="glass-card p-4 rounded-xl"><div class="text-gray-400 text-xs">HUMIDITY</div><div class="text-xl text-cyber-cyan font-bold mt-1" id="tab-weather-humidity">--%</div></div>
-                                <div class="glass-card p-4 rounded-xl"><div class="text-gray-400 text-xs">WIND SPEED</div><div class="text-xl text-cyber-cyan font-bold mt-1" id="tab-weather-wind">-- km/h</div></div>
-                                <div class="glass-card p-4 rounded-xl"><div class="text-gray-400 text-xs">PRECIPITATION</div><div class="text-xl text-cyber-cyan font-bold mt-1" id="tab-weather-rain">--%</div></div>
-                                <div class="glass-card p-4 rounded-xl"><div class="text-gray-400 text-xs">UV INDEX</div><div class="text-xl text-cyber-cyan font-bold mt-1" id="tab-weather-uv">--</div></div>
+                            <div class="space-y-4">
+                                <h3 class="font-orbitron text-sm text-gray-300">5-DAY FORECAST</h3>
+                                <div id="forecast-list" class="space-y-3">
+                                    <!-- Populated by JS -->
+                                </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- ============================================== -->
-                <!-- TAB: CLOCK                                     -->
-                <!-- ============================================== -->
+                <!-- CLOCK FULL -->
                 <section id="tab-clock" class="tab-content hidden space-y-6">
-                    <div class="glass-panel rounded-2xl p-6 border border-cyber-cyan/30 space-y-6 max-w-xl mx-auto text-center relative">
+                    <div class="glass-panel rounded-2xl p-6 border border-cyber-border space-y-6 max-w-3xl mx-auto relative">
                         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
-                        <h2 class="font-orbitron font-bold text-2xl text-white flex items-center justify-center gap-3"><i data-lucide="clock" class="text-cyber-cyan"></i> Chronos Time Engine</h2>
-                        
-                        <div class="py-6 flex justify-center">
-                            <svg class="w-64 h-64 drop-shadow-[0_0_20px_rgba(0,242,254,0.4)]" viewBox="0 0 200 200">
-                                <circle cx="100" cy="100" r="95" fill="rgba(0,0,0,0.8)" stroke="#00f2fe" stroke-width="3"></circle>
-                                <g id="clock-ticks-lg"></g>
-                                <line id="hand-hour-lg" class="clock-hand" x1="100" y1="100" x2="100" y2="55" stroke="#C0C0C0" stroke-width="6" stroke-linecap="round"></line>
-                                <line id="hand-minute-lg" class="clock-hand" x1="100" y1="100" x2="100" y2="35" stroke="#00f2fe" stroke-width="4" stroke-linecap="round"></line>
-                                <line id="hand-second-lg" class="clock-hand" x1="100" y1="100" x2="100" y2="25" stroke="#F2C14E" stroke-width="2" stroke-linecap="round"></line>
-                                <circle cx="100" cy="100" r="8" fill="#F2C14E"></circle>
-                            </svg>
+                        <div class="flex justify-between items-center border-b border-cyber-border pb-4">
+                            <h2 class="font-orbitron font-bold text-2xl text-white flex items-center gap-3"><i data-lucide="clock" class="text-cyber-accent"></i> Chronos Engine</h2>
+                            <div class="flex gap-2 bg-cyber-black p-1 rounded-lg">
+                                <button onclick="switchClockTab('main')" class="clock-tab-btn px-3 py-1 rounded text-xs font-bold bg-cyber-accent/20 text-cyber-accent">MAIN</button>
+                                <button onclick="switchClockTab('world')" class="clock-tab-btn px-3 py-1 rounded text-xs font-bold text-gray-400 hover:text-white">WORLD</button>
+                                <button onclick="switchClockTab('stopwatch')" class="clock-tab-btn px-3 py-1 rounded text-xs font-bold text-gray-400 hover:text-white">STOPWATCH</button>
+                                <button onclick="switchClockTab('alarm')" class="clock-tab-btn px-3 py-1 rounded text-xs font-bold text-gray-400 hover:text-white">ALARMS</button>
+                            </div>
                         </div>
 
-                        <div class="space-y-2">
-                            <div class="font-orbitron font-black text-5xl text-white tracking-widest glow-cyan" id="digital-time-lg">00:00:00</div>
-                            <div class="font-mono text-lg text-cyber-gold uppercase tracking-widest" id="digital-date-lg">LOADING DATE...</div>
+                        <!-- MAIN CLOCK -->
+                        <div id="clock-panel-main" class="clock-panel">
+                            <div class="py-6 flex flex-col items-center">
+                                <svg class="w-64 h-64 drop-shadow-[0_0_20px_var(--accent-glow)]" viewBox="0 0 200 200">
+                                    <circle cx="100" cy="100" r="95" fill="rgba(0,0,0,0.8)" stroke="var(--accent-color)" stroke-width="3"></circle>
+                                    <g id="clock-ticks-lg"></g>
+                                    <line id="hand-hour-lg" class="clock-hand" x1="100" y1="100" x2="100" y2="55" stroke="#C0C0C0" stroke-width="6" stroke-linecap="round"></line>
+                                    <line id="hand-minute-lg" class="clock-hand" x1="100" y1="100" x2="100" y2="35" stroke="var(--accent-color)" stroke-width="4" stroke-linecap="round"></line>
+                                    <line id="hand-second-lg" class="clock-hand" x1="100" y1="100" x2="100" y2="25" stroke="#F2C14E" stroke-width="2" stroke-linecap="round"></line>
+                                    <circle cx="100" cy="100" r="8" fill="#F2C14E"></circle>
+                                </svg>
+                                <div class="mt-6 text-center">
+                                    <div class="font-orbitron font-black text-5xl text-white tracking-widest glow-accent" id="digital-time-lg">00:00:00</div>
+                                    <div class="font-mono text-lg text-cyber-gold uppercase tracking-widest mt-2" id="digital-date-lg">LOADING DATE...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- WORLD CLOCKS -->
+                        <div id="clock-panel-world" class="clock-panel hidden">
+                            <div class="flex justify-end mb-4">
+                                <button onclick="addWorldClock()" class="px-3 py-1 bg-cyber-accent/20 text-cyber-accent border border-cyber-accent rounded text-xs font-bold">+ ADD CITY</button>
+                            </div>
+                            <div id="world-clocks-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                        </div>
+
+                        <!-- STOPWATCH -->
+                        <div id="clock-panel-stopwatch" class="clock-panel hidden">
+                            <div class="text-center py-8">
+                                <div class="font-orbitron font-black text-6xl text-cyber-accent glow-accent" id="stopwatch-display">00:00:00.00</div>
+                                <div class="flex justify-center gap-4 mt-6">
+                                    <button onclick="toggleStopwatch()" id="stopwatch-btn" class="px-6 py-2 bg-cyber-accent text-black font-bold rounded-lg hover:bg-cyber-accentDark">START</button>
+                                    <button onclick="recordLap()" id="lap-btn" class="px-6 py-2 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-800" disabled>LAP</button>
+                                    <button onclick="resetStopwatch()" class="px-6 py-2 border border-cyber-danger text-cyber-danger rounded-lg hover:bg-cyber-danger/20">RESET</button>
+                                </div>
+                            </div>
+                            <div id="laps-list" class="mt-4 space-y-2 font-mono text-sm max-h-40 overflow-y-auto"></div>
+                        </div>
+
+                        <!-- ALARMS -->
+                        <div id="clock-panel-alarm" class="clock-panel hidden">
+                            <form onsubmit="addAlarm(event)" class="flex gap-2 mb-4">
+                                <input type="time" id="alarm-time" required class="bg-cyber-black border border-cyber-border rounded-xl px-4 py-2 text-white">
+                                <input type="text" id="alarm-label" placeholder="Label (e.g. Wake up)" class="flex-1 bg-cyber-black border border-cyber-border rounded-xl px-4 py-2 text-white">
+                                <button type="submit" class="px-6 py-2 bg-cyber-accent/20 text-cyber-accent border border-cyber-accent rounded-xl font-bold">SET</button>
+                            </form>
+                            <div id="alarms-list" class="space-y-2 font-mono text-sm"></div>
                         </div>
                     </div>
                 </section>
 
-                <!-- ============================================== -->
-                <!-- TAB: GALLERY                                   -->
-                <!-- ============================================== -->
+                <!-- GALLERY -->
                 <section id="tab-gallery" class="tab-content hidden space-y-6">
-                    <div class="glass-panel rounded-2xl p-6 border border-cyber-cyan/30 space-y-6 relative">
+                    <div class="glass-panel rounded-2xl p-6 border border-cyber-border space-y-6 relative">
                         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
-                        <h2 class="font-orbitron font-bold text-2xl text-white flex items-center gap-3"><i data-lucide="image" class="text-cyber-cyan"></i> Holographic Asset Gallery</h2>
+                        <h2 class="font-orbitron font-bold text-2xl text-white flex items-center gap-3"><i data-lucide="image" class="text-cyber-accent"></i> Holographic Assets</h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                             <div class="glass-card rounded-xl overflow-hidden border border-cyber-border group cursor-pointer" onclick="openLightbox('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=80')">
                                 <img src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=600&q=80" alt="Cyber Car" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
-                                <div class="p-4 font-mono text-xs"><div class="text-cyber-cyan font-bold text-sm">CYBER-VEHICLE M3</div><div class="text-gray-400 mt-1">Rendered in Octane Engine</div></div>
+                                <div class="p-4 font-mono text-xs"><div class="text-cyber-accent font-bold text-sm">CYBER-VEHICLE M3</div><div class="text-gray-400 mt-1">Rendered in Octane Engine</div></div>
                             </div>
                             <div class="glass-card rounded-xl overflow-hidden border border-cyber-border group cursor-pointer" onclick="openLightbox('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80')">
                                 <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" alt="Cyber Interface" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
-                                <div class="p-4 font-mono text-xs"><div class="text-cyber-cyan font-bold text-sm">NEURAL TERMINAL v4</div><div class="text-gray-400 mt-1">Spatial Computing Node</div></div>
+                                <div class="p-4 font-mono text-xs"><div class="text-cyber-accent font-bold text-sm">NEURAL TERMINAL v4</div><div class="text-gray-400 mt-1">Spatial Computing Node</div></div>
                             </div>
                             <div class="glass-card rounded-xl overflow-hidden border border-cyber-border group cursor-pointer" onclick="openLightbox('https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1200&q=80')">
                                 <img src="https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=600&q=80" alt="Sci-Fi City" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
@@ -560,86 +515,96 @@
                     </div>
                 </section>
 
-                <!-- ============================================== -->
-                <!-- TAB: NOTES                                     -->
-                <!-- ============================================== -->
+                <!-- NOTES -->
                 <section id="tab-notes" class="tab-content hidden space-y-6">
-                    <div class="glass-panel rounded-2xl p-6 border border-cyber-cyan/30 space-y-6 relative">
+                    <div class="glass-panel rounded-2xl p-6 border border-cyber-border space-y-6 relative">
                         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
                         <div class="flex justify-between items-center">
-                            <h2 class="font-orbitron font-bold text-2xl text-white flex items-center gap-3"><i data-lucide="file-text" class="text-cyber-cyan"></i> Neural Notes</h2>
-                            <button onclick="openNoteModal()" class="px-4 py-2 bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan rounded-xl hover:bg-cyber-cyan/30 font-mono text-xs font-bold flex items-center gap-2 shadow-[0_0_10px_rgba(0,242,254,0.3)]">
-                                <i data-lucide="plus" class="w-4 h-4"></i> NEW NOTE
-                            </button>
+                            <h2 class="font-orbitron font-bold text-2xl text-white flex items-center gap-3"><i data-lucide="file-text" class="text-cyber-accent"></i> Neural Notes</h2>
+                            <button onclick="openNoteModal()" class="px-4 py-2 bg-cyber-accent/20 border border-cyber-accent text-cyber-accent rounded-xl hover:bg-cyber-accent/30 font-mono text-xs font-bold flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> NEW NOTE</button>
                         </div>
-                        <div id="notes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <!-- Notes rendered here -->
-                        </div>
+                        <div id="notes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                     </div>
                 </section>
 
-                <!-- ============================================== -->
-                <!-- TAB: TODO LIST                                 -->
-                <!-- ============================================== -->
+                <!-- TODO -->
                 <section id="tab-todo" class="tab-content hidden space-y-6">
-                    <div class="glass-panel rounded-2xl p-6 border border-cyber-cyan/30 space-y-6 max-w-3xl mx-auto relative">
+                    <div class="glass-panel rounded-2xl p-6 border border-cyber-border space-y-6 max-w-3xl mx-auto relative">
                         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
-                        <h2 class="font-orbitron font-bold text-2xl text-white flex items-center gap-3"><i data-lucide="check-square" class="text-cyber-cyan"></i> Task Matrix</h2>
+                        <h2 class="font-orbitron font-bold text-2xl text-white flex items-center gap-3"><i data-lucide="check-square" class="text-cyber-accent"></i> Task Matrix</h2>
                         <form onsubmit="addTodo(event)" class="flex gap-2">
-                            <input type="text" id="todo-input" placeholder="Add new quantum task..." class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-sm text-white font-mono focus:border-cyber-cyan outline-none">
-                            <button type="submit" class="px-6 py-3 bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan rounded-xl hover:bg-cyber-cyan/30 font-orbitron font-bold text-xs shadow-[0_0_10px_rgba(0,242,254,0.3)]">ADD</button>
+                            <input type="text" id="todo-input" placeholder="Add new task..." class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-sm text-white font-mono">
+                            <select id="todo-priority" class="bg-cyber-black border border-cyber-border rounded-xl px-2 text-sm text-white font-mono">
+                                <option value="high">High</option>
+                                <option value="medium" selected>Med</option>
+                                <option value="low">Low</option>
+                            </select>
+                            <button type="submit" class="px-6 py-3 bg-cyber-accent/20 border border-cyber-accent text-cyber-accent rounded-xl hover:bg-cyber-accent/30 font-orbitron font-bold text-xs">ADD</button>
                         </form>
-                        <div id="todo-list" class="space-y-2 font-mono text-sm">
-                            <!-- Todos rendered here -->
+                        <div class="flex gap-2 border-b border-cyber-border pb-2">
+                            <button onclick="filterTodos('all')" class="todo-filter-btn text-xs font-bold text-cyber-accent border-b-2 border-cyber-accent pb-1">ALL</button>
+                            <button onclick="filterTodos('active')" class="todo-filter-btn text-xs font-bold text-gray-400 pb-1 hover:text-white">ACTIVE</button>
+                            <button onclick="filterTodos('done')" class="todo-filter-btn text-xs font-bold text-gray-400 pb-1 hover:text-white">DONE</button>
                         </div>
+                        <div id="todo-list" class="space-y-2 font-mono text-sm"></div>
                     </div>
                 </section>
 
-                <!-- ============================================== -->
-                <!-- TAB: POMODORO                                  -->
-                <!-- ============================================== -->
+                <!-- POMODORO -->
                 <section id="tab-pomodoro" class="tab-content hidden space-y-6">
-                    <div class="glass-panel rounded-2xl p-8 border border-cyber-cyan/30 text-center space-y-8 max-w-md mx-auto relative">
+                    <div class="glass-panel rounded-2xl p-8 border border-cyber-border text-center space-y-6 max-w-md mx-auto relative">
                         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
-                        <h2 class="font-orbitron font-bold text-2xl text-white flex items-center justify-center gap-3"><i data-lucide="timer" class="text-cyber-cyan"></i> Pomodoro Focus</h2>
-                        <div class="font-orbitron font-black text-7xl text-cyber-gold glow-gold" id="pomo-display">25:00</div>
+                        <h2 class="font-orbitron font-bold text-2xl text-white flex items-center justify-center gap-3"><i data-lucide="timer" class="text-cyber-accent"></i> Pomodoro Focus</h2>
+                        
+                        <div class="relative w-48 h-48 mx-auto">
+                            <svg class="w-full h-full transform -rotate-90">
+                                <circle cx="96" cy="96" r="88" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="none"></circle>
+                                <circle id="pomo-ring" cx="96" cy="96" r="88" stroke="var(--accent-color)" stroke-width="8" fill="none" stroke-dasharray="552" stroke-dashoffset="0" class="transition-all duration-1000 ease-linear"></circle>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="font-orbitron font-black text-4xl text-cyber-accent glow-accent" id="pomo-display">25:00</div>
+                            </div>
+                        </div>
+
                         <div class="flex justify-center gap-4 font-orbitron font-semibold">
-                            <button onclick="startPomodoro()" class="px-6 py-3 bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan rounded-xl hover:bg-cyber-cyan/30 shadow-[0_0_10px_rgba(0,242,254,0.3)]">START</button>
+                            <button onclick="startPomodoro()" class="px-6 py-3 bg-cyber-accent/20 border border-cyber-accent text-cyber-accent rounded-xl hover:bg-cyber-accent/30">START</button>
                             <button onclick="pausePomodoro()" class="px-6 py-3 bg-gray-800 border border-gray-700 text-gray-300 rounded-xl hover:bg-gray-700">PAUSE</button>
                             <button onclick="resetPomodoro()" class="px-6 py-3 bg-cyber-danger/20 border border-cyber-danger text-cyber-danger rounded-xl hover:bg-cyber-danger/30">RESET</button>
                         </div>
                     </div>
                 </section>
 
-                <!-- ============================================== -->
-                <!-- TAB: CONVERTER                                 -->
-                <!-- ============================================== -->
+                <!-- CONVERTER -->
                 <section id="tab-converter" class="tab-content hidden space-y-6">
-                    <div class="glass-panel rounded-2xl p-6 border border-cyber-cyan/30 max-w-xl mx-auto space-y-6 relative">
+                    <div class="glass-panel rounded-2xl p-6 border border-cyber-border max-w-xl mx-auto space-y-6 relative">
                         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
-                        <h2 class="font-orbitron font-bold text-2xl text-white flex items-center gap-3"><i data-lucide="arrow-left-right" class="text-cyber-cyan"></i> Unit Converter</h2>
+                        <h2 class="font-orbitron font-bold text-2xl text-white flex items-center gap-3"><i data-lucide="arrow-left-right" class="text-cyber-accent"></i> Unit Converter</h2>
                         <div class="space-y-4 font-mono">
                             <div>
                                 <label class="text-xs text-cyber-silver">VALUE</label>
-                                <input type="number" id="convert-val" value="100" oninput="runConversion()" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-white focus:border-cyber-cyan outline-none mt-1">
+                                <input type="number" id="convert-val" value="100" oninput="runConversion()" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-white mt-1">
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label class="text-xs text-cyber-silver">FROM</label>
-                                    <select id="convert-from" onchange="runConversion()" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-white outline-none mt-1">
+                                    <select id="convert-from" onchange="runConversion()" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-white mt-1">
                                         <option value="km">Kilometers</option>
                                         <option value="miles">Miles</option>
                                         <option value="gb">Gigabytes</option>
                                         <option value="tb">Terabytes</option>
+                                        <option value="kg">Kilograms</option>
+                                        <option value="lbs">Pounds</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label class="text-xs text-cyber-silver">TO</label>
-                                    <select id="convert-to" onchange="runConversion()" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-white outline-none mt-1">
+                                    <select id="convert-to" onchange="runConversion()" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-white mt-1">
                                         <option value="miles">Miles</option>
                                         <option value="km">Kilometers</option>
                                         <option value="tb">Terabytes</option>
                                         <option value="gb">Gigabytes</option>
+                                        <option value="lbs">Pounds</option>
+                                        <option value="kg">Kilograms</option>
                                     </select>
                                 </div>
                             </div>
@@ -651,53 +616,40 @@
                     </div>
                 </section>
 
-                <!-- ============================================== -->
-                <!-- TAB: CHATBOT                                   -->
-                <!-- ============================================== -->
-                <section id="tab-chatbot" class="tab-content hidden h-[calc(100vh-140px)] flex flex-col glass-panel rounded-2xl border border-cyber-cyan/40 overflow-hidden relative">
+                <!-- CHATBOT -->
+                <section id="tab-chatbot" class="tab-content hidden h-[calc(100vh-140px)] flex flex-col glass-panel rounded-2xl border border-cyber-border overflow-hidden relative">
                     <div class="hud-corner hud-tl"></div><div class="hud-corner hud-tr"></div><div class="hud-corner hud-bl"></div><div class="hud-corner hud-br"></div>
                     
-                    <!-- Chat Header -->
-                    <div class="bg-cyber-black/90 px-6 py-4 border-b border-cyber-border flex items-center justify-between">
+                    <div class="bg-cyber-black px-6 py-4 border-b border-cyber-border flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-cyber-cyan/20 border border-cyber-cyan flex items-center justify-center text-cyber-cyan font-bold font-orbitron shadow-[0_0_15px_rgba(0,242,254,0.3)]">ZJ</div>
+                            <div class="w-10 h-10 rounded-xl bg-cyber-accent/20 border border-cyber-accent flex items-center justify-center text-cyber-accent font-bold font-orbitron shadow-[0_0_15px_var(--accent-glow)]">ZJ</div>
                             <div>
                                 <h3 class="font-orbitron font-bold text-white text-base">ZJ Core AI</h3>
-                                <div class="flex items-center gap-2 text-xs font-mono text-cyber-gold">
-                                    <span class="w-2 h-2 rounded-full bg-cyber-gold animate-pulse"></span> Online
-                                </div>
+                                <div class="flex items-center gap-2 text-xs font-mono text-cyber-gold"><span class="w-2 h-2 rounded-full bg-cyber-gold animate-pulse"></span> Online</div>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 font-mono text-xs">
-                            <button onclick="clearChatMessages()" class="px-3 py-1.5 rounded-lg border border-cyber-border bg-cyber-dark hover:border-cyber-cyan text-gray-300 flex items-center gap-1 transition-all">
-                                <i data-lucide="plus" class="w-3.5 h-3.5"></i> NEW
-                            </button>
-                            <button onclick="customConfirm('Clear chat history?', () => clearChatMessages())" class="p-1.5 rounded-lg border border-cyber-border bg-cyber-dark hover:text-cyber-danger text-gray-400 transition-all">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </button>
+                            <button onclick="clearChatMessages()" class="px-3 py-1.5 rounded-lg border border-cyber-border bg-cyber-dark hover:border-cyber-accent text-gray-300 flex items-center gap-1 transition-all"><i data-lucide="plus" class="w-3.5 h-3.5"></i> NEW</button>
+                            <button onclick="customConfirm('Clear chat history?', () => clearChatMessages())" class="p-1.5 rounded-lg border border-cyber-border bg-cyber-dark hover:text-cyber-danger text-gray-400 transition-all"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         </div>
                     </div>
 
-                    <!-- Messages Area -->
                     <div id="chat-box" class="flex-1 p-6 overflow-y-auto space-y-4 font-sans text-sm">
-                        <div class="bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan px-4 py-3 rounded-xl flex items-center gap-3 text-xs font-mono">
+                        <div class="bg-cyber-accent/10 border border-cyber-accent/30 text-cyber-accent px-4 py-3 rounded-xl flex items-center gap-3 text-xs font-mono">
                             <i data-lucide="shield-check" class="w-4 h-4"></i>
                             <span>Secure connection to ZJ Neural Engine established.</span>
                         </div>
                         <div class="flex items-start gap-3 chat-msg-anim">
-                            <div class="w-8 h-8 rounded-lg bg-cyber-cyan/20 border border-cyber-cyan flex items-center justify-center text-cyber-cyan text-xs font-bold font-orbitron flex-shrink-0">ZJ</div>
+                            <div class="w-8 h-8 rounded-lg bg-cyber-accent/20 border border-cyber-accent flex items-center justify-center text-cyber-accent text-xs font-bold font-orbitron flex-shrink-0">ZJ</div>
                             <div class="bg-cyber-dark/90 border border-cyber-border text-gray-200 px-4 py-3 rounded-2xl max-w-md shadow-lg">Hey there! 👋 What can I do for you today?</div>
                         </div>
                     </div>
 
-                    <!-- Input Area -->
-                    <form onsubmit="sendChatMessage(event)" class="p-4 bg-cyber-black/90 border-t border-cyber-border flex items-center gap-3">
+                    <form onsubmit="sendChatMessage(event)" class="p-4 bg-cyber-black border-t border-cyber-border flex items-center gap-3">
                         <div class="relative flex-1">
-                            <input type="text" id="chat-input" placeholder="Initialize command..." autocomplete="off" class="w-full bg-black border border-cyber-border rounded-xl px-4 py-3 pr-10 text-white placeholder-gray-500 font-mono text-sm focus:border-cyber-cyan outline-none">
+                            <input type="text" id="chat-input" placeholder="Initialize command..." autocomplete="off" class="w-full bg-black border border-cyber-border rounded-xl px-4 py-3 pr-10 text-white font-mono text-sm focus:border-cyber-accent">
                         </div>
-                        <button type="submit" class="px-6 py-3 bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan font-orbitron font-bold rounded-xl hover:bg-cyber-cyan/30 transition-all flex items-center gap-2 shadow-[0_0_10px_rgba(0,242,254,0.3)]">
-                            <span>SEND</span><i data-lucide="send" class="w-4 h-4"></i>
-                        </button>
+                        <button type="submit" class="px-6 py-3 bg-cyber-accent/20 border border-cyber-accent text-cyber-accent font-orbitron font-bold rounded-xl hover:bg-cyber-accent/30 transition-all flex items-center gap-2"><span>SEND</span><i data-lucide="send" class="w-4 h-4"></i></button>
                     </form>
                 </section>
 
@@ -705,18 +657,18 @@
         </main>
     </div>
 
-    <!-- FLOATING CHAT BUTTON -->
-    <button onclick="switchTab('chatbot')" class="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan flex items-center justify-center shadow-[0_0_25px_rgba(0,242,254,0.5)] hover:scale-110 transition-transform">
+    <!-- FLOATING CHAT FAB -->
+    <button onclick="switchTab('chatbot')" class="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-cyber-accent/20 border border-cyber-accent text-cyber-accent flex items-center justify-center shadow-[0_0_25px_var(--accent-glow)] hover:scale-110 transition-transform">
         <i data-lucide="message-square" class="w-6 h-6"></i>
     </button>
 
-    <!-- LIGHTBOX OVERLAY -->
+    <!-- LIGHTBOX -->
     <div id="lightbox" class="fixed inset-0 z-[200] bg-black/95 hidden items-center justify-center p-4 cursor-pointer" onclick="closeLightbox()">
-        <button class="absolute top-6 right-6 text-white hover:text-cyber-cyan bg-black/50 p-2 rounded-full border border-white/20"><i data-lucide="x" class="w-8 h-8"></i></button>
-        <img id="lightbox-img" src="" alt="Enlarged View" class="max-w-[90vw] max-h-[90vh] object-contain rounded-xl border border-cyber-cyan shadow-[0_0_50px_rgba(0,242,254,0.4)]">
+        <button class="absolute top-6 right-6 text-white hover:text-cyber-accent bg-black/50 p-2 rounded-full border border-white/20"><i data-lucide="x" class="w-8 h-8"></i></button>
+        <img id="lightbox-img" src="" alt="Enlarged View" class="max-w-[90vw] max-h-[90vh] object-contain rounded-xl border border-cyber-accent shadow-[0_0_50px_var(--accent-glow)]">
     </div>
 
-    <!-- TOAST CONTAINER -->
+    <!-- TOASTS -->
     <div id="toast-container" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] flex flex-col gap-2 pointer-events-none"></div>
 
     <script>
@@ -724,113 +676,107 @@
         // 1. STATE & UTILITIES
         // ==========================================
         const AppState = {
-            notes: JSON.parse(localStorage.getItem('zj_notes_v2')) || [
-                { id: '1', title: 'System Initialization', content: 'Welcome to ZJ Nexus OS v2030. All systems operational.' }
-            ],
-            todos: JSON.parse(localStorage.getItem('zj_todos_v2')) || [
-                { id: '1', text: 'Review neural interface calibration', done: false },
-                { id: '2', text: 'Initialize quantum core', done: true }
-            ],
+            notes: JSON.parse(localStorage.getItem('zj_notes_v3')) || [],
+            todos: JSON.parse(localStorage.getItem('zj_todos_v3')) || [],
+            alarms: JSON.parse(localStorage.getItem('zj_alarms_v3')) || [],
+            theme: localStorage.getItem('zj_theme') || 'cyan',
             pomoTime: 25 * 60,
             pomoInterval: null,
             pomoRunning: false,
             pomoEndTime: 0
         };
 
-        // Save state to local storage
         const saveState = () => {
-            localStorage.setItem('zj_notes_v2', JSON.stringify(AppState.notes));
-            localStorage.setItem('zj_todos_v2', JSON.stringify(AppState.todos));
+            localStorage.setItem('zj_notes_v3', JSON.stringify(AppState.notes));
+            localStorage.setItem('zj_todos_v3', JSON.stringify(AppState.todos));
+            localStorage.setItem('zj_alarms_v3', JSON.stringify(AppState.alarms));
+            localStorage.setItem('zj_theme', AppState.theme);
         };
 
-        // Custom Toast Notification System
+        function playBeep(freq = 800, duration = 0.1) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + duration);
+            } catch(e) {}
+        }
+
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `px-6 py-3 rounded-xl border font-mono text-sm font-bold shadow-lg transition-all duration-300 flex items-center gap-2 transform -translate-y-10 opacity-0 pointer-events-auto`;
-            
-            if (type === 'success') toast.className += ' bg-cyber-cyan/20 border-cyber-cyan text-cyber-cyan shadow-[0_0_20px_rgba(0,242,254,0.4)]';
+            if (type === 'success') toast.className += ' bg-cyber-accent/20 border-cyber-accent text-cyber-accent shadow-[0_0_20px_var(--accent-glow)]';
             else if (type === 'error') toast.className += ' bg-cyber-danger/20 border-cyber-danger text-cyber-danger shadow-[0_0_20px_rgba(255,92,92,0.4)]';
             else toast.className += ' bg-cyber-gold/20 border-cyber-gold text-cyber-gold shadow-[0_0_20px_rgba(242,193,78,0.4)]';
-
             toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info'}" class="w-5 h-5"></i> ${message}`;
             container.appendChild(toast);
             lucide.createIcons();
-
-            setTimeout(() => { toast.classList.remove('-translate-y-10', 'opacity-0'); }, 10);
-            setTimeout(() => {
-                toast.classList.add('-translate-y-10', 'opacity-0');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            setTimeout(() => { toast.classList.remove('-translate-y-10', 'opacity-0'); playBeep(600, 0.05); }, 10);
+            setTimeout(() => { toast.classList.add('-translate-y-10', 'opacity-0'); setTimeout(() => toast.remove(), 300); }, 3000);
         }
 
         // ==========================================
-        // 2. CUSTOM MODAL SYSTEM (Replaces native alerts/prompts)
+        // 2. CUSTOM MODALS
         // ==========================================
         const modal = document.getElementById('cyber-modal');
         const modalTitle = document.getElementById('modal-title');
         const modalDesc = document.getElementById('modal-desc');
         const modalInput = document.getElementById('modal-input');
+        const modalDouble = document.getElementById('modal-double');
         const modalTextarea = document.getElementById('modal-textarea');
         const btnCancel = document.getElementById('modal-cancel');
         const btnConfirm = document.getElementById('modal-confirm');
-
         let modalCallback = null;
 
         function customAlert(title, message) {
-            modalTitle.textContent = title;
-            modalDesc.textContent = message;
-            modalInput.classList.add('hidden');
-            modalTextarea.classList.add('hidden');
-            btnCancel.classList.add('hidden');
-            btnConfirm.textContent = 'OK';
-            btnConfirm.className = 'px-5 py-2 rounded-xl bg-cyber-cyan text-black font-bold text-sm hover:bg-cyber-cyanDark transition-all';
-            
+            modalTitle.textContent = title; modalDesc.textContent = message;
+            modalInput.classList.add('hidden'); modalDouble.classList.add('hidden'); modalTextarea.classList.add('hidden');
+            btnCancel.classList.add('hidden'); btnConfirm.textContent = 'OK';
             modalCallback = () => { modal.close(); };
             modal.showModal();
         }
 
         function customConfirm(title, message, callback) {
-            modalTitle.textContent = title;
-            modalDesc.textContent = message;
-            modalInput.classList.add('hidden');
-            modalTextarea.classList.add('hidden');
-            btnCancel.classList.remove('hidden');
-            btnCancel.textContent = 'CANCEL';
-            btnConfirm.textContent = 'CONFIRM';
-            btnConfirm.className = 'px-5 py-2 rounded-xl bg-cyber-danger text-white font-bold text-sm hover:bg-red-600 transition-all';
-            
+            modalTitle.textContent = title; modalDesc.textContent = message;
+            modalInput.classList.add('hidden'); modalDouble.classList.add('hidden'); modalTextarea.classList.add('hidden');
+            btnCancel.classList.remove('hidden'); btnCancel.textContent = 'CANCEL';
+            btnConfirm.textContent = 'CONFIRM'; btnConfirm.className = 'px-5 py-2 rounded-xl bg-cyber-danger text-white font-bold text-sm hover:bg-red-600 transition-all';
             modalCallback = () => { callback(); modal.close(); };
             modal.showModal();
         }
 
-        function customPrompt(title, desc, placeholder, isTextarea, callback) {
-            modalTitle.textContent = title;
-            modalDesc.textContent = desc;
-            btnCancel.classList.remove('hidden');
-            btnCancel.textContent = 'CANCEL';
-            btnConfirm.textContent = 'SAVE';
-            btnConfirm.className = 'px-5 py-2 rounded-xl bg-cyber-cyan text-black font-bold text-sm hover:bg-cyber-cyanDark transition-all';
-
-            if (isTextarea) {
-                modalTextarea.classList.remove('hidden');
-                modalInput.classList.add('hidden');
-                modalTextarea.value = '';
-                modalTextarea.placeholder = placeholder;
-                modalTextarea.focus();
-            } else {
-                modalInput.classList.remove('hidden');
-                modalTextarea.classList.add('hidden');
-                modalInput.value = '';
-                modalInput.placeholder = placeholder;
-                modalInput.focus();
-            }
-
+        function customNoteModal(callback, existingTitle = '', existingContent = '') {
+            modalTitle.textContent = existingTitle ? 'EDIT NOTE' : 'NEW NOTE';
+            modalDesc.textContent = 'Enter your data below.';
+            modalInput.classList.add('hidden'); modalTextarea.classList.add('hidden'); modalDouble.classList.remove('hidden');
+            document.getElementById('modal-input-1').value = existingTitle;
+            document.getElementById('modal-input-2').value = existingContent;
+            btnCancel.classList.remove('hidden'); btnCancel.textContent = 'CANCEL';
+            btnConfirm.textContent = 'SAVE'; btnConfirm.className = 'px-5 py-2 rounded-xl bg-cyber-accent text-black font-bold text-sm hover:opacity-80 transition-all';
             modalCallback = () => {
-                const val = isTextarea ? modalTextarea.value.trim() : modalInput.value.trim();
-                callback(val);
+                const t = document.getElementById('modal-input-1').value.trim();
+                const c = document.getElementById('modal-input-2').value.trim();
+                if(t) callback(t, c);
                 modal.close();
             };
+            modal.showModal();
+        }
+
+        function customImportModal(callback) {
+            modalTitle.textContent = 'IMPORT DATA'; modalDesc.textContent = 'Paste your JSON backup string:';
+            modalInput.classList.add('hidden'); modalDouble.classList.add('hidden'); modalTextarea.classList.remove('hidden');
+            modalTextarea.value = '';
+            btnCancel.classList.remove('hidden'); btnCancel.textContent = 'CANCEL';
+            btnConfirm.textContent = 'IMPORT'; btnConfirm.className = 'px-5 py-2 rounded-xl bg-cyber-accent text-black font-bold text-sm hover:opacity-80 transition-all';
+            modalCallback = () => { callback(modalTextarea.value.trim()); modal.close(); };
             modal.showModal();
         }
 
@@ -838,60 +784,81 @@
         btnConfirm.onclick = () => { if(modalCallback) modalCallback(); };
 
         // ==========================================
-        // 3. NAVIGATION & UI
+        // 3. THEME & INIT
         // ==========================================
         window.onload = function() {
             lucide.createIcons();
+            setTheme(AppState.theme, false);
             updateClock();
             setInterval(updateClock, 1000);
             renderNotes();
             renderTodos();
-            initThreeJSBackground();
-            fetchWeather(); // Initial weather load
+            renderAlarms();
+            renderWorldClocks();
             buildClockTicks();
+            fetchWeatherWidget();
+            fetchWeatherTab();
             runConversion();
+            initThreeJSBackground();
+            updateSystemStats();
+            setInterval(updateSystemStats, 5000);
+            checkAlarms();
+            setInterval(checkAlarms, 10000);
         };
 
+        function setTheme(theme, save = true) {
+            document.documentElement.setAttribute('data-accent', theme);
+            AppState.theme = theme;
+            if (save) { saveState(); showToast(`Theme set to ${theme.toUpperCase()}`); }
+        }
+
+        function updateSystemStats() {
+            const net = document.getElementById('sys-net');
+            if(net) net.textContent = navigator.onLine ? 'ONLINE' : 'OFFLINE';
+            if(net) net.style.color = navigator.onLine ? 'var(--accent-color)' : '#FF5C5C';
+            
+            if (navigator.getBattery) {
+                navigator.getBattery().then(bat => {
+                    const batEl = document.getElementById('sys-battery');
+                    if(batEl) batEl.textContent = `BAT: ${Math.round(bat.level * 100)}%`;
+                }).catch(()=>{});
+            } else {
+                const batEl = document.getElementById('sys-battery');
+                if(batEl) batEl.textContent = 'BAT: N/A';
+            }
+        }
+
+        // ==========================================
+        // 4. NAVIGATION & SEARCH
+        // ==========================================
         function switchTab(tabId) {
+            playBeep(1000, 0.05);
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             const target = document.getElementById(`tab-${tabId}`);
             if (target) target.classList.remove('hidden');
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active', 'text-cyber-cyan', 'bg-cyber-cyan/10', 'border', 'border-cyber-cyan/40');
+                btn.classList.remove('active', 'text-cyber-accent', 'bg-cyber-accent/10', 'border', 'border-cyber-accent/40');
                 btn.classList.add('text-gray-400');
                 if (btn.dataset.tab === tabId) {
-                    btn.classList.add('active', 'text-cyber-cyan', 'bg-cyber-cyan/10', 'border', 'border-cyber-cyan/40');
+                    btn.classList.add('active', 'text-cyber-accent', 'bg-cyber-accent/10', 'border', 'border-cyber-accent/40');
                     btn.classList.remove('text-gray-400');
                 }
             });
-
-            if(window.innerWidth < 1024) {
-                document.getElementById('sidebar').classList.add('-translate-x-full');
-            }
+            if(window.innerWidth < 1024) document.getElementById('sidebar').classList.add('-translate-x-full');
         }
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('-translate-x-full');
-        }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); }
 
         function toggleSearchModal(show) {
             const sm = document.getElementById('search-modal');
             sm.classList.toggle('hidden', !show);
-            if(show) {
-                sm.classList.add('flex');
-                document.getElementById('search-input').focus();
-                handleSearch('');
-            } else {
-                sm.classList.remove('flex');
-            }
+            if(show) { sm.classList.add('flex'); document.getElementById('search-input').focus(); handleSearch(''); }
+            else sm.classList.remove('flex');
         }
 
         window.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-                e.preventDefault();
-                toggleSearchModal(true);
-            }
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); toggleSearchModal(true); }
             if (e.key === 'Escape') toggleSearchModal(false);
         });
 
@@ -904,152 +871,178 @@
                 { id: 'todo', name: 'Todo List' }, { id: 'pomodoro', name: 'Pomodoro' },
                 { id: 'converter', name: 'Unit Converter' }, { id: 'chatbot', name: 'Chatbot' }
             ];
-            
             const matches = tabs.filter(t => t.name.toLowerCase().includes(val.toLowerCase()));
-            if(matches.length === 0) {
-                resContainer.innerHTML = '<div class="text-gray-500 p-2">No modules found.</div>';
-                return;
-            }
-            resContainer.innerHTML = matches.map(m => `
-                <div onclick="switchTab('${m.id}'); toggleSearchModal(false);" class="p-3 hover:bg-cyber-cyan/20 rounded-lg cursor-pointer text-cyber-cyan border border-cyber-border/30 transition-colors flex items-center justify-between">
-                    <span>${m.name}</span>
-                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </div>
-            `).join('');
+            if(matches.length === 0) { resContainer.innerHTML = '<div class="text-gray-500 p-2">No modules found.</div>'; return; }
+            resContainer.innerHTML = matches.map(m => `<div onclick="switchTab('${m.id}'); toggleSearchModal(false);" class="p-3 hover:bg-cyber-accent/20 rounded-lg cursor-pointer text-cyber-accent border border-cyber-border flex items-center justify-between transition-colors"><span>${m.name}</span><i data-lucide="arrow-right" class="w-4 h-4"></i></div>`).join('');
             lucide.createIcons();
         }
 
         // ==========================================
-        // 4. CLOCK ENGINE
+        // 5. CLOCK & TIME ENGINES
         // ==========================================
         function buildClockTicks() {
-            const ticks = document.getElementById('clock-ticks');
-            const ticksLg = document.getElementById('clock-ticks-lg');
-            
             const generateTicks = (container) => {
                 if(!container) return;
                 container.innerHTML = '';
                 for (let i = 0; i < 12; i++) {
                     const angle = (i * 30) * Math.PI / 180;
-                    const x1 = 100 + 85 * Math.sin(angle);
-                    const y1 = 100 - 85 * Math.cos(angle);
-                    const x2 = 100 + 92 * Math.sin(angle);
-                    const y2 = 100 - 92 * Math.cos(angle);
+                    const x1 = 100 + 85 * Math.sin(angle), y1 = 100 - 85 * Math.cos(angle);
+                    const x2 = 100 + 92 * Math.sin(angle), y2 = 100 - 92 * Math.cos(angle);
                     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
-                    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
-                    line.setAttribute('stroke', '#F2C14E'); line.setAttribute('stroke-width', '3');
-                    line.setAttribute('stroke-linecap', 'round');
+                    line.setAttribute('x1', x1); line.setAttribute('y1', y1); line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+                    line.setAttribute('stroke', '#F2C14E'); line.setAttribute('stroke-width', '3'); line.setAttribute('stroke-linecap', 'round');
                     container.appendChild(line);
                 }
             };
-            generateTicks(ticks);
-            generateTicks(ticksLg);
+            generateTicks(document.getElementById('clock-ticks-widget'));
+            generateTicks(document.getElementById('clock-ticks-lg'));
         }
 
         function updateClock() {
             const now = new Date();
-            const h = now.getHours() % 12;
-            const m = now.getMinutes();
-            const s = now.getSeconds();
+            const h = now.getHours() % 12, m = now.getMinutes(), s = now.getSeconds();
+            const secDeg = s * 6, minDeg = m * 6 + s * 0.1, hrDeg = h * 30 + m * 0.5;
 
-            const secDeg = s * 6;
-            const minDeg = m * 6 + s * 0.1;
-            const hrDeg = h * 30 + m * 0.5;
+            const setHands = (prefix) => {
+                const hh = document.getElementById(`hand-hour-${prefix}`), mh = document.getElementById(`hand-minute-${prefix}`), sh = document.getElementById(`hand-second-${prefix}`);
+                if(hh && mh && sh) { hh.style.transform = `rotate(${hrDeg}deg)`; mh.style.transform = `rotate(${minDeg}deg)`; sh.style.transform = `rotate(${secDeg}deg)`; }
+            };
+            setHands('widget'); setHands('lg');
 
-            // Widget Clock
-            const hh = document.getElementById('hand-hour');
-            const mh = document.getElementById('hand-minute');
-            const sh = document.getElementById('hand-second');
-            if(hh && mh && sh) {
-                hh.style.transform = `rotate(${hrDeg}deg)`;
-                mh.style.transform = `rotate(${minDeg}deg)`;
-                sh.style.transform = `rotate(${secDeg}deg)`;
-            }
-
-            // Full Tab Clock
-            const hhl = document.getElementById('hand-hour-lg');
-            const mhl = document.getElementById('hand-minute-lg');
-            const shl = document.getElementById('hand-second-lg');
-            if(hhl && mhl && shl) {
-                hhl.style.transform = `rotate(${hrDeg}deg)`;
-                mhl.style.transform = `rotate(${minDeg}deg)`;
-                shl.style.transform = `rotate(${secDeg}deg)`;
-            }
-
-            // Digital Text
             const timeStr = now.toTimeString().split(' ')[0];
-            document.getElementById('live-clock').textContent = timeStr;
-            
-            const dtWidget = document.getElementById('digital-time');
-            if(dtWidget) dtWidget.textContent = timeStr;
+            if(document.getElementById('live-clock')) document.getElementById('live-clock').textContent = timeStr;
+            if(document.getElementById('digital-time-widget')) document.getElementById('digital-time-widget').textContent = timeStr;
+            if(document.getElementById('digital-time-lg')) document.getElementById('digital-time-lg').textContent = timeStr;
 
-            const dtLg = document.getElementById('digital-time-lg');
-            if(dtLg) dtLg.textContent = timeStr;
-
-            // Date Text
             const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase();
-            const dateWidget = document.getElementById('digital-date');
-            if(dateWidget) dateWidget.textContent = dateStr;
-            
-            const dateLg = document.getElementById('digital-date-lg');
-            if(dateLg) dateLg.textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            if(document.getElementById('digital-date-widget')) document.getElementById('digital-date-widget').textContent = dateStr;
+            if(document.getElementById('digital-date-lg')) document.getElementById('digital-date-lg').textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function switchClockTab(tab) {
+            playBeep(1000, 0.05);
+            document.querySelectorAll('.clock-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`clock-panel-${tab}`).classList.remove('hidden');
+            document.querySelectorAll('.clock-tab-btn').forEach(b => { b.classList.remove('bg-cyber-accent/20', 'text-cyber-accent'); b.classList.add('text-gray-400'); });
+            event.target.classList.add('bg-cyber-accent/20', 'text-cyber-accent'); event.target.classList.remove('text-gray-400');
+        }
+
+        // Stopwatch
+        let swRunning = false, swStart = 0, swElapsed = 0, swInterval = null, swLaps = [];
+        function formatSW(ms) {
+            const s = Math.floor(ms / 1000), cs = Math.floor((ms % 1000) / 10);
+            return `${String(Math.floor(s/3600)).padStart(2,'0')}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;
+        }
+        function toggleStopwatch() {
+            const btn = document.getElementById('stopwatch-btn');
+            if(swRunning) {
+                swRunning = false; clearInterval(swInterval); btn.textContent = 'RESUME';
+            } else {
+                swRunning = true; swStart = Date.now() - swElapsed;
+                swInterval = setInterval(() => { swElapsed = Date.now() - swStart; document.getElementById('stopwatch-display').textContent = formatSW(swElapsed); }, 33);
+                btn.textContent = 'PAUSE';
+            }
+            document.getElementById('lap-btn').disabled = !swRunning;
+        }
+        function resetStopwatch() {
+            swRunning = false; clearInterval(swInterval); swElapsed = 0; swLaps = [];
+            document.getElementById('stopwatch-display').textContent = '00:00:00.00';
+            document.getElementById('stopwatch-btn').textContent = 'START';
+            document.getElementById('lap-btn').disabled = true;
+            document.getElementById('laps-list').innerHTML = '';
+        }
+        function recordLap() {
+            if(!swRunning) return;
+            swLaps.push(swElapsed);
+            const list = document.getElementById('laps-list'); list.innerHTML = '';
+            swLaps.slice().reverse().forEach((t, i) => {
+                list.innerHTML += `<div class="flex justify-between p-2 bg-cyber-black/50 rounded border border-cyber-border"><span>Lap ${swLaps.length - i}</span><span>${formatSW(t)}</span></div>`;
+            });
+        }
+
+        // Alarms
+        function renderAlarms() {
+            const list = document.getElementById('alarms-list');
+            if(!list) return;
+            list.innerHTML = AppState.alarms.length ? '' : '<div class="text-gray-500 text-center py-4">No alarms set.</div>';
+            AppState.alarms.forEach(a => {
+                list.innerHTML += `
+                    <div class="flex justify-between items-center p-3 bg-cyber-black border border-cyber-border rounded-xl">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" ${a.active ? 'checked' : ''} onchange="toggleAlarm('${a.id}')" class="accent-cyber-accent w-4 h-4">
+                            <div><div class="text-xl font-bold text-white">${a.time}</div><div class="text-xs text-gray-400">${a.label}</div></div>
+                        </div>
+                        <button onclick="deleteAlarm('${a.id}')" class="text-cyber-danger hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>`;
+            });
+            lucide.createIcons();
+        }
+        function addAlarm(e) {
+            e.preventDefault();
+            const time = document.getElementById('alarm-time').value, label = document.getElementById('alarm-label').value || 'Alarm';
+            if(!time) return;
+            AppState.alarms.push({ id: Date.now().toString(), time, label, active: true });
+            saveState(); renderAlarms(); e.target.reset(); showToast('Alarm set');
+        }
+        function toggleAlarm(id) { AppState.alarms.find(a => a.id === id).active = !AppState.alarms.find(a => a.id === id).active; saveState(); }
+        function deleteAlarm(id) { AppState.alarms = AppState.alarms.filter(a => a.id !== id); saveState(); renderAlarms(); showToast('Alarm deleted', 'error'); }
+        function checkAlarms() {
+            const now = new Date(), current = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            AppState.alarms.forEach(a => { if(a.active && a.time === current) { playBeep(1000, 0.5); showToast(`⏰ Alarm: ${a.label}`, 'info'); a.active = false; saveState(); renderAlarms(); } });
+        }
+
+        // World Clocks
+        const cities = [{n:'London', tz:'Europe/London'},{n:'New York', tz:'America/New_York'},{n:'Tokyo', tz:'Asia/Tokyo'},{n:'Dubai', tz:'Asia/Dubai'},{n:'Karachi', tz:'Asia/Karachi'},{n:'Sydney', tz:'Australia/Sydney'}];
+        let activeCities = ['Europe/London', 'America/New_York', 'Asia/Tokyo'];
+        function renderWorldClocks() {
+            const list = document.getElementById('world-clocks-list');
+            if(!list) return;
+            list.innerHTML = activeCities.map(tz => {
+                const c = cities.find(x => x.tz === tz) || {n: tz, tz};
+                return `<div class="flex justify-between p-4 bg-cyber-black border border-cyber-border rounded-xl"><div><div class="text-white font-bold">${c.n}</div><div class="text-xs text-gray-500">${tz}</div></div><div class="text-cyber-accent font-mono font-bold text-lg" data-tz="${tz}">--:--:--</div></div>`;
+            }).join('');
+            updateWorldClocks();
+        }
+        function updateWorldClocks() {
+            document.querySelectorAll('#world-clocks-list [data-tz]').forEach(el => {
+                try { el.textContent = new Date().toLocaleTimeString('en-US', { timeZone: el.dataset.tz, hour12: false }); } catch(e){}
+            });
+        }
+        setInterval(updateWorldClocks, 1000);
+        function addWorldClock() {
+            const next = cities.find(c => !activeCities.includes(c.tz));
+            if(next) { activeCities.push(next.tz); renderWorldClocks(); } else showToast('All cities added', 'info');
         }
 
         // ==========================================
-        // 5. CALCULATOR ENGINE
+        // 6. CALCULATOR
         // ==========================================
-        let calcVal = '0';
-        let calcHist = '';
-
-        // Safe Math Parser to avoid eval()
+        let calcVal = '0', calcHist = '', calcLog = [];
         const MathParser = {
             evaluate: function(expression) {
                 if(!expression) return 0;
                 const tokens = this.tokenize(expression);
                 let pos = 0;
                 const peek = () => tokens[pos];
-                const consume = (type) => {
-                    const token = tokens[pos];
-                    if (!token || token.type !== type) throw new Error('Invalid syntax');
-                    pos++;
-                    return token.value;
-                };
+                const consume = (type) => { const token = tokens[pos]; if (!token || token.type !== type) throw new Error('Invalid syntax'); pos++; return token.value; };
                 const parsePrimary = () => {
-                    if (peek() && (peek().type === '+' || peek().type === '-')) {
-                        const sign = consume(peek().type);
-                        const val = parsePrimary();
-                        return sign === '-' ? -val : val;
-                    }
+                    if (peek() && (peek().type === '+' || peek().type === '-')) { const sign = consume(peek().type); const val = parsePrimary(); return sign === '-' ? -val : val; }
                     if (peek() && peek().type === 'NUMBER') return parseFloat(consume('NUMBER'));
-                    if (peek() && peek().type === '(') {
-                        consume('(');
-                        const val = parseExpression();
-                        consume(')');
-                        return val;
-                    }
+                    if (peek() && peek().type === '(') { consume('('); const val = parseExpression(); consume(')'); return val; }
                     throw new Error('Expected number');
                 };
                 const parseTerm = () => {
                     let val = parsePrimary();
                     while (peek() && (peek().type === '*' || peek().type === '/')) {
-                        const op = consume(peek().type);
-                        const right = parsePrimary();
-                        if (op === '*') val *= right;
-                        else {
-                            if (right === 0) throw new Error('Divide by zero');
-                            val /= right;
-                        }
+                        const op = consume(peek().type); const right = parsePrimary();
+                        if (op === '*') val *= right; else { if (right === 0) throw new Error('Divide by zero'); val /= right; }
                     }
                     return val;
                 };
                 const parseExpression = () => {
                     let val = parseTerm();
                     while (peek() && (peek().type === '+' || peek().type === '-')) {
-                        const op = consume(peek().type);
-                        const right = parseTerm();
-                        if (op === '+') val += right;
-                        else val -= right;
+                        const op = consume(peek().type); const right = parseTerm(); if (op === '+') val += right; else val -= right;
                     }
                     return val;
                 };
@@ -1057,461 +1050,299 @@
             },
             tokenize: function(str) {
                 const regex = /\s*([\+\-\*\/\(\)\%]|\d*\.?\d+)/g;
-                const tokens = [];
-                let match;
-                let lastIndex = 0;
+                const tokens = []; let match; let lastIndex = 0;
                 while ((match = regex.exec(str)) !== null) {
                     if (match.index > lastIndex) throw new Error('Invalid character');
                     const val = match[1];
-                    if (/^\d*\.?\d+$/.test(val)) tokens.push({ type: 'NUMBER', value: val });
-                    else tokens.push({ type: val, value: val });
+                    if (/^\d*\.?\d+$/.test(val)) tokens.push({ type: 'NUMBER', value: val }); else tokens.push({ type: val, value: val });
                     lastIndex = regex.lastIndex;
                 }
                 if (lastIndex < str.length) throw new Error('Invalid character');
                 return tokens;
             }
         };
-
         function calcInput(char) {
-            const display = document.getElementById('calc-display');
-            const history = document.getElementById('calc-history');
-            const fullDisplay = document.getElementById('full-calc-display');
-            const fullHistory = document.getElementById('full-calc-history');
-
-            if (char === 'AC') {
-                calcVal = '0';
-                calcHist = '';
-            } else if (char === 'DEL') {
-                calcVal = calcVal.length > 1 ? calcVal.slice(0, -1) : '0';
-            } else if (char === '=') {
+            if (char === 'AC') { calcVal = '0'; calcHist = ''; }
+            else if (char === 'DEL') calcVal = calcVal.length > 1 ? calcVal.slice(0, -1) : '0';
+            else if (char === '=') {
                 try {
                     calcHist = calcVal + ' =';
                     let parsed = MathParser.evaluate(calcVal);
                     calcVal = Number(parsed.toPrecision(12)).toString();
-                } catch(e) {
-                    calcVal = 'Error';
-                    showToast('Invalid Expression', 'error');
-                }
+                    calcLog.unshift(`${calcHist} ${calcVal}`);
+                    if(calcLog.length > 20) calcLog.pop();
+                    renderCalcLog();
+                } catch(e) { calcVal = 'Error'; showToast('Invalid Expression', 'error'); }
             } else if (char === '%') {
-                try {
-                    let parsed = MathParser.evaluate(calcVal);
-                    calcVal = (parsed / 100).toString();
-                } catch(e) { calcVal = 'Error'; }
+                try { let parsed = MathParser.evaluate(calcVal); calcVal = (parsed / 100).toString(); } catch(e) { calcVal = 'Error'; }
             } else {
                 if (calcVal === '0' && char !== '.') calcVal = char;
                 else if (calcVal === 'Error') calcVal = char;
                 else calcVal += char;
             }
-
-            display.textContent = calcVal;
-            history.textContent = calcHist;
-            if(fullDisplay) {
-                fullDisplay.textContent = calcVal;
-                fullHistory.textContent = calcHist;
-            }
+            document.getElementById('calc-display-widget').textContent = calcVal;
+            document.getElementById('calc-history-widget').textContent = calcHist;
+            if(document.getElementById('calc-display-full')) { document.getElementById('calc-display-full').textContent = calcVal; document.getElementById('calc-history-full').textContent = calcHist; }
         }
-
-        function clearCalcHistory() {
-            calcHist = '';
-            document.getElementById('calc-history').textContent = '';
-            if(document.getElementById('full-calc-history')) document.getElementById('full-calc-history').textContent = '';
-            showToast('History Cleared', 'info');
+        function renderCalcLog() {
+            const list = document.getElementById('calc-history-list');
+            if(list) list.innerHTML = calcLog.map(l => `<div class="border-b border-cyber-border/30 pb-1 mb-1">${l}</div>`).join('');
         }
+        function clearCalcHistory() { calcHist = ''; calcLog = []; document.getElementById('calc-history-widget').textContent = ''; if(document.getElementById('calc-history-full')) document.getElementById('calc-history-full').textContent = ''; renderCalcLog(); showToast('History Cleared', 'info'); }
 
         // ==========================================
-        // 6. WEATHER ENGINE
+        // 7. WEATHER
         // ==========================================
-        async function fetchWeather(cityName = null) {
-            const city = cityName || document.getElementById('weather-city-input').value || 'Hyderabad';
+        async function fetchWeatherWidget() {
+            const city = document.getElementById('weather-city-input-widget').value || 'Hyderabad';
+            fetchWeather(city, 'widget');
+        }
+        async function fetchWeatherTab() {
+            const city = document.getElementById('weather-tab-input').value || 'Hyderabad';
+            document.getElementById('weather-city-input-widget').value = city;
+            fetchWeather(city, 'tab');
+        }
+        async function fetchWeather(city, target) {
             try {
-                // Geocoding
                 const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`);
                 const geoData = await geoRes.json();
-                
-                if (!geoData.results || geoData.results.length === 0) {
-                    showToast('City not found', 'error');
-                    return;
-                }
-                
+                if (!geoData.results || geoData.results.length === 0) { showToast('City not found', 'error'); return; }
                 const { latitude, longitude, name, country_code } = geoData.results[0];
-                
-                // Weather API
-                const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relative_humidity_2m,precipitation_probability,uv_index&timezone=auto`);
+                const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relative_humidity_2m,precipitation_probability,uv_index&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`);
                 const wData = await wRes.json();
-                
-                const current = wData.current_weather;
-                const hourly = wData.hourly;
-                
-                // Find index for current hour
+                const current = wData.current_weather, hourly = wData.hourly, daily = wData.daily;
                 const now = new Date();
                 const timeStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}T${String(now.getHours()).padStart(2,'0')}:00`;
-                let hIdx = hourly.time.indexOf(timeStr);
-                if (hIdx === -1) hIdx = 0;
+                let hIdx = hourly.time.indexOf(timeStr); if (hIdx === -1) hIdx = 0;
 
-                // Update Widget UI
-                document.getElementById('weather-temp').innerHTML = `${Math.round(current.temperature)}°<span class="text-cyber-cyan text-xl">C</span>`;
-                document.getElementById('weather-desc').textContent = current.weathercode === 0 ? 'Clear Sky' : 'Cloudy';
-                document.getElementById('weather-location').textContent = `${name.toUpperCase()}, ${country_code}`;
-                
-                document.getElementById('weather-rain').textContent = `${hourly.precipitation_probability[hIdx] ?? 0}%`;
-                document.getElementById('weather-uv').textContent = (hourly.uv_index[hIdx] ?? 0).toFixed(1);
-                document.getElementById('weather-humidity').textContent = `${hourly.relative_humidity_2m[hIdx] ?? 0}%`;
-                document.getElementById('weather-wind').textContent = `${current.windspeed} km/h`;
-
-                // Update Full Tab UI
-                document.getElementById('tab-weather-temp').textContent = `${Math.round(current.temperature)}°C`;
-                document.getElementById('tab-weather-desc').textContent = current.weathercode === 0 ? 'Clear Sky' : 'Cloudy';
-                document.getElementById('tab-weather-location').textContent = `${name.toUpperCase()}, ${country_code}`;
-                document.getElementById('tab-weather-humidity').textContent = `${hourly.relative_humidity_2m[hIdx] ?? 0}%`;
-                document.getElementById('tab-weather-wind').textContent = `${current.windspeed} km/h`;
-                document.getElementById('tab-weather-rain').textContent = `${hourly.precipitation_probability[hIdx] ?? 0}%`;
-                document.getElementById('tab-weather-uv').textContent = (hourly.uv_index[hIdx] ?? 0).toFixed(1);
-
-            } catch(e) {
-                console.error(e);
-                showToast('Error fetching weather data', 'error');
-            }
-        }
-
-        function fetchWeatherTab() {
-            const city = document.getElementById('weather-tab-input').value;
-            document.getElementById('weather-city-input').value = city;
-            fetchWeather(city);
+                const updateUI = (suffix) => {
+                    if(document.getElementById(`weather-temp-${suffix}`)) {
+                        document.getElementById(`weather-temp-${suffix}`).innerHTML = `${Math.round(current.temperature)}°<span class="text-cyber-accent text-xl">C</span>`;
+                        document.getElementById(`weather-desc-${suffix}`).textContent = current.weathercode === 0 ? 'Clear Sky' : 'Cloudy';
+                        document.getElementById(`weather-location-${suffix}`).textContent = `${name.toUpperCase()}, ${country_code}`;
+                        document.getElementById(`weather-rain-${suffix}`).textContent = `${hourly.precipitation_probability[hIdx] ?? 0}%`;
+                        document.getElementById(`weather-uv-${suffix}`).textContent = (hourly.uv_index[hIdx] ?? 0).toFixed(1);
+                        document.getElementById(`weather-humidity-${suffix}`).textContent = `${hourly.relative_humidity_2m[hIdx] ?? 0}%`;
+                        document.getElementById(`weather-wind-${suffix}`).textContent = `${current.windspeed} km/h`;
+                    }
+                };
+                if(target === 'widget') updateUI('widget');
+                if(target === 'tab') {
+                    if(document.getElementById('tab-weather-temp')) {
+                        document.getElementById('tab-weather-temp').textContent = `${Math.round(current.temperature)}°C`;
+                        document.getElementById('tab-weather-desc').textContent = current.weathercode === 0 ? 'Clear Sky' : 'Cloudy';
+                        document.getElementById('tab-weather-location').textContent = `${name.toUpperCase()}, ${country_code}`;
+                        document.getElementById('tab-weather-humidity').textContent = `${hourly.relative_humidity_2m[hIdx] ?? 0}%`;
+                        document.getElementById('tab-weather-wind').textContent = `${current.windspeed} km/h`;
+                        document.getElementById('tab-weather-rain').textContent = `${hourly.precipitation_probability[hIdx] ?? 0}%`;
+                        document.getElementById('tab-weather-uv').textContent = (hourly.uv_index[hIdx] ?? 0).toFixed(1);
+                    }
+                    const fl = document.getElementById('forecast-list');
+                    if(fl) fl.innerHTML = daily.time.slice(0,5).map((t, i) => {
+                        const d = new Date(t).toLocaleDateString('en-US', {weekday:'long'});
+                        return `<div class="flex justify-between items-center p-3 bg-cyber-black border border-cyber-border rounded-xl font-mono text-sm"><span>${d}</span><span class="text-cyber-accent">${Math.round(daily.temperature_2m_max[i])}° / ${Math.round(daily.temperature_2m_min[i])}°</span></div>`;
+                    }).join('');
+                }
+            } catch(e) { console.error(e); showToast('Error fetching weather', 'error'); }
         }
 
         // ==========================================
-        // 7. NOTES ENGINE (Replaces native prompt)
+        // 8. NOTES & TODOS
         // ==========================================
         function renderNotes() {
             const container = document.getElementById('notes-grid');
+            if(!container) return;
             container.innerHTML = AppState.notes.map(n => `
-                <div class="glass-card p-5 rounded-xl relative space-y-3 flex flex-col justify-between group border border-cyber-border/50 hover:border-cyber-cyan/50 transition-all">
+                <div class="glass-card p-5 rounded-xl relative space-y-3 flex flex-col justify-between group border border-cyber-border">
                     <div>
-                        <div class="font-orbitron font-bold text-cyber-cyan text-sm mb-2">${n.title}</div>
+                        <div class="font-orbitron font-bold text-cyber-accent text-sm mb-2">${n.title}</div>
                         <div class="font-mono text-xs text-gray-300 leading-relaxed">${n.content}</div>
                     </div>
-                    <div class="flex justify-end gap-2 pt-2 border-t border-cyber-border/30 mt-2">
-                        <button onclick="deleteNote('${n.id}')" class="text-cyber-danger hover:text-red-400 text-[10px] font-mono flex items-center gap-1 bg-cyber-danger/10 px-2 py-1 rounded">
-                            <i data-lucide="trash-2" class="w-3 h-3"></i> DELETE
-                        </button>
+                    <div class="flex justify-end gap-2 pt-2 border-t border-cyber-border mt-2">
+                        <button onclick="deleteNote('${n.id}')" class="text-cyber-danger hover:text-red-400 text-[10px] font-mono flex items-center gap-1 bg-cyber-danger/10 px-2 py-1 rounded"><i data-lucide="trash-2" class="w-3 h-3"></i> DELETE</button>
                     </div>
-                </div>
-            `).join('');
-            lucide.createIcons();
-            saveState();
+                </div>`).join('');
+            lucide.createIcons(); saveState();
         }
-
         function openNoteModal() {
-            customPrompt('NEW NOTE', 'Enter note title:', 'e.g. System Protocol', false, (title) => {
-                if(!title) return;
-                customPrompt('NEW NOTE', 'Enter note content:', 'Type your note here...', true, (content) => {
-                    if(!content) return;
-                    AppState.notes.push({ id: Date.now().toString(), title, content });
-                    renderNotes();
-                    showToast('Note created successfully');
-                });
+            customNoteModal((title, content) => {
+                AppState.notes.push({ id: Date.now().toString(), title, content });
+                renderNotes(); showToast('Note created');
             });
         }
-
         function deleteNote(id) {
-            customConfirm('DELETE NOTE', 'Are you sure you want to permanently delete this note?', () => {
+            customConfirm('DELETE NOTE', 'Are you sure?', () => {
                 AppState.notes = AppState.notes.filter(n => n.id !== id);
-                renderNotes();
-                showToast('Note deleted', 'error');
+                renderNotes(); showToast('Note deleted', 'error');
             });
         }
 
-        // ==========================================
-        // 8. TODO ENGINE
-        // ==========================================
         function renderTodos() {
             const container = document.getElementById('todo-list');
-            container.innerHTML = AppState.todos.map(t => `
-                <div class="flex items-center justify-between p-4 glass-card rounded-xl border border-cyber-border/40 hover:border-cyber-cyan/40 transition-all group">
+            if(!container) return;
+            let filtered = AppState.todos;
+            if(window.currentTodoFilter === 'active') filtered = filtered.filter(t => !t.done);
+            if(window.currentTodoFilter === 'done') filtered = filtered.filter(t => t.done);
+            container.innerHTML = filtered.map(t => `
+                <div class="flex items-center justify-between p-4 glass-card rounded-xl border border-cyber-border group">
                     <div class="flex items-center gap-3 cursor-pointer" onclick="toggleTodo('${t.id}')">
-                        <div class="w-5 h-5 rounded border ${t.done ? 'bg-cyber-cyan border-cyber-cyan' : 'border-gray-500'} flex items-center justify-center transition-all">
+                        <div class="w-5 h-5 rounded border ${t.done ? 'bg-cyber-gold border-cyber-gold' : 'border-gray-500'} flex items-center justify-center">
                             ${t.done ? '<i data-lucide="check" class="w-3 h-3 text-black"></i>' : ''}
                         </div>
-                        <span class="${t.done ? 'line-through text-gray-500' : 'text-gray-200'} font-mono text-sm transition-all">
-                            ${t.text}
-                        </span>
+                        <div>
+                            <span class="${t.done ? 'line-through text-gray-500' : 'text-gray-200'} font-mono text-sm">${t.text}</span>
+                            <div class="text-[10px] font-bold mt-1 ${t.priority === 'high' ? 'text-cyber-danger' : t.priority === 'medium' ? 'text-cyber-gold' : 'text-cyber-silver'}">${t.priority.toUpperCase()}</div>
+                        </div>
                     </div>
-                    <button onclick="deleteTodo('${t.id}')" class="text-gray-500 hover:text-cyber-danger p-1 transition-all">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            `).join('');
-            lucide.createIcons();
-            saveState();
+                    <button onclick="deleteTodo('${t.id}')" class="text-gray-500 hover:text-cyber-danger p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                </div>`).join('');
+            lucide.createIcons(); saveState();
         }
-
         function addTodo(e) {
             e.preventDefault();
             const input = document.getElementById('todo-input');
             if(input.value.trim()) {
-                AppState.todos.push({ id: Date.now().toString(), text: input.value.trim(), done: false });
-                input.value = '';
-                renderTodos();
-                showToast('Task added');
+                AppState.todos.push({ id: Date.now().toString(), text: input.value.trim(), done: false, priority: document.getElementById('todo-priority').value });
+                input.value = ''; renderTodos(); showToast('Task added');
             }
         }
-
-        function toggleTodo(id) {
-            AppState.todos = AppState.todos.map(t => t.id === id ? { ...t, done: !t.done } : t);
+        function toggleTodo(id) { AppState.todos = AppState.todos.map(t => t.id === id ? { ...t, done: !t.done } : t); renderTodos(); }
+        function deleteTodo(id) { customConfirm('DELETE TASK', 'Remove this task?', () => { AppState.todos = AppState.todos.filter(t => t.id !== id); renderTodos(); showToast('Task deleted', 'error'); }); }
+        function filterTodos(filter) {
+            window.currentTodoFilter = filter;
+            document.querySelectorAll('.todo-filter-btn').forEach(b => { b.classList.remove('text-cyber-accent', 'border-b-2', 'border-cyber-accent'); b.classList.add('text-gray-400'); });
+            event.target.classList.add('text-cyber-accent', 'border-b-2', 'border-cyber-accent'); event.target.classList.remove('text-gray-400');
             renderTodos();
         }
 
-        function deleteTodo(id) {
-            customConfirm('DELETE TASK', 'Remove this task from the matrix?', () => {
-                AppState.todos = AppState.todos.filter(t => t.id !== id);
-                renderTodos();
-                showToast('Task deleted', 'error');
-            });
-        }
-
         // ==========================================
-        // 9. POMODORO ENGINE
+        // 9. POMODORO & CONVERTER
         // ==========================================
         function startPomodoro() {
             if (AppState.pomoRunning) return;
-            AppState.pomoRunning = true;
-            AppState.pomoEndTime = Date.now() + AppState.pomoTime * 1000;
-            
+            AppState.pomoRunning = true; AppState.pomoEndTime = Date.now() + AppState.pomoTime * 1000;
             AppState.pomoInterval = setInterval(() => {
                 const remaining = Math.max(0, Math.round((AppState.pomoEndTime - Date.now()) / 1000));
                 AppState.pomoTime = remaining;
-                
-                const mins = String(Math.floor(remaining / 60)).padStart(2, '0');
-                const secs = String(remaining % 60).padStart(2, '0');
+                const mins = String(Math.floor(remaining / 60)).padStart(2, '0'), secs = String(remaining % 60).padStart(2, '0');
                 document.getElementById('pomo-display').textContent = `${mins}:${secs}`;
-                
-                if (remaining <= 0) {
-                    clearInterval(AppState.pomoInterval);
-                    AppState.pomoRunning = false;
-                    showToast('Pomodoro session complete!', 'success');
-                    document.getElementById('pomo-display').textContent = '25:00';
-                    AppState.pomoTime = 25 * 60;
-                }
+                const ring = document.getElementById('pomo-ring');
+                if(ring) { const total = 25 * 60; ring.style.strokeDashoffset = 552 - (remaining / total) * 552; }
+                if (remaining <= 0) { clearInterval(AppState.pomoInterval); AppState.pomoRunning = false; playBeep(1200, 0.5); showToast('Pomodoro complete!', 'success'); resetPomodoro(); }
             }, 250);
-            showToast('Timer started');
         }
-
-        function pausePomodoro() {
-            clearInterval(AppState.pomoInterval);
-            AppState.pomoRunning = false;
-            showToast('Timer paused', 'info');
-        }
-
+        function pausePomodoro() { clearInterval(AppState.pomoInterval); AppState.pomoRunning = false; showToast('Timer paused', 'info'); }
         function resetPomodoro() {
-            pausePomodoro();
-            AppState.pomoTime = 25 * 60;
-            document.getElementById('pomo-display').textContent = '25:00';
-            showToast('Timer reset', 'info');
+            pausePomodoro(); AppState.pomoTime = 25 * 60; document.getElementById('pomo-display').textContent = '25:00';
+            const ring = document.getElementById('pomo-ring'); if(ring) ring.style.strokeDashoffset = 0;
         }
 
-        // ==========================================
-        // 10. UNIT CONVERTER
-        // ==========================================
         function runConversion() {
             const val = parseFloat(document.getElementById('convert-val').value) || 0;
-            const from = document.getElementById('convert-from').value;
-            const to = document.getElementById('convert-to').value;
-            let result = 0;
-
+            const from = document.getElementById('convert-from').value, to = document.getElementById('convert-to').value;
+            let result = val;
             if (from === 'km' && to === 'miles') result = val * 0.621371;
             else if (from === 'miles' && to === 'km') result = val / 0.621371;
             else if (from === 'gb' && to === 'tb') result = val / 1024;
             else if (from === 'tb' && to === 'gb') result = val * 1024;
-            else result = val;
-
+            else if (from === 'kg' && to === 'lbs') result = val * 2.20462;
+            else if (from === 'lbs' && to === 'kg') result = val / 2.20462;
             document.getElementById('convert-result').textContent = `${result.toFixed(4)} ${to.toUpperCase()}`;
         }
 
         // ==========================================
-        // 11. CHATBOT ENGINE
+        // 10. CHATBOT
         // ==========================================
         async function sendChatMessage(e) {
             e.preventDefault();
             const input = document.getElementById('chat-input');
             const msg = input.value.trim();
             if (!msg) return;
-
             const box = document.getElementById('chat-box');
-
-            // Render User Message
-            box.innerHTML += `
-                <div class="flex items-start justify-end gap-3 chat-msg-anim">
-                    <div class="bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan px-4 py-3 rounded-2xl max-w-md shadow-lg">
-                        ${msg}
-                    </div>
-                </div>
-            `;
-            input.value = '';
-            box.scrollTop = box.scrollHeight;
-
-            // Typing Indicator
+            box.innerHTML += `<div class="flex items-start justify-end gap-3 chat-msg-anim"><div class="bg-cyber-accent/20 border border-cyber-accent text-cyber-accent px-4 py-3 rounded-2xl max-w-md shadow-lg">${msg}</div></div>`;
+            input.value = ''; box.scrollTop = box.scrollHeight;
             const typingId = 'typing-' + Date.now();
-            box.innerHTML += `
-                <div class="flex items-start gap-3 chat-msg-anim" id="${typingId}">
-                    <div class="w-8 h-8 rounded-lg bg-cyber-cyan/20 border border-cyber-cyan flex items-center justify-center text-cyber-cyan text-xs font-bold font-orbitron flex-shrink-0">ZJ</div>
-                    <div class="bg-cyber-dark/80 border border-cyber-border px-4 py-3 rounded-2xl flex gap-1 items-center">
-                        <span class="w-1.5 h-1.5 bg-cyber-cyan rounded-full typing-dot"></span>
-                        <span class="w-1.5 h-1.5 bg-cyber-cyan rounded-full typing-dot"></span>
-                        <span class="w-1.5 h-1.5 bg-cyber-cyan rounded-full typing-dot"></span>
-                    </div>
-                </div>
-            `;
+            box.innerHTML += `<div class="flex items-start gap-3 chat-msg-anim" id="${typingId}"><div class="w-8 h-8 rounded-lg bg-cyber-accent/20 border border-cyber-accent flex items-center justify-center text-cyber-accent text-xs font-bold font-orbitron flex-shrink-0">ZJ</div><div class="bg-cyber-dark/80 border border-cyber-border px-4 py-3 rounded-2xl flex gap-1 items-center"><span class="w-1.5 h-1.5 bg-cyber-accent rounded-full typing-dot"></span><span class="w-1.5 h-1.5 bg-cyber-accent rounded-full typing-dot"></span><span class="w-1.5 h-1.5 bg-cyber-accent rounded-full typing-dot"></span></div></div>`;
             box.scrollTop = box.scrollHeight;
-
+            
             let botReply = "";
             try {
-                // Attempt to connect to your backend (Vercel / Localhost)
-                const endpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-                    ? 'http://localhost:5000/chat' 
-                    : '/api/chat';
-
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: msg })
-                });
-
+                const endpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/chat' : '/api/chat';
+                const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: msg }) });
                 if (!response.ok) throw new Error("Backend offline");
                 const data = await response.json();
                 botReply = data.reply;
             } catch (err) {
-                // Fallback simulated response
                 await new Promise(r => setTimeout(r, 1000));
-                const lower = msg.toLowerCase();
-                if(lower.includes('hi') || lower.includes('hello')) botReply = "Hello, user. Systems are online. How can I assist?";
-                else if(lower.includes('how are you')) botReply = "All systems operational at peak efficiency.";
-                else if(lower.includes('weather')) botReply = "You can check the live telemetry on the dashboard.";
-                else botReply = "I am currently in local simulation mode. The backend API is offline, but I can still respond.";
+                botReply = "I am currently in simulation mode. The backend API is offline. How can I assist you locally?";
             } finally {
                 document.getElementById(typingId).remove();
-                box.innerHTML += `
-                    <div class="flex items-start gap-3 chat-msg-anim">
-                        <div class="w-8 h-8 rounded-lg bg-cyber-cyan/20 border border-cyber-cyan flex items-center justify-center text-cyber-cyan text-xs font-bold font-orbitron flex-shrink-0">ZJ</div>
-                        <div class="bg-cyber-dark/80 border border-cyber-border text-gray-200 px-4 py-3 rounded-2xl max-w-md shadow-lg">
-                            ${botReply}
-                        </div>
-                    </div>
-                `;
+                // Basic Markdown parsing for bold and code
+                botReply = botReply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`(.*?)`/g, '<code class="bg-black/50 px-1 rounded text-cyber-gold">$1</code>');
+                box.innerHTML += `<div class="flex items-start gap-3 chat-msg-anim"><div class="w-8 h-8 rounded-lg bg-cyber-accent/20 border border-cyber-accent flex items-center justify-center text-cyber-accent text-xs font-bold font-orbitron flex-shrink-0">ZJ</div><div class="bg-cyber-dark/80 border border-cyber-border text-gray-200 px-4 py-3 rounded-2xl max-w-md shadow-lg">${botReply}</div></div>`;
                 box.scrollTop = box.scrollHeight;
             }
         }
-
         function clearChatMessages() {
-            const box = document.getElementById('chat-box');
-            box.innerHTML = `
-                <div class="bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan px-4 py-3 rounded-xl flex items-center gap-3 text-xs font-mono">
-                    <i data-lucide="shield-check" class="w-4 h-4"></i>
-                    <span>Secure connection to ZJ Neural Engine established.</span>
-                </div>
-                <div class="flex items-start gap-3 chat-msg-anim">
-                    <div class="w-8 h-8 rounded-lg bg-cyber-cyan/20 border border-cyber-cyan flex items-center justify-center text-cyber-cyan text-xs font-bold font-orbitron flex-shrink-0">ZJ</div>
-                    <div class="bg-cyber-dark/80 border border-cyber-border text-gray-200 px-4 py-3 rounded-2xl max-w-md shadow-lg">
-                        Hey there! 👋 What can I do for you today?
-                    </div>
-                </div>
+            document.getElementById('chat-box').innerHTML = `<div class="bg-cyber-accent/10 border border-cyber-accent/30 text-cyber-accent px-4 py-3 rounded-xl flex items-center gap-3 text-xs font-mono"><i data-lucide="shield-check" class="w-4 h-4"></i><span>Secure connection established.</span></div><div class="flex items-start gap-3 chat-msg-anim"><div class="w-8 h-8 rounded-lg bg-cyber-accent/20 border border-cyber-accent flex items-center justify-center text-cyber-accent text-xs font-bold font-orbitron flex-shrink-0">ZJ</div><div class="bg-cyber-dark/80 border border-cyber-border text-gray-200 px-4 py-3 rounded-2xl max-w-md shadow-lg">Hey there! 👋 What can I do for you today?</div></div>`;
+            lucide.createIcons(); showToast('Chat cleared', 'info');
+        }
+
+        // ==========================================
+        // 11. SETTINGS, GALLERY, THREE.JS
+        // ==========================================
+        function openSettings() {
+            modalTitle.textContent = 'SYSTEM SETTINGS'; modalDesc.textContent = 'Manage your local data and preferences.';
+            modalInput.classList.add('hidden'); modalDouble.classList.add('hidden'); modalTextarea.classList.add('hidden');
+            btnCancel.classList.add('hidden');
+            btnConfirm.textContent = 'CLOSE'; btnConfirm.className = 'px-5 py-2 rounded-xl bg-cyber-accent text-black font-bold text-sm hover:opacity-80 transition-all';
+            modalCallback = () => modal.close();
+            
+            // Inject settings buttons dynamically into modal (hacky but works for single file)
+            const existing = document.getElementById('settings-inject');
+            if(existing) existing.remove();
+            const settingsDiv = document.createElement('div');
+            settingsDiv.id = 'settings-inject';
+            settingsDiv.className = 'flex flex-col gap-2 mb-4';
+            settingsDiv.innerHTML = `
+                <button onclick="exportJSONData()" class="w-full text-left p-3 rounded-lg bg-cyber-accent/10 border border-cyber-accent text-cyber-accent text-sm font-bold"><i data-lucide="download" class="w-4 h-4 inline mr-2"></i> Export Data (JSON)</button>
+                <button onclick="importJSONData()" class="w-full text-left p-3 rounded-lg bg-cyber-black border border-cyber-border text-gray-300 text-sm font-bold hover:border-cyber-accent"><i data-lucide="upload" class="w-4 h-4 inline mr-2"></i> Import Data</button>
+                <button onclick="clearAllData()" class="w-full text-left p-3 rounded-lg bg-cyber-danger/10 border border-cyber-danger text-cyber-danger text-sm font-bold"><i data-lucide="trash-2" class="w-4 h-4 inline mr-2"></i> Clear All Local Data</button>
             `;
+            document.querySelector('#cyber-modal .flex.justify-end').before(settingsDiv);
             lucide.createIcons();
-            showToast('Chat cleared', 'info');
+            modal.showModal();
         }
-
-        // ==========================================
-        // 12. GALLERY LIGHTBOX
-        // ==========================================
-        function openLightbox(src) {
-            document.getElementById('lightbox-img').src = src;
-            document.getElementById('lightbox').classList.remove('hidden');
-            document.getElementById('lightbox').classList.add('flex');
-        }
-
-        function closeLightbox() {
-            document.getElementById('lightbox').classList.add('hidden');
-            document.getElementById('lightbox').classList.remove('flex');
-        }
-
-        // ==========================================
-        // 13. DATA MANAGEMENT (Import/Export)
-        // ==========================================
         function exportJSONData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(AppState));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "ZJ_Nexus_Backup.json");
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-            showToast('Data exported successfully');
+            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "ZJ_Backup.json"); a.click(); showToast('Exported successfully');
         }
-
         function importJSONData() {
-            customPrompt('IMPORT DATA', 'Paste your JSON backup string:', '{"notes":[], "todos":[]}', true, (json) => {
-                if(!json) return;
-                try {
-                    const parsed = JSON.parse(json);
-                    if(parsed.notes) AppState.notes = parsed.notes;
-                    if(parsed.todos) AppState.todos = parsed.todos;
-                    saveState();
-                    renderNotes();
-                    renderTodos();
-                    showToast('Data imported successfully');
-                } catch(e) {
-                    showToast('Invalid JSON format', 'error');
-                }
+            customImportModal((json) => {
+                try { const p = JSON.parse(json); if(p.notes) AppState.notes = p.notes; if(p.todos) AppState.todos = p.todos; saveState(); renderNotes(); renderTodos(); showToast('Imported successfully'); } catch(e) { showToast('Invalid JSON', 'error'); }
+            });
+        }
+        function clearAllData() {
+            customConfirm('CLEAR DATA', 'This will delete all notes, todos, and settings permanently.', () => {
+                localStorage.clear(); location.reload();
             });
         }
 
-        // ==========================================
-        // 14. THREE.JS BACKGROUND
-        // ==========================================
+        function openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').classList.remove('hidden'); document.getElementById('lightbox').classList.add('flex'); }
+        function closeLightbox() { document.getElementById('lightbox').classList.add('hidden'); document.getElementById('lightbox').classList.remove('flex'); }
+
         function initThreeJSBackground() {
-            const canvas = document.getElementById('bg-canvas');
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 300;
-
-            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-
-            const count = 800;
-            const geometry = new THREE.BufferGeometry();
-            const positions = new Float32Array(count * 3);
-
-            for (let i = 0; i < count * 3; i += 3) {
-                positions[i] = (Math.random() - 0.5) * 800;
-                positions[i+1] = (Math.random() - 0.5) * 800;
-                positions[i+2] = (Math.random() - 0.5) * 800;
-            }
-
+            const canvas = document.getElementById('bg-canvas'); if(!canvas) return;
+            const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.z = 300;
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight);
+            const geometry = new THREE.BufferGeometry(); const count = 800; const positions = new Float32Array(count * 3);
+            for (let i = 0; i < count * 3; i += 3) { positions[i] = (Math.random() - 0.5) * 800; positions[i+1] = (Math.random() - 0.5) * 800; positions[i+2] = (Math.random() - 0.5) * 800; }
             geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-            const material = new THREE.PointsMaterial({
-                color: 0x00f2fe,
-                size: 2,
-                transparent: true,
-                opacity: 0.6
-            });
-
-            const particles = new THREE.Points(geometry, material);
-            scene.add(particles);
-
-            function animate() {
-                requestAnimationFrame(animate);
-                particles.rotation.y += 0.001;
-                particles.rotation.x += 0.0005;
-                renderer.render(scene, camera);
-            }
-
+            const material = new THREE.PointsMaterial({ color: 0x00f2fe, size: 2, transparent: true, opacity: 0.6 });
+            const particles = new THREE.Points(geometry, material); scene.add(particles);
+            function animate() { requestAnimationFrame(animate); particles.rotation.y += 0.001; particles.rotation.x += 0.0005; renderer.render(scene, camera); }
             animate();
-
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
+            window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
         }
     </script>
 </body>
