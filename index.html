@@ -649,7 +649,7 @@
       <div class="chat-messages" id="chatMessages">
         <div class="msg-system">
           <i data-lucide="check-circle" size="16"></i>
-          Connected to AI via Vercel Backend.
+          ZJ Bot is ready.
         </div>
         <div class="msg-row bot">
           <div class="bubble">Hey there! 👋 I'm ZJ Bot. How can I help you today?</div>
@@ -693,7 +693,6 @@
       document.getElementById('sidebar').classList.toggle('hidden');
     }
 
-    // Check screen size for mobile menu
     function checkMobile() {
       if (window.innerWidth <= 768) {
         document.getElementById('menuBtn').style.display = 'flex';
@@ -706,19 +705,16 @@
     window.addEventListener('resize', checkMobile);
     checkMobile();
 
-    // Scroll to section
     function scrollToSection(id) {
       document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
       if (window.innerWidth <= 768) toggleSidebar();
     }
 
-    // Clock
     setInterval(() => {
       const now = new Date();
       document.getElementById('liveClock').textContent = now.toLocaleTimeString('en-GB', { hour12: false });
     }, 1000);
 
-    // Toast
     function showToast(msg) {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -728,7 +724,6 @@
       setTimeout(() => toast.remove(), 3000);
     }
 
-    // Modal Logic
     function openModal(id) {
       document.getElementById(id).showModal();
       if (window.innerWidth <= 768) toggleSidebar();
@@ -827,7 +822,6 @@
       try {
         document.getElementById('wDesc').textContent = 'Loading...';
         
-        // Geocoding
         const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`);
         const geoData = await geoRes.json();
         
@@ -839,7 +833,6 @@
 
         const { latitude, longitude, name, country_code } = geoData.results[0];
         
-        // Weather
         const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`);
         const wData = await wRes.json();
 
@@ -853,17 +846,14 @@
         const codeInfo = weatherCodeMap[current.weathercode] || { desc: 'Unknown', icon: 'cloud' };
         document.getElementById('wDesc').textContent = codeInfo.desc;
         
-        // Update Icon
         const iconContainer = document.getElementById('weatherIcon');
         iconContainer.setAttribute('data-lucide', codeInfo.icon);
         lucide.createIcons();
 
-        // Mock stats (Open-Meteo free doesn't give rain chance/humidity/UV easily on current)
         document.getElementById('wRain').textContent = `${Math.floor(Math.random() * 30)}%`;
         document.getElementById('wHum').textContent = `${Math.floor(Math.random() * 40) + 40}%`;
         document.getElementById('wUv').textContent = (Math.random() * 8).toFixed(1);
 
-        // Forecast
         const forecastContainer = document.getElementById('forecastContainer');
         forecastContainer.innerHTML = '';
         for (let i = 0; i < 7; i++) {
@@ -887,7 +877,7 @@
         showToast('Error fetching weather');
       }
     }
-    getWeather('Hyderabad'); // Initial load
+    getWeather('Hyderabad');
 
     // =========================================
     // NOTES
@@ -935,7 +925,6 @@
       if (currentFilter === 'done') filtered = todos.filter(t => t.done);
 
       list.innerHTML = filtered.map((t, i) => {
-        // Find original index for toggling/deleting
         const originalIndex = todos.indexOf(t);
         return `
         <div class="list-item" style="opacity: ${t.done ? 0.5 : 1}">
@@ -1099,6 +1088,11 @@
     // =========================================
     // CHAT LOGIC (Connected to Flask Backend)
     // =========================================
+    const CHAT_ENDPOINT =
+      (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+        ? 'http://localhost:5000/chat'
+        : '/api/chat';
+
     function toggleChat() {
       document.getElementById('chatOverlay').classList.toggle('active');
     }
@@ -1108,7 +1102,7 @@
       container.innerHTML = `
         <div class="msg-system">
           <i data-lucide="check-circle" size="16"></i>
-          Connected to AI via Vercel Backend.
+          ZJ Bot is ready.
         </div>
         <div class="msg-row bot">
           <div class="bubble">Hey there! 👋 I'm ZJ Bot. How can I help you today?</div>
@@ -1118,67 +1112,80 @@
     }
 
     async function sendMessage() {
-      const input = document.getElementById('chatInput');
+      const input   = document.getElementById('chatInput');
       const sendBtn = document.getElementById('chatSendBtn');
-      const text = input.value.trim();
+      const text    = input.value.trim();
       if (!text) return;
 
       const container = document.getElementById('chatMessages');
-      
-      // 1. Add User Message
-      const userMsg = document.createElement('div');
-      userMsg.className = 'msg-row user';
-      userMsg.innerHTML = `<div class="bubble">${text}</div>`;
-      container.appendChild(userMsg);
-      
+
+      // 1. User bubble — textContent, not innerHTML (XSS-safe)
+      const userRow = document.createElement('div');
+      userRow.className = 'msg-row user';
+      const userBubble = document.createElement('div');
+      userBubble.className = 'bubble';
+      userBubble.textContent = text;
+      userRow.appendChild(userBubble);
+      container.appendChild(userRow);
+
       input.value = '';
       container.scrollTop = container.scrollHeight;
-      
-      // 2. Disable input and show typing indicator
+
+      // 2. Lock UI + typing indicator
       input.disabled = true;
       sendBtn.disabled = true;
       sendBtn.style.opacity = '0.5';
 
-      const typingIndicator = document.createElement('div');
-      typingIndicator.className = 'msg-row bot';
-      typingIndicator.id = 'typingIndicator';
-      typingIndicator.innerHTML = `
-        <div class="typing-indicator">
-          <span></span><span></span><span></span>
-        </div>
-      `;
-      container.appendChild(typingIndicator);
+      const typing = document.createElement('div');
+      typing.className = 'msg-row bot';
+      typing.id = 'typingIndicator';
+      typing.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+      container.appendChild(typing);
       container.scrollTop = container.scrollHeight;
 
-      // 3. Call the Flask Backend
+      let botText = '';
+
       try {
-        const response = await fetch('/chat', {
+        const response = await fetch(CHAT_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: text })
         });
 
-        const data = await response.json();
-        
-        // Remove typing indicator
-        document.getElementById('typingIndicator').remove();
+        // Read raw text first so a non-JSON body (HTML 404/500) is diagnosable
+        const raw = await response.text();
+        let data = null;
+        try { data = JSON.parse(raw); } catch (_) { /* not JSON */ }
 
-        // Add Bot Message
-        const botMsg = document.createElement('div');
-        botMsg.className = 'msg-row bot';
-        botMsg.innerHTML = `<div class="bubble">${data.reply}</div>`;
-        container.appendChild(botMsg);
-
-      } catch (error) {
-        console.error('Chat Error:', error);
-        document.getElementById('typingIndicator').remove();
-        
-        const errorMsg = document.createElement('div');
-        errorMsg.className = 'msg-row bot';
-        errorMsg.innerHTML = `<div class="bubble" style="color: var(--accent-red);">⚠️ Failed to connect to server. Make sure Flask is running.</div>`;
-        container.appendChild(errorMsg);
+        if (!response.ok) {
+          botText = (data && typeof data.reply === 'string')
+            ? data.reply
+            : `⚠️ Server returned HTTP ${response.status}. Check server logs.`;
+          if (!data) console.error('Non-JSON error body:', raw.slice(0, 300));
+        } else if (data && typeof data.reply === 'string') {
+          botText = data.reply;
+        } else {
+          botText = '⚠️ Server returned an unexpected response format.';
+          console.error('Unexpected body:', raw.slice(0, 300));
+        }
+      } catch (err) {
+        console.error('Chat fetch error:', err);
+        botText = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+          ? '⚠️ Cannot reach Flask. Is "python chatbot.py" running on port 5000?'
+          : '⚠️ Cannot reach the backend. Verify the deployment and that /api/chat exists.';
       } finally {
-        // Re-enable input
+        // 3. Remove typing indicator exactly once, guarded
+        if (typing.parentNode) typing.remove();
+
+        const botRow = document.createElement('div');
+        botRow.className = 'msg-row bot';
+        const botBubble = document.createElement('div');
+        botBubble.className = 'bubble';
+        if (botText.startsWith('⚠️')) botBubble.style.color = 'var(--accent-red)';
+        botBubble.textContent = botText;
+        botRow.appendChild(botBubble);
+        container.appendChild(botRow);
+
         input.disabled = false;
         sendBtn.disabled = false;
         sendBtn.style.opacity = '1';
