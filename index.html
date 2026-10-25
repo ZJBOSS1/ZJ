@@ -1,1386 +1,3437 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ZJ Elite Dashboard</title>
-  
-  <!-- External Fonts & Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <!-- Added crossorigin and basic integrity placeholder -->
-  <script src="https://unpkg.com/lucide@latest" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="description" content="ZJ Elite Dashboard - All-in-one productivity workspace with calculator, notes, tasks, timer, clock, weather, AI chat and more.">
+<meta name="theme-color" content="#0c1220">
+<title>ZJ Elite Dashboard · Productivity Workspace</title>
+<style>
+/* ==========================================================================
+   ZJ ELITE DASHBOARD - STYLESHEET
+   All-in-one productivity workspace
+   ========================================================================== */
 
-  <style>
-    /* =========================================
-       A. CORE VARIABLES & THEME
-    ========================================= */
-    :root {
-      --bg-base: #050608;
-      --bg-sidebar: #080a0f;
-      --bg-card: #0d1117;
-      --bg-hover: #161b22;
-      --bg-input: #000000;
-      
-      --border-color: #21262d;
-      --border-light: #30363d;
-      
-      --text-primary: #e6edf3;
-      --text-secondary: #8b949e;
-      --text-muted: #484f58;
-      
-      --accent-cyan: #00c4f4;
-      --accent-cyan-hover: #00a8d6;
-      --accent-cyan-glow: rgba(0, 196, 244, 0.15);
-      
-      --accent-yellow: #f0c000;
-      --accent-red: #e63946;
-      --accent-green: #2ea043;
-      --accent-purple: #a371f7;
-
-      --font-sans: 'Inter', system-ui, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-      
-      --radius-sm: 4px;
-      --radius-md: 8px;
-      --radius-lg: 12px;
-      --radius-xl: 16px;
-      
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
-      --shadow-md: 0 4px 6px rgba(0,0,0,0.3);
-      --shadow-lg: 0 10px 20px rgba(0,0,0,0.5);
-      
-      --transition-fast: 0.1s ease;
-      --transition-normal: 0.2s ease;
-      --transition-slow: 0.3s ease;
-    }
-
-    [data-theme="light"] {
-      --bg-base: #f0f2f5;
-      --bg-sidebar: #ffffff;
-      --bg-card: #ffffff;
-      --bg-hover: #e4e6eb;
-      --bg-input: #ffffff;
-      --border-color: #ccd0d5;
-      --border-light: #b0b3b8;
-      --text-primary: #1c1e21;
-      --text-secondary: #65676b;
-      --text-muted: #8a8d91;
-      --accent-cyan: #0066cc;
-      --accent-cyan-hover: #0052a3;
-      --accent-cyan-glow: rgba(0, 102, 204, 0.1);
-      --accent-yellow: #d4a000;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-      --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
-      --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
-    }
-
-    /* =========================================
-       H. RESET & BASE ACCESSIBILITY
-    ========================================= */
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      font-size: 16px;
-      scroll-behavior: smooth;
-      -webkit-text-size-adjust: 100%;
-    }
-
-    body {
-      font-family: var(--font-sans);
-      background-color: var(--bg-base);
-      color: var(--text-primary);
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-      line-height: 1.5;
-      transition: background-color var(--transition-normal), color var(--transition-normal);
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* Prevent horizontal overflow */
-    .main-wrapper {
-      overflow-x: hidden;
-    }
-
-    /* Focus indicators */
-    button:focus-visible, input:focus-visible, select:focus-visible {
-      outline: 2px solid var(--accent-cyan);
-      outline-offset: 2px;
-    }
-
-    /* Skip Link */
-    .skip-link {
-      position: absolute;
-      top: -100px;
-      left: 0;
-      background: var(--accent-cyan);
-      color: #000;
-      padding: 8px 16px;
-      z-index: 10000;
-      transition: top var(--transition-fast);
-      font-weight: 700;
-    }
-    .skip-link:focus {
-      top: 0;
-    }
-
+/* ==========================================================================
+   1. CSS VARIABLES & THEME SYSTEM
+   ========================================================================== */
+:root {
+    /* Dark theme (default) */
+    --bg: #0c1220;
+    --bg-elevated: #101828;
+    --card: #151e30;
+    --card-hover: #1a2438;
+    --field: #202b40;
+    --field-hover: #283650;
+    --text: #eef2ff;
+    --text-secondary: #c8d2e6;
+    --muted: #a5b1c8;
+    --muted-soft: #7c8aa5;
+    --border: #30405a;
+    --border-light: #3d5070;
+    --accent: #8985ff;
+    --accent-hover: #a4a0ff;
+    --accent-dark: #6b66ff;
+    --accent-soft: rgba(137, 133, 255, 0.15);
+    --danger: #ff7587;
+    --danger-soft: rgba(255, 117, 135, 0.12);
+    --warning: #ffb347;
+    --good: #5cddb0;
+    --good-soft: rgba(92, 221, 176, 0.12);
+    --info: #6bc9ff;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 20px rgba(137, 133, 255, 0.3);
+    
     /* Typography */
-    h1, h2, h3, h4, h5, h6 { font-weight: 700; line-height: 1.2; }
-    a { color: var(--accent-cyan); text-decoration: none; }
-    button { cursor: pointer; border: none; background: none; font-family: inherit; color: inherit; }
-    input, select, textarea { font-family: inherit; color: var(--text-primary); outline: none; }
+    --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    
+    /* Spacing */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 12px;
+    --space-lg: 16px;
+    --space-xl: 24px;
+    --space-2xl: 32px;
+    
+    /* Radii */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 9999px;
+    
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.25s ease;
+    --transition-slow: 0.4s ease;
+    
+    /* Layout */
+    --sidebar-width: 220px;
+    --max-width: 1400px;
+}
 
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: var(--radius-sm); }
-    ::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+[data-theme="light"] {
+    --bg: #f2f5fb;
+    --bg-elevated: #ffffff;
+    --card: #ffffff;
+    --card-hover: #f8fafc;
+    --field: #edf1f8;
+    --field-hover: #e2e8f4;
+    --text: #182238;
+    --text-secondary: #2d3a52;
+    --muted: #64748b;
+    --muted-soft: #8896ad;
+    --border: #d8e0ed;
+    --border-light: #c4cfe3;
+    --accent: #5555d9;
+    --accent-hover: #4242c0;
+    --accent-dark: #3737a8;
+    --accent-soft: rgba(85, 85, 217, 0.1);
+    --danger: #c52e4b;
+    --danger-soft: rgba(197, 46, 75, 0.1);
+    --warning: #d97706;
+    --good: #12805c;
+    --good-soft: rgba(18, 128, 92, 0.1);
+    --info: #0284c7;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+    --shadow-glow: 0 0 20px rgba(85, 85, 217, 0.2);
+}
 
-    /* =========================================
-       SIDEBAR
-    ========================================= */
+/* ==========================================================================
+   2. RESET & BASE STYLES
+   ========================================================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.55 var(--font-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background var(--transition-normal), color var(--transition-normal);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+button, input, textarea, select {
+    font: inherit;
+    color: inherit;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* ==========================================================================
+   3. CUSTOM SCROLLBARS
+   ========================================================================== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--border-light);
+}
+
+/* ==========================================================================
+   4. UTILITY CLASSES
+   ========================================================================== */
+.hidden { display: none !important; }
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-sm { gap: var(--space-sm); }
+.gap-md { gap: var(--space-md); }
+.gap-lg { gap: var(--space-lg); }
+.w-full { width: 100%; }
+.text-center { text-align: center; }
+.text-mono { font-family: var(--font-mono); }
+.text-sm { font-size: 13px; }
+.text-xs { font-size: 11px; }
+.text-muted { color: var(--muted); }
+.text-accent { color: var(--accent); }
+.text-danger { color: var(--danger); }
+.text-good { color: var(--good); }
+.font-bold { font-weight: 700; }
+.font-black { font-weight: 900; }
+
+/* ==========================================================================
+   5. ANIMATIONS
+   ========================================================================== */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px var(--accent); }
+    50% { box-shadow: 0 0 20px var(--accent); }
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* ==========================================================================
+   6. APP CONTAINER & HEADER
+   ========================================================================== */
+.app {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--space-lg);
+    animation: fadeIn var(--transition-slow);
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+    flex-wrap: wrap;
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--border);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.logo {
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: white;
+    border-radius: var(--radius-lg);
+    width: 48px;
+    height: 48px;
+    font-weight: 900;
+    font-size: 20px;
+    box-shadow: var(--shadow-glow);
+    transition: transform var(--transition-normal);
+}
+
+.logo:hover {
+    transform: rotate(-5deg) scale(1.05);
+}
+
+h1 {
+    font-size: clamp(20px, 3vw, 28px);
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+h2 {
+    font-size: 18px;
+    margin: 0 0 var(--space-lg);
+    font-weight: 700;
+}
+
+h3 {
+    font-size: 15px;
+    margin: 0 0 var(--space-sm);
+    font-weight: 700;
+}
+
+p {
+    margin-top: 0;
+}
+
+.muted, .sub {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.actions {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   7. BUTTONS
+   ========================================================================== */
+button, .btn {
+    border: 1px solid var(--border);
+    background: var(--field);
+    color: var(--text);
+    border-radius: var(--radius-md);
+    padding: 10px 15px;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    user-select: none;
+}
+
+button:hover, .btn:hover {
+    border-color: var(--accent);
+    background: var(--field-hover);
+}
+
+button:active, .btn:active {
+    transform: scale(0.98);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+button.primary, .btn.primary {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+button.primary:hover, .btn.primary:hover {
+    background: var(--accent-hover);
+}
+
+button.danger, .btn.danger {
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+button.danger:hover, .btn.danger:hover {
+    background: var(--danger);
+    color: white;
+}
+
+button.icon-btn {
+    padding: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+}
+
+/* ==========================================================================
+   8. LAYOUT GRID
+   ========================================================================== */
+.layout {
+    display: grid;
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+    gap: var(--space-lg);
+}
+
+/* ==========================================================================
+   9. SIDEBAR NAVIGATION
+   ========================================================================== */
+.sidebar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    height: max-content;
+    position: sticky;
+    top: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.nav {
+    display: grid;
+    gap: var(--space-xs);
+}
+
+.nav button {
+    text-align: left;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 14px;
+    transition: all var(--transition-fast);
+}
+
+.nav button:hover {
+    background: var(--field);
+    color: var(--text);
+}
+
+.nav button.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+}
+
+main {
+    min-width: 0;
+}
+
+/* ==========================================================================
+   10. WELCOME SECTION
+   ========================================================================== */
+.welcome {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-md);
+    align-items: center;
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+    background: linear-gradient(135deg, var(--card), var(--field));
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+}
+
+.welcome p {
+    margin: 3px 0;
+    color: var(--muted);
+}
+
+.welcome-clock {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1px;
+}
+
+/* ==========================================================================
+   11. STATS CARDS
+   ========================================================================== */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.stat {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+}
+
+.stat:hover {
+    border-color: var(--border-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat strong {
+    display: block;
+    font-size: 26px;
+    margin: 4px 0;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.stat span {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   12. PANELS & CARDS
+   ========================================================================== */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-lg);
+}
+
+.panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    min-width: 0;
+    scroll-margin-top: var(--space-lg);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--transition-normal);
+}
+
+.panel:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.wide {
+    grid-column: 1 / -1;
+}
+
+/* ==========================================================================
+   13. FORM ELEMENTS
+   ========================================================================== */
+.field {
+    display: grid;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+}
+
+label {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+input, textarea, select {
+    width: 100%;
+    min-width: 0;
+    background: var(--field);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 11px 13px;
+    font-size: 14px;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+input:hover, textarea:hover, select:hover {
+    border-color: var(--border-light);
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.grow {
+    flex: 1;
+}
+
+/* ==========================================================================
+   14. STATUS MESSAGES
+   ========================================================================== */
+.status {
+    padding: 11px 13px;
+    background: var(--field);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-sm);
+    overflow-wrap: anywhere;
+    font-size: 13px;
+    border-left: 3px solid var(--border-light);
+    transition: all var(--transition-fast);
+}
+
+.status.error {
+    color: var(--danger);
+    border-left-color: var(--danger);
+    background: var(--danger-soft);
+    animation: shake 0.3s;
+}
+
+.status.success {
+    color: var(--good);
+    border-left-color: var(--good);
+    background: var(--good-soft);
+}
+
+/* ==========================================================================
+   15. CALCULATOR
+   ========================================================================== */
+.calc-display {
+    background: var(--field);
+    padding: var(--space-lg);
+    text-align: right;
+    font-size: 28px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    border-radius: var(--radius-md);
+    min-height: 68px;
+    overflow-wrap: anywhere;
+    margin-bottom: var(--space-md);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    word-break: break-all;
+    line-height: 1.2;
+}
+
+.calc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-xs);
+}
+
+.calc-grid button {
+    padding: 15px 4px;
+    font-weight: 700;
+    font-size: 16px;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.calc-grid button.op {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: transparent;
+}
+
+.calc-grid button.op:hover {
+    background: var(--accent);
+    color: white;
+}
+
+.calc-grid button.equal {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+.calc-grid button.equal:hover {
+    background: var(--accent-hover);
+}
+
+.calc-grid button.func {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.calc-modes {
+    display: flex;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+    background: var(--field);
+    padding: 3px;
+    border-radius: var(--radius-md);
+}
+
+.calc-modes button {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+}
+
+.calc-modes button.active {
+    background: var(--card);
+    color: var(--text);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   16. NOTES
+   ========================================================================== */
+.list {
+    display: grid;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+}
+
+.item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    background: var(--card-hover);
+    transition: all var(--transition-fast);
+    animation: slideUp var(--transition-normal);
+}
+
+.item:hover {
+    border-color: var(--border-light);
+}
+
+.item-body {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.item-body strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text);
+}
+
+.item-body div {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.item small {
+    display: block;
+    color: var(--muted);
+    margin-top: 6px;
+    font-size: 11px;
+}
+
+.item button {
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: var(--radius-sm);
+}
+
+.done {
+    text-decoration: line-through;
+    color: var(--muted) !important;
+}
+
+.empty {
+    padding: var(--space-lg);
+    text-align: center;
+    color: var(--muted);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+}
+
+.note-color-picker {
+    display: flex;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+    flex-wrap: wrap;
+}
+
+.note-color-picker button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: var(--radius-full);
+    border: 2px solid transparent;
+    transition: all var(--transition-fast);
+}
+
+.note-color-picker button.active {
+    border-color: var(--text);
+    transform: scale(1.1);
+}
+
+.note-search {
+    margin-bottom: var(--space-md);
+}
+
+/* ==========================================================================
+   17. TASKS
+   ========================================================================== */
+.task-filters {
+    display: flex;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+    background: var(--field);
+    padding: 3px;
+    border-radius: var(--radius-md);
+}
+
+.task-filters button {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+}
+
+.task-filters button.active {
+    background: var(--card);
+    color: var(--text);
+    box-shadow: var(--shadow-sm);
+}
+
+.priority-high {
+    border-left: 3px solid var(--danger) !important;
+}
+
+.priority-medium {
+    border-left: 3px solid var(--warning) !important;
+}
+
+.priority-low {
+    border-left: 3px solid var(--good) !important;
+}
+
+.priority-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.priority-badge.high {
+    background: var(--danger-soft);
+    color: var(--danger);
+}
+
+.priority-badge.medium {
+    background: rgba(255, 179, 71, 0.15);
+    color: var(--warning);
+}
+
+.priority-badge.low {
+    background: var(--good-soft);
+    color: var(--good);
+}
+
+/* ==========================================================================
+   18. TIMER
+   ========================================================================== */
+.timer {
+    text-align: center;
+    font-size: 52px;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    padding: var(--space-lg);
+    letter-spacing: 3px;
+    color: var(--accent);
+}
+
+.timer-progress {
+    width: 100%;
+    height: 6px;
+    background: var(--field);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-bottom: var(--space-md);
+}
+
+.timer-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+    transition: width 1s linear;
+    border-radius: var(--radius-full);
+}
+
+/* ==========================================================================
+   19. CLOCK APP (NEW)
+   ========================================================================== */
+.clock-app {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.analog-clock-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md);
+    background: var(--field);
+    border-radius: var(--radius-lg);
+}
+
+.analog-clock {
+    width: 240px;
+    height: 240px;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+}
+
+.analog-clock .clock-face {
+    fill: var(--card);
+    stroke: var(--border);
+    stroke-width: 3;
+}
+
+.analog-clock .clock-tick {
+    stroke: var(--muted);
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.analog-clock .clock-tick.major {
+    stroke: var(--text);
+    stroke-width: 3;
+}
+
+.analog-clock .clock-number {
+    fill: var(--text);
+    font-size: 18px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: central;
+    font-family: var(--font-main);
+}
+
+.analog-clock .clock-hand {
+    stroke-linecap: round;
+    transition: transform 0.1s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.analog-clock .hand-hour {
+    stroke: var(--text);
+    stroke-width: 6;
+}
+
+.analog-clock .hand-minute {
+    stroke: var(--text);
+    stroke-width: 4;
+}
+
+.analog-clock .hand-second {
+    stroke: var(--accent);
+    stroke-width: 2;
+}
+
+.analog-clock .clock-center {
+    fill: var(--accent);
+    stroke: var(--card);
+    stroke-width: 2;
+}
+
+.digital-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg);
+    background: var(--field);
+    border-radius: var(--radius-lg);
+    gap: var(--space-md);
+}
+
+.digital-time {
+    font-family: var(--font-mono);
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-shadow: 0 0 20px var(--accent-soft);
+}
+
+.digital-time .seconds {
+    font-size: 28px;
+    color: var(--text-secondary);
+    vertical-align: middle;
+}
+
+.digital-time .ampm {
+    font-size: 18px;
+    color: var(--muted);
+    margin-left: 8px;
+}
+
+.digital-date {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.clock-tabs {
+    display: flex;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+    background: var(--field);
+    padding: 3px;
+    border-radius: var(--radius-md);
+    flex-wrap: wrap;
+}
+
+.clock-tabs button {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    min-width: 70px;
+}
+
+.clock-tabs button.active {
+    background: var(--card);
+    color: var(--text);
+    box-shadow: var(--shadow-sm);
+}
+
+.clock-panel {
+    display: none;
+}
+
+.clock-panel.active {
+    display: block;
+    animation: fadeIn var(--transition-normal);
+}
+
+/* World Clocks */
+.world-clocks {
+    display: grid;
+    gap: var(--space-sm);
+}
+
+.world-clock-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md);
+    background: var(--field);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+}
+
+.world-clock-item .city {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.world-clock-item .city small {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.world-clock-item .time {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--accent);
+}
+
+/* Stopwatch */
+.stopwatch-display {
+    text-align: center;
+    font-size: 56px;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    padding: var(--space-lg) 0;
+    color: var(--accent);
+    letter-spacing: 2px;
+}
+
+.stopwatch-laps {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: var(--space-md);
+    display: grid;
+    gap: var(--space-xs);
+}
+
+.lap-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--field);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 13px;
+}
+
+.lap-item.best {
+    color: var(--good);
+    font-weight: 700;
+}
+
+.lap-item.worst {
+    color: var(--danger);
+    font-weight: 700;
+}
+
+/* Alarm */
+.alarm-form {
+    display: grid;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.alarm-list {
+    display: grid;
+    gap: var(--space-sm);
+}
+
+.alarm-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md);
+    background: var(--field);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    transition: all var(--transition-fast);
+}
+
+.alarm-item.active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.alarm-item .alarm-info .alarm-time {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.alarm-item .alarm-info .alarm-label {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.alarm-toggle {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: var(--border);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.alarm-toggle::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    transition: transform var(--transition-fast);
+}
+
+.alarm-toggle.active {
+    background: var(--accent);
+}
+
+.alarm-toggle.active::after {
+    transform: translateX(20px);
+}
+
+/* ==========================================================================
+   20. CHAT
+   ========================================================================== */
+.chat-log {
+    height: 260px;
+    overflow-y: auto;
+    background: var(--field);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin: var(--space-md) 0;
+    scroll-behavior: smooth;
+}
+
+.bubble {
+    padding: 10px 14px;
+    border-radius: var(--radius-lg);
+    max-width: 85%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: 14px;
+    animation: slideUp var(--transition-fast);
+    line-height: 1.5;
+}
+
+.bubble.user {
+    align-self: flex-end;
+    background: var(--accent);
+    color: white;
+    border-bottom-right-radius: var(--radius-sm);
+}
+
+.bubble.bot {
+    background: var(--card);
+    border: 1px solid var(--border);
+    align-self: flex-start;
+    border-bottom-left-radius: var(--radius-sm);
+}
+
+.typing-indicator {
+    display: inline-flex;
+    gap: 4px;
+    padding: 12px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    border-bottom-left-radius: var(--radius-sm);
+    align-self: flex-start;
+}
+
+.typing-indicator span {
+    width: 6px;
+    height: 6px;
+    background: var(--muted);
+    border-radius: 50%;
+    animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}
+
+/* ==========================================================================
+   21. WEATHER
+   ========================================================================== */
+.weather-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+}
+
+.weather-cell {
+    background: var(--field);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+}
+
+.weather-cell span {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.weather-cell strong {
+    overflow-wrap: anywhere;
+    font-size: 16px;
+    color: var(--text);
+}
+
+.weather-hero {
+    text-align: center;
+    padding: var(--space-md) 0;
+}
+
+.weather-hero .temp {
+    font-size: 56px;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: var(--accent);
+    line-height: 1;
+}
+
+.weather-hero .desc {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.hourly-forecast {
+    display: flex;
+    gap: var(--space-sm);
+    overflow-x: auto;
+    padding: var(--space-sm) 0;
+    margin-top: var(--space-md);
+}
+
+.hourly-item {
+    min-width: 70px;
+    text-align: center;
+    padding: var(--space-sm);
+    background: var(--field);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+}
+
+.hourly-item .hour {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.hourly-item .temp {
+    font-weight: 700;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+/* ==========================================================================
+   22. GALLERY
+   ========================================================================== */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    aspect-ratio: 4 / 3;
+    background: var(--field);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+.gallery-item .overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    color: white;
+    padding: var(--space-md) var(--space-sm) var(--space-sm);
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.gallery-item:hover .overlay {
+    opacity: 1;
+}
+
+.lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg);
+    animation: fadeIn var(--transition-fast);
+}
+
+.lightbox.active {
+    display: flex;
+}
+
+.lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: white;
+    color: black;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* ==========================================================================
+   23. TOASTS
+   ========================================================================== */
+.toast-container {
+    position: fixed;
+    bottom: var(--space-xl);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    pointer-events: none;
+}
+
+.toast {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 12px 20px;
+    box-shadow: var(--shadow-lg);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+    animation: slideUp var(--transition-normal);
+    max-width: 400px;
+    pointer-events: auto;
+}
+
+.toast.success {
+    border-left: 4px solid var(--good);
+}
+
+.toast.error {
+    border-left: 4px solid var(--danger);
+}
+
+.toast.info {
+    border-left: 4px solid var(--info);
+}
+
+/* ==========================================================================
+   24. FOOTER
+   ========================================================================== */
+footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    padding: var(--space-xl) var(--space-md);
+    border-top: 1px solid var(--border);
+    margin-top: var(--space-xl);
+}
+
+/* ==========================================================================
+   25. RESPONSIVE DESIGN
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .grid {
+        gap: var(--space-md);
+    }
+    
+    .clock-app {
+        grid-template-columns: 1fr;
+    }
+    
+    .analog-clock {
+        width: 200px;
+        height: 200px;
+    }
+}
+
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+    
     .sidebar {
-      width: 260px;
-      background-color: var(--bg-sidebar);
-      border-right: 1px solid var(--border-color);
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      flex-shrink: 0;
-      transition: transform var(--transition-slow);
-      z-index: 100;
+        position: static;
     }
-    .sidebar.hidden { transform: translateX(-100%); position: absolute; }
-
-    .sidebar-backdrop {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(2px);
-      z-index: 90; display: none; opacity: 0; transition: opacity var(--transition-normal);
+    
+    .nav {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: var(--space-xs);
     }
-    .sidebar-backdrop.active { display: block; opacity: 1; }
-
-    .brand { display: flex; align-items: center; gap: 12px; padding: 24px 20px; border-bottom: 1px solid var(--border-color); }
-    .brand-logo { width: 36px; height: 36px; background: var(--accent-cyan); color: #000; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; box-shadow: 0 0 15px var(--accent-cyan-glow); }
-    .brand-name { font-size: 15px; font-weight: 800; letter-spacing: 1px; }
-
-    .nav-scroll { flex: 1; overflow-y: auto; padding: 16px 0; }
-    .nav-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; padding: 20px 20px 8px; }
-    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 20px; width: 100%; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; text-align: left; border-left: 3px solid transparent; transition: all var(--transition-fast); }
-    .nav-item i { width: 18px; height: 18px; }
-    .nav-item:hover { background-color: var(--bg-hover); color: var(--text-primary); }
-    .nav-item.active { border-left-color: var(--accent-cyan); color: var(--accent-cyan); background-color: var(--accent-cyan-glow); }
-
-    /* =========================================
-       MAIN LAYOUT
-    ========================================= */
-    .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow-y: auto; position: relative; }
-
-    .topbar { display: flex; justify-content: space-between; align-items: center; padding: 16px 30px; border-bottom: 1px solid var(--border-color); background-color: rgba(8, 10, 15, 0.85); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); }
-    [data-theme="light"] .topbar { background-color: rgba(255, 255, 255, 0.85); }
-    .topbar-left, .topbar-right { display: flex; align-items: center; gap: 16px; }
-    .menu-btn { display: none; }
-
-    .search-box { display: flex; align-items: center; gap: 10px; background: var(--bg-base); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: var(--radius-md); color: var(--text-secondary); font-size: 13px; width: 320px; transition: border-color var(--transition-fast); }
-    .search-box:focus-within { border-color: var(--accent-cyan); }
-    .search-box input { background: transparent; border: none; width: 100%; color: var(--text-primary); }
-    .search-shortcut { background: var(--bg-hover); border: 1px solid var(--border-color); padding: 2px 6px; border-radius: var(--radius-sm); font-size: 10px; font-weight: 700; color: var(--text-secondary); }
-
-    .icon-btn { color: var(--text-secondary); display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: var(--radius-md); transition: all var(--transition-fast); }
-    .icon-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
-    .theme-btn { color: var(--accent-yellow); border: 1px solid var(--border-color); background: var(--bg-base); }
-
-    /* HERO */
-    .hero { padding: 50px 30px 30px; text-align: center; }
-    .hero h1 { font-size: 36px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; letter-spacing: -0.5px; }
-    .clock-badge { background: var(--accent-yellow); color: #000; font-family: var(--font-mono); font-size: 22px; padding: 6px 14px; border-radius: var(--radius-md); font-weight: 800; box-shadow: 0 0 20px rgba(240, 192, 0, 0.2); }
-    .hero p { color: var(--accent-cyan); font-size: 13px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-top: 12px; }
-
-    /* GRID */
-    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; padding: 0 30px 40px; max-width: 1500px; margin: 0 auto; width: 100%; }
-    .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); display: flex; flex-direction: column; overflow: hidden; height: 540px; box-shadow: var(--shadow-md); transition: transform var(--transition-normal), box-shadow var(--transition-normal); }
-    .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-    .card-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border-color); font-size: 12px; font-weight: 700; letter-spacing: 1px; background: rgba(255, 255, 255, 0.01); }
-    .card-title { display: flex; align-items: center; gap: 10px; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; }
-    .dot.cyan { background: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan); }
-    .dot.yellow { background: var(--accent-yellow); box-shadow: 0 0 8px var(--accent-yellow); }
-    .dot.silver { background: #c0c0c0; box-shadow: 0 0 8px #c0c0c0; }
-
-    /* =========================================
-       WIDGET: CALCULATOR
-    ========================================= */
-    .calc-history { padding: 12px 20px; font-size: 12px; color: var(--text-secondary); text-align: right; min-height: 60px; max-height: 80px; overflow-y: auto; border-bottom: 1px solid var(--border-color); }
-    .calc-display { padding: 15px 20px; text-align: right; font-size: 36px; font-weight: 700; font-family: var(--font-mono); overflow-x: auto; white-space: nowrap; color: var(--text-primary); }
-    .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 20px 20px; flex: 1; }
-    .calc-btn { background: var(--bg-hover); border-radius: var(--radius-md); font-size: 20px; font-weight: 600; transition: filter var(--transition-fast); display: flex; align-items: center; justify-content: center; }
-    .calc-btn:active { filter: brightness(0.8); }
-    .calc-btn.op { background: var(--accent-cyan); color: #000; }
-    .calc-btn.equal { background: var(--accent-yellow); color: #000; grid-column: span 2; }
-    .calc-btn.silver { background: var(--border-light); color: var(--text-primary); }
-
-    /* =========================================
-       WIDGET: WEATHER
-    ========================================= */
-    .weather-search { padding: 16px 20px; display: flex; gap: 10px; }
-    .weather-search input { flex: 1; background: var(--bg-base); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: var(--radius-md); color: var(--text-primary); }
-    .weather-search button { background: var(--accent-cyan); color: #000; padding: 0 18px; border-radius: var(--radius-md); display: flex; align-items: center; font-weight: 700; }
-    .weather-search button:disabled { opacity: 0.5; cursor: not-allowed; }
-    .weather-main { text-align: center; padding: 10px; }
-    .weather-icon-large { color: var(--accent-yellow); display: flex; justify-content: center; margin-bottom: 10px; }
-    .weather-icon-large svg { width: 56px; height: 56px; }
-    .weather-temp { font-size: 52px; font-weight: 800; display: flex; align-items: flex-start; justify-content: center; gap: 5px; line-height: 1; }
-    .weather-temp span:last-child { font-size: 16px; background: var(--bg-hover); padding: 4px 10px; border-radius: var(--radius-md); margin-top: 10px; color: var(--text-secondary); font-weight: 600; }
-    .weather-desc { color: var(--accent-cyan); font-size: 15px; font-weight: 600; margin-top: 8px; }
-    .weather-loc { color: var(--text-secondary); font-size: 12px; margin-top: 5px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
-    .weather-update-time { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
-    .weather-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 20px; }
-    .stat-box { background: var(--bg-base); border: 1px solid var(--border-color); padding: 14px; border-radius: var(--radius-md); text-align: center; font-size: 12px; color: var(--text-secondary); font-weight: 500; }
-    .stat-box strong { display: block; font-size: 16px; color: var(--text-primary); margin-top: 4px; font-weight: 700; }
-    .forecast { display: flex; justify-content: space-between; padding: 16px 20px; border-top: 1px solid var(--border-color); margin-top: auto; overflow-x: auto; gap: 10px; }
-    .forecast-day { text-align: center; font-size: 11px; color: var(--text-secondary); min-width: 44px; font-weight: 600; }
-    .forecast-day svg { color: var(--accent-yellow); margin: 8px 0; }
-
-    /* =========================================
-       WIDGET: GALLERY
-    ========================================= */
-    .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; height: 100%; }
-    .gallery-grid img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border-color); transition: transform var(--transition-normal); cursor: pointer; }
-    .gallery-grid img:hover { transform: scale(1.03); z-index: 2; box-shadow: var(--shadow-md); }
-    .gallery-grid img:first-child { grid-row: span 2; }
-
-    /* =========================================
-       MODALS
-    ========================================= */
-    .app-modal { border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-primary); border-radius: var(--radius-xl); padding: 0; width: 90%; max-width: 500px; margin: auto; box-shadow: var(--shadow-lg); }
-    .app-modal::backdrop { background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px); }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border-color); background: var(--bg-sidebar); border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
-    .modal-title { font-weight: 700; display: flex; align-items: center; gap: 10px; font-size: 15px; }
-    .modal-body { padding: 24px; max-height: 70vh; overflow-y: auto; }
-
-    /* Forms & Lists */
-    .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-    .input-field { flex: 1; background: var(--bg-base); border: 1px solid var(--border-color); padding: 12px 16px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 14px; }
-    .input-field:focus { border-color: var(--accent-cyan); box-shadow: 0 0 0 2px var(--accent-cyan-glow); }
-    .btn-primary { background: var(--accent-cyan); color: #000; font-weight: 700; padding: 12px 24px; border-radius: var(--radius-md); transition: background var(--transition-fast); display: flex; align-items: center; gap: 8px; justify-content: center; }
-    .btn-primary:hover { background: var(--accent-cyan-hover); }
-    .btn-danger { background: rgba(230, 57, 70, 0.1); color: var(--accent-red); padding: 10px 16px; border-radius: var(--radius-md); font-weight: 600; transition: background var(--transition-fast); display: flex; align-items: center; justify-content: center;}
-    .btn-danger:hover { background: rgba(230, 57, 70, 0.2); }
-
-    .list-container { max-height: 350px; overflow-y: auto; }
-    .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--bg-base); border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 10px; font-size: 14px; animation: fadeIn var(--transition-normal); word-break: break-word; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* Tabs */
-    .tabs { display: flex; background: var(--bg-base); border-radius: var(--radius-md); padding: 4px; margin-bottom: 20px; }
-    .tab { flex: 1; padding: 10px; text-align: center; font-size: 13px; border-radius: var(--radius-md); cursor: pointer; color: var(--text-secondary); transition: all var(--transition-fast); font-weight: 600; }
-    .tab.active { background: var(--bg-hover); color: var(--text-primary); }
-
-    /* Pomodoro Ring */
-    .pomo-ring { position: relative; width: 220px; height: 220px; margin: 20px auto; }
-    .pomo-ring svg { transform: rotate(-90deg); width: 100%; height: 100%; }
-    .ring-bg { fill: none; stroke: var(--bg-hover); stroke-width: 8; }
-    .ring-fg { fill: none; stroke: var(--accent-cyan); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 553; stroke-dashoffset: 0; transition: stroke-dashoffset 0.1s linear; }
-    .pomo-time { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 44px; font-family: var(--font-mono); font-weight: 700; }
-    .pomo-actions { display: flex; justify-content: center; gap: 12px; }
-
-    /* Converter */
-    .conv-row { display: flex; gap: 12px; margin-bottom: 16px; }
-    .conv-row select { flex: 1; background: var(--bg-base); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-md); color: var(--text-primary); }
-    .conv-row input, .conv-row output { flex: 1; background: var(--bg-base); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-md); color: var(--text-primary); font-size: 18px; display: flex; align-items: center; font-family: var(--font-mono); }
-    .conv-row output { background: var(--bg-hover); }
-    .conv-swap { background: var(--bg-hover); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: -8px auto 12px; color: var(--accent-cyan); position: relative; z-index: 2; cursor: pointer; border: 1px solid var(--border-color); }
-
-    /* Scientific Calc */
-    .sci-display { background: var(--bg-base); padding: 16px; border-radius: var(--radius-md); text-align: right; font-size: 28px; font-family: var(--font-mono); margin-bottom: 16px; overflow-x: auto; border: 1px solid var(--border-color); }
-    .sci-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-    .sci-btn { background: var(--bg-hover); padding: 14px 0; border-radius: var(--radius-md); font-size: 15px; font-weight: 600; }
-    .sci-btn.func { color: var(--accent-cyan); }
-
-    /* =========================================
-       CHAT OVERLAY
-    ========================================= */
-    .chat-fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--accent-cyan); color: #000; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(0, 196, 244, 0.4); z-index: 100; transition: transform var(--transition-normal); }
-    .chat-fab:hover { transform: scale(1.08) rotate(5deg); }
-    .chat-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(6px); z-index: 1000; display: none; justify-content: center; align-items: center; }
-    .chat-overlay.active { display: flex; animation: fadeIn var(--transition-fast); }
-    .chat-container { width: 100%; max-width: 850px; height: 100%; max-height: 850px; background: #000; border: 1px solid var(--border-color); border-radius: var(--radius-xl); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
-    .chat-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: #080a0f; border-bottom: 1px solid var(--border-color); }
-    .chat-identity { display: flex; align-items: center; gap: 14px; }
-    .chat-avatar { width: 42px; height: 42px; background: var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; font-size: 16px; box-shadow: 0 0 15px rgba(0, 196, 244, 0.3); }
-    .chat-title h3 { font-size: 15px; margin-bottom: 2px; }
-    .chat-title p { font-size: 12px; color: var(--accent-cyan); display: flex; align-items: center; gap: 5px; }
-    .chat-title p::before { content: ''; width: 6px; height: 6px; background: var(--accent-cyan); border-radius: 50%; display: inline-block; }
-    .chat-actions { display: flex; gap: 10px; }
-    .chat-btn { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border: 1px solid var(--border-light); border-radius: var(--radius-md); font-size: 12px; font-weight: 700; color: var(--text-primary); transition: background var(--transition-fast); background: transparent; }
-    .chat-btn:hover { background: var(--bg-hover); }
-    .chat-btn.close { border-color: #444; color: #aaa; }
-    .chat-btn svg { width: 14px; height: 14px; }
-
-    .chat-messages { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; background: #000; }
-    .msg-system { background: #111; border: 1px solid #333; color: #ccc; padding: 14px 18px; border-radius: var(--radius-md); font-size: 13px; display: flex; align-items: center; gap: 10px; }
-    .msg-system i { color: var(--accent-green); }
-    .msg-row { display: flex; width: 100%; }
-    .msg-row.user { justify-content: flex-end; }
-    .bubble { max-width: 75%; padding: 14px 18px; border-radius: var(--radius-lg); font-size: 14px; line-height: 1.6; word-wrap: break-word; }
-    .msg-row.bot .bubble { background: #111; border: 1px solid #333; color: #e0e0e0; border-bottom-left-radius: 4px; }
-    .msg-row.user .bubble { background: var(--accent-cyan); color: #000; border-bottom-right-radius: 4px; font-weight: 500; }
-
-    .chat-input-area { padding: 16px 24px; background: #080a0f; border-top: 1px solid var(--border-color); display: flex; gap: 14px; }
-    .chat-input-wrapper { flex: 1; display: flex; align-items: center; background: #000; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 0 16px; }
-    .chat-input-wrapper input { flex: 1; background: transparent; border: none; color: #fff; padding: 16px 0; font-size: 14px; }
-    .chat-send-btn { background: var(--accent-cyan); color: #000; font-weight: 800; padding: 0 28px; border-radius: var(--radius-md); font-size: 14px; transition: background var(--transition-fast); }
-    .chat-send-btn:hover { background: var(--accent-cyan-hover); }
-    .chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    /* Typing Indicator */
-    .typing-indicator { display: flex; gap: 5px; padding: 14px 18px; background: #111; border: 1px solid #333; border-radius: var(--radius-lg); border-bottom-left-radius: 4px; width: fit-content; }
-    .typing-indicator span { width: 6px; height: 6px; background: #666; border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
-    .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-    .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-    @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
-
-    /* Toasts */
-    .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-    .toast { background: var(--bg-card); border: 1px solid var(--border-color); padding: 14px 28px; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); animation: slideUp var(--transition-normal); color: var(--text-primary); font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
-    .toast.success { border-left: 4px solid var(--accent-green); }
-    .toast.error { border-left: 4px solid var(--accent-red); }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* =========================================
-       RESPONSIVE DESIGN
-    ========================================= */
-    @media (max-width: 768px) {
-      .sidebar { position: absolute; }
-      .sidebar.hidden { transform: translateX(-100%); }
-      .menu-btn { display: flex; }
-      .dashboard-grid { grid-template-columns: 1fr; padding: 0 16px 20px; }
-      .hero { padding: 30px 16px 20px; }
-      .hero h1 { font-size: 26px; }
-      .hero h1 .clock-badge { font-size: 18px; }
-      .topbar { padding: 12px 16px; }
-      .search-box { width: 180px; }
-      .search-shortcut { display: none; }
-      .chat-container { max-height: 100vh; border-radius: 0; border: none; }
-      .chat-header { border-radius: 0; }
-      .chat-actions .chat-btn span { display: none; }
-      .chat-actions .chat-btn { padding: 8px; }
+    
+    .nav button {
+        text-align: center;
+        justify-content: center;
+        font-size: 12px;
+        padding: 8px 4px;
+        flex-direction: column;
+        gap: 4px;
     }
-  </style>
+    
+    .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .app {
+        padding: var(--space-sm);
+    }
+    
+    header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+    
+    .actions {
+        width: 100%;
+    }
+    
+    .actions button {
+        flex: 1;
+        font-size: 13px;
+        padding: 9px 10px;
+    }
+    
+    .brand {
+        gap: var(--space-sm);
+    }
+    
+    .logo {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+    
+    .grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .wide {
+        grid-column: auto;
+    }
+    
+    .panel {
+        padding: var(--space-md);
+    }
+    
+    .nav {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    
+    .row.mobile {
+        flex-wrap: wrap;
+    }
+    
+    .row.mobile > * {
+        flex: 1 1 100%;
+    }
+    
+    .welcome {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .analog-clock {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .digital-time {
+        font-size: 36px;
+    }
+    
+    .digital-time .seconds {
+        font-size: 20px;
+    }
+    
+    .timer,
+    .stopwatch-display {
+        font-size: 38px;
+    }
+    
+    .weather-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
+   26. ACCESSIBILITY - REDUCED MOTION
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+</style>
 </head>
 <body>
-  <a href="#main-content" class="skip-link">Skip to main content</a>
-  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebar" aria-label="Main navigation">
-    <div class="brand"><div class="brand-logo">ZJ</div><div class="brand-name">ZJ ELITE</div></div>
-    <div class="nav-scroll">
-      <div class="nav-label">Main Menu</div>
-      <button class="nav-item active" data-action="scroll" data-target="dashboard"><i data-lucide="layout-dashboard"></i> Dashboard</button>
-      <button class="nav-item" data-action="scroll" data-target="calcCard"><i data-lucide="calculator"></i> Calculator</button>
-      <button class="nav-item" data-action="scroll" data-target="weatherCard"><i data-lucide="cloud-sun"></i> Weather</button>
-      <button class="nav-item" data-action="scroll" data-target="galleryCard"><i data-lucide="image"></i> Gallery</button>
-
-      <div class="nav-label">Professional Apps</div>
-      <button class="nav-item" data-action="open-modal" data-target="notesModal"><i data-lucide="sticky-note"></i> Notes</button>
-      <button class="nav-item" data-action="open-modal" data-target="todoModal"><i data-lucide="check-square"></i> Todo List</button>
-      <button class="nav-item" data-action="open-modal" data-target="pomoModal"><i data-lucide="timer"></i> Pomodoro</button>
-      <button class="nav-item" data-action="open-modal" data-target="convModal"><i data-lucide="arrow-left-right"></i> Unit Converter</button>
-      <button class="nav-item" data-action="open-chat"><i data-lucide="message-square"></i> AI Chatbot</button>
-
-      <div class="nav-label">System</div>
-      <button class="nav-item" data-action="open-modal" data-target="settingsModal"><i data-lucide="settings"></i> API Settings</button>
-    </div>
-  </aside>
-  <div class="sidebar-backdrop" id="sidebarBackdrop" data-action="toggle-sidebar"></div>
-
-  <!-- MAIN CONTENT -->
-  <main class="main-wrapper" id="main-content">
-    <header class="topbar">
-      <div class="topbar-left">
-        <button class="icon-btn menu-btn" data-action="toggle-sidebar" aria-label="Open menu"><i data-lucide="menu"></i></button>
-        <div class="search-box">
-          <i data-lucide="search"></i>
-          <input type="text" id="globalSearch" placeholder="Search shortcuts...">
-          <span class="search-shortcut">Ctrl K</span>
+<div class="app">
+    <!-- HEADER -->
+    <header>
+        <div class="brand">
+            <div class="logo">ZJ</div>
+            <div>
+                <h1>ZJ Elite Dashboard</h1>
+                <div class="sub">Your personal productivity workspace</div>
+            </div>
         </div>
-      </div>
-      <div class="topbar-right">
-        <button class="icon-btn theme-btn" id="themeToggle" aria-label="Toggle theme"><i data-lucide="moon"></i></button>
-      </div>
+        <div class="actions">
+            <button id="themeBtn" aria-label="Toggle theme">☀️ Light mode</button>
+            <button id="exportBtn" aria-label="Export all data">⬇️ Export data</button>
+        </div>
     </header>
 
-    <section class="hero" id="dashboard">
-      <h1>Your All-in-One Dashboard <span class="clock-badge" id="liveClock">00:00:00</span></h1>
-      <p>Stay productive, informed, and connected.</p>
-    </section>
+    <!-- MAIN LAYOUT -->
+    <div class="layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <nav class="nav" id="nav" aria-label="Dashboard sections">
+                <button class="active" data-go="overview">⌂ Overview</button>
+                <button data-go="calculator">🧮 Calculator</button>
+                <button data-go="converter">⇄ Converter</button>
+                <button data-go="notes">▤ Notes</button>
+                <button data-go="tasks">✓ Tasks</button>
+                <button data-go="timer">◷ Timer</button>
+                <button data-go="clock">🕐 Clock</button>
+                <button data-go="chatbot">✧ AI Chat</button>
+                <button data-go="weather">☼ Weather</button>
+                <button data-go="gallery">🖼️ Gallery</button>
+            </nav>
+            <p class="sub" style="margin: var(--space-lg) var(--space-xs) var(--space-xs);">
+                Your notes, tasks, and alarms are saved locally in this browser.
+            </p>
+        </aside>
 
-    <div class="dashboard-grid">
-      <!-- CALCULATOR CARD -->
-      <section class="card" id="calcCard" aria-label="Basic Calculator">
-        <div class="card-header">
-          <div class="card-title"><span class="dot silver"></span> CALCULATOR</div>
-          <button class="icon-btn" data-action="open-modal" data-target="sciCalcModal" aria-label="Open Scientific Mode"><i data-lucide="maximize-2"></i></button>
-        </div>
-        <div class="calc-history" id="calcHistory"></div>
-        <div class="calc-display" id="calcDisplay">0</div>
-        <div class="calc-grid">
-          <button class="calc-btn silver" data-calc="AC">AC</button>
-          <button class="calc-btn silver" data-calc="DEL">DEL</button>
-          <button class="calc-btn silver" data-calc="%">%</button>
-          <button class="calc-btn op" data-calc="/">÷</button>
-          <button class="calc-btn" data-calc="7">7</button><button class="calc-btn" data-calc="8">8</button><button class="calc-btn" data-calc="9">9</button><button class="calc-btn op" data-calc="*">×</button>
-          <button class="calc-btn" data-calc="4">4</button><button class="calc-btn" data-calc="5">5</button><button class="calc-btn" data-calc="6">6</button><button class="calc-btn op" data-calc="-">−</button>
-          <button class="calc-btn" data-calc="1">1</button><button class="calc-btn" data-calc="2">2</button><button class="calc-btn" data-calc="3">3</button><button class="calc-btn op" data-calc="+">+</button>
-          <button class="calc-btn" data-calc="0">0</button><button class="calc-btn" data-calc=".">.</button><button class="calc-btn equal" data-calc="=">=</button>
-        </div>
-      </section>
+        <main>
+            <!-- OVERVIEW -->
+            <section id="overview">
+                <div class="welcome">
+                    <div>
+                        <h2>Welcome back 👋</h2>
+                        <p id="today">Ready to get things done?</p>
+                    </div>
+                    <div id="welcomeClock" class="welcome-clock">00:00:00</div>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <span>Saved notes</span>
+                        <strong id="noteCount">0</strong>
+                    </div>
+                    <div class="stat">
+                        <span>Open tasks</span>
+                        <strong id="openCount">0</strong>
+                    </div>
+                    <div class="stat">
+                        <span>Completed tasks</span>
+                        <strong id="doneCount">0</strong>
+                    </div>
+                    <div class="stat">
+                        <span>Local storage</span>
+                        <strong id="storageStatus" style="font-size:18px;">Ready</strong>
+                    </div>
+                </div>
+            </section>
 
-      <!-- WEATHER CARD -->
-      <section class="card" id="weatherCard" aria-label="Weather">
-        <div class="card-header">
-          <div class="card-title"><span class="dot cyan"></span> WEATHER</div>
-          <button class="icon-btn" id="geoWeatherBtn" aria-label="Use my location"><i data-lucide="map-pin"></i></button>
-        </div>
-        <div class="weather-search">
-          <input type="text" id="cityInput" placeholder="City (e.g. London)" autocomplete="off">
-          <button id="searchWeatherBtn" aria-label="Search"><i data-lucide="search"></i></button>
-        </div>
-        <div class="weather-main">
-          <div class="weather-icon-large" id="wIcon"><i data-lucide="sun"></i></div>
-          <div class="weather-temp"><span id="wTemp">--</span>° <span>°C</span></div>
-          <div class="weather-desc" id="wDesc">Loading...</div>
-          <div class="weather-loc" id="wLoc">DETECTING...</div>
-          <div class="weather-update-time" id="wUpdateTime"></div>
-        </div>
-        <div class="weather-stats">
-          <div class="stat-box">Rain chance <strong id="wRain">--%</strong></div>
-          <div class="stat-box">UV Index <strong id="wUv">--</strong></div>
-          <div class="stat-box">Humidity <strong id="wHum">--%</strong></div>
-          <div class="stat-box">Wind <strong id="wWind">-- km/h</strong></div>
-        </div>
-        <div class="forecast" id="wForecast"></div>
-      </section>
+            <div class="grid">
+                <!-- CALCULATOR -->
+                <section class="panel" id="calculator">
+                    <h2>🧮 Calculator</h2>
+                    <div class="calc-modes" role="tablist">
+                        <button class="active" data-mode="basic" role="tab">Basic</button>
+                        <button data-mode="scientific" role="tab">Scientific</button>
+                    </div>
+                    <div id="calcDisplay" class="calc-display">0</div>
+                    <div id="calcButtons" class="calc-grid">
+                        <button data-v="AC" class="func">AC</button>
+                        <button data-v="DEL" class="func">⌫</button>
+                        <button data-v="(" class="op">(</button>
+                        <button data-v=")" class="op">)</button>
+                        <button data-v="7">7</button>
+                        <button data-v="8">8</button>
+                        <button data-v="9">9</button>
+                        <button data-v="/" class="op">÷</button>
+                        <button data-v="4">4</button>
+                        <button data-v="5">5</button>
+                        <button data-v="6">6</button>
+                        <button data-v="*" class="op">×</button>
+                        <button data-v="1">1</button>
+                        <button data-v="2">2</button>
+                        <button data-v="3">3</button>
+                        <button data-v="-" class="op">−</button>
+                        <button data-v="0">0</button>
+                        <button data-v=".">.</button>
+                        <button data-v="=" class="equal">=</button>
+                        <button data-v="+" class="op">+</button>
+                    </div>
+                    <p class="sub" style="margin-top: var(--space-md);">
+                        Keyboard: numbers, operators, Enter, Backspace, Escape.
+                    </p>
+                    <div class="field">
+                        <label for="calcHistory">Last result</label>
+                        <input id="calcHistory" readonly value="No calculation yet" style="font-family: var(--font-mono);">
+                    </div>
+                </section>
 
-      <!-- GALLERY CARD -->
-      <section class="card" id="galleryCard" aria-label="Gallery">
-        <div class="card-header"><div class="card-title"><span class="dot yellow"></span> GALLERY</div></div>
-        <div class="gallery-grid">
-          <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600&q=80" alt="BMW" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=80" alt="Tech 1" loading="lazy">
-          <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&q=80" alt="Tech 2" loading="lazy">
-        </div>
-      </section>
+                <!-- CONVERTER -->
+                <section class="panel" id="converter">
+                    <h2>⇄ Unit Converter</h2>
+                    <div class="field">
+                        <label for="category">Category</label>
+                        <select id="category">
+                            <option value="length">Length</option>
+                            <option value="weight">Weight / Mass</option>
+                            <option value="temperature">Temperature</option>
+                            <option value="area">Area</option>
+                            <option value="volume">Volume</option>
+                            <option value="speed">Speed</option>
+                            <option value="data">Data</option>
+                            <option value="time">Time</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="convValue">Value</label>
+                        <input id="convValue" type="number" value="1" step="any">
+                    </div>
+                    <div class="row">
+                        <div class="field grow">
+                            <label for="fromUnit">From</label>
+                            <select id="fromUnit"></select>
+                        </div>
+                        <button id="swapBtn" aria-label="Swap units" style="margin-top: 20px;">⇄</button>
+                        <div class="field grow">
+                            <label for="toUnit">To</label>
+                            <select id="toUnit"></select>
+                        </div>
+                    </div>
+                    <button id="convertBtn" class="primary" style="width:100%;">Convert</button>
+                    <div id="convResult" class="status">Choose units to convert.</div>
+                </section>
+
+                <!-- NOTES -->
+                <section class="panel" id="notes">
+                    <h2>▤ Notes</h2>
+                    <form id="noteForm">
+                        <div class="field">
+                            <label for="noteTitle">Title</label>
+                            <input id="noteTitle" maxlength="120" required placeholder="Note title">
+                        </div>
+                        <div class="field">
+                            <label for="noteBody">Details</label>
+                            <textarea id="noteBody" maxlength="10000" placeholder="Write your note..."></textarea>
+                        </div>
+                        <div class="note-color-picker" aria-label="Note color">
+                            <button type="button" data-color="#202b40" style="background:#202b40;" class="active"></button>
+                            <button type="button" data-color="#5cddb0" style="background:#5cddb0;"></button>
+                            <button type="button" data-color="#6bc9ff" style="background:#6bc9ff;"></button>
+                            <button type="button" data-color="#ffb347" style="background:#ffb347;"></button>
+                            <button type="button" data-color="#ff7587" style="background:#ff7587;"></button>
+                        </div>
+                        <div class="actions">
+                            <button class="primary">Save note</button>
+                            <button type="reset">Clear</button>
+                        </div>
+                    </form>
+                    <div class="note-search">
+                        <input id="noteSearch" placeholder="🔍 Search notes..." oninput="renderNotes()">
+                    </div>
+                    <div id="notesList" class="list"></div>
+                </section>
+
+                <!-- TASKS -->
+                <section class="panel" id="tasks">
+                    <h2>✓ Tasks</h2>
+                    <form id="taskForm" class="row mobile">
+                        <input id="taskInput" class="grow" maxlength="240" required placeholder="Add a task">
+                        <select id="taskPriority" style="max-width:110px;">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                        <button class="primary">Add</button>
+                    </form>
+                    <div class="task-filters" role="tablist">
+                        <button class="active" data-filter="all">All</button>
+                        <button data-filter="active">Active</button>
+                        <button data-filter="done">Done</button>
+                    </div>
+                    <div id="tasksList" class="list"></div>
+                </section>
+
+                <!-- FOCUS TIMER -->
+                <section class="panel" id="timer">
+                    <h2>◷ Focus Timer</h2>
+                    <div class="field">
+                        <label for="timerMinutes">Duration in minutes</label>
+                        <input id="timerMinutes" type="number" min="1" max="240" value="25">
+                    </div>
+                    <div id="timerDisplay" class="timer" aria-live="off">25:00</div>
+                    <div class="timer-progress">
+                        <div class="timer-progress-bar" id="timerBar" style="width:100%;"></div>
+                    </div>
+                    <div class="actions" style="justify-content:center">
+                        <button id="timerStart" class="primary">Start</button>
+                        <button id="timerPause" disabled>Pause</button>
+                        <button id="timerReset">Reset</button>
+                    </div>
+                    <div id="timerStatus" class="status">Ready when you are.</div>
+                </section>
+
+                <!-- CLOCK APP -->
+                <section class="panel wide" id="clock">
+                    <h2>🕐 Clock</h2>
+                    <div class="clock-tabs" role="tablist">
+                        <button class="active" data-clock="main">Main</button>
+                        <button data-clock="world">World Clocks</button>
+                        <button data-clock="stopwatch">Stopwatch</button>
+                        <button data-clock="alarm">Alarms</button>
+                    </div>
+
+                    <!-- MAIN CLOCK -->
+                    <div class="clock-panel active" data-panel="main">
+                        <div class="clock-app">
+                            <div class="analog-clock-wrapper">
+                                <svg class="analog-clock" viewBox="0 0 200 200">
+                                    <circle class="clock-face" cx="100" cy="100" r="95"></circle>
+                                    <g id="clockTicks"></g>
+                                    <g id="clockNumbers"></g>
+                                    <line class="clock-hand hand-hour" id="handHour" x1="100" y1="100" x2="100" y2="55"></line>
+                                    <line class="clock-hand hand-minute" id="handMinute" x1="100" y1="100" x2="100" y2="35"></line>
+                                    <line class="clock-hand hand-second" id="handSecond" x1="100" y1="100" x2="100" y2="30"></line>
+                                    <circle class="clock-center" cx="100" cy="100" r="5"></circle>
+                                </svg>
+                            </div>
+                            <div class="digital-display">
+                                <div class="digital-time" id="digitalTime">
+                                    <span id="dHours">00</span>:<span id="dMinutes">00</span><span class="seconds" id="dSeconds">:00</span><span class="ampm" id="dAmPm">AM</span>
+                                </div>
+                                <div class="digital-date" id="digitalDate">Loading date...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- WORLD CLOCKS -->
+                    <div class="clock-panel" data-panel="world">
+                        <div class="row mobile" style="margin-bottom: var(--space-md);">
+                            <select id="worldTimezones" class="grow" multiple size="1" style="display:none;"></select>
+                            <button id="addWorldClockBtn" class="primary">+ Add City</button>
+                        </div>
+                        <div class="world-clocks" id="worldClocksList"></div>
+                    </div>
+
+                    <!-- STOPWATCH -->
+                    <div class="clock-panel" data-panel="stopwatch">
+                        <div class="stopwatch-display" id="stopwatchDisplay">00:00:00.00</div>
+                        <div class="actions" style="justify-content:center">
+                            <button id="stopwatchStart" class="primary">Start</button>
+                            <button id="stopwatchLap" disabled>Lap</button>
+                            <button id="stopwatchReset">Reset</button>
+                        </div>
+                        <div class="stopwatch-laps" id="stopwatchLaps"></div>
+                    </div>
+
+                    <!-- ALARMS -->
+                    <div class="clock-panel" data-panel="alarm">
+                        <form class="alarm-form" id="alarmForm">
+                            <div class="row mobile">
+                                <div class="field grow">
+                                    <label for="alarmTime">Alarm time</label>
+                                    <input id="alarmTime" type="time" required>
+                                </div>
+                                <div class="field grow">
+                                    <label for="alarmLabel">Label</label>
+                                    <input id="alarmLabel" maxlength="40" placeholder="Wake up">
+                                </div>
+                                <button class="primary" style="margin-top: 20px;">Add Alarm</button>
+                            </div>
+                        </form>
+                        <div class="alarm-list" id="alarmsList"></div>
+                    </div>
+                </section>
+
+                <!-- AI CHAT -->
+                <section class="panel" id="chatbot">
+                    <h2>✧ AI Chat</h2>
+                    <div class="field">
+                        <label for="chatEndpoint">Your backend API URL</label>
+                        <input id="chatEndpoint" type="url" placeholder="https://your-domain.com/api/chat">
+                    </div>
+                    <div class="field">
+                        <label for="chatPath">Reply field path (optional)</label>
+                        <input id="chatPath" placeholder="reply or choices.0.message.content">
+                    </div>
+                    <p class="sub">
+                        Endpoint must accept POST JSON with a message field and return JSON.
+                        Never put private API keys in frontend code.
+                    </p>
+                    <div id="chatLog" class="chat-log" role="log" aria-live="polite">
+                        <div class="bubble bot">Set your backend endpoint above to start chatting. This tool does not generate fake API replies.</div>
+                    </div>
+                    <form id="chatForm" class="row mobile">
+                        <input id="chatInput" class="grow" maxlength="4000" required placeholder="Type a message...">
+                        <button id="chatSend" class="primary">Send</button>
+                    </form>
+                    <div id="chatStatus" class="status">API not configured.</div>
+                    <button id="clearChat" style="margin-top: var(--space-sm);">Clear conversation</button>
+                </section>
+
+                <!-- WEATHER -->
+                <section class="panel" id="weather">
+                    <h2>☼ Weather</h2>
+                    <p class="sub">Uses the public Open-Meteo weather API. Internet access is required.</p>
+                    <div class="row mobile">
+                        <div class="field grow">
+                            <label for="latitude">Latitude</label>
+                            <input id="latitude" type="number" min="-90" max="90" step="any" value="25.396">
+                        </div>
+                        <div class="field grow">
+                            <label for="longitude">Longitude</label>
+                            <input id="longitude" type="number" min="-180" max="180" step="any" value="68.358">
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button id="weatherBtn" class="primary">Get weather</button>
+                        <button id="locateBtn">Use my location</button>
+                    </div>
+                    <div id="weatherStatus" class="status">Weather not loaded.</div>
+                    <div id="weatherHero" class="weather-hero hidden">
+                        <div class="temp" id="weatherTemp">--°</div>
+                        <div class="desc" id="weatherDesc">--</div>
+                    </div>
+                    <div id="weatherResult" class="weather-grid hidden"></div>
+                    <div id="hourlyForecast" class="hourly-forecast hidden"></div>
+                    <div id="weatherUpdated" class="sub" style="margin-top: var(--space-sm);"></div>
+                </section>
+
+                <!-- GALLERY -->
+                <section class="panel" id="gallery">
+                    <h2>🖼️ Gallery</h2>
+                    <p class="sub" style="margin-bottom: var(--space-md);">
+                        Your personal photo collection. Click any image to enlarge.
+                    </p>
+                    <div class="gallery-grid">
+                        <div class="gallery-item" onclick="openLightbox(this.querySelector('img').src, 'ZJ Portrait')">
+                            <img src="ZJPP.jpeg" alt="ZJ Portrait" loading="lazy"
+                                 onerror="this.src='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80'">
+                            <div class="overlay">ZJ Portrait</div>
+                        </div>
+                        <div class="gallery-item" onclick="openLightbox(this.querySelector('img').src, 'BMW')">
+                            <img src="BMW.jpeg" alt="BMW Car" loading="lazy"
+                                 onerror="this.src='https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80'">
+                            <div class="overlay">BMW</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- DATA & PRIVACY -->
+                <section class="panel wide">
+                    <h2>🛡️ Data and Privacy</h2>
+                    <p class="sub">
+                        Notes, tasks, theme, calculator history, and alarms are stored in this browser.
+                        Chat messages stay in the current page session. Weather requests go to Open-Meteo;
+                        chat requests go to your configured endpoint.
+                    </p>
+                    <div class="actions">
+                        <button id="clearData" class="danger">Clear saved dashboard data</button>
+                        <button id="downloadLog">Download support log</button>
+                    </div>
+                    <div id="appStatus" class="status">Dashboard ready.</div>
+                </section>
+            </div>
+
+            <footer>
+                ZJ Elite Dashboard · Single-file HTML, CSS and JavaScript · Built for productivity
+            </footer>
+        </main>
     </div>
-  </main>
+</div>
 
-  <!-- MODALS -->
-  <dialog class="app-modal" id="notesModal">
-    <div class="modal-header"><div class="modal-title"><i data-lucide="sticky-note"></i> Notes</div><button class="icon-btn" data-action="close-modal" aria-label="Close"><i data-lucide="x"></i></button></div>
-    <div class="modal-body">
-      <div class="input-group">
-        <input type="text" id="noteInput" class="input-field" placeholder="Write a quick note..." maxlength="500">
-        <button class="btn-primary" id="addNoteBtn">Add</button>
-      </div>
-      <div id="notesList" class="list-container" aria-live="polite"></div>
-    </div>
-  </dialog>
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" aria-label="Close">✕</button>
+    <img id="lightboxImg" src="" alt="">
+</div>
 
-  <dialog class="app-modal" id="todoModal">
-    <div class="modal-header"><div class="modal-title"><i data-lucide="check-square"></i> Todo List</div><button class="icon-btn" data-action="close-modal" aria-label="Close"><i data-lucide="x"></i></button></div>
-    <div class="modal-body">
-      <div class="input-group">
-        <input type="text" id="todoInput" class="input-field" placeholder="Add a new task..." maxlength="200">
-        <button class="btn-primary" id="addTodoBtn">Add</button>
-      </div>
-      <div class="tabs" id="todoTabs">
-        <div class="tab active" data-filter="all">All</div>
-        <div class="tab" data-filter="active">Active</div>
-        <div class="tab" data-filter="done">Done</div>
-      </div>
-      <div id="todoList" class="list-container" aria-live="polite"></div>
-    </div>
-  </dialog>
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
-  <dialog class="app-modal" id="pomoModal">
-    <div class="modal-header"><div class="modal-title"><i data-lucide="timer"></i> Pomodoro Timer</div><button class="icon-btn" data-action="close-modal" aria-label="Close"><i data-lucide="x"></i></button></div>
-    <div class="modal-body">
-      <div class="tabs" id="pomoTabs">
-        <div class="tab active" data-time="25">Focus</div>
-        <div class="tab" data-time="5">Short Break</div>
-        <div class="tab" data-time="15">Long Break</div>
-      </div>
-      <div class="pomo-ring">
-        <svg viewBox="0 0 200 200">
-          <circle class="ring-bg" cx="100" cy="100" r="88"></circle>
-          <circle class="ring-fg" id="pomoRing" cx="100" cy="100" r="88"></circle>
-        </svg>
-        <div class="pomo-time" id="pomoTime" aria-live="off">25:00</div>
-      </div>
-      <div class="pomo-actions">
-        <button class="btn-primary" id="pomoStartBtn">Start</button>
-        <button class="btn-danger" id="pomoResetBtn">Reset</button>
-      </div>
-    </div>
-  </dialog>
+<script>
+/* ==========================================================================
+   ZJ ELITE DASHBOARD - JAVASCRIPT
+   ========================================================================== */
+'use strict';
 
-  <dialog class="app-modal" id="convModal">
-    <div class="modal-header"><div class="modal-title"><i data-lucide="arrow-left-right"></i> Unit Converter</div><button class="icon-btn" data-action="close-modal" aria-label="Close"><i data-lucide="x"></i></button></div>
-    <div class="modal-body">
-      <select id="convCategory" class="input-field" style="margin-bottom:20px; width:100%;">
-        <option value="length">Length</option>
-        <option value="mass">Mass</option>
-        <option value="temperature">Temperature</option>
-        <option value="data">Data</option>
-        <option value="time">Time</option>
-      </select>
-      <div class="conv-row">
-        <input type="number" id="convInput" value="1" step="any">
-        <select id="convFrom" aria-label="From unit"></select>
-      </div>
-      <button class="conv-swap" id="convSwapBtn" aria-label="Swap units"><i data-lucide="arrow-down-up"></i></button>
-      <div class="conv-row">
-        <output id="convOutput" aria-live="polite">--</output>
-        <select id="convTo" aria-label="To unit"></select>
-      </div>
-    </div>
-  </dialog>
+/* ==========================================================================
+   1. DOM HELPERS
+   ========================================================================== */
+const $ = selector => document.querySelector(selector);
+const $$ = selector => Array.from(document.querySelectorAll(selector));
 
-  <dialog class="app-modal" id="sciCalcModal">
-    <div class="modal-header"><div class="modal-title"><i data-lucide="flask-conical"></i> Scientific Calculator</div><button class="icon-btn" data-action="close-modal" aria-label="Close"><i data-lucide="x"></i></button></div>
-    <div class="modal-body">
-      <div class="sci-display" id="sciDisplay">0</div>
-      <div class="sci-grid">
-        <button class="sci-btn func" data-sci="sin(">sin</button><button class="sci-btn func" data-sci="cos(">cos</button><button class="sci-btn func" data-sci="tan(">tan</button><button class="sci-btn func" data-sci="log(">log</button><button class="sci-btn func" data-sci="ln(">ln</button>
-        <button class="sci-btn func" data-sci="^2">x²</button><button class="sci-btn func" data-sci="^">x^y</button><button class="sci-btn func" data-sci="√(">√</button><button class="sci-btn func" data-sci="(">(</button><button class="sci-btn func" data-sci=")">)</button>
-        <button class="sci-btn" data-sci="7">7</button><button class="sci-btn" data-sci="8">8</button><button class="sci-btn" data-sci="9">9</button><button class="sci-btn func" data-sci="/">÷</button><button class="sci-btn func" data-sci="%">%</button>
-        <button class="sci-btn" data-sci="4">4</button><button class="sci-btn" data-sci="5">5</button><button class="sci-btn" data-sci="6">6</button><button class="sci-btn func" data-sci="*">×</button><button class="sci-btn func" data-sci="AC">AC</button>
-        <button class="sci-btn" data-sci="1">1</button><button class="sci-btn" data-sci="2">2</button><button class="sci-btn" data-sci="3">3</button><button class="sci-btn func" data-sci="-">−</button><button class="sci-btn func" data-sci="DEL">DEL</button>
-        <button class="sci-btn" data-sci="0">0</button><button class="sci-btn" data-sci=".">.</button><button class="sci-btn func" data-sci="+">+</button><button class="sci-btn func" data-sci="π">π</button><button class="sci-btn func" data-sci="e">e</button>
-        <button class="sci-btn func" style="grid-column: span 5;" data-sci="=">=</button>
-      </div>
-    </div>
-  </dialog>
+/* ==========================================================================
+   2. CONSTANTS & STATE
+   ========================================================================== */
+const STORAGE_KEY = 'zjEliteDashboard.v2';
+const MAX_NOTES = 500;
+const MAX_TASKS = 1000;
+const MAX_ALARMS = 20;
+const MAX_LAPS = 50;
 
-  <dialog class="app-modal" id="settingsModal">
-    <div class="modal-header"><div class="modal-title"><i data-lucide="settings"></i> Developer Settings</div><button class="icon-btn" data-action="close-modal" aria-label="Close"><i data-lucide="x"></i></button></div>
-    <div class="modal-body">
-      <p class="text-sm text-muted" style="margin-bottom: 20px;">
-        Configure your custom backend endpoint for the AI Chatbot. If left blank, it will use the default Flask deployment.
-      </p>
-      <div style="margin-bottom: 15px;">
-        <label class="text-xs font-bold text-muted" style="display:block; margin-bottom:5px;">API Endpoint URL</label>
-        <input type="url" id="apiEndpointInput" class="input-field" placeholder="e.g. https://my-api.vercel.app/chat">
-      </div>
-      <div style="margin-bottom: 20px;">
-        <label class="text-xs font-bold text-muted" style="display:block; margin-bottom:5px;">API Key / Token (Optional)</label>
-        <input type="password" id="apiKeyInput" class="input-field" placeholder="sk-...">
-      </div>
-      <button class="btn-primary" id="saveSettingsBtn" style="width:100%;">Save Configuration</button>
-      <button class="btn-danger" id="resetSettingsBtn" style="width:100%; margin-top:10px;">Reset to Default</button>
-    </div>
-  </dialog>
+const state = {
+    notes: [],
+    tasks: [],
+    alarms: [],
+    theme: 'dark',
+    calcHistory: 'No calculation yet',
+    currentNoteColor: '#202b40'
+};
 
-  <button class="chat-fab" id="chatFab" aria-label="Open Chat"><i data-lucide="message-square" size="28"></i></button>
+const diagnostics = [];
+let expression = '';
+let calcMode = 'basic';
+let timerId = null;
+let timerEnd = 0;
+let timerDuration = 25 * 60 * 1000;
+let remaining = timerDuration;
+let timerRunning = false;
+let chatBusy = false;
+let weatherController = null;
+let taskFilter = 'all';
+let stopwatchRunning = false;
+let stopwatchStart = 0;
+let stopwatchElapsed = 0;
+let stopwatchLapTimes = [];
+let stopwatchInterval = null;
+let clockInterval = null;
+let alarmCheckInterval = null;
+let audioContext = null;
+let lastAlarmCheck = '';
 
-  <div class="chat-overlay" id="chatOverlay">
-    <div class="chat-container">
-      <div class="chat-header">
-        <div class="chat-identity">
-          <div class="chat-avatar">ZJ</div>
-          <div class="chat-title"><h3>ZJ Elite Bot</h3><p>Online & Ready</p></div>
-        </div>
-        <div class="chat-actions">
-          <button class="chat-btn" id="clearChatBtn"><i data-lucide="plus"></i> <span>NEW</span></button>
-          <button class="chat-btn close" id="closeChatBtn"><i data-lucide="x"></i> <span>CLOSE</span></button>
-        </div>
-      </div>
-      <div class="chat-messages" id="chatMessages" aria-live="polite">
-        <div class="msg-system"><i data-lucide="check-circle"></i> ZJ Bot is ready.</div>
-        <div class="msg-row bot"><div class="bubble">Hey there! 👋 I'm ZJ Bot. How can I help you today?</div></div>
-      </div>
-      <div class="chat-input-area">
-        <div class="chat-input-wrapper">
-          <input type="text" id="chatInput" placeholder="Type a message..." autocomplete="off" maxlength="1000">
-        </div>
-        <button class="chat-send-btn" id="chatSendBtn">Send</button>
-      </div>
-    </div>
-  </div>
+/* ==========================================================================
+   3. UTILITY FUNCTIONS
+   ========================================================================== */
+function log(level, message) {
+    diagnostics.push({
+        time: new Date().toISOString(),
+        level,
+        message: String(message).slice(0, 400)
+    });
+    if (diagnostics.length > 100) diagnostics.shift();
+}
 
-  <script>
-    // =========================================
-    // SAFE MATH PARSER (Replaces eval/Function)
-    // =========================================
-    class MathParser {
-      constructor() { this.tokens = []; this.pos = 0; }
-      evaluate(expression) {
-        if (!expression) return 0;
-        // Normalize symbols
-        const normalized = expression
-          .replace(/÷/g, '/').replace(/×/g, '*').replace(/−/g, '-');
-        this.tokens = this.tokenize(normalized);
-        this.pos = 0;
-        const result = this.parseExpression();
-        if (this.pos < this.tokens.length) throw new Error('Unexpected token: ' + this.tokens[this.pos].value);
-        if (!Number.isFinite(result)) throw new Error('Result is not a finite number');
-        return result;
-      }
-      tokenize(str) {
-        const regex = /\s*([\+\-\*\/\%\^\(\)]|(?:sin|cos|tan|log|ln|sqrt|π|e)|\d*\.?\d+)/g;
-        const tokens = [];
-        let match, lastIndex = 0;
-        while ((match = regex.exec(str)) !== null) {
-          if (match.index > lastIndex) throw new Error('Invalid character');
-          tokens.push({ type: this.getType(match[1]), value: match[1] });
-          lastIndex = regex.lastIndex;
+function status(id, message, type = '') {
+    const el = $(id);
+    if (!el) return;
+    el.textContent = message;
+    el.classList.remove('error', 'success');
+    if (type) el.classList.add(type);
+}
+
+function uid() {
+    return window.crypto?.randomUUID?.() ||
+           Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+
+function dateText(value) {
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? '' : d.toLocaleString();
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function debounce(fn, ms = 200) {
+    let timer;
+    return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), ms);
+    };
+}
+
+/* ==========================================================================
+   4. TOAST SYSTEM
+   ========================================================================== */
+function showToast(message, type = 'info') {
+    const container = $('#toastContainer');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+/* ==========================================================================
+   5. STORAGE
+   ========================================================================== */
+function save() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        $('#storageStatus').textContent = 'Ready';
+    } catch (e) {
+        $('#storageStatus').textContent = 'Limited';
+        status('#appStatus', 'Could not save data. Storage may be disabled or full.', 'error');
+        log('error', 'Storage: ' + e.message);
+    }
+}
+
+function load() {
+    try {
+        const d = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        if (d && typeof d === 'object' && !Array.isArray(d)) {
+            state.notes = Array.isArray(d.notes)
+                ? d.notes.filter(n => n && typeof n.id === 'string' && typeof n.title === 'string').slice(0, MAX_NOTES)
+                : [];
+            state.tasks = Array.isArray(d.tasks)
+                ? d.tasks.filter(t => t && typeof t.id === 'string' && typeof t.text === 'string').slice(0, MAX_TASKS)
+                : [];
+            state.alarms = Array.isArray(d.alarms)
+                ? d.alarms.filter(a => a && typeof a.id === 'string' && typeof a.time === 'string').slice(0, MAX_ALARMS)
+                : [];
+            state.theme = d.theme === 'light' ? 'light' : 'dark';
+            state.calcHistory = typeof d.calcHistory === 'string' ? d.calcHistory : 'No calculation yet';
         }
-        if (lastIndex < str.length) throw new Error('Invalid character');
-        return tokens;
-      }
-      getType(val) {
-        if (/^\d*\.?\d+$/.test(val)) return 'NUMBER';
-        if (['+', '-', '*', '/', '%', '^'].includes(val)) return 'OPERATOR';
-        if (['(', ')'].includes(val)) return 'PAREN';
-        if (['sin', 'cos', 'tan', 'log', 'ln', 'sqrt'].includes(val)) return 'FUNCTION';
-        if (val === 'π' || val === 'e') return 'CONSTANT';
-        return 'UNKNOWN';
-      }
-      parseExpression() {
-        let left = this.parseTerm();
-        while (this.pos < this.tokens.length) {
-          const op = this.tokens[this.pos];
-          if (op.type === 'OPERATOR' && ['+', '-'].includes(op.value)) {
-            this.pos++;
-            const right = this.parseTerm();
-            left = op.value === '+' ? left + right : left - right;
-          } else break;
+    } catch (e) {
+        log('warning', 'Saved data could not be read: ' + e.message);
+    }
+    applyTheme(state.theme, false);
+    $('#calcHistory').value = state.calcHistory;
+}
+
+/* ==========================================================================
+   6. THEME
+   ========================================================================== */
+function applyTheme(value, persist = true) {
+    state.theme = value === 'light' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = state.theme;
+    $('#themeBtn').textContent = state.theme === 'dark' ? '☀️ Light mode' : '🌙 Dark mode';
+    if (persist) save();
+}
+
+function toggleTheme() {
+    applyTheme(state.theme === 'dark' ? 'light' : 'dark');
+}
+
+/* ==========================================================================
+   7. CALCULATOR
+   ========================================================================== */
+function tokens(s) {
+    const out = [];
+    let i = 0;
+    while (i < s.length) {
+        if (/\s/.test(s[i])) { i++; continue; }
+        if (/[0-9.]/.test(s[i])) {
+            let raw = '', dots = 0;
+            while (i < s.length && /[0-9.]/.test(s[i])) {
+                if (s[i] === '.') dots++;
+                raw += s[i++];
+            }
+            if (dots > 1 || raw === '.') throw Error('Invalid number');
+            out.push({ type: 'n', value: Number(raw) });
+            continue;
         }
-        return left;
-      }
-      parseTerm() {
-        let left = this.parseFactor();
-        while (this.pos < this.tokens.length) {
-          const op = this.tokens[this.pos];
-          if (op.type === 'OPERATOR' && ['*', '/', '%'].includes(op.value)) {
-            this.pos++;
-            const right = this.parseFactor();
-            if (op.value === '*') left *= right;
-            else if (op.value === '/') { if (right === 0) throw new Error('Division by zero'); left /= right; }
-            else if (op.value === '%') { if (right === 0) throw new Error('Modulo by zero'); left %= right; }
-          } else break;
+        if ('+-*/()'.includes(s[i])) {
+            out.push({ type: s[i], value: s[i++] });
+            continue;
         }
-        return left;
-      }
-      parseFactor() {
-        let left = this.parsePrimary();
-        while (this.pos < this.tokens.length) {
-          const op = this.tokens[this.pos];
-          if (op.type === 'OPERATOR' && op.value === '^') {
-            this.pos++;
-            const right = this.parsePrimary();
-            left = Math.pow(left, right);
-          } else break;
+        throw Error('Unsupported character');
+    }
+    if (out.length > 200) throw Error('Expression too long');
+    return out;
+}
+
+function calculate(s) {
+    const t = tokens(s);
+    let p = 0;
+    if (!t.length) throw Error('Enter an expression');
+    const peek = () => t[p];
+    const take = type => {
+        if (!peek() || peek().type !== type) throw Error('Invalid expression');
+        return t[p++];
+    };
+    function primary() {
+        if (peek() && (peek().type === '+' || peek().type === '-')) {
+            const sign = take(peek().type).type;
+            const n = primary();
+            return sign === '-' ? -n : n;
         }
-        return left;
-      }
-      parsePrimary() {
-        const token = this.tokens[this.pos];
-        if (!token) throw new Error('Unexpected end');
-        if (token.type === 'NUMBER') { this.pos++; return parseFloat(token.value); }
-        if (token.type === 'CONSTANT') { this.pos++; return token.value === 'π' ? Math.PI : Math.E; }
-        if (token.type === 'PAREN' && token.value === '(') {
-          this.pos++;
-          const result = this.parseExpression();
-          if (this.pos >= this.tokens.length || this.tokens[this.pos].value !== ')') throw new Error('Missing )');
-          this.pos++;
-          return result;
+        if (peek()?.type === 'n') return take('n').value;
+        if (peek()?.type === '(') {
+            take('(');
+            const n = add();
+            take(')');
+            return n;
         }
-        if (token.type === 'FUNCTION') {
-          this.pos++;
-          if (this.pos >= this.tokens.length || this.tokens[this.pos].value !== '(') throw new Error('Expected (');
-          this.pos++;
-          const arg = this.parseExpression();
-          if (this.pos >= this.tokens.length || this.tokens[this.pos].value !== ')') throw new Error('Missing )');
-          this.pos++;
-          switch (token.value) {
-            case 'sin': return Math.sin(arg); case 'cos': return Math.cos(arg);
-            case 'tan': return Math.tan(arg); case 'log': return Math.log10(arg);
-            case 'ln': return Math.log(arg); case 'sqrt': return Math.sqrt(arg);
-          }
+        throw Error('Expected a number');
+    }
+    function mul() {
+        let n = primary();
+        while (peek() && (peek().type === '*' || peek().type === '/')) {
+            const op = t[p++].type;
+            const r = primary();
+            if (op === '/' && r === 0) throw Error('Cannot divide by zero');
+            n = op === '*' ? n * r : n / r;
         }
-        if (token.type === 'OPERATOR' && token.value === '-') { this.pos++; return -this.parsePrimary(); }
-        throw new Error('Unexpected token');
-      }
+        return n;
+    }
+    function add() {
+        let n = mul();
+        while (peek() && (peek().type === '+' || peek().type === '-')) {
+            const op = t[p++].type;
+            const r = mul();
+            n = op === '+' ? n + r : n - r;
+        }
+        return n;
+    }
+    const result = add();
+    if (p !== t.length) throw Error('Check parentheses or operators');
+    if (!Number.isFinite(result)) throw Error('Result is not finite');
+    return Number(result.toPrecision(12)).toString();
+}
+
+function calc(value) {
+    if (value === 'AC') expression = '';
+    else if (value === 'DEL') expression = expression.slice(0, -1);
+    else if (value === '=') {
+        try {
+            const result = calculate(expression);
+            state.calcHistory = expression + ' = ' + result;
+            $('#calcHistory').value = state.calcHistory;
+            save();
+            expression = result;
+        } catch (e) {
+            status('#appStatus', 'Calculator: ' + e.message, 'error');
+            showToast('Calculator: ' + e.message, 'error');
+        }
+    } else if (/^[0-9.+\-*/()]$/.test(value) && expression.length < 180) {
+        expression += value;
+    }
+    $('#calcDisplay').textContent = expression || '0';
+}
+
+/* ==========================================================================
+   8. UNIT CONVERTER
+   ========================================================================== */
+const units = {
+    length: {
+        m: ['Meters', 1],
+        km: ['Kilometers', 1000],
+        cm: ['Centimeters', 0.01],
+        mm: ['Millimeters', 0.001],
+        mi: ['Miles', 1609.344],
+        ft: ['Feet', 0.3048],
+        in: ['Inches', 0.0254],
+        yd: ['Yards', 0.9144]
+    },
+    weight: {
+        kg: ['Kilograms', 1],
+        g: ['Grams', 0.001],
+        mg: ['Milligrams', 0.000001],
+        lb: ['Pounds', 0.45359237],
+        oz: ['Ounces', 0.028349523125],
+        t: ['Metric tonnes', 1000]
+    },
+    area: {
+        m2: ['Square meters', 1],
+        km2: ['Square kilometers', 1000000],
+        cm2: ['Square centimeters', 0.0001],
+        ha: ['Hectares', 10000],
+        acre: ['Acres', 4046.8564224],
+        ft2: ['Square feet', 0.09290304]
+    },
+    volume: {
+        l: ['Liters', 1],
+        ml: ['Milliliters', 0.001],
+        m3: ['Cubic meters', 1000],
+        gal: ['US gallons', 3.785411784],
+        cup: ['US cups', 0.2365882365]
+    },
+    speed: {
+        mps: ['Meters/second', 1],
+        kph: ['Kilometers/hour', 0.277778],
+        mph: ['Miles/hour', 0.44704],
+        knot: ['Knots', 0.514444]
+    },
+    data: {
+        B: ['Bytes', 1],
+        KB: ['Kilobytes', 1024],
+        MB: ['Megabytes', 1048576],
+        GB: ['Gigabytes', 1073741824],
+        TB: ['Terabytes', 1099511627776]
+    },
+    time: {
+        s: ['Seconds', 1],
+        min: ['Minutes', 60],
+        h: ['Hours', 3600],
+        d: ['Days', 86400],
+        wk: ['Weeks', 604800]
+    },
+    temperature: {
+        C: ['Celsius'],
+        F: ['Fahrenheit'],
+        K: ['Kelvin']
+    }
+};
+
+function fillUnits() {
+    const data = units[$('#category').value];
+    const from = $('#fromUnit');
+    const to = $('#toUnit');
+    const oldFrom = from.value;
+    const oldTo = to.value;
+    from.replaceChildren();
+    to.replaceChildren();
+    Object.entries(data).forEach(([key, val]) => {
+        const a = new Option(val[0], key);
+        const b = new Option(val[0], key);
+        from.add(a);
+        to.add(b);
+    });
+    from.value = data[oldFrom] ? oldFrom : Object.keys(data)[0];
+    to.value = data[oldTo] && oldTo !== from.value ? oldTo : (Object.keys(data)[1] || Object.keys(data)[0]);
+    convert();
+}
+
+function convert() {
+    const category = $('#category').value;
+    const raw = $('#convValue').value;
+    const value = Number(raw);
+    const from = $('#fromUnit').value;
+    const to = $('#toUnit').value;
+    if (raw.trim() === '' || !Number.isFinite(value)) {
+        status('#convResult', 'Enter a valid number.', 'error');
+        return;
+    }
+    let result;
+    if (category === 'temperature') {
+        let c = from === 'C' ? value : from === 'F' ? (value - 32) * 5 / 9 : value - 273.15;
+        if (c < -273.150000001) {
+            status('#convResult', 'Temperature is below absolute zero.', 'error');
+            return;
+        }
+        result = to === 'C' ? c : to === 'F' ? c * 9 / 5 + 32 : c + 273.15;
+    } else {
+        result = value * units[category][from][1] / units[category][to][1];
+    }
+    if (!Number.isFinite(result)) {
+        status('#convResult', 'Result is outside supported range.', 'error');
+        return;
+    }
+    const formatted = new Intl.NumberFormat(undefined, { maximumSignificantDigits: 10 }).format(result);
+    status('#convResult',
+        value + ' ' + units[category][from][0] + ' = ' + formatted + ' ' + units[category][to][0],
+        'success');
+}
+
+/* ==========================================================================
+   9. NOTES
+   ========================================================================== */
+function renderNotes() {
+    const root = $('#notesList');
+    const query = ($('#noteSearch')?.value || '').toLowerCase().trim();
+    root.replaceChildren();
+    let filtered = state.notes.slice().reverse();
+    if (query) {
+        filtered = filtered.filter(n =>
+            n.title.toLowerCase().includes(query) ||
+            (n.body || '').toLowerCase().includes(query)
+        );
+    }
+    if (!filtered.length) {
+        const e = document.createElement('div');
+        e.className = 'empty';
+        e.textContent = query ? 'No notes match your search.' : 'No notes yet.';
+        root.append(e);
+        updateStats();
+        return;
+    }
+    filtered.forEach(n => {
+        const item = document.createElement('div');
+        item.className = 'item';
+        if (n.color && n.color !== '#202b40') {
+            item.style.borderLeft = '3px solid ' + n.color;
+        }
+        const body = document.createElement('div');
+        body.className = 'item-body';
+        const title = document.createElement('strong');
+        title.textContent = n.title;
+        const text = document.createElement('div');
+        text.textContent = n.body || 'No details';
+        text.style.whiteSpace = 'pre-wrap';
+        const meta = document.createElement('small');
+        meta.textContent = dateText(n.createdAt);
+        body.append(title, text, meta);
+        const delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.textContent = 'Delete';
+        delBtn.className = 'danger';
+        delBtn.addEventListener('click', () => {
+            if (!confirm('Delete this note?')) return;
+            state.notes = state.notes.filter(x => x.id !== n.id);
+            save();
+            renderNotes();
+            showToast('Note deleted', 'success');
+        });
+        item.append(body, delBtn);
+        root.append(item);
+    });
+    updateStats();
+}
+
+function addNote(e) {
+    e.preventDefault();
+    const title = $('#noteTitle').value.trim();
+    const body = $('#noteBody').value.trim();
+    if (!title) return;
+    state.notes.push({
+        id: uid(),
+        title: title.slice(0, 120),
+        body: body.slice(0, 10000),
+        color: state.currentNoteColor,
+        createdAt: new Date().toISOString()
+    });
+    if (state.notes.length > MAX_NOTES) state.notes.shift();
+    save();
+    renderNotes();
+    $('#noteForm').reset();
+    showToast('Note added', 'success');
+}
+
+/* ==========================================================================
+   10. TASKS
+   ========================================================================== */
+function renderTasks() {
+    const root = $('#tasksList');
+    root.replaceChildren();
+    let filtered = state.tasks.slice().reverse();
+    if (taskFilter === 'active') filtered = filtered.filter(t => !t.done);
+    if (taskFilter === 'done') filtered = filtered.filter(t => t.done);
+    if (!filtered.length) {
+        const e = document.createElement('div');
+        e.className = 'empty';
+        e.textContent = taskFilter === 'all' ? 'No tasks yet.' :
+                       taskFilter === 'active' ? 'No active tasks.' : 'No completed tasks.';
+        root.append(e);
+        updateStats();
+        return;
+    }
+    filtered.forEach(t => {
+        const item = document.createElement('div');
+        item.className = 'item priority-' + (t.priority || 'medium');
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = t.done;
+        cb.style.width = 'auto';
+        cb.setAttribute('aria-label', 'Complete task');
+        cb.addEventListener('change', () => {
+            t.done = cb.checked;
+            save();
+            renderTasks();
+        });
+        const body = document.createElement('div');
+        body.className = 'item-body';
+        const title = document.createElement('div');
+        title.textContent = t.text;
+        if (t.done) title.className = 'done';
+        const meta = document.createElement('small');
+        meta.textContent = (t.done ? 'Completed' : 'Open') + ' · ' + dateText(t.createdAt);
+        const badge = document.createElement('span');
+        badge.className = 'priority-badge ' + (t.priority || 'medium');
+        badge.textContent = t.priority || 'medium';
+        body.append(title, meta, badge);
+        const delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.textContent = 'Delete';
+        delBtn.className = 'danger';
+        delBtn.addEventListener('click', () => {
+            state.tasks = state.tasks.filter(x => x.id !== t.id);
+            save();
+            renderTasks();
+            showToast('Task deleted', 'success');
+        });
+        item.append(cb, body, delBtn);
+        root.append(item);
+    });
+    updateStats();
+}
+
+function addTask(e) {
+    e.preventDefault();
+    const text = $('#taskInput').value.trim();
+    if (!text) return;
+    state.tasks.push({
+        id: uid(),
+        text: text.slice(0, 240),
+        done: false,
+        priority: $('#taskPriority').value,
+        createdAt: new Date().toISOString()
+    });
+    if (state.tasks.length > MAX_TASKS) state.tasks.shift();
+    save();
+    renderTasks();
+    $('#taskInput').value = '';
+    showToast('Task added', 'success');
+}
+
+function updateStats() {
+    $('#noteCount').textContent = state.notes.length;
+    $('#openCount').textContent = state.tasks.filter(t => !t.done).length;
+    $('#doneCount').textContent = state.tasks.filter(t => t.done).length;
+}
+
+/* ==========================================================================
+   11. FOCUS TIMER
+   ========================================================================== */
+function renderTimer() {
+    const seconds = Math.max(0, Math.ceil(remaining / 1000));
+    $('#timerDisplay').textContent =
+        String(Math.floor(seconds / 60)).padStart(2, '0') + ':' +
+        String(seconds % 60).padStart(2, '0');
+    const pct = Math.max(0, Math.min(100, (remaining / timerDuration) * 100));
+    $('#timerBar').style.width = pct + '%';
+}
+
+function stopTimer() {
+    if (timerId !== null) {
+        clearInterval(timerId);
+        timerId = null;
+    }
+}
+
+function tickTimer() {
+    if (!timerRunning) return;
+    remaining = Math.max(0, timerEnd - Date.now());
+    renderTimer();
+    if (remaining <= 0) {
+        timerRunning = false;
+        stopTimer();
+        $('#timerStart').disabled = false;
+        $('#timerPause').disabled = true;
+        status('#timerStatus', 'Session complete! Take a short break.', 'success');
+        showToast('Focus timer complete!', 'success');
+        playNotificationSound();
+    }
+}
+
+function resetTimer() {
+    timerRunning = false;
+    stopTimer();
+    let minutes = Number($('#timerMinutes').value);
+    if (!Number.isFinite(minutes)) minutes = 25;
+    minutes = Math.max(1, Math.min(240, Math.floor(minutes)));
+    $('#timerMinutes').value = minutes;
+    timerDuration = minutes * 60 * 1000;
+    remaining = timerDuration;
+    renderTimer();
+    $('#timerStart').disabled = false;
+    $('#timerPause').disabled = true;
+    status('#timerStatus', 'Ready when you are.');
+}
+
+function startTimer() {
+    if (timerRunning) return;
+    if (remaining <= 0) resetTimer();
+    timerRunning = true;
+    timerEnd = Date.now() + remaining;
+    $('#timerStart').disabled = true;
+    $('#timerPause').disabled = false;
+    status('#timerStatus', 'Timer running.');
+    stopTimer();
+    timerId = setInterval(tickTimer, 250);
+    tickTimer();
+}
+
+function pauseTimer() {
+    if (!timerRunning) return;
+    tickTimer();
+    timerRunning = false;
+    stopTimer();
+    $('#timerStart').disabled = false;
+    $('#timerPause').disabled = true;
+    status('#timerStatus', 'Timer paused.');
+}
+
+/* ==========================================================================
+   12. CLOCK APP
+   ========================================================================== */
+function buildClockFace() {
+    const ticks = $('#clockTicks');
+    const numbers = $('#clockNumbers');
+    if (!ticks || !numbers) return;
+    ticks.replaceChildren();
+    numbers.replaceChildren();
+    for (let i = 0; i < 60; i++) {
+        const angle = (i * 6) * Math.PI / 180;
+        const isMajor = i % 5 === 0;
+        const r1 = isMajor ? 78 : 84;
+        const r2 = 88;
+        const x1 = 100 + r1 * Math.sin(angle);
+        const y1 = 100 - r1 * Math.cos(angle);
+        const x2 = 100 + r2 * Math.sin(angle);
+        const y2 = 100 - r2 * Math.cos(angle);
+        const tick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        tick.setAttribute('x1', x1);
+        tick.setAttribute('y1', y1);
+        tick.setAttribute('x2', x2);
+        tick.setAttribute('y2', y2);
+        tick.setAttribute('class', 'clock-tick' + (isMajor ? ' major' : ''));
+        ticks.appendChild(tick);
+    }
+    for (let i = 1; i <= 12; i++) {
+        const angle = (i * 30) * Math.PI / 180;
+        const r = 65;
+        const x = 100 + r * Math.sin(angle);
+        const y = 100 - r * Math.cos(angle);
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', x);
+        text.setAttribute('y', y);
+        text.setAttribute('class', 'clock-number');
+        text.textContent = i;
+        numbers.appendChild(text);
+    }
+}
+
+function updateAnalogClock() {
+    const now = new Date();
+    const hours = now.getHours() % 12;
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+    const millis = now.getMilliseconds();
+    const secAngle = (seconds + millis / 1000) * 6;
+    const minAngle = (minutes + seconds / 60) * 6;
+    const hourAngle = (hours + minutes / 60) * 30;
+    const handHour = $('#handHour');
+    const handMinute = $('#handMinute');
+    const handSecond = $('#handSecond');
+    if (handHour) handHour.setAttribute('transform', 'rotate(' + hourAngle + ' 100 100)');
+    if (handMinute) handMinute.setAttribute('transform', 'rotate(' + minAngle + ' 100 100)');
+    if (handSecond) handSecond.setAttribute('transform', 'rotate(' + secAngle + ' 100 100)');
+}
+
+function updateDigitalClock() {
+    const now = new Date();
+    let h = now.getHours();
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    const dHours = $('#dHours');
+    const dMinutes = $('#dMinutes');
+    const dSeconds = $('#dSeconds');
+    const dAmPm = $('#dAmPm');
+    const digitalDate = $('#digitalDate');
+    if (dHours) dHours.textContent = String(h).padStart(2, '0');
+    if (dMinutes) dMinutes.textContent = m;
+    if (dSeconds) dSeconds.textContent = ':' + s;
+    if (dAmPm) dAmPm.textContent = ampm;
+    if (digitalDate) {
+        digitalDate.textContent = now.toLocaleDateString(undefined, {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+    }
+}
+
+function startClock() {
+    buildClockFace();
+    if (clockInterval) clearInterval(clockInterval);
+    const tick = () => {
+        updateAnalogClock();
+        updateDigitalClock();
+        updateWelcomeClock();
+    };
+    tick();
+    clockInterval = setInterval(tick, 1000);
+}
+
+function updateWelcomeClock() {
+    const el = $('#welcomeClock');
+    if (el) el.textContent = new Date().toLocaleTimeString();
+}
+
+/* World clocks */
+const worldCities = [
+    { name: 'London', tz: 'Europe/London' },
+    { name: 'New York', tz: 'America/New_York' },
+    { name: 'Tokyo', tz: 'Asia/Tokyo' },
+    { name: 'Dubai', tz: 'Asia/Dubai' },
+    { name: 'Sydney', tz: 'Australia/Sydney' },
+    { name: 'Los Angeles', tz: 'America/Los_Angeles' },
+    { name: 'Paris', tz: 'Europe/Paris' },
+    { name: 'Karachi', tz: 'Asia/Karachi' }
+];
+
+let worldClockSelections = ['Europe/London', 'America/New_York', 'Asia/Tokyo'];
+
+function renderWorldClocks() {
+    const root = $('#worldClocksList');
+    if (!root) return;
+    root.replaceChildren();
+    worldClockSelections.forEach(tz => {
+        const city = worldCities.find(c => c.tz === tz) || { name: tz.split('/').pop(), tz };
+        const item = document.createElement('div');
+        item.className = 'world-clock-item';
+        const cityDiv = document.createElement('div');
+        cityDiv.className = 'city';
+        cityDiv.textContent = city.name;
+        const small = document.createElement('small');
+        small.textContent = tz;
+        cityDiv.appendChild(small);
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'time';
+        timeDiv.dataset.tz = tz;
+        item.append(cityDiv, timeDiv);
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.textContent = '✕';
+        removeBtn.className = 'danger';
+        removeBtn.style.padding = '4px 8px';
+        removeBtn.style.marginLeft = '8px';
+        removeBtn.addEventListener('click', () => {
+            worldClockSelections = worldClockSelections.filter(x => x !== tz);
+            renderWorldClocks();
+        });
+        item.appendChild(removeBtn);
+        root.appendChild(item);
+    });
+    updateWorldClockTimes();
+}
+
+function updateWorldClockTimes() {
+    $$('#worldClocksList .time').forEach(el => {
+        const tz = el.dataset.tz;
+        try {
+            el.textContent = new Date().toLocaleTimeString('en-US', {
+                timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+            });
+        } catch {
+            el.textContent = '--:--:--';
+        }
+    });
+}
+
+function addWorldClock() {
+    const available = worldCities.filter(c => !worldClockSelections.includes(c.tz));
+    if (!available.length) {
+        showToast('All available cities already added', 'info');
+        return;
+    }
+    const city = available[0];
+    worldClockSelections.push(city.tz);
+    renderWorldClocks();
+    showToast('Added ' + city.name, 'success');
+}
+
+/* Stopwatch */
+function formatStopwatch(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    const cs = Math.floor((ms % 1000) / 10);
+    return String(h).padStart(2, '0') + ':' +
+           String(m).padStart(2, '0') + ':' +
+           String(s).padStart(2, '0') + '.' +
+           String(cs).padStart(2, '0');
+}
+
+function updateStopwatch() {
+    if (!stopwatchRunning) return;
+    stopwatchElapsed = Date.now() - stopwatchStart;
+    $('#stopwatchDisplay').textContent = formatStopwatch(stopwatchElapsed);
+}
+
+function startStopwatch() {
+    if (stopwatchRunning) return;
+    stopwatchRunning = true;
+    stopwatchStart = Date.now() - stopwatchElapsed;
+    if (stopwatchInterval) clearInterval(stopwatchInterval);
+    stopwatchInterval = setInterval(updateStopwatch, 33);
+    $('#stopwatchStart').textContent = 'Pause';
+    $('#stopwatchLap').disabled = false;
+}
+
+function pauseStopwatch() {
+    if (!stopwatchRunning) return;
+    stopwatchRunning = false;
+    if (stopwatchInterval) clearInterval(stopwatchInterval);
+    stopwatchInterval = null;
+    $('#stopwatchStart').textContent = 'Resume';
+}
+
+function toggleStopwatch() {
+    if (stopwatchRunning) pauseStopwatch();
+    else startStopwatch();
+}
+
+function resetStopwatch() {
+    stopwatchRunning = false;
+    if (stopwatchInterval) clearInterval(stopwatchInterval);
+    stopwatchInterval = null;
+    stopwatchElapsed = 0;
+    stopwatchLapTimes = [];
+    $('#stopwatchDisplay').textContent = '00:00:00.00';
+    $('#stopwatchStart').textContent = 'Start';
+    $('#stopwatchLap').disabled = true;
+    $('#stopwatchLaps').replaceChildren();
+}
+
+function recordLap() {
+    if (!stopwatchRunning) return;
+    const lapTime = stopwatchElapsed;
+    stopwatchLapTimes.push(lapTime);
+    if (stopwatchLapTimes.length > MAX_LAPS) stopwatchLapTimes.shift();
+    renderLaps();
+}
+
+function renderLaps() {
+    const root = $('#stopwatchLaps');
+    root.replaceChildren();
+    if (!stopwatchLapTimes.length) return;
+    const best = Math.min(...stopwatchLapTimes);
+    const worst = Math.max(...stopwatchLapTimes);
+    const reversed = stopwatchLapTimes.slice().reverse();
+    reversed.forEach((lap, i) => {
+        const item = document.createElement('div');
+        item.className = 'lap-item';
+        if (lap === best) item.classList.add('best');
+        if (lap === worst) item.classList.add('worst');
+        const num = document.createElement('span');
+        num.textContent = 'Lap ' + (stopwatchLapTimes.length - i);
+        const time = document.createElement('span');
+        time.textContent = formatStopwatch(lap);
+        item.append(num, time);
+        root.appendChild(item);
+    });
+}
+
+/* Alarms */
+function renderAlarms() {
+    const root = $('#alarmsList');
+    if (!root) return;
+    root.replaceChildren();
+    if (!state.alarms.length) {
+        const e = document.createElement('div');
+        e.className = 'empty';
+        e.textContent = 'No alarms set.';
+        root.appendChild(e);
+        return;
+    }
+    state.alarms.forEach(a => {
+        const item = document.createElement('div');
+        item.className = 'alarm-item' + (a.active ? ' active' : '');
+        const info = document.createElement('div');
+        info.className = 'alarm-info';
+        const time = document.createElement('div');
+        time.className = 'alarm-time';
+        time.textContent = a.time;
+        const label = document.createElement('div');
+        label.className = 'alarm-label';
+        label.textContent = a.label || 'Alarm';
+        info.append(time, label);
+        const toggle = document.createElement('div');
+        toggle.className = 'alarm-toggle' + (a.active ? ' active' : '');
+        toggle.setAttribute('role', 'switch');
+        toggle.setAttribute('aria-checked', a.active ? 'true' : 'false');
+        toggle.addEventListener('click', () => {
+            a.active = !a.active;
+            save();
+            renderAlarms();
+        });
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.textContent = '✕';
+        del.className = 'danger';
+        del.style.padding = '4px 8px';
+        del.addEventListener('click', () => {
+            state.alarms = state.alarms.filter(x => x.id !== a.id);
+            save();
+            renderAlarms();
+        });
+        item.append(info, toggle, del);
+        root.appendChild(item);
+    });
+}
+
+function addAlarm(e) {
+    e.preventDefault();
+    const time = $('#alarmTime').value;
+    const label = $('#alarmLabel').value.trim() || 'Alarm';
+    if (!time) return;
+    state.alarms.push({
+        id: uid(),
+        time: time,
+        label: label.slice(0, 40),
+        active: true,
+        createdAt: new Date().toISOString()
+    });
+    if (state.alarms.length > MAX_ALARMS) state.alarms.shift();
+    save();
+    renderAlarms();
+    $('#alarmForm').reset();
+    showToast('Alarm set for ' + time, 'success');
+}
+
+function checkAlarms() {
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const current = hh + ':' + mm;
+    if (current === lastAlarmCheck) return;
+    lastAlarmCheck = current;
+    state.alarms.forEach(a => {
+        if (!a.active) return;
+        if (a.time === current) {
+            playNotificationSound();
+            showToast('⏰ Alarm: ' + (a.label || 'Wake up!'), 'info');
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('ZJ Alarm', { body: a.label || 'Alarm!' });
+            }
+        }
+    });
+}
+
+/* ==========================================================================
+   13. NOTIFICATION SOUND
+   ========================================================================== */
+function playNotificationSound() {
+    try {
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const ctx = audioContext;
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, now);
+        osc.frequency.setValueAtTime(660, now + 0.15);
+        osc.frequency.setValueAtTime(880, now + 0.3);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.6);
+    } catch (e) {
+        log('warning', 'Audio: ' + e.message);
+    }
+}
+
+/* ==========================================================================
+   14. CHAT
+   ========================================================================== */
+function chatBubble(who, message) {
+    const b = document.createElement('div');
+    b.className = 'bubble ' + who;
+    b.textContent = message;
+    $('#chatLog').append(b);
+    $('#chatLog').scrollTop = $('#chatLog').scrollHeight;
+}
+
+function showTypingIndicator() {
+    const t = document.createElement('div');
+    t.className = 'typing-indicator';
+    t.id = 'typingIndicator';
+    t.innerHTML = '<span></span><span></span><span></span>';
+    $('#chatLog').appendChild(t);
+    $('#chatLog').scrollTop = $('#chatLog').scrollHeight;
+}
+
+function removeTypingIndicator() {
+    const t = $('#typingIndicator');
+    if (t) t.remove();
+}
+
+async function sendChat(message) {
+    if (chatBusy) return;
+    const raw = $('#chatEndpoint').value.trim();
+    if (!raw) {
+        status('#chatStatus', 'Enter your backend endpoint URL first.', 'error');
+        return;
+    }
+    let url;
+    try {
+        url = new URL(raw);
+    } catch {
+        status('#chatStatus', 'Endpoint URL is invalid.', 'error');
+        return;
+    }
+    if (!['https:', 'http:'].includes(url.protocol)) {
+        status('#chatStatus', 'Only HTTP and HTTPS are supported.', 'error');
+        return;
+    }
+    if (location.protocol === 'https:' && url.protocol === 'http:') {
+        status('#chatStatus', 'Use an HTTPS endpoint on secure pages.', 'error');
+        return;
+    }
+    chatBusy = true;
+    $('#chatSend').disabled = true;
+    chatBubble('user', message);
+    status('#chatStatus', 'Connecting…');
+    showTypingIndicator();
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 20000);
+        const response = await fetch(url.href, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ message }),
+            signal: controller.signal
+        });
+        clearTimeout(timeout);
+        removeTypingIndicator();
+        if (!response.ok) throw Error('Server returned HTTP ' + response.status);
+        if (!(response.headers.get('content-type') || '').includes('application/json')) {
+            throw Error('Expected JSON response from backend.');
+        }
+        const data = await response.json();
+        const replyPath = $('#chatPath').value.trim();
+        let reply;
+        if (replyPath) {
+            reply = replyPath.split('.').reduce((obj, key) =>
+                obj == null ? undefined : obj[/^\d+$/.test(key) ? Number(key) : key], data);
+        }
+        if (typeof reply !== 'string') {
+            if (typeof data === 'string') reply = data;
+            else if (typeof data?.reply === 'string') reply = data.reply;
+            else if (typeof data?.message === 'string') reply = data.message;
+            else if (typeof data?.choices?.[0]?.message?.content === 'string') {
+                reply = data.choices[0].message.content;
+            }
+        }
+        if (typeof reply !== 'string' || !reply.trim()) {
+            throw Error('Reply text not found. Check the response field path.');
+        }
+        chatBubble('bot', reply.trim().slice(0, 12000));
+        status('#chatStatus', 'Reply received.', 'success');
+    } catch (e) {
+        removeTypingIndicator();
+        const msg = e.name === 'AbortError' ? 'Request timed out.' :
+                    e instanceof TypeError ? 'Network or CORS error.' : e.message;
+        chatBubble('bot', 'The API request failed: ' + msg);
+        status('#chatStatus', msg, 'error');
+        log('error', 'Chat: ' + msg);
+    } finally {
+        chatBusy = false;
+        $('#chatSend').disabled = false;
+    }
+}
+
+/* ==========================================================================
+   15. WEATHER
+   ========================================================================== */
+const weatherCodes = {
+    0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
+    45: 'Fog', 48: 'Rime fog',
+    51: 'Light drizzle', 53: 'Drizzle', 55: 'Heavy drizzle',
+    61: 'Light rain', 63: 'Rain', 65: 'Heavy rain',
+    71: 'Light snow', 73: 'Snow', 75: 'Heavy snow',
+    80: 'Rain showers', 81: 'Rain showers', 82: 'Heavy rain showers',
+    95: 'Thunderstorm', 96: 'Thunderstorm with hail', 99: 'Thunderstorm with heavy hail'
+};
+
+async function getWeather() {
+    const lat = Number($('#latitude').value);
+    const lon = Number($('#longitude').value);
+    if (!Number.isFinite(lat) || lat < -90 || lat > 90 ||
+        !Number.isFinite(lon) || lon < -180 || lon > 180) {
+        status('#weatherStatus', 'Enter valid latitude and longitude.', 'error');
+        return;
+    }
+    if (weatherController) weatherController.abort();
+    weatherController = new AbortController();
+    const controller = weatherController;
+    status('#weatherStatus', 'Loading weather…');
+    $('#weatherResult').classList.add('hidden');
+    $('#weatherHero').classList.add('hidden');
+    $('#hourlyForecast').classList.add('hidden');
+    const url = new URL('https://api.open-meteo.com/v1/forecast');
+    url.search = new URLSearchParams({
+        latitude: lat,
+        longitude: lon,
+        current: 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m',
+        hourly: 'temperature_2m,weather_code',
+        timezone: 'auto',
+        forecast_days: '2'
+    }).toString();
+    try {
+        const response = await fetch(url.href, { signal: controller.signal });
+        if (!response.ok) throw Error('Weather service returned HTTP ' + response.status);
+        const data = await response.json();
+        if (controller !== weatherController) return;
+        if (!data.current || !data.current_units) throw Error('Weather data is incomplete.');
+        const c = data.current;
+        const u = data.current_units;
+        $('#weatherTemp').textContent = Math.round(c.temperature_2m) + '°';
+        $('#weatherDesc').textContent = weatherCodes[c.weather_code] || 'Code ' + c.weather_code;
+        $('#weatherHero').classList.remove('hidden');
+        const cells = [
+            ['Temperature', c.temperature_2m, u.temperature_2m],
+            ['Feels like', c.apparent_temperature, u.apparent_temperature],
+            ['Humidity', c.relative_humidity_2m, u.relative_humidity_2m],
+            ['Wind speed', c.wind_speed_10m, u.wind_speed_10m],
+            ['Precipitation', c.precipitation, u.precipitation],
+            ['Conditions', weatherCodes[c.weather_code] || 'Code ' + c.weather_code, '']
+        ];
+        const root = $('#weatherResult');
+        root.replaceChildren();
+        cells.forEach(([label, value, unit]) => {
+            const cell = document.createElement('div');
+            cell.className = 'weather-cell';
+            const span = document.createElement('span');
+            span.textContent = label;
+            const strong = document.createElement('strong');
+            strong.textContent = (value ?? 'Unavailable') + (unit ? ' ' + unit : '');
+            cell.append(span, strong);
+            root.appendChild(cell);
+        });
+        root.classList.remove('hidden');
+        if (data.hourly && data.hourly.time) {
+            const hourly = $('#hourlyForecast');
+            hourly.replaceChildren();
+            const now = Date.now();
+            let startIdx = 0;
+            for (let i = 0; i < data.hourly.time.length; i++) {
+                if (new Date(data.hourly.time[i]).getTime() >= now) {
+                    startIdx = i;
+                    break;
+                }
+            }
+            const count = Math.min(8, data.hourly.time.length - startIdx);
+            for (let i = 0; i < count; i++) {
+                const idx = startIdx + i;
+                const item = document.createElement('div');
+                item.className = 'hourly-item';
+                const hour = document.createElement('div');
+                hour.className = 'hour';
+                hour.textContent = new Date(data.hourly.time[idx]).toLocaleTimeString([], { hour: '2-digit' });
+                const temp = document.createElement('div');
+                temp.className = 'temp';
+                temp.textContent = Math.round(data.hourly.temperature_2m[idx]) + '°';
+                item.append(hour, temp);
+                hourly.appendChild(item);
+            }
+            hourly.classList.remove('hidden');
+        }
+        status('#weatherStatus', 'Weather loaded.', 'success');
+        $('#weatherUpdated').textContent = 'Updated: ' + (c.time || 'unavailable') +
+            (data.timezone ? ' · ' + data.timezone : '');
+    } catch (e) {
+        if (controller !== weatherController) return;
+        const msg = e.name === 'AbortError' ? 'Request timed out.' :
+                    e instanceof TypeError ? 'Could not connect.' : e.message;
+        status('#weatherStatus', msg, 'error');
+        log('error', 'Weather: ' + msg);
+    }
+}
+
+/* ==========================================================================
+   16. LIGHTBOX
+   ========================================================================== */
+function openLightbox(src, alt) {
+    $('#lightboxImg').src = src;
+    $('#lightboxImg').alt = alt || '';
+    $('#lightbox').classList.add('active');
+}
+
+function closeLightbox() {
+    $('#lightbox').classList.remove('active');
+    $('#lightboxImg').src = '';
+}
+
+/* ==========================================================================
+   17. EXPORT & CLEAR DATA
+   ========================================================================== */
+function download(filename, content, type) {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function exportData() {
+    download(
+        'zj-dashboard-data.json',
+        JSON.stringify({ ...state, exportedAt: new Date().toISOString() }, null, 2),
+        'application/json'
+    );
+    showToast('Data exported', 'success');
+}
+
+function clearData() {
+    if (!confirm('Permanently delete saved notes, tasks, alarms, theme, and calculator history?')) return;
+    state.notes = [];
+    state.tasks = [];
+    state.alarms = [];
+    state.theme = 'dark';
+    state.calcHistory = 'No calculation yet';
+    save();
+    applyTheme('dark', false);
+    renderNotes();
+    renderTasks();
+    renderAlarms();
+    $('#calcHistory').value = state.calcHistory;
+    status('#appStatus', 'Saved dashboard data cleared.', 'success');
+    showToast('All data cleared', 'success');
+}
+
+/* ==========================================================================
+   18. NAVIGATION
+   ========================================================================== */
+function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    $$('#nav button').forEach(x => x.classList.toggle('active', x.dataset.go === id));
+}
+
+/* ==========================================================================
+   19. EVENT BINDINGS
+   ========================================================================== */
+function bindEvents() {
+    $('#themeBtn').addEventListener('click', toggleTheme);
+    $('#exportBtn').addEventListener('click', exportData);
+    $('#clearData').addEventListener('click', clearData);
+    $('#downloadLog').addEventListener('click', () => {
+        download(
+            'zj-support-log.txt',
+            diagnostics.map(x => '[' + x.time + '] ' + x.level + ': ' + x.message).join('\n') ||
+            'No errors logged.',
+            'text/plain'
+        );
+    });
+
+    $('#nav').addEventListener('click', e => {
+        const b = e.target.closest('[data-go]');
+        if (!b) return;
+        scrollToSection(b.dataset.go);
+    });
+
+    /* Calculator */
+    $('#calcButtons').addEventListener('click', e => {
+        const b = e.target.closest('[data-v]');
+        if (b) calc(b.dataset.v);
+    });
+    document.addEventListener('keydown', e => {
+        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        if (/^[0-9.+\-*/()]$/.test(e.key)) calc(e.key);
+        else if (e.key === 'Enter') { e.preventDefault(); calc('='); }
+        else if (e.key === 'Backspace') calc('DEL');
+        else if (e.key === 'Escape') calc('AC');
+    });
+    $$('#calculator .calc-modes button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            $$('#calculator .calc-modes button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            calcMode = btn.dataset.mode;
+        });
+    });
+
+    /* Converter */
+    $('#category').addEventListener('change', fillUnits);
+    $('#fromUnit').addEventListener('change', convert);
+    $('#toUnit').addEventListener('change', convert);
+    $('#convValue').addEventListener('input', convert);
+    $('#convertBtn').addEventListener('click', convert);
+    $('#swapBtn').addEventListener('click', () => {
+        const a = $('#fromUnit').value;
+        $('#fromUnit').value = $('#toUnit').value;
+        $('#toUnit').value = a;
+        convert();
+    });
+
+    /* Notes */
+    $('#noteForm').addEventListener('submit', addNote);
+    $$('.note-color-picker button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            $$('.note-color-picker button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.currentNoteColor = btn.dataset.color;
+        });
+    });
+
+    /* Tasks */
+    $('#taskForm').addEventListener('submit', addTask);
+    $$('.task-filters button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            $$('.task-filters button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            taskFilter = btn.dataset.filter;
+            renderTasks();
+        });
+    });
+
+    /* Timer */
+    $('#timerStart').addEventListener('click', startTimer);
+    $('#timerPause').addEventListener('click', pauseTimer);
+    $('#timerReset').addEventListener('click', resetTimer);
+    $('#timerMinutes').addEventListener('change', () => {
+        if (!timerRunning) resetTimer();
+    });
+
+    /* Clock tabs */
+    $$('.clock-tabs button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            $$('.clock-tabs button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            $$('.clock-panel').forEach(p => p.classList.remove('active'));
+            const panel = document.querySelector('[data-panel="' + btn.dataset.clock + '"]');
+            if (panel) panel.classList.add('active');
+        });
+    });
+
+    /* World clocks */
+    $('#addWorldClockBtn').addEventListener('click', addWorldClock);
+
+    /* Stopwatch */
+    $('#stopwatchStart').addEventListener('click', toggleStopwatch);
+    $('#stopwatchLap').addEventListener('click', recordLap);
+    $('#stopwatchReset').addEventListener('click', resetStopwatch);
+
+    /* Alarms */
+    $('#alarmForm').addEventListener('submit', addAlarm);
+
+    /* Chat */
+    $('#chatForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const input = $('#chatInput');
+        const message = input.value.trim();
+        if (!message || chatBusy) return;
+        input.value = '';
+        sendChat(message);
+    });
+    $('#clearChat').addEventListener('click', () => {
+        if (chatBusy) return;
+        $('#chatLog').replaceChildren();
+        chatBubble('bot', 'Conversation cleared. Set your endpoint to start chatting.');
+        status('#chatStatus', $('#chatEndpoint').value.trim() ? 'Ready to send.' : 'API not configured.');
+    });
+
+    /* Weather */
+    $('#weatherBtn').addEventListener('click', getWeather);
+    $('#locateBtn').addEventListener('click', () => {
+        if (!navigator.geolocation) {
+            status('#weatherStatus', 'Geolocation is not supported.', 'error');
+            return;
+        }
+        status('#weatherStatus', 'Requesting location permission…');
+        navigator.geolocation.getCurrentPosition(pos => {
+            $('#latitude').value = pos.coords.latitude;
+            $('#longitude').value = pos.coords.longitude;
+            getWeather();
+        }, err => {
+            status('#weatherStatus',
+                err.code === 1 ? 'Location permission denied.' :
+                err.code === 2 ? 'Location unavailable.' : 'Location request timed out.',
+                'error');
+        }, { timeout: 10000, maximumAge: 300000 });
+    });
+
+    window.addEventListener('error', e => log('error', e.message));
+    window.addEventListener('unhandledrejection', e => log('error', e.reason?.message || e.reason));
+    window.addEventListener('beforeunload', stopTimer);
+}
+
+/* ==========================================================================
+   20. INITIALIZATION
+   ========================================================================== */
+function init() {
+    load();
+    renderNotes();
+    renderTasks();
+    renderAlarms();
+    fillUnits();
+    resetTimer();
+    startClock();
+    renderWorldClocks();
+    bindEvents();
+    updateStats();
+
+    /* Background alarm + world clock updates */
+    alarmCheckInterval = setInterval(checkAlarms, 10000);
+    setInterval(updateWorldClockTimes, 1000);
+
+    /* Notification permission */
+    if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission().catch(() => {});
     }
 
-    // =========================================
-    // SAFE STORAGE WRAPPER
-    // =========================================
-    const Storage = {
-      get(key, fallback) {
-        try {
-          const item = localStorage.getItem(`zj_v1_${key}`);
-          return item ? JSON.parse(item) : fallback;
-        } catch (e) { console.error('Storage read error', e); return fallback; }
-      },
-      set(key, value) {
-        try {
-          localStorage.setItem(`zj_v1_${key}`, JSON.stringify(value));
-          return true;
-        } catch (e) { console.error('Storage write error', e); window.showToast('Failed to save data. Storage might be full.', 'error'); return false; }
-      },
-      remove(key) {
-        try { localStorage.removeItem(`zj_v1_${key}`); } catch (e) {}
-      }
-    };
+    status('#appStatus', 'Dashboard ready.', 'success');
+}
 
-    // =========================================
-    // SAFE DOM HELPER (Prevents XSS)
-    // =========================================
-    const DOM = {
-      create(tag, className, text = '') {
-        const el = document.createElement(tag);
-        if (className) el.className = className;
-        if (text) el.textContent = text;
-        return el;
-      },
-      icon(name, size = 16) {
-        const el = document.createElement('i');
-        el.setAttribute('data-lucide', name);
-        if (size) { el.setAttribute('width', size); el.setAttribute('height', size); }
-        return el;
-      }
-    };
-
-    document.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
-      const html = document.documentElement;
-      const themeIcon = document.querySelector('#themeToggle i');
-      
-      // Theme Setup
-      const savedTheme = Storage.get('theme', 'dark');
-      html.setAttribute('data-theme', savedTheme);
-      themeIcon.setAttribute('data-lucide', savedTheme === 'dark' ? 'moon' : 'sun');
-      lucide.createIcons();
-
-      document.getElementById('themeToggle').addEventListener('click', () => {
-        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        html.setAttribute('data-theme', next);
-        Storage.set('theme', next);
-        themeIcon.setAttribute('data-lucide', next === 'dark' ? 'moon' : 'sun');
-        lucide.createIcons();
-      });
-
-      // Toast System
-      window.showToast = (msg, type = 'success') => {
-        const container = document.getElementById('toastContainer');
-        const toast = DOM.create('div', `toast ${type}`);
-        toast.appendChild(DOM.icon(type === 'success' ? 'check-circle' : 'alert-circle'));
-        toast.appendChild(document.createTextNode(' ' + msg));
-        container.appendChild(toast);
-        lucide.createIcons();
-        setTimeout(() => toast.remove(), 3000);
-      };
-
-      // Event Delegation
-      document.body.addEventListener('click', (e) => {
-        const btn = e.target.closest('[data-action]');
-        if (!btn) return;
-        const action = btn.dataset.action;
-        const target = btn.dataset.target;
-        if (action === 'toggle-sidebar') {
-          document.getElementById('sidebar').classList.toggle('hidden');
-          document.getElementById('sidebarBackdrop').classList.toggle('active');
-        } else if (action === 'scroll') {
-          document.getElementById(target).scrollIntoView({ behavior: 'smooth' });
-          if (window.innerWidth <= 768) {
-            document.getElementById('sidebar').classList.add('hidden');
-            document.getElementById('sidebarBackdrop').classList.remove('active');
-          }
-        } else if (action === 'open-modal') {
-          document.getElementById(target).showModal();
-          if (window.innerWidth <= 768) {
-            document.getElementById('sidebar').classList.add('hidden');
-            document.getElementById('sidebarBackdrop').classList.remove('active');
-          }
-        } else if (action === 'close-modal') {
-          btn.closest('dialog').close();
-        } else if (action === 'open-chat') {
-          document.getElementById('chatOverlay').classList.add('active');
-          document.getElementById('chatInput').focus();
-        }
-      });
-
-      // Clock
-      setInterval(() => {
-        document.getElementById('liveClock').textContent = new Date().toLocaleTimeString('en-GB', { hour12: false });
-      }, 1000);
-
-      // =========================================
-      // B. CALCULATOR (Safe Parser)
-      // =========================================
-      let calcCurrent = '0';
-      let calcHistoryArr = Storage.get('calcHistory', []);
-      const parser = new MathParser();
-
-      const renderCalc = () => {
-        document.getElementById('calcDisplay').textContent = calcCurrent;
-        const hist = document.getElementById('calcHistory');
-        hist.innerHTML = ''; // Safe clear
-        calcHistoryArr.forEach(h => {
-          hist.appendChild(DOM.create('div', '', h));
-        });
-      };
-
-      document.querySelectorAll('[data-calc]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const key = btn.dataset.calc;
-          if (key === 'AC') calcCurrent = '0';
-          else if (key === 'DEL') calcCurrent = calcCurrent.length > 1 ? calcCurrent.slice(0, -1) : '0';
-          else if (key === '=') {
-            try {
-              const result = parser.evaluate(calcCurrent);
-              const resultStr = Number(result.toPrecision(12)).toString(); // Fix floating point
-              calcHistoryArr.push(`${calcCurrent} = ${resultStr}`);
-              if (calcHistoryArr.length > 5) calcHistoryArr.shift();
-              Storage.set('calcHistory', calcHistoryArr);
-              calcCurrent = resultStr;
-            } catch (err) { calcCurrent = 'Error'; }
-          } else {
-            if (calcCurrent === '0' || calcCurrent === 'Error') calcCurrent = key;
-            else calcCurrent += key;
-          }
-          renderCalc();
-        });
-      });
-      renderCalc();
-
-      // =========================================
-      // B. SCIENTIFIC CALCULATOR
-      // =========================================
-      let sciCurrent = '0';
-      document.querySelectorAll('[data-sci]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const key = btn.dataset.sci;
-          if (key === 'AC') sciCurrent = '0';
-          else if (key === 'DEL') sciCurrent = sciCurrent.length > 1 ? sciCurrent.slice(0, -1) : '0';
-          else if (key === '=') {
-            try {
-              const result = parser.evaluate(sciCurrent);
-              sciCurrent = Number(result.toPrecision(12)).toString();
-            } catch (err) { sciCurrent = 'Error'; }
-          } else {
-            if (sciCurrent === '0' || sciCurrent === 'Error') sciCurrent = key;
-            else sciCurrent += key;
-          }
-          document.getElementById('sciDisplay').textContent = sciCurrent;
-        });
-      });
-
-      // =========================================
-      // D. WEATHER API (Accurate, Abortable)
-      // =========================================
-      const weatherCodeMap = {
-        0: { desc: 'Clear Sky', icon: 'sun' }, 1: { desc: 'Mainly Clear', icon: 'sun' },
-        2: { desc: 'Partly Cloudy', icon: 'cloud-sun' }, 3: { desc: 'Overcast', icon: 'cloud' },
-        45: { desc: 'Fog', icon: 'cloud-fog' }, 48: { desc: 'Rime Fog', icon: 'cloud-fog' },
-        51: { desc: 'Light Drizzle', icon: 'cloud-drizzle' }, 53: { desc: 'Drizzle', icon: 'cloud-drizzle' }, 55: { desc: 'Heavy Drizzle', icon: 'cloud-drizzle' },
-        61: { desc: 'Light Rain', icon: 'cloud-rain' }, 63: { desc: 'Rain', icon: 'cloud-rain' }, 65: { desc: 'Heavy Rain', icon: 'cloud-rain' },
-        71: { desc: 'Light Snow', icon: 'cloud-snow' }, 73: { desc: 'Snow', icon: 'cloud-snow' }, 75: { desc: 'Heavy Snow', icon: 'cloud-snow' },
-        95: { desc: 'Thunderstorm', icon: 'cloud-lightning' }
-      };
-
-      let weatherFetchId = 0;
-      const weatherSearchBtn = document.getElementById('searchWeatherBtn');
-      
-      window.getWeather = async (city) => {
-        if (!city) return;
-        const currentFetchId = ++weatherFetchId;
-        
-        // Loading State
-        weatherSearchBtn.disabled = true;
-        document.getElementById('wDesc').textContent = 'Loading...';
-        document.getElementById('wLoc').textContent = 'DETECTING...';
-        
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
-
-        try {
-          const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`, { signal: controller.signal });
-          if (!geoRes.ok) throw new Error('Geocoding failed');
-          const geoData = await geoRes.json();
-          
-          if (!geoData.results || geoData.results.length === 0) {
-            if (currentFetchId === weatherFetchId) {
-              document.getElementById('wDesc').textContent = 'Not Found';
-              document.getElementById('wLoc').textContent = 'Invalid City';
-              showToast('City not found', 'error');
-            }
-            return;
-          }
-          
-          const { latitude, longitude, name, country_code } = geoData.results[0];
-          
-          const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relative_humidity_2m,precipitation_probability,uv_index&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`, { signal: controller.signal });
-          if (!wRes.ok) throw new Error('Weather fetch failed');
-          const wData = await wRes.json();
-
-          if (currentFetchId !== weatherFetchId) return; // Stale response
-
-          const current = wData.current_weather;
-          const hourly = wData.hourly;
-          const daily = wData.daily;
-          
-          // Find current hour index
-          const now = new Date();
-          const timeStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}T${String(now.getHours()).padStart(2,'0')}:00`;
-          let hourIndex = hourly.time.indexOf(timeStr);
-          if (hourIndex === -1) hourIndex = 0; // Fallback
-
-          // Update UI
-          document.getElementById('wTemp').textContent = Math.round(current.temperature);
-          document.getElementById('wWind').textContent = `${current.windspeed} km/h`;
-          document.getElementById('wLoc').textContent = `${name}, ${country_code}`;
-          document.getElementById('wUpdateTime').textContent = `Updated: ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
-          
-          const codeInfo = weatherCodeMap[current.weathercode] || { desc: 'Unknown', icon: 'cloud' };
-          document.getElementById('wDesc').textContent = codeInfo.desc;
-          
-          document.getElementById('wIcon').innerHTML = `<i data-lucide="${codeInfo.icon}"></i>`;
-          
-          // Real hourly stats
-          document.getElementById('wRain').textContent = `${hourly.precipitation_probability[hourIndex] ?? 0}%`;
-          document.getElementById('wHum').textContent = `${hourly.relative_humidity_2m[hourIndex] ?? 0}%`;
-          document.getElementById('wUv').textContent = (hourly.uv_index[hourIndex] ?? 0).toFixed(1);
-
-          // Forecast
-          const forecastContainer = document.getElementById('wForecast');
-          forecastContainer.innerHTML = ''; // Safe clear
-          for (let i = 0; i < 7; i++) {
-            const date = new Date(daily.time[i]);
-            const dayName = date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
-            
-            const dayDiv = DOM.create('div', 'forecast-day');
-            dayDiv.appendChild(DOM.create('div', '', dayName));
-            dayDiv.appendChild(DOM.icon('sun'));
-            dayDiv.appendChild(DOM.create('div', '', `${Math.round(daily.temperature_2m_max[i])}° ${Math.round(daily.temperature_2m_min[i])}°`));
-            dayDiv.querySelector('div:last-child').style.fontSize = '11px';
-            dayDiv.querySelector('div:last-child').style.marginTop = '2px';
-            
-            forecastContainer.appendChild(dayDiv);
-          }
-          
-          lucide.createIcons();
-          showToast('Weather updated');
-
-        } catch (err) {
-          if (err.name === 'AbortError') {
-            if (currentFetchId === weatherFetchId) showToast('Request timed out', 'error');
-          } else {
-            if (currentFetchId === weatherFetchId) {
-              showToast('Error fetching weather', 'error');
-              document.getElementById('wDesc').textContent = 'Offline';
-            }
-          }
-        } finally {
-          clearTimeout(timeoutId);
-          weatherSearchBtn.disabled = false;
-        }
-      };
-
-      weatherSearchBtn.addEventListener('click', () => getWeather(document.getElementById('cityInput').value));
-      document.getElementById('cityInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') getWeather(e.target.value); });
-      document.getElementById('geoWeatherBtn').addEventListener('click', () => { showToast('Geolocation requested'); getWeather('London'); });
-      getWeather('London'); // Initial Load
-
-      // =========================================
-      // F. NOTES (Safe DOM, Safe Storage)
-      // =========================================
-      let notes = Storage.get('notes', []);
-      
-      const renderNotes = () => {
-        const list = document.getElementById('notesList');
-        list.innerHTML = ''; // Safe clear
-        
-        notes.forEach((note, i) => {
-          const item = DOM.create('div', 'list-item');
-          item.appendChild(DOM.create('span', '', note));
-          
-          const delBtn = DOM.create('button', 'btn-danger');
-          delBtn.appendChild(DOM.icon('trash-2', 16));
-          delBtn.addEventListener('click', () => {
-            notes.splice(i, 1);
-            Storage.set('notes', notes);
-            renderNotes();
-            showToast('Note deleted');
-          });
-          item.appendChild(delBtn);
-          list.appendChild(item);
-        });
-        lucide.createIcons();
-      };
-
-      document.getElementById('addNoteBtn').addEventListener('click', () => {
-        const input = document.getElementById('noteInput');
-        const val = input.value.trim();
-        if (!val) return;
-        notes.push(val);
-        Storage.set('notes', notes);
-        input.value = '';
-        renderNotes();
-        showToast('Note added');
-      });
-      renderNotes();
-
-      // =========================================
-      // F. TODO LIST (Safe DOM, Safe Storage)
-      // =========================================
-      let todos = Storage.get('todos', []);
-      let currentFilter = 'all';
-
-      const renderTodos = () => {
-        const list = document.getElementById('todoList');
-        list.innerHTML = ''; // Safe clear
-        
-        let filtered = todos;
-        if (currentFilter === 'active') filtered = todos.filter(t => !t.done);
-        if (currentFilter === 'done') filtered = todos.filter(t => t.done);
-
-        filtered.forEach((t) => {
-          const originalIndex = todos.indexOf(t);
-          
-          const item = DOM.create('div', 'list-item');
-          item.style.opacity = t.done ? '0.5' : '1';
-          
-          const span = DOM.create('span', '', t.text);
-          span.style.textDecoration = t.done ? 'line-through' : 'none';
-          span.style.cursor = 'pointer';
-          span.addEventListener('click', () => {
-            todos[originalIndex].done = !todos[originalIndex].done;
-            Storage.set('todos', todos);
-            renderTodos();
-          });
-          item.appendChild(span);
-          
-          const delBtn = DOM.create('button', 'btn-danger');
-          delBtn.appendChild(DOM.icon('trash-2', 16));
-          delBtn.addEventListener('click', () => {
-            todos.splice(originalIndex, 1);
-            Storage.set('todos', todos);
-            renderTodos();
-            showToast('Task deleted');
-          });
-          item.appendChild(delBtn);
-          
-          list.appendChild(item);
-        });
-        lucide.createIcons();
-      };
-
-      document.getElementById('addTodoBtn').addEventListener('click', () => {
-        const input = document.getElementById('todoInput');
-        const val = input.value.trim();
-        if (!val) return;
-        todos.push({ text: val, done: false });
-        Storage.set('todos', todos);
-        input.value = '';
-        renderTodos();
-        showToast('Task added');
-      });
-
-      document.querySelectorAll('#todoTabs .tab').forEach(tab => {
-        tab.addEventListener('click', (e) => {
-          document.querySelectorAll('#todoTabs .tab').forEach(t => t.classList.remove('active'));
-          e.target.classList.add('active');
-          currentFilter = e.target.dataset.filter;
-          renderTodos();
-        });
-      });
-      renderTodos();
-
-      // =========================================
-      // G. POMODORO (Drift-free)
-      // =========================================
-      let pomoState = 'idle'; // idle, running, paused
-      let pomoEndTime = 0;
-      let pomoDuration = 25 * 60 * 1000;
-      let pomoRemaining = pomoDuration;
-      let pomoTicker = null;
-      const maxDash = 553;
-
-      const updatePomoDisplay = () => {
-        const m = Math.floor(pomoRemaining / 60000);
-        const s = Math.floor((pomoRemaining % 60000) / 1000);
-        document.getElementById('pomoTime').textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-        document.getElementById('pomoRing').style.strokeDashoffset = maxDash - (pomoRemaining / pomoDuration) * maxDash;
-      };
-
-      const tickPomo = () => {
-        if (pomoState !== 'running') return;
-        const now = Date.now();
-        pomoRemaining = Math.max(0, pomoEndTime - now);
-        updatePomoDisplay();
-        
-        if (pomoRemaining <= 0) {
-          clearInterval(pomoTicker);
-          pomoState = 'idle';
-          pomoRemaining = pomoDuration;
-          document.getElementById('pomoStartBtn').textContent = 'Start';
-          showToast('Timer finished!');
-          try { new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play(); } catch(err){}
-        }
-      };
-
-      document.querySelectorAll('#pomoTabs .tab').forEach(tab => {
-        tab.addEventListener('click', (e) => {
-          if (pomoState !== 'idle') return; // Prevent switching while running
-          document.querySelectorAll('#pomoTabs .tab').forEach(t => t.classList.remove('active'));
-          e.target.classList.add('active');
-          pomoDuration = parseInt(e.target.dataset.time) * 60 * 1000;
-          pomoRemaining = pomoDuration;
-          updatePomoDisplay();
-        });
-      });
-
-      document.getElementById('pomoStartBtn').addEventListener('click', (e) => {
-        if (pomoState === 'running') {
-          // Pause
-          pomoState = 'paused';
-          pomoRemaining = pomoEndTime - Date.now();
-          clearInterval(pomoTicker);
-          e.target.textContent = 'Resume';
-        } else {
-          // Start / Resume
-          pomoState = 'running';
-          pomoEndTime = Date.now() + pomoRemaining;
-          clearInterval(pomoTicker); // Prevent multiple intervals
-          pomoTicker = setInterval(tickPomo, 100);
-          e.target.textContent = 'Pause';
-        }
-      });
-
-      document.getElementById('pomoResetBtn').addEventListener('click', () => {
-        clearInterval(pomoTicker);
-        pomoState = 'idle';
-        pomoRemaining = pomoDuration;
-        document.getElementById('pomoStartBtn').textContent = 'Start';
-        updatePomoDisplay();
-      });
-      updatePomoDisplay();
-
-      // =========================================
-      // C. UNIT CONVERTER
-      // =========================================
-      const convData = {
-        length: { m: 1, km: 0.001, cm: 100, mm: 1000, inch: 39.37, ft: 3.28, mi: 0.000621 },
-        mass: { kg: 1, g: 1000, mg: 1000000, lb: 2.204, oz: 35.27 },
-        temperature: { C: 1, F: 1, K: 1 }, 
-        data: { B: 1, KB: 0.001, MB: 0.000001, GB: 0.000000001 },
-        time: { s: 1, min: 1/60, h: 1/3600, d: 1/86400 }
-      };
-
-      const updateConvUnits = () => {
-        const cat = document.getElementById('convCategory').value;
-        const units = Object.keys(convData[cat]);
-        document.getElementById('convFrom').innerHTML = units.map(u => `<option value="${u}">${u.toUpperCase()}</option>`).join('');
-        document.getElementById('convTo').innerHTML = units.map(u => `<option value="${u}">${u.toUpperCase()}</option>`).join('');
-        document.getElementById('convTo').selectedIndex = 1;
-        convert();
-      };
-
-      const convert = () => {
-        const cat = document.getElementById('convCategory').value;
-        const val = parseFloat(document.getElementById('convInput').value) || 0;
-        const from = document.getElementById('convFrom').value;
-        const to = document.getElementById('convTo').value;
-        let result = 0;
-
-        if (cat === 'temperature') {
-          // Absolute zero validation
-          if (from === 'K' && val < 0) { document.getElementById('convOutput').value = 'Invalid (< 0K)'; return; }
-          if (from === 'C' && val < -273.15) { document.getElementById('convOutput').value = 'Invalid (< -273.15C)'; return; }
-          if (from === 'F' && val < -459.67) { document.getElementById('convOutput').value = 'Invalid (< -459.67F)'; return; }
-
-          let c = from === 'C' ? val : (from === 'F' ? (val - 32) * 5/9 : val - 273.15);
-          result = to === 'C' ? c : (to === 'F' ? (c * 9/5) + 32 : c + 273.15);
-        } else {
-          result = (val / convData[cat][from]) * convData[cat][to];
-        }
-        
-        // Round to 6 decimals and strip trailing zeros
-        document.getElementById('convOutput').value = Number(result.toFixed(6));
-      };
-
-      document.getElementById('convCategory').addEventListener('change', updateConvUnits);
-      document.getElementById('convInput').addEventListener('input', convert);
-      document.getElementById('convFrom').addEventListener('change', convert);
-      document.getElementById('convTo').addEventListener('change', convert);
-      document.getElementById('convSwapBtn').addEventListener('click', () => {
-        const from = document.getElementById('convFrom');
-        const to = document.getElementById('convTo');
-        const temp = from.value;
-        from.value = to.value;
-        to.value = temp;
-        convert();
-      });
-      updateConvUnits();
-
-      // =========================================
-      // E. CHAT (Abortable, Safe DOM)
-      // =========================================
-      const chatOverlay = document.getElementById('chatOverlay');
-      const chatMessages = document.getElementById('chatMessages');
-      const chatInput = document.getElementById('chatInput');
-      const chatSendBtn = document.getElementById('chatSendBtn');
-      let chatController = null;
-
-      const scrollToBottom = () => chatMessages.scrollTop = chatMessages.scrollHeight;
-
-      document.getElementById('closeChatBtn').addEventListener('click', () => {
-        chatOverlay.classList.remove('active');
-        if (chatController) chatController.abort();
-      });
-      document.getElementById('chatFab').addEventListener('click', () => { chatOverlay.classList.add('active'); chatInput.focus(); });
-      document.getElementById('clearChatBtn').addEventListener('click', () => {
-        chatMessages.innerHTML = `
-          <div class="msg-system"><i data-lucide="check-circle"></i> ZJ Bot is ready.</div>
-          <div class="msg-row bot"><div class="bubble">Hey there! 👋 I'm ZJ Bot. How can I help you today?</div></div>
-        `;
-        lucide.createIcons();
-      });
-
-      const getChatEndpoint = () => {
-        const custom = Storage.get('customEndpoint', '');
-        if (custom) return custom;
-        return (location.hostname === 'localhost' || location.hostname === '127.0.0.1') 
-          ? 'http://localhost:5000/chat' : '/api/chat';
-      };
-
-      const sendMessage = async () => {
-        const text = chatInput.value.trim();
-        if (!text) return;
-
-        // User Message
-        const userRow = DOM.create('div', 'msg-row user');
-        userRow.appendChild(DOM.create('div', 'bubble', text));
-        chatMessages.appendChild(userRow);
-
-        chatInput.value = '';
-        scrollToBottom();
-
-        // Lock UI
-        chatInput.disabled = true;
-        chatSendBtn.disabled = true;
-
-        // Typing Indicator
-        const typing = DOM.create('div', 'msg-row bot');
-        typing.id = 'typingIndicator';
-        typing.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
-        chatMessages.appendChild(typing);
-        scrollToBottom();
-
-        let botText = '';
-        const endpoint = getChatEndpoint();
-        const apiKey = Storage.get('customKey', '');
-
-        // Abort previous request if any
-        if (chatController) chatController.abort();
-        chatController = new AbortController();
-        const timeoutId = setTimeout(() => chatController.abort(), 15000);
-
-        try {
-          const headers = { 'Content-Type': 'application/json' };
-          if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
-
-          const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify({ message: text }),
-            signal: chatController.signal
-          });
-
-          const raw = await response.text();
-          let data = null;
-          try { data = JSON.parse(raw); } catch (_) {}
-
-          if (!response.ok) {
-            botText = (data && data.reply) ? data.reply : `⚠️ Server Error: ${response.status}`;
-          } else if (data && data.reply) {
-            botText = data.reply;
-          } else {
-            botText = '⚠️ Unexpected response format.';
-          }
-        } catch (err) {
-          if (err.name === 'AbortError') {
-            botText = '⚠️ Request timed out or was cancelled.';
-          } else {
-            botText = '⚠️ Cannot reach the backend. Check your connection.';
-          }
-        } finally {
-          clearTimeout(timeoutId);
-          if (typing.parentNode) typing.remove();
-
-          const botRow = DOM.create('div', 'msg-row bot');
-          const botBubble = DOM.create('div', 'bubble', botText);
-          if (botText.startsWith('⚠️')) botBubble.style.color = 'var(--accent-red)';
-          botRow.appendChild(botBubble);
-          chatMessages.appendChild(botRow);
-
-          chatInput.disabled = false;
-          chatSendBtn.disabled = false;
-          chatInput.focus();
-          scrollToBottom();
-        }
-      };
-
-      chatSendBtn.addEventListener('click', sendMessage);
-      chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
-
-      // =========================================
-      // E. API SETTINGS
-      // =========================================
-      const settingsModal = document.getElementById('settingsModal');
-      const apiEndpointInput = document.getElementById('apiEndpointInput');
-      const apiKeyInput = document.getElementById('apiKeyInput');
-
-      apiEndpointInput.value = Storage.get('customEndpoint', '');
-      apiKeyInput.value = Storage.get('customKey', '');
-
-      document.getElementById('saveSettingsBtn').addEventListener('click', () => {
-        let url = apiEndpointInput.value.trim();
-        if (url && !url.startsWith('http')) {
-          showToast('Invalid URL. Must start with http:// or https://', 'error');
-          return;
-        }
-        Storage.set('customEndpoint', url);
-        Storage.set('customKey', apiKeyInput.value.trim());
-        showToast('API settings saved');
-        settingsModal.close();
-      });
-
-      document.getElementById('resetSettingsBtn').addEventListener('click', () => {
-        Storage.remove('customEndpoint');
-        Storage.remove('customKey');
-        apiEndpointInput.value = '';
-        apiKeyInput.value = '';
-        showToast('Settings reset to default');
-        settingsModal.close();
-      });
-
-      // Global Keyboard Shortcuts
-      window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          document.querySelectorAll('dialog[open]').forEach(d => d.close());
-          chatOverlay.classList.remove('active');
-        }
-      });
-    });
-  </script>
+try {
+    init();
+} catch (e) {
+    log('fatal', e.stack || e);
+    status('#appStatus', 'Initialization failed. Check the browser console.', 'error');
+}
+</script>
 </body>
 </html>
