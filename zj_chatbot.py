@@ -4,13 +4,12 @@ from openai import OpenAI
 import os
 import traceback
 
-# Absolute path to the project root
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# FIXED: Since zj_chatbot.py is in the root folder, BASE_DIR is just its own directory.
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__, static_folder=None)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# --- SECURE: reads from Vercel Environment Variables ---
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
 if not GROQ_API_KEY:
@@ -22,23 +21,19 @@ client = OpenAI(
 )
 
 MODEL = "llama-3.1-8b-instant"
-SYSTEM_PROMPT = (
-    "You are ZJ Bot, a helpful AI assistant. "
-    "Respond in plain conversational text only. Keep responses concise."
-)
+SYSTEM_PROMPT = "You are ZJ Bot, a helpful AI assistant. Respond in plain conversational text only. Keep responses concise."
 
-# ----- Static file serving -----
+# ----- Serve the main HTML file -----
 @app.route('/')
 def home():
     return send_from_directory(BASE_DIR, 'index.html')
 
-# FIXED: was incorrectly @app.route('/')
+# FIXED: Your original code had @app.route('/') here, which caused a conflict.
 @app.route('/<path:filename>')
 def static_files(filename):
     return send_from_directory(BASE_DIR, filename)
 
-
-# ----- API endpoint (Handles BOTH /chat and /api/chat) -----
+# ----- API Endpoint (Handles both paths) -----
 @app.route('/chat', methods=['POST', 'OPTIONS'])
 @app.route('/api/chat', methods=['POST', 'OPTIONS'])
 def chat():
@@ -53,8 +48,7 @@ def chat():
 
     if not GROQ_API_KEY:
         return jsonify({
-            'reply': '⚠️ Server API key is not configured. '
-                     'Add GROQ_API_KEY in the hosting dashboard and redeploy.'
+            'reply': '⚠️ Server API key is not configured. Add GROQ_API_KEY in Vercel and redeploy.'
         }), 500
 
     try:
@@ -73,14 +67,7 @@ def chat():
     except Exception as e:
         print("--- CHAT ERROR ---")
         traceback.print_exc()
-        return jsonify({
-            'reply': f'⚠️ Cannot connect to AI. Error: {str(e)}'
-        }), 500
-
+        return jsonify({'reply': f'⚠️ Cannot connect to AI. Error: {str(e)}'}), 500
 
 if __name__ == '__main__':
-    app.run(
-        host='0.0.0.0',
-        port=5000,
-        debug=os.environ.get('FLASK_DEBUG') == '1',
-    )
+    app.run(host='0.0.0.0', port=5000, debug=True)
