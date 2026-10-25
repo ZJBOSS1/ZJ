@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#080C10">
-<meta name="description" content="ZJ Dashboard - All-in-one productivity app.">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>ZJ Dashboard</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2300A3CC'/%3E%3Ctext x='50' y='68' font-size='50' font-family='Georgia' font-weight='900' text-anchor='middle' fill='white'%3EZJ%3C/text%3E%3C/svg%3E">
@@ -99,8 +98,6 @@
   .nav-item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; margin-bottom: 4px; border-radius: 8px; color: var(--text-secondary); font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent; background: transparent; text-align: left; width: 100%; transition: all var(--dur-fast); }
   .nav-item:hover { color: var(--text); background: var(--bg-2); }
   .nav-item.active { color: var(--cyan-400); background: var(--bg-2); border-color: rgba(0, 163, 204, 0.3); }
-  .nav-import-label { cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 8px; color: var(--text-secondary); font-size: 13px; font-weight: 600; border: 1px solid transparent; transition: all var(--dur-fast); }
-  .nav-import-label:hover { color: var(--text); background: var(--bg-2); }
 
   .topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: 60px; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: rgba(15,21,27,0.85); border-bottom: 1px solid var(--border); transition: left var(--dur-mid); backdrop-filter: blur(16px); }
   body.light-theme .topbar { background: rgba(255,255,255,0.85); }
@@ -251,20 +248,12 @@
   <button class="nav-item" onclick="openWindow('pomoWin', this)"><i data-lucide="timer"></i> Pomodoro</button>
   <button class="nav-item" onclick="openWindow('convWin', this)"><i data-lucide="arrow-left-right"></i> Unit Converter</button>
   <button class="nav-item" onclick="openChat(this)"><i data-lucide="message-square"></i> Chatbot</button>
-
-  <div class="nav-label">Data</div>
-  <button class="nav-item" onclick="exportData('json')"><i data-lucide="download"></i> Export JSON</button>
-  <label class="nav-import-label" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')document.getElementById('importFile').click()">
-    <i data-lucide="upload"></i> Import Backup
-    <input type="file" id="importFile" accept=".json" onchange="importData(event)" style="display:none;">
-  </label>
 </aside>
 
 <header class="topbar">
   <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Open menu"><i data-lucide="menu"></i></button>
   <div class="topbar-right">
-    <button class="cmd-btn" onclick="toggleCmdPalette()" data-tooltip="Search (Ctrl+K)"><i data-lucide="search"></i> <kbd>Ctrl K</kbd></button>
-    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" data-tooltip="Toggle Theme (t)"><i data-lucide="moon"></i></button>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" data-tooltip="Toggle Theme"><i data-lucide="moon"></i></button>
   </div>
 </header>
 
@@ -443,7 +432,6 @@
   <div class="app-body">
     <div class="sci-calc-container">
       <input type="text" id="sciDisplay" class="sci-display" readonly value="0">
-      <!-- Corrected Grid Layout -->
       <div class="sci-grid">
         <button class="btn-func" onclick="sciAppend('sin(')">sin</button>
         <button class="btn-func" onclick="sciAppend('cos(')">cos</button>
@@ -451,7 +439,7 @@
         <button class="btn-func" onclick="sciAppend('log(')">log</button>
         <button class="btn-func" onclick="sciAppend('ln(')">ln</button>
 
-        <button class="btn-func" onclick="sciAppend('x²')">x²</button>
+        <button class="btn-func" onclick="sciAppend('^2')">x²</button>
         <button class="btn-func" onclick="sciAppend('^')">x^y</button>
         <button class="btn-func" onclick="sciAppend('√(')">√</button>
         <button class="btn-func" onclick="sciAppend('(')">(</button>
