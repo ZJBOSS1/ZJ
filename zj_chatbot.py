@@ -4,62 +4,51 @@ from openai import OpenAI
 import os
 import traceback
 
-# FIXED: Since zj_chatbot.py is in the root folder, BASE_DIR is just its own directory.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
 app = Flask(__name__, static_folder=None)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+client = OpenAI(base_url="https://api.groq.com/openai/v1", api_key=GROQ_API_KEY)
+MODEL = "openai/gpt-oss-20b" # Updated model
+SYSTEM_PROMPT = "You are ZJ Bot, a helpful AI assistant built into the ZJ Titan OS. Respond in plain conversational text only. Keep responses concise."
 
-if not GROQ_API_KEY:
-    print("⚠️ WARNING: GROQ_API_KEY environment variable is missing!")
-
-client = OpenAI(
-    base_url="https://api.groq.com/openai/v1",
-    api_key=GROQ_API_KEY,
-)
-
-MODEL = "openai/gpt-oss-20b"
-SYSTEM_PROMPT = "You are ZJ Bot, a helpful AI assistant. Respond in plain conversational text only. Keep responses concise."
-
-# ----- Serve the main HTML file -----
 @app.route('/')
-def home():
-    return send_from_directory(BASE_DIR, 'index.html')
+def home(): return send_from_directory(BASE_DIR, 'index.html')
 
-# FIXED: Your original code had @app.route('/') here, which caused a conflict.
 @app.route('/<path:filename>')
-def static_files(filename):
-    return send_from_directory(BASE_DIR, filename)
+def static_files(filename): return send_from_directory(BASE_DIR, filename)
 
-# ----- API Endpoint (Handles both paths) -----
 @app.route('/chat', methods=['POST', 'OPTIONS'])
 @app.route('/api/chat', methods=['POST', 'OPTIONS'])
 def chat():
-    if request.method == 'OPTIONS':
-        return jsonify({'status': 'ok'}), 200
+    if request.method == 'OPTIONS': return jsonify({'status': 'ok'}), 200
 
     data = request.get_json(silent=True) or {}
-    user_message = data.get('message', '').strip()
-
-    if not user_message:
-        return jsonify({'reply': 'Please type a message.'}), 400
+    
+    # --- CONTEXT WINDOW LOGIC ---
+    # The frontend sends 'messages' (array of {role, content}).
+    # If it's an older frontend, it sends 'message' (string).
+    messages = data.get('messages', [])
+    
+    if not messages:
+        # Fallback for single message
+        single_msg = data.get('message', '').strip()
+        if not single_msg: return jsonify({'reply': 'Please type a message.'}), 400
+        messages = [{"role": "user", "content": single_msg}]
+    else:
+        # Inject the system prompt at the beginning of the array
+        messages = [{"role": "system", "content": SYSTEM_PROMPT}] + messages
 
     if not GROQ_API_KEY:
-        return jsonify({
-            'reply': '⚠️ Server API key is not configured. Add GROQ_API_KEY in Vercel and redeploy.'
-        }), 500
+        return jsonify({'reply': '⚠️ Server API key is not configured.'}), 500
 
     try:
         response = client.chat.completions.create(
             model=MODEL,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_message},
-            ],
+            messages=messages, # Send the whole history
             temperature=0.6,
-            max_tokens=300,
+            max_tokens=500,
         )
         reply = response.choices[0].message.content
         return jsonify({'reply': reply})
