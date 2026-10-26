@@ -24,6 +24,12 @@
             --accent-blue-dim: rgba(22, 139, 250, 0.15);
             --accent-teal: #16B8B0;
             --accent-teal-dim: rgba(22, 184, 176, 0.12);
+            --accent-gold: #D4B056;
+            --accent-gold-hover: #E8C876;
+            --accent-gold-dim: rgba(212, 176, 86, 0.15);
+            --accent-white: #E8EDF2;
+            --accent-white-hover: #FFFFFF;
+            --accent-white-dim: rgba(232, 237, 242, 0.12);
             --text-main: #F4F7FA;
             --text-muted: #94A7BA;
             --text-dim: #5A6B7E;
@@ -48,6 +54,18 @@
             --accent-primary: var(--accent-teal);
             --accent-primary-hover: #22D1C9;
             --accent-primary-dim: var(--accent-teal-dim);
+        }
+
+        [data-theme="gold"] {
+            --accent-primary: var(--accent-gold);
+            --accent-primary-hover: var(--accent-gold-hover);
+            --accent-primary-dim: var(--accent-gold-dim);
+        }
+
+        [data-theme="white"] {
+            --accent-primary: var(--accent-white);
+            --accent-primary-hover: var(--accent-white-hover);
+            --accent-primary-dim: var(--accent-white-dim);
         }
 
         /* ==================== BASE ==================== */
@@ -234,7 +252,7 @@
             font-weight: 800;
             font-size: 14px;
             color: var(--bg-main);
-            box-shadow: 0 4px 12px rgba(22, 139, 250, 0.25);
+            box-shadow: 0 4px 12px var(--accent-primary-dim);
         }
 
         .brand-text h1 {
@@ -410,6 +428,8 @@
             overflow-x: hidden;
             padding: 32px;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         @media (max-width: 768px) {
@@ -592,12 +612,12 @@
             color: var(--bg-main);
             font-weight: 700;
             grid-column: span 2;
-            box-shadow: 0 4px 12px rgba(22, 139, 250, 0.25);
+            box-shadow: 0 4px 12px var(--accent-primary-dim);
         }
 
         .calc-btn.eq:hover {
             background: var(--accent-primary-hover);
-            box-shadow: 0 6px 16px rgba(22, 139, 250, 0.35);
+            box-shadow: 0 6px 16px var(--accent-primary-dim);
         }
 
         /* ==================== WEATHER ==================== */
@@ -654,7 +674,7 @@
             width: 48px;
             height: 48px;
             margin: 0 auto 8px;
-            color: var(--accent-teal);
+            color: var(--accent-primary);
             stroke-width: 1.5;
         }
 
@@ -784,12 +804,12 @@
         .btn-primary {
             background: var(--accent-primary);
             color: var(--bg-main);
-            box-shadow: 0 2px 8px rgba(22, 139, 250, 0.2);
+            box-shadow: 0 2px 8px var(--accent-primary-dim);
         }
 
         .btn-primary:hover {
             background: var(--accent-primary-hover);
-            box-shadow: 0 4px 12px rgba(22, 139, 250, 0.3);
+            box-shadow: 0 4px 12px var(--accent-primary-dim);
         }
 
         .btn-secondary {
@@ -992,6 +1012,49 @@
             border-top: 1px solid var(--border-soft);
         }
 
+        /* ==================== THEME SWATCHES ==================== */
+        .theme-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .theme-swatch {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--bg-section);
+            transition: all var(--transition);
+        }
+
+        .theme-swatch:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .theme-swatch.active {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--accent-primary-dim);
+        }
+
+        .theme-swatch-color {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-swatch-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
         /* ==================== NOTION ==================== */
         .notion-layout {
             display: flex;
@@ -1116,7 +1179,7 @@
 
         .block-handle button:hover {
             color: var(--accent-primary);
-            background: rgba(22, 139, 250, 0.1);
+            background: var(--accent-primary-dim);
         }
 
         .block-content {
@@ -1145,7 +1208,7 @@
         .block-h2 { font-size: 20px; font-weight: 700; color: var(--text-main); }
         .block-h3 { font-size: 16px; font-weight: 600; color: var(--text-main); }
         .block-quote { border-left: 3px solid var(--accent-primary); padding-left: 12px; color: var(--text-muted); font-style: italic; }
-        .block-code { background: var(--bg-main); border: 1px solid var(--border); padding: 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent-teal); }
+        .block-code { background: var(--bg-main); border: 1px solid var(--border); padding: 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent-primary); }
 
         .block-type-menu {
             position: absolute;
@@ -1542,7 +1605,7 @@
             border-radius: 4px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.9em;
-            color: var(--accent-teal);
+            color: var(--accent-primary);
         }
 
         .message-bubble pre {
@@ -1698,12 +1761,34 @@
             gap: 8px;
         }
 
-        .toast.success { border-left-color: var(--accent-teal); }
+        .toast.success { border-left-color: var(--accent-primary); }
         .toast.error { border-left-color: var(--danger); }
 
         @keyframes toastIn {
             from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==================== COPYRIGHT FOOTER ==================== */
+        .copyright-bar {
+            text-align: center;
+            padding: 20px;
+            font-size: 11px;
+            color: var(--text-dim);
+            letter-spacing: 0.05em;
+            border-top: 1px solid var(--border-soft);
+            margin-top: 24px;
+            flex-shrink: 0;
+        }
+
+        .copyright-bar span {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .copyright-bar .dot-sep {
+            margin: 0 8px;
+            opacity: 0.4;
         }
 
         /* ==================== TAB CONTENT ==================== */
@@ -1832,6 +1917,9 @@
                         <span id="sys-net">Online</span>
                     </span>
                     <span id="sys-battery">--%</span>
+                </div>
+                <div class="status-row" style="justify-content: center; margin-top: 8px; font-size: 10px; color: var(--text-dim); letter-spacing: 0.08em;">
+                    © 2026 ZJ OS
                 </div>
             </div>
         </aside>
@@ -2310,6 +2398,15 @@
                     </div>
                 </section>
 
+                <!-- COPYRIGHT FOOTER -->
+                <footer class="copyright-bar">
+                    <span>© 2026 ZJ OS</span>
+                    <span class="dot-sep">·</span>
+                    Premium Workspace
+                    <span class="dot-sep">·</span>
+                    All Rights Reserved
+                </footer>
+
             </div>
         </main>
     </div>
@@ -2331,15 +2428,23 @@
             </button>
         </div>
         <div class="modal-body">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <button class="btn btn-secondary" onclick="setTheme('blue'); document.getElementById('theme-dialog').close();" style="padding: 20px; flex-direction: column;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #168BFA; margin-bottom: 8px;"></div>
-                    <div style="font-size: 13px;">Electric Blue</div>
-                </button>
-                <button class="btn btn-secondary" onclick="setTheme('teal'); document.getElementById('theme-dialog').close();" style="padding: 20px; flex-direction: column;">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #16B8B0; margin-bottom: 8px;"></div>
-                    <div style="font-size: 13px;">Muted Teal</div>
-                </button>
+            <div class="theme-grid">
+                <div class="theme-swatch" data-theme-swatch="blue" onclick="setTheme('blue'); document.getElementById('theme-dialog').close();">
+                    <div class="theme-swatch-color" style="background: #168BFA;"></div>
+                    <div class="theme-swatch-label">Electric Blue</div>
+                </div>
+                <div class="theme-swatch" data-theme-swatch="teal" onclick="setTheme('teal'); document.getElementById('theme-dialog').close();">
+                    <div class="theme-swatch-color" style="background: #16B8B0;"></div>
+                    <div class="theme-swatch-label">Muted Teal</div>
+                </div>
+                <div class="theme-swatch" data-theme-swatch="gold" onclick="setTheme('gold'); document.getElementById('theme-dialog').close();">
+                    <div class="theme-swatch-color" style="background: #D4B056;"></div>
+                    <div class="theme-swatch-label">Premium Gold</div>
+                </div>
+                <div class="theme-swatch" data-theme-swatch="white" onclick="setTheme('white'); document.getElementById('theme-dialog').close();">
+                    <div class="theme-swatch-color" style="background: #E8EDF2;"></div>
+                    <div class="theme-swatch-label">Pure White</div>
+                </div>
             </div>
         </div>
     </dialog>
@@ -2549,6 +2654,10 @@
             setTheme(App.theme, false);
             document.getElementById('toggle-sound').checked = App.sound;
             document.getElementById('toggle-3d').checked = App.bg3d;
+            
+            document.querySelectorAll('.theme-swatch').forEach(s => {
+                s.classList.toggle('active', s.dataset.themeSwatch === App.theme);
+            });
 
             updateClock();
             setInterval(updateClock, 1000);
@@ -2560,7 +2669,7 @@
             renderGallery();
             renderCalcLog();
             renderChatSidebar();
-            renderChatBox();
+            renderChatMessages();
             renderNotionPages();
             loadActivePage();
             fetchWeather('widget');
@@ -2569,7 +2678,6 @@
 
             if (App.bg3d) init3D();
 
-            // Battery + Network
             setInterval(() => {
                 if (navigator.getBattery) {
                     navigator.getBattery().then(b => {
@@ -2584,7 +2692,6 @@
                 if (App.bg3d) location.reload(); else document.getElementById('bg-canvas').style.display = 'none';
             });
 
-            // Timer inputs
             ['timer-h','timer-m','timer-s'].forEach(id => {
                 document.getElementById(id)?.addEventListener('input', () => {
                     if (!window.timerRunning) updateTimerDisplay();
@@ -2605,6 +2712,9 @@
         function setTheme(theme, save_ = true) {
             document.documentElement.setAttribute('data-theme', theme);
             App.theme = theme;
+            document.querySelectorAll('.theme-swatch').forEach(s => {
+                s.classList.toggle('active', s.dataset.themeSwatch === theme);
+            });
             if (save_) { save(); toast('Theme: ' + theme.charAt(0).toUpperCase() + theme.slice(1)); }
         }
 
@@ -2635,10 +2745,9 @@
             const hh = document.getElementById('clock-hour');
             const mh = document.getElementById('clock-min');
             const sh = document.getElementById('clock-sec');
-            if (hh) hh.style.transform = `rotate(${hD}deg)`;
-            if (mh) mh.style.transform = `rotate(${mD}deg)`;
-            if (sh) sh.style.transform = `rotate(${sD}deg)`;
-            [hh, mh, sh].forEach(el => { if (el) { el.style.transformOrigin = '100px 100px'; } });
+            if (hh) { hh.style.transform = `rotate(${hD}deg)`; hh.style.transformOrigin = '100px 100px'; }
+            if (mh) { mh.style.transform = `rotate(${mD}deg)`; mh.style.transformOrigin = '100px 100px'; }
+            if (sh) { sh.style.transform = `rotate(${sD}deg)`; sh.style.transformOrigin = '100px 100px'; }
             
             const t = now.toTimeString().split(' ')[0];
             const timeEl = document.getElementById('hero-clock');
@@ -3695,7 +3804,6 @@
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 1.0;
             
-            // Environment map for reflections
             const canvas2 = document.createElement('canvas');
             canvas2.width = 512;
             canvas2.height = 256;
@@ -3707,7 +3815,6 @@
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, 512, 256);
             
-            // Blue rim light
             const rimGrad = ctx.createRadialGradient(100, 100, 0, 100, 100, 200);
             rimGrad.addColorStop(0, 'rgba(22, 139, 250, 0.8)');
             rimGrad.addColorStop(1, 'rgba(22, 139, 250, 0)');
@@ -3721,7 +3828,6 @@
             const envMap = pmrem.fromEquirectangular(envTex).texture;
             pmrem.dispose();
             
-            // Lights
             scene.add(new THREE.AmbientLight(0x1a2430, 1.2));
             
             const key = new THREE.DirectionalLight(0xffffff, 2.5);
@@ -3736,7 +3842,6 @@
             tealLight.position.set(8, -3, 4);
             scene.add(tealLight);
             
-            // Main object - polished chrome-blue torus knot
             const knotGeo = new THREE.TorusKnotGeometry(1.5, 0.42, 240, 32);
             const knotMat = new THREE.MeshStandardMaterial({
                 color: 0x8fa8c8,
@@ -3749,7 +3854,6 @@
             knot.position.set(0, 0, 0);
             scene.add(knot);
             
-            // Subtle orbital rings
             const rings = new THREE.Group();
             [3.0, 3.8, 4.6].forEach((r, i) => {
                 const ringMat = new THREE.MeshStandardMaterial({
@@ -3766,7 +3870,6 @@
             });
             scene.add(rings);
             
-            // Minimal particle dust
             const count = 400;
             const positions = new Float32Array(count * 3);
             const colors = new Float32Array(count * 3);
@@ -3790,7 +3893,6 @@
             const dust = new THREE.Points(dustGeo, dustMat);
             scene.add(dust);
             
-            // Mouse parallax
             let pointer = { x: 0, y: 0 };
             let smooth = { x: 0, y: 0 };
             window.addEventListener('mousemove', e => {
