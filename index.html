@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ZJ TITAN OS 2026 | Cyan · Gold · Chrome</title>
     
-    <!-- External Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -14,66 +13,32 @@
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        cyber: {
-                            black: '#03060a',
-                            dark: '#0A0E14',
-                            panel: 'rgba(16, 23, 36, 0.85)',
-                            sidebar: '#0C121E',
-                            accent: 'var(--accent-color)',
-                            accentDark: 'var(--accent-dark)',
-                            gold: '#F2C14E',
-                            goldDark: '#C9992F',
-                            silver: '#C0C0C0',
-                            silverDark: '#8B9BAD',
-                            danger: '#FF5C5C',
-                            border: 'var(--border-color)',
-                        }
-                    },
-                    fontFamily: {
-                        orbitron: ['Orbitron', 'sans-serif'],
-                        rajdhani: ['Rajdhani', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace']
-                    }
-                }
-            }
-        }
+            theme: { extend: { colors: { cyber: {
+                black: '#03060a', dark: '#0A0E14', panel: 'rgba(16, 23, 36, 0.85)', sidebar: '#0C121E',
+                accent: 'var(--accent-color)', accentDark: 'var(--accent-dark)',
+                gold: '#F2C14E', goldDark: '#C9992F', silver: '#C0C0C0', silverDark: '#8B9BAD',
+                danger: '#FF5C5C', border: 'var(--border-color)',
+            }}, fontFamily: { orbitron: ['Orbitron','sans-serif'], rajdhani: ['Rajdhani','sans-serif'], mono: ['JetBrains Mono','monospace'] }}
+        }}
     </script>
 
     <style>
-        /* ==========================================
-           THEMES & VARIABLES
-        ========================================== */
-        :root {
-            --accent-color: #00f3ff;
-            --accent-dark: #0a7f8c;
-            --accent-glow: rgba(0, 243, 255, 0.4);
-            --border-color: rgba(0, 243, 255, 0.25);
+        :root { --accent-color: #00f3ff; --accent-dark: #0a7f8c; --accent-glow: rgba(0, 243, 255, 0.4); --border-color: rgba(0, 243, 255, 0.25);
             --metal-grad: linear-gradient(180deg, #ffffff 0%, #dfeaf5 30%, #8fa0b0 50%, #eef6ff 66%, #a8b6c4 82%, #dbe8f5 100%);
             --btn-metal-bg: linear-gradient(180deg, #3b4652 0%, #242c34 55%, #181e24 100%);
             --btn-metal-border: rgba(255,255,255,0.15);
-            --btn-metal-shadow: inset 0 1px 0 rgba(255,255,255,0.24), inset 0 -2px 4px rgba(0,0,0,0.68), 0 8px 16px -10px rgba(0,0,0,0.95);
-        }
+            --btn-metal-shadow: inset 0 1px 0 rgba(255,255,255,0.24), inset 0 -2px 4px rgba(0,0,0,0.68), 0 8px 16px -10px rgba(0,0,0,0.95); }
         [data-accent="cyan"] { --accent-color: #00f2fe; --accent-dark: #00a8b5; --accent-glow: rgba(0, 242, 254, 0.4); --border-color: rgba(0, 242, 254, 0.25); --metal-grad: linear-gradient(135deg, #00f2fe, #00a8b5); }
         [data-accent="gold"] { --accent-color: #F2C14E; --accent-dark: #C9992F; --accent-glow: rgba(242, 193, 78, 0.4); --border-color: rgba(242, 193, 78, 0.25); --metal-grad: linear-gradient(135deg, #F2C14E, #C9992F); }
         [data-accent="silver"] { --accent-color: #C0C0C0; --accent-dark: #8B9BAD; --accent-glow: rgba(192, 192, 192, 0.4); --border-color: rgba(192, 192, 192, 0.25); --metal-grad: linear-gradient(135deg, #C0C0C0, #8B9BAD); }
 
-        /* ==========================================
-           BASE & RESET
-        ========================================== */
         * { user-select: none; scrollbar-width: thin; scrollbar-color: var(--accent-color) #03060a; }
         body { background-color: #03060a; color: #E2E8F0; font-family: 'Rajdhani', sans-serif; overflow: hidden; height: 100vh; margin: 0; }
         
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #03060a; }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
-        /* ==========================================
-           PRELOADER & BOOT
-        ========================================== */
         #preloader { transition: opacity 0.6s ease, visibility 0.6s ease; z-index: 99999; }
         #preloader.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
         @keyframes spin-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
@@ -83,50 +48,37 @@
         @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 20px var(--accent-glow); } 50% { box-shadow: 0 0 50px var(--accent-glow), 0 0 20px var(--accent-glow) inset; } }
         .logo-pulse { animation: pulse-glow 2s infinite; }
 
-        /* ==========================================
-           METALLIC & GLASS STYLES
-        ========================================== */
         .metal-text { background: var(--metal-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
-        .glass-panel { background: rgba(10, 14, 20, 0.75); backdrop-filter: blur(16px); border: 1px solid var(--border-color); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.02); position: relative; overflow: hidden; }
-        .glass-card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%); backdrop-filter: blur(12px); border: 1px solid var(--border-color); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .glass-panel { background: rgba(10, 14, 20, 0.75); backdrop-filter: blur(16px); border: 1px solid var(--border-color); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6); position: relative; overflow: hidden; }
+        .glass-card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255,255,255,0.01)); backdrop-filter: blur(12px); border: 1px solid var(--border-color); transition: all 0.3s; }
         .glass-card:hover { border-color: var(--accent-color); box-shadow: 0 0 25px var(--accent-glow); }
 
-        .btn-metal { font-family: inherit; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.05em; color: #e0e9f2; cursor: pointer; border-radius: 10px; border: 1px solid var(--btn-metal-border); background: var(--btn-metal-bg); box-shadow: var(--btn-metal-shadow); transition: all 0.2s; position: relative; overflow: hidden; }
-        .btn-metal:hover { background: linear-gradient(180deg, #4c5866 0%, #2c3540 55%, #1f262e 100%); color: #fff; transform: translateY(-1px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.32), 0 12px 22px -10px rgba(0,0,0,1), 0 0 0 1px var(--accent-color); }
-        .btn-metal:active { transform: translateY(1px); box-shadow: inset 0 3px 8px rgba(0,0,0,0.9); }
+        .btn-metal { font-family: inherit; font-weight: 700; font-size: 0.85rem; color: #e0e9f2; cursor: pointer; border-radius: 10px; border: 1px solid var(--btn-metal-border); background: var(--btn-metal-bg); box-shadow: var(--btn-metal-shadow); transition: all 0.2s; position: relative; overflow: hidden; }
+        .btn-metal:hover { background: linear-gradient(180deg, #4c5866 0%, #2c3540 55%, #1f262e 100%); color: #fff; transform: translateY(-1px); box-shadow: var(--btn-metal-shadow), 0 0 0 1px var(--accent-color); }
+        .btn-gold { color: #12161b; font-weight: 800; font-family: 'Orbitron', sans-serif; border: 1px solid rgba(255,255,255,0.55); background: linear-gradient(180deg, #fff6d9, #ffd97a 30%, #c99a2b 58%, #ffe79c 80%, #b8871e); box-shadow: inset 0 2px 3px rgba(255,255,255,0.95), 0 8px 18px -8px rgba(0,0,0,0.95); transition: all 0.2s; }
+        .btn-gold:hover { transform: translateY(-1px); box-shadow: inset 0 2px 3px #fff, 0 0 0 3px rgba(255,207,92,0.28); }
 
-        .btn-gold { color: #12161b; font-weight: 800; font-family: 'Orbitron', sans-serif; border: 1px solid rgba(255,255,255,0.55); background: linear-gradient(180deg, #fff6d9 0%, #ffd97a 30%, #c99a2b 58%, #ffe79c 80%, #b8871e 100%); box-shadow: inset 0 2px 3px rgba(255,255,255,0.95), inset 0 -3px 6px rgba(0,0,0,0.30), 0 8px 18px -8px rgba(0,0,0,0.95); transition: all 0.2s; }
-        .btn-gold:hover { transform: translateY(-1px); box-shadow: inset 0 2px 3px #fff, 0 12px 22px -8px rgba(0,0,0,1), 0 0 0 3px rgba(255,207,92,0.28), 0 0 24px -4px rgba(255,207,92,0.55); }
-
-        /* ==========================================
-           CURSORS & 3D BACKGROUND
-        ========================================== */
-        .cursor-dot { position: fixed; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-color); box-shadow: 0 0 12px var(--accent-color), 0 0 24px var(--accent-glow); pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); }
-        .cursor-ring { position: fixed; width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(0, 243, 255, 0.55); box-shadow: 0 0 16px var(--accent-glow), inset 0 0 10px rgba(0,243,255,0.10); pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s, border-color 0.2s; }
-        .cursor-ring.hot { width: 52px; height: 52px; border-color: var(--gold); box-shadow: 0 0 26px rgba(255, 207, 92, 0.6), inset 0 0 12px rgba(255, 207, 92, 0.20); }
+        .cursor-dot { position: fixed; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-color); box-shadow: 0 0 12px var(--accent-color); pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); }
+        .cursor-ring { position: fixed; width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(0, 243, 255, 0.55); box-shadow: 0 0 16px var(--accent-glow); pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s, border-color 0.2s; }
+        .cursor-ring.hot { width: 52px; height: 52px; border-color: var(--gold); box-shadow: 0 0 26px rgba(255, 207, 92, 0.6); }
         #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
-        /* HUD & SCANLINE */
-        .scanline-overlay { background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02)); background-size: 100% 4px, 6px 100%; pointer-events: none; }
+        .scanline-overlay { background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255,0,0,0.02), rgba(0,255,0,0.01), rgba(0,0,255,0.02)); background-size: 100% 4px, 6px 100%; pointer-events: none; }
         .hud-corner { position: absolute; width: 12px; height: 12px; border-color: var(--accent-color); pointer-events: none; z-index: 10; }
         .hud-tl { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
         .hud-tr { top: -1px; right: -1px; border-top: 2px solid; border-right: 2px solid; }
         .hud-bl { bottom: -1px; left: -1px; border-bottom: 2px solid; border-left: 2px solid; }
         .hud-br { bottom: -1px; right: -1px; border-bottom: 2px solid; border-right: 2px solid; }
 
-        /* ==========================================
-           UI ELEMENTS
-        ========================================== */
         .nav-btn.active { border-left-color: var(--accent-color); color: var(--accent-color); background: var(--accent-glow); }
         
         .calc-key { padding: 10px 0; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 700; color: #dbe5ef; border: 1px solid var(--btn-metal-border); background: var(--btn-metal-bg); box-shadow: var(--btn-metal-shadow); transition: all 0.15s; }
-        .calc-key:hover { color: #fff; transform: translateY(-1px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.30), 0 10px 18px -10px #000, 0 0 0 1px var(--accent-color); }
-        .calc-key:active { transform: translateY(1px); box-shadow: inset 0 3px 8px rgba(0,0,0,0.9); }
-        .calc-key.op { color: var(--accent-color); background: linear-gradient(180deg, #1e3b44 0%, #142a32 55%, #0d1c22 100%); border-color: rgba(0, 243, 255, 0.28); }
-        .calc-key.fn { color: var(--gold); background: linear-gradient(180deg, #3d3524 0%, #282115 55%, #191408 100%); border-color: rgba(255, 207, 92, 0.28); }
-        .calc-key.eq { background: var(--metal-grad); color: #0b0f13; font-weight: 800; font-family: 'Orbitron', sans-serif; border-color: rgba(255,255,255,0.65); }
+        .calc-key:hover { color: #fff; transform: translateY(-1px); box-shadow: var(--btn-metal-shadow), 0 0 0 1px var(--accent-color); }
+        .calc-key:active { transform: translateY(1px); }
+        .calc-key.op { color: var(--accent-color); background: linear-gradient(180deg, #1e3b44, #142a32 55%, #0d1c22); }
+        .calc-key.fn { color: var(--gold); background: linear-gradient(180deg, #3d3524, #282115 55%, #191408); }
+        .calc-key.eq { background: var(--metal-grad); color: #0b0f13; font-weight: 800; font-family: 'Orbitron', sans-serif; }
 
-        /* Chat */
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .chat-msg-anim { animation: fadeInUp 0.3s ease-out forwards; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
@@ -142,6 +94,58 @@
         .chat-sidebar-item { transition: all 0.2s; }
         .chat-sidebar-item:hover { background: rgba(255,255,255,0.05); }
         .chat-sidebar-item.active { background: var(--accent-glow); border-left: 2px solid var(--accent-color); }
+
+        @keyframes galleryFadeIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .gallery-item { animation: galleryFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .gallery-item:hover .gallery-img { transform: scale(1.1) rotate(1deg); filter: brightness(1.1) saturate(1.2); }
+        .gallery-img { transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .gallery-overlay { transition: all 0.3s ease; transform: translateY(20px); }
+        .gallery-item:hover .gallery-overlay { transform: translateY(0); }
+
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; color: #5a6672; text-align: center; }
+        .empty-state i { width: 48px; height: 48px; margin-bottom: 12px; opacity: 0.4; }
+
+        .cyber-input { width: 100%; background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px; color: #e2e8f0; font-family: 'JetBrains Mono', monospace; font-size: 13px; outline: none; transition: all 0.2s; }
+        .cyber-input:focus { border-color: var(--accent-color); box-shadow: 0 0 12px var(--accent-glow); }
+        .cyber-input::placeholder { color: #4a5568; }
+
+        /* ============= NOTION STYLES ============= */
+        .notion-page-item { transition: all 0.15s; cursor: pointer; }
+        .notion-page-item:hover { background: rgba(255,255,255,0.05); }
+        .notion-page-item.active { background: var(--accent-glow); border-left: 2px solid var(--accent-color); }
+
+        .notion-block-row { display: flex; align-items: flex-start; gap: 8px; padding: 2px 0; position: relative; border-radius: 4px; transition: background 0.15s; }
+        .notion-block-row:hover { background: rgba(255,255,255,0.03); }
+        .notion-block-handle { display: flex; align-items: center; gap: 2px; opacity: 0; transition: opacity 0.15s; flex-shrink: 0; margin-top: 4px; }
+        .notion-block-row:hover .notion-block-handle { opacity: 1; }
+        .notion-block-handle button { padding: 3px; border-radius: 3px; color: #5a6672; cursor: pointer; transition: all 0.15s; background: transparent; border: none; }
+        .notion-block-handle button:hover { background: rgba(255,255,255,0.1); color: var(--accent-color); }
+
+        .notion-block-content { flex: 1; outline: none; min-height: 24px; padding: 4px 6px; font-family: 'Rajdhani', sans-serif; color: #e2e8f0; line-height: 1.6; border-radius: 4px; }
+        .notion-block-content:focus { background: rgba(255,255,255,0.03); }
+        .notion-block-content:empty:before { content: attr(data-placeholder); color: #4a5568; pointer-events: none; }
+
+        .block-h1 { font-family: 'Orbitron', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--accent-color); }
+        .block-h2 { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--accent-color); }
+        .block-h3 { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--accent-color); }
+        .block-quote { border-left: 3px solid var(--accent-color); padding-left: 12px; font-style: italic; color: #a5b1c8; }
+        .block-code { background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); padding: 10px 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--gold); white-space: pre-wrap; }
+
+        .block-type-menu { position: absolute; z-index: 100; background: #0c121e; border: 1px solid var(--border-color); border-radius: 8px; padding: 6px; min-width: 180px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .block-type-option { padding: 8px 12px; display: flex; align-items: center; gap: 10px; border-radius: 4px; cursor: pointer; font-size: 13px; color: #c8d2e6; transition: background 0.15s; }
+        .block-type-option:hover { background: var(--accent-glow); color: #fff; }
+        .block-type-option .bt-icon { width: 20px; text-align: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--gold); font-size: 12px; }
+
+        .notion-todo-checkbox { margin-top: 6px; width: 16px; height: 16px; border: 2px solid var(--accent-color); border-radius: 3px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: all 0.15s; }
+        .notion-todo-checkbox.checked { background: var(--accent-color); }
+        .notion-todo-checkbox.checked::after { content: '✓'; color: #0b0f13; font-weight: bold; font-size: 11px; }
+        .notion-todo-content.done { text-decoration: line-through; opacity: 0.5; }
+
+        /* Timer styles */
+        .timer-input-group { display: flex; gap: 8px; justify-content: center; align-items: center; }
+        .timer-input-group input { width: 70px; text-align: center; font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 700; background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; color: var(--accent-color); outline: none; }
+        .timer-input-group input:focus { border-color: var(--accent-color); box-shadow: 0 0 12px var(--accent-glow); }
+        .timer-input-group span { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--gold); }
     </style>
 </head>
 <body class="relative flex selection:bg-cyber-accent selection:text-cyber-black">
@@ -159,7 +163,7 @@
             <div id="loading-text" class="font-mono text-cyber-gold text-sm h-5">INITIALIZING CORE...</div>
         </div>
         <div class="w-80 h-1.5 bg-gray-900 rounded-full overflow-hidden border border-gray-700 relative">
-            <div class="h-full bg-gradient-to-r from-cyber-accent via-cyber-silver to-cyber-gold animate-loading-bar shadow-[0_0_10px_var(--accent-glow)]"></div>
+            <div class="h-full bg-gradient-to-r from-cyber-accent via-cyber-silver to-cyber-gold animate-loading-bar"></div>
         </div>
     </div>
 
@@ -168,7 +172,6 @@
     <div class="cursor-dot" id="cursorDot"></div>
     <div class="cursor-ring" id="cursorRing"></div>
 
-    <!-- MAIN WRAPPER -->
     <div class="relative z-10 flex w-full h-screen overflow-hidden">
 
         <!-- SIDEBAR -->
@@ -181,7 +184,7 @@
                         </div>
                         <div>
                             <h1 class="font-orbitron font-bold text-lg text-white tracking-wider metal-text">TITAN OS</h1>
-                            <p class="text-[10px] font-mono text-cyber-accent uppercase tracking-widest">CYAN · GOLD · CHROME</p>
+                            <p class="text-[10px] font-mono text-cyber-accent uppercase tracking-widest">CYBER v2030</p>
                         </div>
                     </div>
                 </div>
@@ -199,12 +202,19 @@
                     </div>
 
                     <div>
-                        <div class="text-[11px] font-mono text-cyber-gold uppercase tracking-wider mb-2 font-semibold">APPLICATIONS</div>
+                        <div class="text-[11px] font-mono text-cyber-gold uppercase tracking-wider mb-2 font-semibold">PRODUCTIVITY</div>
                         <nav class="space-y-1 font-rajdhani text-sm font-semibold">
-                            <button onclick="switchTab('notes')" data-tab="notes" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all"><i data-lucide="file-text" class="w-4 h-4"></i> Notes</button>
+                            <button onclick="switchTab('notion')" data-tab="notion" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all"><i data-lucide="file-text" class="w-4 h-4"></i> Notion Workspace</button>
+                            <button onclick="switchTab('notes')" data-tab="notes" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all"><i data-lucide="sticky-note" class="w-4 h-4"></i> Quick Notes</button>
                             <button onclick="switchTab('todo')" data-tab="todo" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all"><i data-lucide="check-square" class="w-4 h-4"></i> Todo List</button>
                             <button onclick="switchTab('pomodoro')" data-tab="pomodoro" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all"><i data-lucide="timer" class="w-4 h-4"></i> Pomodoro</button>
-                            <button onclick="switchTab('converter')" data-tab="converter" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all"><i data-lucide="arrow-left-right" class="w-4 h-4"></i> Unit Converter</button>
+                            <button onclick="switchTab('converter')" data-tab="converter" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all"><i data-lucide="arrow-left-right" class="w-4 h-4"></i> Converter</button>
+                        </nav>
+                    </div>
+
+                    <div>
+                        <div class="text-[11px] font-mono text-cyber-silver uppercase tracking-wider mb-2 font-semibold">AI SYSTEMS</div>
+                        <nav class="space-y-1 font-rajdhani text-sm font-semibold">
                             <button onclick="switchTab('chatbot')" data-tab="chatbot" class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-gray-400 hover:text-cyber-accent hover:bg-cyber-accent/5 transition-all">
                                 <div class="flex items-center gap-3"><i data-lucide="message-square" class="w-4 h-4"></i> Neural AI</div>
                                 <span class="w-2 h-2 rounded-full bg-cyber-accent animate-pulse"></span>
@@ -219,26 +229,14 @@
                     <span class="flex items-center gap-1.5 text-cyber-accent"><i data-lucide="wifi" class="w-3 h-3"></i> NET: <span id="sys-net">ONLINE</span></span>
                     <span id="sys-battery">BAT: --%</span>
                 </div>
-                <div class="flex justify-between items-center">
-                    <span class="flex items-center gap-1.5 text-cyber-accent"><i data-lucide="activity" class="w-3 h-3"></i> LATENCY:</span>
-                    <span id="sys-latency">0.12ms</span>
-                </div>
             </div>
         </aside>
 
-        <!-- MAIN CONTENT -->
         <main class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-            <!-- TOPBAR -->
             <header class="px-6 py-4 glass-panel border-b border-cyber-border flex items-center justify-between gap-4 flex-shrink-0 z-30">
                 <div class="flex items-center gap-4">
                     <button onclick="toggleSidebar()" class="lg:hidden p-2 text-cyber-accent border border-cyber-border rounded-xl"><i data-lucide="menu" class="w-5 h-5"></i></button>
-                    <button onclick="toggleSearchModal(true)" class="flex items-center gap-3 px-4 py-2 bg-cyber-black/80 border border-cyber-border rounded-xl text-gray-400 hover:text-cyber-accent hover:border-cyber-accent text-xs font-mono transition-all">
-                        <i data-lucide="search" class="w-4 h-4 text-cyber-accent"></i>
-                        <span>Search</span>
-                        <kbd class="px-1.5 py-0.5 bg-cyber-accent/20 text-cyber-accent text-[10px] rounded border border-cyber-accent/30">Ctrl K</kbd>
-                    </button>
                 </div>
-                
                 <div class="flex items-center gap-3">
                     <button onclick="document.getElementById('theme-modal').showModal()" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-cyber-black/80 border border-cyber-border text-cyber-accent hover:text-white transition-all shadow-[0_0_15px_var(--accent-glow)]">
                         <i data-lucide="palette" class="w-4 h-4"></i>
@@ -248,10 +246,9 @@
                 </div>
             </header>
 
-            <!-- MAIN VIEWS WRAPPER -->
             <div class="flex-1 overflow-hidden relative">
                 
-                <!-- DASHBOARD (SCROLLABLE) -->
+                <!-- DASHBOARD -->
                 <section id="tab-dashboard" class="tab-content h-full flex flex-col p-6 space-y-6 overflow-y-auto">
                     <div class="text-center py-4 glass-panel rounded-2xl border border-cyber-border relative overflow-hidden flex-shrink-0">
                         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-tr"></div><div class="hud-corner hud-bl"></div><div class="hud-corner hud-br"></div>
@@ -261,14 +258,13 @@
                         </div>
                     </div>
 
-                    <!-- 3 WIDGETS -->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-[400px]">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-[450px]">
                         <!-- CALCULATOR -->
                         <div class="glass-panel rounded-2xl p-5 border border-cyber-border relative flex flex-col justify-between h-full">
                             <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
                             <div class="flex justify-between items-center mb-2 pb-2 border-b border-cyber-border">
                                 <div class="flex items-center gap-2 font-orbitron font-bold text-xs text-cyber-accent tracking-wider"><span class="w-2 h-2 rounded-full bg-cyber-accent"></span> CALCULATOR</div>
-                                <button onclick="document.getElementById('calc-history-modal').showModal()" class="text-gray-400 hover:text-cyber-accent transition-colors" title="View History"><i data-lucide="history" class="w-4 h-4"></i></button>
+                                <button onclick="document.getElementById('calc-history-modal').showModal()" class="text-gray-400 hover:text-cyber-accent"><i data-lucide="history" class="w-4 h-4"></i></button>
                             </div>
                             <div class="bg-cyber-black border border-cyber-border rounded-xl p-3 mb-2 font-mono text-right space-y-1 flex-shrink-0">
                                 <div class="flex justify-between text-[10px] text-cyber-gold h-4"><span id="calc-memory-indicator" class="opacity-0">M</span><span id="calc-history-widget">0 = 0</span></div>
@@ -308,14 +304,14 @@
                                 <div class="flex items-center gap-2 font-orbitron font-bold text-xs text-cyber-accent tracking-wider"><span class="w-2 h-2 rounded-full bg-cyber-gold"></span> GALLERY</div>
                                 <button onclick="switchTab('gallery')" class="text-xs font-mono text-cyber-accent hover:underline">VIEW ALL</button>
                             </div>
-                            <div class="grid grid-rows-2 gap-3 h-full">
-                                <div class="rounded-xl overflow-hidden border border-cyber-border/50 relative group cursor-pointer" onclick="openLightbox('ZJPP.jpeg')">
-                                    <img src="ZJPP.jpeg" alt="ZJ Portrait" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80'">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent opacity-0 group-hover:opacity-100 transition-opacity p-3 flex items-end font-mono text-xs text-cyber-accent">ZJ PORTRAIT</div>
+                            <div class="grid grid-rows-2 gap-3 h-full" id="dashboard-gallery">
+                                <div class="rounded-xl overflow-hidden border border-cyber-border/50 relative group cursor-pointer gallery-item" style="animation-delay: 0.1s" onclick="openLightboxByIndex(0)">
+                                    <img src="ZJPP.jpeg" alt="ZJ Portrait" class="gallery-img w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80'">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent opacity-0 group-hover:opacity-100 transition-opacity p-3 flex items-end font-mono text-xs text-cyber-accent">ZJ PORTRAIT</div>
                                 </div>
-                                <div class="rounded-xl overflow-hidden border border-cyber-border/50 relative group cursor-pointer" onclick="openLightbox('BMW.jpeg')">
-                                    <img src="BMW.jpeg" alt="BMW Car" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=600&q=80'">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent opacity-0 group-hover:opacity-100 transition-opacity p-3 flex items-end font-mono text-xs text-cyber-gold">BMW M-SERIES</div>
+                                <div class="rounded-xl overflow-hidden border border-cyber-border/50 relative group cursor-pointer gallery-item" style="animation-delay: 0.2s" onclick="openLightboxByIndex(1)">
+                                    <img src="BMW.jpeg" alt="BMW Car" class="gallery-img w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=600&q=80'">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent opacity-0 group-hover:opacity-100 transition-opacity p-3 flex items-end font-mono text-xs text-cyber-gold">BMW M-SERIES</div>
                                 </div>
                             </div>
                         </div>
@@ -328,62 +324,165 @@
                                 <i data-lucide="map-pin" class="w-4 h-4 text-cyber-gold"></i>
                             </div>
                             <div class="flex gap-2">
-                                <input type="text" id="weather-city-input-widget" placeholder="City..." value="Hyderabad" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-3 py-1.5 text-xs text-white font-mono focus:border-cyber-accent" onkeypress="if(event.key==='Enter') fetchWeatherWidget()">
+                                <input type="text" id="weather-city-input-widget" placeholder="City..." value="Hyderabad" class="cyber-input text-xs" onkeypress="if(event.key==='Enter') fetchWeatherWidget()">
                                 <button onclick="fetchWeatherWidget()" class="px-3.5 py-1.5 bg-cyber-accent/20 border border-cyber-accent text-cyber-accent rounded-xl hover:bg-cyber-accent/30"><i data-lucide="search" class="w-4 h-4"></i></button>
                             </div>
                             <div class="text-center py-2 space-y-1 flex-1 flex flex-col justify-center">
                                 <div class="flex items-center justify-center gap-2">
-                                    <i data-lucide="cloud-sun" class="w-8 h-8 text-cyber-gold" id="weather-icon-widget"></i>
-                                    <div class="font-orbitron font-bold text-4xl text-white" id="weather-temp-widget">--°<span class="text-cyber-accent text-xl">C</span></div>
+                                    <i data-lucide="cloud-sun" class="w-10 h-10 text-cyber-gold" id="weather-icon-widget"></i>
+                                    <div class="font-orbitron font-bold text-5xl text-white" id="weather-temp-widget">--°<span class="text-cyber-accent text-2xl">C</span></div>
                                 </div>
                                 <div class="font-mono text-xs text-cyber-accent font-bold" id="weather-desc-widget">Loading...</div>
                                 <div class="font-mono text-[10px] text-gray-400 uppercase tracking-widest" id="weather-location-widget">DETECTING...</div>
                             </div>
                             <div class="grid grid-cols-2 gap-2 font-mono text-xs flex-shrink-0">
                                 <div class="bg-black/50 border border-cyber-border rounded-xl p-2"><div class="text-gray-500 text-[9px]">RAIN</div><div class="text-white font-bold" id="weather-rain-widget">--%</div></div>
-                                <div class="bg-black/50 border border-cyber-border rounded-xl p-2"><div class="text-gray-500 text-[9px]">UV INDEX</div><div class="text-white font-bold" id="weather-uv-widget">--</div></div>
+                                <div class="bg-black/50 border border-cyber-border rounded-xl p-2"><div class="text-gray-500 text-[9px]">UV</div><div class="text-white font-bold" id="weather-uv-widget">--</div></div>
                                 <div class="bg-black/50 border border-cyber-border rounded-xl p-2"><div class="text-gray-500 text-[9px]">HUMIDITY</div><div class="text-white font-bold" id="weather-humidity-widget">--%</div></div>
                                 <div class="bg-black/50 border border-cyber-border rounded-xl p-2"><div class="text-gray-500 text-[9px]">WIND</div><div class="text-white font-bold" id="weather-wind-widget">-- km/h</div></div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- SYSTEM VITALS PANEL -->
-                    <div class="glass-panel rounded-2xl p-4 border border-cyber-border relative flex-shrink-0 h-32 flex flex-col justify-center">
-                        <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
-                        <div class="flex items-center gap-2 font-orbitron font-bold text-xs text-cyber-accent tracking-wider mb-2">
-                            <i data-lucide="activity" class="w-4 h-4"></i> SYSTEM VITALS
-                        </div>
-                        <div class="grid grid-cols-4 gap-4 w-full">
-                            <div class="space-y-1">
-                                <div class="flex justify-between font-mono text-[10px] text-gray-400"><span>CPU</span><span id="cpuVal">42%</span></div>
-                                <div class="h-1.5 bg-cyber-black rounded-full overflow-hidden"><div id="cpuBar" class="h-full bg-cyber-accent transition-all duration-500" style="width:42%"></div></div>
-                            </div>
-                            <div class="space-y-1">
-                                <div class="flex justify-between font-mono text-[10px] text-gray-400"><span>MEMORY</span><span id="memVal">64%</span></div>
-                                <div class="h-1.5 bg-cyber-black rounded-full overflow-hidden"><div id="memBar" class="h-full bg-cyber-gold transition-all duration-500" style="width:64%"></div></div>
-                            </div>
-                            <div class="space-y-1">
-                                <div class="flex justify-between font-mono text-[10px] text-gray-400"><span>NETWORK</span><span id="netVal">28%</span></div>
-                                <div class="h-1.5 bg-cyber-black rounded-full overflow-hidden"><div id="netBar" class="h-full bg-cyber-accent transition-all duration-500" style="width:28%"></div></div>
-                            </div>
-                            <div class="space-y-1">
-                                <div class="flex justify-between font-mono text-[10px] text-gray-400"><span>GPU</span><span id="gpuVal">57%</span></div>
-                                <div class="h-1.5 bg-cyber-black rounded-full overflow-hidden"><div id="gpuBar" class="h-full bg-cyber-gold transition-all duration-500" style="width:57%"></div></div>
-                            </div>
-                        </div>
-                    </div>
                 </section>
 
-                <!-- OTHER TABS (SCROLLABLE) -->
+                <!-- OTHER TABS -->
                 <div class="tab-content hidden absolute inset-0 p-6 overflow-y-auto" id="tab-others">
+                    
+                    <!-- ============ CLOCK (ENHANCED) ============ -->
+                    <section id="tab-clock" class="hidden max-w-3xl mx-auto w-full">
+                        <div class="glass-panel rounded-2xl p-6 border border-cyber-border space-y-4 relative">
+                            <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
+                            <div class="flex justify-between items-center border-b border-cyber-border pb-3 flex-wrap gap-2">
+                                <h2 class="font-orbitron font-bold text-xl text-white flex items-center gap-2"><i data-lucide="clock" class="text-cyber-accent"></i> Chronos Engine</h2>
+                                <div class="flex gap-1 bg-cyber-black p-1 rounded-lg flex-wrap">
+                                    <button onclick="switchClockTab('main',event)" class="clock-tab-btn px-3 py-1.5 rounded text-[11px] font-bold bg-cyber-accent/20 text-cyber-accent">MAIN</button>
+                                    <button onclick="switchClockTab('world',event)" class="clock-tab-btn px-3 py-1.5 rounded text-[11px] font-bold text-gray-400 hover:text-white">WORLD</button>
+                                    <button onclick="switchClockTab('stopwatch',event)" class="clock-tab-btn px-3 py-1.5 rounded text-[11px] font-bold text-gray-400 hover:text-white">STOPWATCH</button>
+                                    <button onclick="switchClockTab('timer',event)" class="clock-tab-btn px-3 py-1.5 rounded text-[11px] font-bold text-gray-400 hover:text-white">TIMER</button>
+                                    <button onclick="switchClockTab('alarm',event)" class="clock-tab-btn px-3 py-1.5 rounded text-[11px] font-bold text-gray-400 hover:text-white">ALARMS</button>
+                                </div>
+                            </div>
+
+                            <!-- MAIN CLOCK -->
+                            <div id="clock-panel-main" class="clock-panel text-center py-4">
+                                <svg class="w-64 h-64 mx-auto drop-shadow-[0_0_20px_var(--accent-glow)]" viewBox="0 0 200 200">
+                                    <circle cx="100" cy="100" r="95" fill="rgba(0,0,0,0.8)" stroke="var(--accent-color)" stroke-width="3"></circle>
+                                    <g id="clock-ticks-lg"></g>
+                                    <line id="hand-hour-lg" class="clock-hand" x1="100" y1="100" x2="100" y2="55" stroke="#C0C0C0" stroke-width="6" stroke-linecap="round"></line>
+                                    <line id="hand-minute-lg" class="clock-hand" x1="100" y1="100" x2="100" y2="35" stroke="var(--accent-color)" stroke-width="4" stroke-linecap="round"></line>
+                                    <line id="hand-second-lg" class="clock-hand" x1="100" y1="100" x2="100" y2="25" stroke="#F2C14E" stroke-width="2" stroke-linecap="round"></line>
+                                    <circle cx="100" cy="100" r="8" fill="#F2C14E"></circle>
+                                </svg>
+                                <div class="mt-4 text-center">
+                                    <div class="font-orbitron font-black text-5xl text-white tracking-widest glow-accent" id="digital-time-lg">00:00:00</div>
+                                    <div class="font-mono text-lg text-cyber-gold uppercase tracking-widest mt-2" id="digital-date-lg">LOADING DATE...</div>
+                                </div>
+                            </div>
+
+                            <!-- WORLD CLOCKS -->
+                            <div id="clock-panel-world" class="clock-panel hidden">
+                                <div class="flex justify-end mb-3">
+                                    <button onclick="addWorldClock()" class="btn-metal px-3 py-1.5 text-xs flex items-center gap-1"><i data-lucide="plus" class="w-3 h-3"></i> ADD CITY</button>
+                                </div>
+                                <div id="world-clocks-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+                            </div>
+
+                            <!-- STOPWATCH -->
+                            <div id="clock-panel-stopwatch" class="clock-panel hidden text-center py-6">
+                                <div class="font-orbitron font-black text-6xl text-cyber-accent glow-accent mb-6" id="stopwatch-display">00:00:00.00</div>
+                                <div class="flex justify-center gap-3">
+                                    <button onclick="toggleStopwatch()" id="stopwatch-btn" class="btn-metal px-6 py-2 text-sm">START</button>
+                                    <button onclick="recordLap()" id="lap-btn" class="btn-metal px-6 py-2 text-sm" disabled>LAP</button>
+                                    <button onclick="resetStopwatch()" class="btn-metal px-6 py-2 text-sm text-cyber-danger">RESET</button>
+                                </div>
+                                <div id="laps-list" class="mt-4 space-y-1 font-mono text-xs max-h-60 overflow-y-auto w-full max-w-sm mx-auto"></div>
+                            </div>
+
+                            <!-- TIMER (NEW) -->
+                            <div id="clock-panel-timer" class="clock-panel hidden">
+                                <div class="text-center py-4">
+                                    <div class="font-orbitron font-black text-7xl text-cyber-accent glow-accent mb-6" id="timer-display">00:00:00</div>
+                                    <div class="timer-input-group mb-6">
+                                        <input type="number" id="timer-hours" min="0" max="23" value="0" placeholder="00">
+                                        <span>:</span>
+                                        <input type="number" id="timer-mins" min="0" max="59" value="5" placeholder="00">
+                                        <span>:</span>
+                                        <input type="number" id="timer-secs" min="0" max="59" value="0" placeholder="00">
+                                    </div>
+                                    <div class="flex justify-center gap-3">
+                                        <button onclick="startTimer()" id="timer-start-btn" class="btn-metal px-6 py-2 text-sm text-cyber-accent">START</button>
+                                        <button onclick="pauseTimer()" id="timer-pause-btn" class="btn-metal px-6 py-2 text-sm" disabled>PAUSE</button>
+                                        <button onclick="resetTimer()" class="btn-metal px-6 py-2 text-sm text-cyber-danger">RESET</button>
+                                    </div>
+                                    <div id="timer-presets" class="flex flex-wrap justify-center gap-2 mt-6">
+                                        <button onclick="setTimerPreset(5)" class="text-xs px-3 py-1.5 bg-cyber-accent/10 border border-cyber-border rounded-lg hover:border-cyber-accent">5 min</button>
+                                        <button onclick="setTimerPreset(10)" class="text-xs px-3 py-1.5 bg-cyber-accent/10 border border-cyber-border rounded-lg hover:border-cyber-accent">10 min</button>
+                                        <button onclick="setTimerPreset(15)" class="text-xs px-3 py-1.5 bg-cyber-accent/10 border border-cyber-border rounded-lg hover:border-cyber-accent">15 min</button>
+                                        <button onclick="setTimerPreset(30)" class="text-xs px-3 py-1.5 bg-cyber-accent/10 border border-cyber-border rounded-lg hover:border-cyber-accent">30 min</button>
+                                        <button onclick="setTimerPreset(60)" class="text-xs px-3 py-1.5 bg-cyber-accent/10 border border-cyber-border rounded-lg hover:border-cyber-accent">1 hour</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ALARMS -->
+                            <div id="clock-panel-alarm" class="clock-panel hidden">
+                                <form onsubmit="addAlarm(event)" class="grid grid-cols-1 sm:grid-cols-12 gap-2 mb-4">
+                                    <input type="time" id="alarm-time" required class="cyber-input sm:col-span-3">
+                                    <input type="text" id="alarm-label" placeholder="Label (e.g. Wake up)" class="cyber-input sm:col-span-5">
+                                    <select id="alarm-repeat" class="cyber-input sm:col-span-2">
+                                        <option value="once">Once</option>
+                                        <option value="daily">Daily</option>
+                                        <option value="weekdays">Weekdays</option>
+                                        <option value="weekends">Weekends</option>
+                                    </select>
+                                    <button type="submit" class="btn-metal px-4 py-2 text-xs sm:col-span-2">SET</button>
+                                </form>
+                                <div id="alarms-list" class="space-y-2 font-mono text-sm"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ============ NOTION WORKSPACE ============ -->
+                    <section id="tab-notion" class="hidden h-full">
+                        <div class="glass-panel rounded-2xl border border-cyber-border overflow-hidden relative h-full flex">
+                            <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
+                            
+                            <!-- Notion Page Sidebar -->
+                            <div class="w-56 border-r border-cyber-border bg-cyber-black/60 flex flex-col flex-shrink-0">
+                                <div class="p-3 border-b border-cyber-border">
+                                    <button onclick="createNotionPage()" class="btn-gold w-full py-2 flex items-center justify-center gap-2 text-xs">
+                                        <i data-lucide="plus" class="w-4 h-4"></i> NEW PAGE
+                                    </button>
+                                </div>
+                                <div id="notion-pages-list" class="flex-1 overflow-y-auto p-2 space-y-1"></div>
+                                <div class="p-2 border-t border-cyber-border">
+                                    <button onclick="deleteAllNotionPages()" class="text-cyber-danger text-[10px] font-mono hover:underline w-full text-center">DELETE ALL</button>
+                                </div>
+                            </div>
+
+                            <!-- Notion Editor -->
+                            <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+                                <div class="px-6 py-3 border-b border-cyber-border flex items-center justify-between flex-shrink-0">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-2xl" id="notion-page-icon">📄</span>
+                                        <input type="text" id="notion-page-title" placeholder="Untitled" class="font-orbitron font-bold text-lg text-white bg-transparent border-none outline-none flex-1" onchange="saveNotionTitle(this.value)">
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button onclick="addNotionBlock('text')" class="btn-metal px-3 py-1 text-xs flex items-center gap-1" title="Add block"><i data-lucide="plus" class="w-3 h-3"></i> BLOCK</button>
+                                    </div>
+                                </div>
+                                <div id="notion-editor" class="flex-1 overflow-y-auto p-6 space-y-1"></div>
+                            </div>
+                        </div>
+                    </section>
+
                     <!-- CALCULATOR FULL -->
                     <section id="tab-calculator" class="hidden max-w-xl mx-auto w-full">
                         <div class="glass-panel rounded-2xl p-6 border border-cyber-border relative">
                             <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
                             <div class="flex justify-between items-center mb-4">
                                 <h2 class="font-orbitron font-bold text-xl text-white flex items-center gap-2"><i data-lucide="calculator" class="text-cyber-accent"></i> Quantum Calculator</h2>
-                                <button onclick="document.getElementById('calc-history-modal').showModal()" class="text-gray-400 hover:text-cyber-accent text-xs font-mono border border-gray-600 rounded px-2 py-1 flex items-center gap-1"><i data-lucide="history" class="w-3 h-3"></i> HISTORY</button>
+                                <button onclick="document.getElementById('calc-history-modal').showModal()" class="btn-metal px-3 py-1.5 text-xs flex items-center gap-1"><i data-lucide="history" class="w-3 h-3"></i> HISTORY</button>
                             </div>
                             <div class="bg-cyber-black border border-cyber-border rounded-xl p-4 font-mono text-right mb-4">
                                 <div class="flex justify-between text-xs text-cyber-gold h-5"><span id="calc-memory-indicator-full" class="opacity-0">M</span><span id="calc-history-full">0 = 0</span></div>
@@ -421,11 +520,11 @@
                     <section id="tab-weather" class="hidden max-w-4xl mx-auto w-full mt-4">
                         <div class="glass-panel rounded-2xl p-6 border border-cyber-border relative">
                             <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
-                            <h2 class="font-orbitron font-bold text-xl text-white flex items-center gap-2 mb-4"><i data-lucide="cloud-sun" class="text-cyber-accent"></i> Global Weather Telemetry</h2>
+                            <h2 class="font-orbitron font-bold text-xl text-white flex items-center gap-2 mb-4"><i data-lucide="cloud-sun" class="text-cyber-accent"></i> Global Weather</h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="space-y-4">
                                     <div class="flex gap-2">
-                                        <input type="text" id="weather-tab-input" placeholder="Enter City Name..." value="Hyderabad" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-3 py-2 text-sm text-white font-mono" onkeypress="if(event.key==='Enter') fetchWeatherTab()">
+                                        <input type="text" id="weather-tab-input" placeholder="Enter City Name..." value="Hyderabad" class="cyber-input" onkeypress="if(event.key==='Enter') fetchWeatherTab()">
                                         <button onclick="fetchWeatherTab()" class="btn-metal px-4 py-2 text-xs">SEARCH</button>
                                     </div>
                                     <div class="glass-card rounded-2xl p-6 text-center space-y-4">
@@ -448,67 +547,6 @@
                         </div>
                     </section>
 
-                    <!-- CLOCK FULL -->
-                    <section id="tab-clock" class="hidden max-w-2xl mx-auto w-full mt-4">
-                        <div class="glass-panel rounded-2xl p-6 border border-cyber-border space-y-4 relative">
-                            <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
-                            <div class="flex justify-between items-center border-b border-cyber-border pb-3">
-                                <h2 class="font-orbitron font-bold text-xl text-white flex items-center gap-2"><i data-lucide="clock" class="text-cyber-accent"></i> Chronos Engine</h2>
-                                <div class="flex gap-1 bg-cyber-black p-1 rounded-lg">
-                                    <button onclick="switchClockTab('main')" class="clock-tab-btn px-2 py-1 rounded text-[10px] font-bold bg-cyber-accent/20 text-cyber-accent">MAIN</button>
-                                    <button onclick="switchClockTab('world')" class="clock-tab-btn px-2 py-1 rounded text-[10px] font-bold text-gray-400 hover:text-white">WORLD</button>
-                                    <button onclick="switchClockTab('stopwatch')" class="clock-tab-btn px-2 py-1 rounded text-[10px] font-bold text-gray-400 hover:text-white">STOP</button>
-                                    <button onclick="switchClockTab('alarm')" class="clock-tab-btn px-2 py-1 rounded text-[10px] font-bold text-gray-400 hover:text-white">ALARM</button>
-                                </div>
-                            </div>
-
-                            <!-- MAIN CLOCK -->
-                            <div id="clock-panel-main" class="clock-panel text-center py-4">
-                                <svg class="w-64 h-64 mx-auto drop-shadow-[0_0_20px_var(--accent-glow)]" viewBox="0 0 200 200">
-                                    <circle cx="100" cy="100" r="95" fill="rgba(0,0,0,0.8)" stroke="var(--accent-color)" stroke-width="3"></circle>
-                                    <g id="clock-ticks-lg"></g>
-                                    <line id="hand-hour-lg" class="clock-hand" x1="100" y1="100" x2="100" y2="55" stroke="#C0C0C0" stroke-width="6" stroke-linecap="round"></line>
-                                    <line id="hand-minute-lg" class="clock-hand" x1="100" y1="100" x2="100" y2="35" stroke="var(--accent-color)" stroke-width="4" stroke-linecap="round"></line>
-                                    <line id="hand-second-lg" class="clock-hand" x1="100" y1="100" x2="100" y2="25" stroke="#F2C14E" stroke-width="2" stroke-linecap="round"></line>
-                                    <circle cx="100" cy="100" r="8" fill="#F2C14E"></circle>
-                                </svg>
-                                <div class="mt-4 text-center">
-                                    <div class="font-orbitron font-black text-5xl text-white tracking-widest glow-accent" id="digital-time-lg">00:00:00</div>
-                                    <div class="font-mono text-lg text-cyber-gold uppercase tracking-widest mt-2" id="digital-date-lg">LOADING DATE...</div>
-                                </div>
-                            </div>
-
-                            <!-- WORLD CLOCKS -->
-                            <div id="clock-panel-world" class="clock-panel hidden">
-                                <div class="flex justify-end mb-3">
-                                    <button onclick="addWorldClock()" class="btn-metal px-3 py-1 text-xs">+ ADD CITY</button>
-                                </div>
-                                <div id="world-clocks-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
-                            </div>
-
-                            <!-- STOPWATCH -->
-                            <div id="clock-panel-stopwatch" class="clock-panel hidden text-center py-6">
-                                <div class="font-orbitron font-black text-6xl text-cyber-accent glow-accent mb-6" id="stopwatch-display">00:00:00.00</div>
-                                <div class="flex justify-center gap-3">
-                                    <button onclick="toggleStopwatch()" id="stopwatch-btn" class="btn-metal px-6 py-2 text-sm">START</button>
-                                    <button onclick="recordLap()" id="lap-btn" class="btn-metal px-6 py-2 text-sm" disabled>LAP</button>
-                                    <button onclick="resetStopwatch()" class="btn-metal px-6 py-2 text-sm text-cyber-danger">RESET</button>
-                                </div>
-                                <div id="laps-list" class="mt-4 space-y-1 font-mono text-xs max-h-40 overflow-y-auto w-full max-w-sm mx-auto"></div>
-                            </div>
-
-                            <!-- ALARMS -->
-                            <div id="clock-panel-alarm" class="clock-panel hidden">
-                                <form onsubmit="addAlarm(event)" class="flex gap-2 mb-3">
-                                    <input type="time" id="alarm-time" required class="bg-cyber-black border border-cyber-border rounded-xl px-3 py-2 text-sm text-white">
-                                    <input type="text" id="alarm-label" placeholder="Label (e.g. Wake up)" class="flex-1 bg-cyber-black border border-cyber-border rounded-xl px-3 py-2 text-sm text-white">
-                                    <button type="submit" class="btn-metal px-4 py-2 text-xs">SET</button>
-                                </form>
-                                <div id="alarms-list" class="space-y-2 font-mono text-sm"></div>
-                            </div>
-                        </div>
-                    </section>
-
                     <!-- GALLERY -->
                     <section id="tab-gallery" class="hidden max-w-5xl mx-auto w-full mt-4">
                         <div class="glass-panel rounded-2xl p-6 border border-cyber-border relative">
@@ -517,17 +555,7 @@
                                 <h2 class="font-orbitron font-bold text-xl text-white flex items-center gap-2"><i data-lucide="image" class="text-cyber-accent"></i> Holographic Assets</h2>
                                 <button onclick="document.getElementById('add-image-modal').showModal()" class="btn-metal px-3 py-1.5 text-xs flex items-center gap-1"><i data-lucide="plus" class="w-3 h-3"></i> ADD IMAGE</button>
                             </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="gallery-grid">
-                                <!-- Default Images -->
-                                <div class="glass-card rounded-xl overflow-hidden border border-cyber-border group cursor-pointer relative" onclick="openLightbox(this.querySelector('img').src)">
-                                    <img src="ZJPP.jpeg" alt="ZJ Portrait" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80'">
-                                    <div class="p-3 font-mono text-xs"><div class="text-cyber-accent font-bold text-sm">ZJ PORTRAIT</div><div class="text-gray-400 mt-1">Neural Interface</div></div>
-                                </div>
-                                <div class="glass-card rounded-xl overflow-hidden border border-cyber-border group cursor-pointer relative" onclick="openLightbox(this.querySelector('img').src)">
-                                    <img src="BMW.jpeg" alt="BMW Car" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=600&q=80'">
-                                    <div class="p-3 font-mono text-xs"><div class="text-cyber-gold font-bold text-sm">BMW M-SERIES</div><div class="text-gray-400 mt-1">Cyber Vehicle</div></div>
-                                </div>
-                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="gallery-grid"></div>
                         </div>
                     </section>
 
@@ -536,8 +564,8 @@
                         <div class="glass-panel rounded-2xl p-6 border border-cyber-border space-y-4 relative">
                             <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
                             <div class="flex justify-between items-center">
-                                <h2 class="font-orbitron font-bold text-xl text-white flex items-center gap-2"><i data-lucide="file-text" class="text-cyber-accent"></i> Neural Notes</h2>
-                                <button onclick="openNoteModal()" class="btn-metal px-3 py-1.5 text-xs flex items-center gap-1"><i data-lucide="plus" class="w-3 h-3"></i> NEW</button>
+                                <h2 class="font-orbitron font-bold text-xl text-white flex items-center gap-2"><i data-lucide="sticky-note" class="text-cyber-accent"></i> Quick Notes</h2>
+                                <button onclick="openNoteModal()" class="btn-metal px-3 py-1.5 text-xs flex items-center gap-1"><i data-lucide="plus" class="w-3 h-3"></i> NEW NOTE</button>
                             </div>
                             <div id="notes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                         </div>
@@ -549,8 +577,8 @@
                             <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
                             <h2 class="font-orbitron font-bold text-xl text-white flex items-center gap-2"><i data-lucide="check-square" class="text-cyber-accent"></i> Task Matrix</h2>
                             <form onsubmit="addTodo(event)" class="flex gap-2">
-                                <input type="text" id="todo-input" placeholder="Add new task..." class="w-full bg-cyber-black border border-cyber-border rounded-xl px-3 py-2 text-sm text-white font-mono">
-                                <select id="todo-priority" class="bg-cyber-black border border-cyber-border rounded-xl px-2 text-sm text-white font-mono">
+                                <input type="text" id="todo-input" placeholder="Add new task..." class="cyber-input flex-1">
+                                <select id="todo-priority" class="cyber-input max-w-[120px]">
                                     <option value="high">High</option>
                                     <option value="medium" selected>Med</option>
                                     <option value="low">Low</option>
@@ -570,7 +598,7 @@
                     <section id="tab-pomodoro" class="hidden max-w-md mx-auto w-full mt-4">
                         <div class="glass-panel rounded-2xl p-6 border border-cyber-border text-center space-y-4 relative">
                             <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
-                            <h2 class="font-orbitron font-bold text-xl text-white flex items-center justify-center gap-2"><i data-lucide="timer" class="text-cyber-accent"></i> Pomodoro Focus</h2>
+                            <h2 class="font-orbitron font-bold text-xl text-white flex items-center justify-center gap-2"><i data-lucide="timer" class="text-cyber-accent"></i> Pomodoro</h2>
                             <div class="relative w-48 h-48 mx-auto">
                                 <svg class="w-full h-full transform -rotate-90">
                                     <circle cx="96" cy="96" r="88" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="none"></circle>
@@ -596,29 +624,23 @@
                             <div class="space-y-3 font-mono text-sm">
                                 <div>
                                     <label class="text-xs text-cyber-silver">VALUE</label>
-                                    <input type="number" id="convert-val" value="100" oninput="runConversion()" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-3 py-2 text-white mt-1">
+                                    <input type="number" id="convert-val" value="100" oninput="runConversion()" class="cyber-input mt-1">
                                 </div>
                                 <div class="grid grid-cols-2 gap-3">
                                     <div>
                                         <label class="text-xs text-cyber-silver">FROM</label>
-                                        <select id="convert-from" onchange="runConversion()" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-3 py-2 text-white mt-1">
-                                            <option value="km">Kilometers</option>
-                                            <option value="miles">Miles</option>
-                                            <option value="gb">Gigabytes</option>
-                                            <option value="tb">Terabytes</option>
-                                            <option value="kg">Kilograms</option>
-                                            <option value="lbs">Pounds</option>
+                                        <select id="convert-from" onchange="runConversion()" class="cyber-input mt-1">
+                                            <option value="km">Kilometers</option><option value="miles">Miles</option>
+                                            <option value="gb">Gigabytes</option><option value="tb">Terabytes</option>
+                                            <option value="kg">Kilograms</option><option value="lbs">Pounds</option>
                                         </select>
                                     </div>
                                     <div>
                                         <label class="text-xs text-cyber-silver">TO</label>
-                                        <select id="convert-to" onchange="runConversion()" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-3 py-2 text-white mt-1">
-                                            <option value="miles">Miles</option>
-                                            <option value="km">Kilometers</option>
-                                            <option value="tb">Terabytes</option>
-                                            <option value="gb">Gigabytes</option>
-                                            <option value="lbs">Pounds</option>
-                                            <option value="kg">Kilograms</option>
+                                        <select id="convert-to" onchange="runConversion()" class="cyber-input mt-1">
+                                            <option value="miles">Miles</option><option value="km">Kilometers</option>
+                                            <option value="tb">Terabytes</option><option value="gb">Gigabytes</option>
+                                            <option value="lbs">Pounds</option><option value="kg">Kilograms</option>
                                         </select>
                                     </div>
                                 </div>
@@ -630,26 +652,22 @@
                         </div>
                     </section>
 
-                    <!-- CHATBOT (New Sidebar Layout) -->
+                    <!-- CHATBOT -->
                     <section id="tab-chatbot" class="hidden h-full flex glass-panel rounded-2xl border border-cyber-border overflow-hidden relative">
                         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-tr"></div><div class="hud-corner hud-bl"></div><div class="hud-corner hud-br"></div>
                         
-                        <!-- Chat Sidebar -->
                         <div class="w-64 border-r border-cyber-border flex flex-col bg-cyber-black/50 backdrop-blur-md hidden sm:flex">
                             <div class="p-4 border-b border-cyber-border">
                                 <button onclick="createNewChat()" class="btn-gold w-full py-2 flex items-center justify-center gap-2 text-sm">
                                     <i data-lucide="plus" class="w-4 h-4"></i> NEW CHAT
                                 </button>
                             </div>
-                            <div id="chat-list-container" class="flex-1 overflow-y-auto p-2 space-y-1">
-                                <!-- Chat sessions rendered here -->
-                            </div>
+                            <div id="chat-list-container" class="flex-1 overflow-y-auto p-2 space-y-1"></div>
                             <div class="p-4 border-t border-cyber-border">
-                                <button onclick="clearAllChats()" class="text-cyber-danger text-xs font-mono hover:underline w-full text-center">CLEAR ALL CHATS</button>
+                                <button onclick="clearAllChats()" class="text-cyber-danger text-xs font-mono hover:underline w-full text-center">CLEAR ALL</button>
                             </div>
                         </div>
 
-                        <!-- Chat Main Area -->
                         <div class="flex-1 flex flex-col min-w-0">
                             <div class="bg-cyber-black px-6 py-4 border-b border-cyber-border flex items-center justify-between flex-shrink-0">
                                 <div class="flex items-center gap-3">
@@ -659,19 +677,13 @@
                                         <div class="flex items-center gap-2 text-xs font-mono text-cyber-gold"><span class="w-2 h-2 rounded-full bg-cyber-gold animate-pulse"></span> Online</div>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-2 font-mono text-xs">
-                                    <button onclick="clearActiveChat()" class="px-3 py-1.5 rounded-lg border border-cyber-border bg-cyber-dark hover:border-cyber-accent text-gray-300 flex items-center gap-1 transition-all"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i> CLEAR</button>
-                                </div>
+                                <button onclick="clearActiveChat()" class="btn-metal px-3 py-1.5 text-xs flex items-center gap-1"><i data-lucide="trash-2" class="w-3 h-3"></i> CLEAR</button>
                             </div>
-                            
-                            <div id="chat-box" class="flex-1 p-6 overflow-y-auto space-y-4 font-sans text-sm">
-                                <!-- Messages Render Here -->
-                            </div>
-                            
+                            <div id="chat-box" class="flex-1 p-6 overflow-y-auto space-y-4 font-sans text-sm"></div>
                             <form onsubmit="sendChatMessage(event)" class="p-4 bg-cyber-black border-t border-cyber-border flex items-center gap-3 flex-shrink-0">
                                 <div class="relative flex-1">
-                                    <input type="text" id="chat-input" placeholder="Initialize command..." autocomplete="off" maxlength="2000" class="w-full bg-black border border-cyber-border rounded-xl px-4 py-3 pr-10 text-white font-mono text-sm focus:border-cyber-accent">
-                                    <span id="char-count" class="absolute right-3 top-3 text-[10px] text-gray-500 font-mono">0/2000</span>
+                                    <input type="text" id="chat-input" placeholder="Initialize command..." autocomplete="off" maxlength="2000" class="cyber-input pr-16">
+                                    <span id="char-count" class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-500 font-mono">0/2000</span>
                                 </div>
                                 <button type="submit" id="chat-send-btn" class="btn-metal px-6 py-3 flex items-center gap-2"><span class="font-orbitron font-bold">SEND</span><i data-lucide="send" class="w-4 h-4"></i></button>
                                 <button type="button" id="chat-stop-btn" class="btn-gold px-6 py-3 hidden items-center gap-2 text-cyber-danger"><span class="font-orbitron font-bold">STOP</span><i data-lucide="square" class="w-4 h-4"></i></button>
@@ -683,28 +695,29 @@
         </main>
     </div>
 
-    <!-- FLOATING CHAT FAB -->
     <button onclick="switchTab('chatbot')" class="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-cyber-accent/20 border border-cyber-accent text-cyber-accent flex items-center justify-center shadow-[0_0_25px_var(--accent-glow)] hover:scale-110 transition-transform">
         <i data-lucide="message-square" class="w-6 h-6"></i>
     </button>
 
     <!-- LIGHTBOX -->
-    <div id="lightbox" class="fixed inset-0 z-[200] bg-black/95 hidden items-center justify-center p-4 cursor-pointer" onclick="closeLightbox()">
-        <button class="absolute top-6 right-6 text-white hover:text-cyber-accent bg-black/50 p-2 rounded-full border border-white/20"><i data-lucide="x" class="w-8 h-8"></i></button>
-        <img id="lightbox-img" src="" alt="Enlarged View" class="max-w-[90vw] max-h-[90vh] object-contain rounded-xl border border-cyber-accent shadow-[0_0_50px_var(--accent-glow)]">
+    <div id="lightbox" class="fixed inset-0 z-[200] bg-black/95 hidden items-center justify-center p-4" onclick="closeLightbox()">
+        <button class="absolute top-6 right-6 text-white hover:text-cyber-accent bg-black/50 p-2 rounded-full border border-white/20 z-10" onclick="event.stopPropagation(); closeLightbox()"><i data-lucide="x" class="w-8 h-8"></i></button>
+        <button class="absolute left-6 top-1/2 -translate-y-1/2 text-white hover:text-cyber-accent bg-black/50 p-2 rounded-full border border-white/20 z-10" onclick="event.stopPropagation(); prevImage()"><i data-lucide="chevron-left" class="w-8 h-8"></i></button>
+        <button class="absolute right-6 top-1/2 -translate-y-1/2 text-white hover:text-cyber-accent bg-black/50 p-2 rounded-full border border-white/20 z-10" onclick="event.stopPropagation(); nextImage()"><i data-lucide="chevron-right" class="w-8 h-8"></i></button>
+        <img id="lightbox-img" src="" alt="Enlarged View" class="max-w-[90vw] max-h-[90vh] object-contain rounded-xl border border-cyber-accent shadow-[0_0_50px_var(--accent-glow)]" onclick="event.stopPropagation()">
     </div>
 
-    <!-- ================= MODALS ================= -->
+    <!-- MODALS -->
     <dialog id="cyber-modal" class="bg-cyber-panel border border-cyber-border rounded-2xl p-6 w-full max-w-md mx-auto mt-[10vh] shadow-[0_0_50px_var(--accent-glow)] font-rajdhani text-white relative">
         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-tr"></div><div class="hud-corner hud-bl"></div><div class="hud-corner hud-br"></div>
         <h3 class="font-orbitron font-bold text-lg text-cyber-accent mb-2" id="modal-title">SYSTEM PROMPT</h3>
         <p class="text-sm text-gray-400 mb-4" id="modal-desc">Enter required data.</p>
-        <input type="text" id="modal-input" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-white mb-4 hidden" placeholder="Type here...">
+        <input type="text" id="modal-input" class="cyber-input mb-4 hidden" placeholder="Type here...">
         <div id="modal-double" class="hidden space-y-3 mb-4">
-            <input type="text" id="modal-input-1" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-white" placeholder="Title">
-            <textarea id="modal-input-2" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-white h-24 resize-none" placeholder="Content..."></textarea>
+            <input type="text" id="modal-input-1" class="cyber-input" placeholder="Title">
+            <textarea id="modal-input-2" class="cyber-input h-24 resize-none" placeholder="Content..."></textarea>
         </div>
-        <textarea id="modal-textarea" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-3 text-white mb-4 h-24 resize-none hidden" placeholder="Paste JSON here..."></textarea>
+        <textarea id="modal-textarea" class="cyber-input mb-4 h-24 resize-none hidden" placeholder="Paste JSON here..."></textarea>
         <div class="flex justify-end gap-3 mt-6">
             <button id="modal-cancel" class="btn-metal px-5 py-2 text-sm">CANCEL</button>
             <button id="modal-confirm" class="btn-gold px-5 py-2 text-sm">CONFIRM</button>
@@ -715,8 +728,8 @@
         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
         <h3 class="font-orbitron font-bold text-lg text-cyber-accent mb-4">ADD CUSTOM IMAGE</h3>
         <div class="space-y-3 mb-6">
-            <input type="text" id="image-title-input" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-2 text-white text-sm" placeholder="Image Title">
-            <input type="url" id="image-url-input" class="w-full bg-cyber-black border border-cyber-border rounded-xl px-4 py-2 text-white text-sm" placeholder="Image URL (https://...)">
+            <input type="text" id="image-title-input" class="cyber-input" placeholder="Image Title">
+            <input type="url" id="image-url-input" class="cyber-input" placeholder="Image URL (https://...)">
         </div>
         <div class="flex justify-end gap-3">
             <button onclick="document.getElementById('add-image-modal').close()" class="btn-metal px-5 py-2 text-sm">CANCEL</button>
@@ -738,7 +751,7 @@
 
     <dialog id="theme-modal" class="bg-cyber-panel border border-cyber-border rounded-2xl p-6 w-full max-w-sm mx-auto mt-[15vh] shadow-[0_0_50px_var(--accent-glow)] font-rajdhani text-white relative">
         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
-        <h3 class="font-orbitron font-bold text-lg text-cyber-accent mb-6 text-center">SELECT NEURAL THEME</h3>
+        <h3 class="font-orbitron font-bold text-lg text-cyber-accent mb-6 text-center">SELECT THEME</h3>
         <div class="grid grid-cols-4 gap-2">
             <button onclick="setTheme('titan'); document.getElementById('theme-modal').close();" class="flex flex-col items-center gap-2 p-3 rounded-xl border border-cyan-400 bg-cyan-400/10 hover:bg-cyan-400/30 transition-all">
                 <div class="w-8 h-8 rounded-full bg-gradient-to-br from-white via-gray-400 to-cyan-400 shadow-[0_0_15px_#00f3ff]"></div>
@@ -763,119 +776,84 @@
     <dialog id="settings-modal" class="bg-cyber-panel border border-cyber-border rounded-2xl p-6 w-full max-w-md mx-auto mt-[10vh] shadow-[0_0_50px_var(--accent-glow)] font-rajdhani text-white relative">
         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
         <div class="flex justify-between items-center mb-6">
-            <h3 class="font-orbitron font-bold text-lg text-cyber-accent">SYSTEM SETTINGS</h3>
+            <h3 class="font-orbitron font-bold text-lg text-cyber-accent">SETTINGS</h3>
             <button onclick="document.getElementById('settings-modal').close()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
         <div class="space-y-3 mb-6">
             <div class="flex items-center justify-between p-3 bg-cyber-black border border-cyber-border rounded-xl">
-                <div><div class="font-bold text-sm text-white">UI Sound Effects</div><div class="text-xs text-gray-400">Play sounds on button clicks</div></div>
+                <div><div class="font-bold text-sm text-white">UI Sound Effects</div></div>
                 <input type="checkbox" id="toggle-ui-sound" checked class="accent-cyber-accent w-5 h-5 cursor-pointer">
             </div>
             <div class="flex items-center justify-between p-3 bg-cyber-black border border-cyber-border rounded-xl">
-                <div><div class="font-bold text-sm text-white">Timer Sounds</div><div class="text-xs text-gray-400">Play sound when Pomodoro finishes</div></div>
+                <div><div class="font-bold text-sm text-white">Timer & Alarm Sounds</div></div>
                 <input type="checkbox" id="toggle-timer-sound" checked class="accent-cyber-accent w-5 h-5 cursor-pointer">
             </div>
             <div class="flex items-center justify-between p-3 bg-cyber-black border border-cyber-border rounded-xl">
-                <div><div class="font-bold text-sm text-white">Alarm Sounds</div><div class="text-xs text-gray-400">Play sound when Alarm triggers</div></div>
-                <input type="checkbox" id="toggle-alarm-sound" checked class="accent-cyber-accent w-5 h-5 cursor-pointer">
-            </div>
-            <div class="flex items-center justify-between p-3 bg-cyber-black border border-cyber-border rounded-xl">
-                <div><div class="font-bold text-sm text-white">3D Background</div><div class="text-xs text-gray-400">Disable to save battery</div></div>
+                <div><div class="font-bold text-sm text-white">3D Background</div></div>
                 <input type="checkbox" id="toggle-bg-3d" checked class="accent-cyber-accent w-5 h-5 cursor-pointer">
             </div>
         </div>
         <div class="flex flex-col gap-2">
-            <button onclick="exportJSONData()" class="btn-metal w-full text-left p-3 text-sm"><i data-lucide="download" class="w-4 h-4 inline mr-2"></i> Export Data (JSON)</button>
+            <button onclick="exportJSONData()" class="btn-metal w-full text-left p-3 text-sm"><i data-lucide="download" class="w-4 h-4 inline mr-2"></i> Export Data</button>
             <button onclick="importJSONData()" class="btn-metal w-full text-left p-3 text-sm"><i data-lucide="upload" class="w-4 h-4 inline mr-2"></i> Import Data</button>
-            <button onclick="clearAllData()" class="btn-metal w-full text-left p-3 text-sm text-cyber-danger"><i data-lucide="trash-2" class="w-4 h-4 inline mr-2"></i> Clear All Local Data</button>
+            <button onclick="clearAllData()" class="btn-metal w-full text-left p-3 text-sm text-cyber-danger"><i data-lucide="trash-2" class="w-4 h-4 inline mr-2"></i> Clear All Data</button>
         </div>
     </dialog>
 
-    <!-- TOASTS -->
     <div id="toast-container" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- ================= JAVASCRIPT ================= -->
+    <!-- ============ JAVASCRIPT ============ -->
     <script>
-        // ==========================================
-        // 1. FAST PRELOADER LOGIC (3.5 Seconds max)
-        // ==========================================
-        (function bootSeq() {
-            const loadingTexts = ["INITIALIZING CORE...", "MOUNTING NEURAL INTERFACE...", "LOADING ENCRYPTION KEYS...", "CALIBRATING UI...", "SYSTEM READY."];
+        // PRELOADER
+        (function() {
+            const texts = ["INITIALIZING CORE...", "MOUNTING NEURAL INTERFACE...", "LOADING ENCRYPTION KEYS...", "CALIBRATING UI...", "SYSTEM READY."];
             let step = 0;
-            const textEl = document.getElementById('loading-text');
-            const preloaderEl = document.getElementById('preloader');
-
-            const loadInterval = setInterval(() => {
-                if (step < loadingTexts.length) { textEl.textContent = loadingTexts[step]; step++; }
-            }, 500);
-
-            setTimeout(() => { 
-                clearInterval(loadInterval); 
-                preloaderEl.classList.add('fade-out'); 
-                setTimeout(() => preloaderEl.style.display = 'none', 800); 
-            }, 3500); 
+            const el = document.getElementById('loading-text');
+            const iv = setInterval(() => { if (step < texts.length) { el.textContent = texts[step]; step++; } }, 500);
+            setTimeout(() => { clearInterval(iv); document.getElementById('preloader').classList.add('fade-out'); setTimeout(() => document.getElementById('preloader').style.display = 'none', 800); }, 3500);
         })();
 
-        // ==========================================
-        // 2. STATE & UTILITIES
-        // ==========================================
+        // STATE
         const AppState = {
-            notes: JSON.parse(localStorage.getItem('zj_notes_v7')) || [],
-            todos: JSON.parse(localStorage.getItem('zj_todos_v7')) || [],
-            alarms: JSON.parse(localStorage.getItem('zj_alarms_v7')) || [],
-            customImages: JSON.parse(localStorage.getItem('zj_images_v7')) || [],
-            
-            // NEW MULTI-CHAT STATE
-            chats: JSON.parse(localStorage.getItem('zj_chats_v7')) || [],
-            activeChatId: localStorage.getItem('zj_active_chat_v7') || null,
-            
-            theme: localStorage.getItem('zj_theme_v7') || 'titan',
-            audio: JSON.parse(localStorage.getItem('zj_audio_v7')) || { ui: true, timer: true, alarm: true },
-            bg3d: JSON.parse(localStorage.getItem('zj_bg3d_v7')) !== false,
-            pomoTime: 25 * 60,
-            pomoInterval: null,
-            pomoRunning: false,
-            pomoEndTime: 0,
-            calcMemory: 0,
-            calcVal: '0',
-            calcHist: '',
-            calcLog: JSON.parse(localStorage.getItem('zj_calc_log_v7')) || []
+            notes: JSON.parse(localStorage.getItem('zj_notes')) || [],
+            todos: JSON.parse(localStorage.getItem('zj_todos')) || [],
+            alarms: JSON.parse(localStorage.getItem('zj_alarms')) || [],
+            customImages: JSON.parse(localStorage.getItem('zj_images')) || [],
+            chats: JSON.parse(localStorage.getItem('zj_chats')) || [],
+            notionPages: JSON.parse(localStorage.getItem('zj_notion_pages')) || [],
+            activeChatId: localStorage.getItem('zj_active_chat') || null,
+            activeNotionPageId: localStorage.getItem('zj_active_notion_page') || null,
+            theme: localStorage.getItem('zj_theme') || 'titan',
+            audio: JSON.parse(localStorage.getItem('zj_audio')) || { ui: true, timer: true },
+            bg3d: JSON.parse(localStorage.getItem('zj_bg3d')) !== false,
+            pomoTime: 25 * 60, pomoInterval: null, pomoRunning: false, pomoEndTime: 0,
+            calcMemory: 0, calcVal: '0', calcHist: '', calcLog: JSON.parse(localStorage.getItem('zj_calc_log')) || [],
+            todoFilter: 'all'
         };
 
-        // Migration: If old chat history exists, put it in a chat
-        const oldChatHistory = JSON.parse(localStorage.getItem('zj_chat_v6'));
-        if (oldChatHistory && oldChatHistory.length > 0 && AppState.chats.length === 0) {
-            AppState.chats.push({
-                id: Date.now().toString(),
-                title: "Migrated Chat",
-                messages: oldChatHistory
-            });
-            AppState.activeChatId = AppState.chats[0].id;
-        }
-
         const saveState = () => {
-            localStorage.setItem('zj_notes_v7', JSON.stringify(AppState.notes));
-            localStorage.setItem('zj_todos_v7', JSON.stringify(AppState.todos));
-            localStorage.setItem('zj_alarms_v7', JSON.stringify(AppState.alarms));
-            localStorage.setItem('zj_images_v7', JSON.stringify(AppState.customImages));
-            localStorage.setItem('zj_chats_v7', JSON.stringify(AppState.chats));
-            localStorage.setItem('zj_active_chat_v7', AppState.activeChatId || '');
-            localStorage.setItem('zj_theme_v7', AppState.theme);
-            localStorage.setItem('zj_audio_v7', JSON.stringify(AppState.audio));
-            localStorage.setItem('zj_bg3d_v7', JSON.stringify(AppState.bg3d));
-            localStorage.setItem('zj_calc_log_v7', JSON.stringify(AppState.calcLog));
+            localStorage.setItem('zj_notes', JSON.stringify(AppState.notes));
+            localStorage.setItem('zj_todos', JSON.stringify(AppState.todos));
+            localStorage.setItem('zj_alarms', JSON.stringify(AppState.alarms));
+            localStorage.setItem('zj_images', JSON.stringify(AppState.customImages));
+            localStorage.setItem('zj_chats', JSON.stringify(AppState.chats));
+            localStorage.setItem('zj_notion_pages', JSON.stringify(AppState.notionPages));
+            localStorage.setItem('zj_active_chat', AppState.activeChatId || '');
+            localStorage.setItem('zj_active_notion_page', AppState.activeNotionPageId || '');
+            localStorage.setItem('zj_theme', AppState.theme);
+            localStorage.setItem('zj_audio', JSON.stringify(AppState.audio));
+            localStorage.setItem('zj_bg3d', JSON.stringify(AppState.bg3d));
+            localStorage.setItem('zj_calc_log', JSON.stringify(AppState.calcLog));
         };
 
         function playSound(type) {
             if (type === 'ui' && !AppState.audio.ui) return;
-            if (type === 'timer' && !AppState.audio.timer) return;
-            if (type === 'alarm' && !AppState.audio.alarm) return;
+            if ((type === 'timer' || type === 'alarm') && !AppState.audio.timer) return;
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = ctx.createOscillator(); const gain = ctx.createGain();
                 if (type === 'ui') { osc.type = 'sine'; osc.frequency.setValueAtTime(600, ctx.currentTime); gain.gain.setValueAtTime(0.05, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.1); osc.stop(ctx.currentTime + 0.1); }
-                else if (type === 'timer') { osc.type = 'triangle'; osc.frequency.setValueAtTime(800, ctx.currentTime); osc.frequency.setValueAtTime(1000, ctx.currentTime + 0.2); osc.frequency.setValueAtTime(1200, ctx.currentTime + 0.4); gain.gain.setValueAtTime(0.2, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 1); osc.stop(ctx.currentTime + 1); }
-                else if (type === 'alarm') { osc.type = 'square'; osc.frequency.setValueAtTime(400, ctx.currentTime); osc.frequency.setValueAtTime(800, ctx.currentTime + 0.2); osc.frequency.setValueAtTime(400, ctx.currentTime + 0.4); osc.frequency.setValueAtTime(800, ctx.currentTime + 0.6); gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 1.5); osc.stop(ctx.currentTime + 1.5); }
+                else { osc.type = 'triangle'; osc.frequency.setValueAtTime(800, ctx.currentTime); osc.frequency.setValueAtTime(1000, ctx.currentTime + 0.2); osc.frequency.setValueAtTime(1200, ctx.currentTime + 0.4); gain.gain.setValueAtTime(0.2, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 1); osc.stop(ctx.currentTime + 1); }
                 osc.connect(gain); gain.connect(ctx.destination); osc.start();
             } catch(e) {}
         }
@@ -884,9 +862,9 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `px-6 py-3 rounded-xl border font-mono text-sm font-bold shadow-lg transition-all duration-300 flex items-center gap-2 transform -translate-y-10 opacity-0 pointer-events-auto`;
-            if (type === 'success') toast.className += ' bg-cyber-accent/20 border-cyber-accent text-cyber-accent shadow-[0_0_20px_var(--accent-glow)]';
-            else if (type === 'error') toast.className += ' bg-cyber-danger/20 border-cyber-danger text-cyber-danger shadow-[0_0_20px_rgba(255,92,92,0.4)]';
-            else toast.className += ' bg-cyber-gold/20 border-cyber-gold text-cyber-gold shadow-[0_0_20px_rgba(242,193,78,0.4)]';
+            if (type === 'success') toast.className += ' bg-cyber-accent/20 border-cyber-accent text-cyber-accent';
+            else if (type === 'error') toast.className += ' bg-cyber-danger/20 border-cyber-danger text-cyber-danger';
+            else toast.className += ' bg-cyber-gold/20 border-cyber-gold text-cyber-gold';
             toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info'}" class="w-5 h-5"></i> ${message}`;
             container.appendChild(toast); lucide.createIcons();
             setTimeout(() => { toast.classList.remove('-translate-y-10', 'opacity-0'); playSound('ui'); }, 10);
@@ -895,31 +873,17 @@
 
         function parseMarkdown(text) {
             let html = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-            html = html.replace(/```([\s\S]*?)```/g, '<pre><button onclick="copyCodeBlock(this)" class="absolute top-2 right-2 text-xs text-gray-400 hover:text-white bg-black/50 px-2 py-1 rounded"><i data-lucide="copy" class="w-3 h-3 inline"></i></button><code>$1</code></pre>');
-            html = html.replace(/\n/g, '<br>');
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\n/g, '<br>');
             return html;
         }
 
-        function copyCodeBlock(btn) {
-            const code = btn.nextElementSibling.innerText;
-            navigator.clipboard.writeText(code);
-            showToast('Code copied!');
-        }
+        function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 
-        // ==========================================
-        // 3. CUSTOM MODALS
-        // ==========================================
+        // MODALS
         const modal = document.getElementById('cyber-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalDesc = document.getElementById('modal-desc');
-        const modalInput = document.getElementById('modal-input');
-        const modalDouble = document.getElementById('modal-double');
-        const modalTextarea = document.getElementById('modal-textarea');
-        const btnCancel = document.getElementById('modal-cancel');
-        const btnConfirm = document.getElementById('modal-confirm');
+        const modalTitle = document.getElementById('modal-title'), modalDesc = document.getElementById('modal-desc');
+        const modalInput = document.getElementById('modal-input'), modalDouble = document.getElementById('modal-double'), modalTextarea = document.getElementById('modal-textarea');
+        const btnCancel = document.getElementById('modal-cancel'), btnConfirm = document.getElementById('modal-confirm');
         let modalCallback = null;
 
         function customConfirm(title, message, callback) {
@@ -931,11 +895,11 @@
             modal.showModal();
         }
 
-        function customNoteModal(callback, existingTitle = '', existingContent = '') {
-            modalTitle.textContent = 'NEW NOTE'; modalDesc.textContent = 'Enter your data below.';
+        function customNoteModal(callback) {
+            modalTitle.textContent = 'NEW NOTE'; modalDesc.textContent = 'Enter your data.';
             modalInput.classList.add('hidden'); modalTextarea.classList.add('hidden'); modalDouble.classList.remove('hidden');
-            document.getElementById('modal-input-1').value = existingTitle;
-            document.getElementById('modal-input-2').value = existingContent;
+            document.getElementById('modal-input-1').value = '';
+            document.getElementById('modal-input-2').value = '';
             btnCancel.classList.remove('hidden'); btnCancel.textContent = 'CANCEL';
             btnConfirm.textContent = 'SAVE'; btnConfirm.className = 'btn-gold px-5 py-2 text-sm';
             modalCallback = () => {
@@ -948,7 +912,7 @@
         }
 
         function customImportModal(callback) {
-            modalTitle.textContent = 'IMPORT DATA'; modalDesc.textContent = 'Paste your JSON backup string:';
+            modalTitle.textContent = 'IMPORT DATA'; modalDesc.textContent = 'Paste your JSON backup:';
             modalInput.classList.add('hidden'); modalDouble.classList.add('hidden'); modalTextarea.classList.remove('hidden');
             modalTextarea.value = '';
             btnCancel.classList.remove('hidden'); btnCancel.textContent = 'CANCEL';
@@ -956,107 +920,50 @@
             modalCallback = () => { callback(modalTextarea.value.trim()); modal.close(); };
             modal.showModal();
         }
-
         btnCancel.onclick = () => modal.close();
         btnConfirm.onclick = () => { if(modalCallback) modalCallback(); };
 
-        // ==========================================
-        // 4. INIT
-        // ==========================================
+        // INIT
         window.onload = function() {
             lucide.createIcons();
             setTheme(AppState.theme, false);
-            
             document.getElementById('toggle-ui-sound').checked = AppState.audio.ui;
             document.getElementById('toggle-timer-sound').checked = AppState.audio.timer;
-            document.getElementById('toggle-alarm-sound').checked = AppState.audio.alarm;
             document.getElementById('toggle-bg-3d').checked = AppState.bg3d;
 
-            updateClock();
-            setInterval(updateClock, 1000);
+            updateClock(); setInterval(updateClock, 1000);
+            renderChatSidebar(); renderChatBox();
+            renderNotes(); renderTodos(); renderAlarms(); renderWorldClocks();
+            buildClockTicks(); fetchWeatherWidget(); fetchWeatherTab();
+            runConversion(); renderGallery(); renderCalcLog();
+            renderNotionPagesList(); loadActiveNotionPage();
             
-            renderChatSidebar();
-            renderChatBox();
-            renderNotes();
-            renderTodos();
-            renderAlarms();
-            renderWorldClocks();
-            buildClockTicks();
-            fetchWeatherWidget();
-            fetchWeatherTab();
-            runConversion();
-            renderGallery();
-            renderCalcLog();
-            
-            updateSystemStats();
-            setInterval(updateSystemStats, 5000);
-            checkAlarms();
-            setInterval(checkAlarms, 10000);
-            pulseVitals();
-            setInterval(pulseVitals, 3200);
+            updateSystemStats(); setInterval(updateSystemStats, 5000);
+            checkAlarms(); setInterval(checkAlarms, 10000);
 
             if (AppState.bg3d) initThreeJSBackground();
 
-            // Cursor Logic
-            const dot = document.getElementById('cursorDot');
-            const ring = document.getElementById('cursorRing');
+            const dot = document.getElementById('cursorDot'), ring = document.getElementById('cursorRing');
             let dx=0,dy=0,rx=0,ry=0,tx=0,ty=0;
             window.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
-            window.addEventListener('mouseover', e => { ring.classList.toggle('hot', !!e.target.closest('button,.nav-btn,.glass-card,input,textarea,select,.calc-key')); });
-            function cursorLoop(){
-                dx += (tx - dx) * 0.55; dy += (ty - dy) * 0.55;
-                rx += (tx - rx) * 0.16; ry += (ty - ry) * 0.16;
-                dot.style.left = dx + 'px'; dot.style.top = dy + 'px';
-                ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-                requestAnimationFrame(cursorLoop);
-            }
-            cursorLoop();
+            window.addEventListener('mouseover', e => { ring.classList.toggle('hot', !!e.target.closest('button,.nav-btn,input,textarea,select,.calc-key,[contenteditable]')); });
+            (function loop(){ dx += (tx - dx) * 0.55; dy += (ty - dy) * 0.55; rx += (tx - rx) * 0.16; ry += (ty - ry) * 0.16;
+                dot.style.left = dx + 'px'; dot.style.top = dy + 'px'; ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+                requestAnimationFrame(loop); })();
 
-            // Char Count
             document.getElementById('chat-input').addEventListener('input', (e) => {
                 const len = e.target.value.length;
                 document.getElementById('char-count').textContent = `${len}/2000`;
-                if(len > 2000) document.getElementById('char-count').classList.add('text-cyber-danger');
-                else document.getElementById('char-count').classList.remove('text-cyber-danger');
             });
         };
 
-        function setTheme(theme, save = true) {
-            document.documentElement.setAttribute('data-accent', theme);
-            AppState.theme = theme;
-            if (save) { saveState(); showToast(`Theme set to ${theme.toUpperCase()}`); }
-        }
+        function setTheme(theme, save = true) { document.documentElement.setAttribute('data-accent', theme); AppState.theme = theme; if (save) { saveState(); showToast(`Theme: ${theme.toUpperCase()}`); } }
+        function updateSystemStats() { const n = document.getElementById('sys-net'); if(n) n.textContent = navigator.onLine ? 'ONLINE' : 'OFFLINE'; if (navigator.getBattery) navigator.getBattery().then(b => { const e = document.getElementById('sys-battery'); if(e) e.textContent = `BAT: ${Math.round(b.level*100)}%`; }).catch(()=>{}); }
 
-        function updateSystemStats() {
-            const net = document.getElementById('sys-net');
-            if(net) net.textContent = navigator.onLine ? 'ONLINE' : 'OFFLINE';
-            if(net) net.style.color = navigator.onLine ? 'var(--accent-color)' : '#FF5C5C';
-            if (navigator.getBattery) {
-                navigator.getBattery().then(bat => { const batEl = document.getElementById('sys-battery'); if(batEl) batEl.textContent = `BAT: ${Math.round(bat.level * 100)}%`; }).catch(()=>{});
-            } else { const batEl = document.getElementById('sys-battery'); if(batEl) batEl.textContent = 'BAT: N/A'; }
-        }
-
-        let vitalsTime = 0;
-        function pulseVitals() {
-            vitalsTime += 0.1;
-            const setVital = (valId, barId, base, amp) => { 
-                const v = base + Math.sin(vitalsTime) * amp;
-                const val = document.getElementById(valId); const bar = document.getElementById(barId);
-                if (val) val.textContent = Math.round(v) + '%'; if (bar) bar.style.width = v + '%';
-            };
-            setVital('cpuVal', 'cpuBar', 45, 20);
-            setVital('memVal', 'memBar', 60, 10);
-            setVital('netVal', 'netBar', 30, 25);
-            setVital('gpuVal', 'gpuBar', 50, 30);
-        }
-
-        // ==========================================
-        // 5. NAVIGATION
-        // ==========================================
+        // NAVIGATION
         function switchTab(tabId) {
             playSound('ui');
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            
             if (tabId === 'dashboard') {
                 document.getElementById('tab-dashboard').classList.remove('hidden');
                 document.getElementById('tab-others').classList.add('hidden');
@@ -1067,99 +974,476 @@
                 const target = document.getElementById(`tab-${tabId}`);
                 if (target) target.classList.remove('hidden');
             }
-
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('active', 'text-cyber-accent', 'bg-cyber-accent/10', 'border', 'border-cyber-accent/40');
                 btn.classList.add('text-gray-400');
-                if (btn.dataset.tab === tabId) {
-                    btn.classList.add('active', 'text-cyber-accent', 'bg-cyber-accent/10', 'border', 'border-cyber-accent/40');
-                    btn.classList.remove('text-gray-400');
-                }
+                if (btn.dataset.tab === tabId) { btn.classList.add('active', 'text-cyber-accent', 'bg-cyber-accent/10', 'border', 'border-cyber-accent/40'); btn.classList.remove('text-gray-400'); }
             });
             if(window.innerWidth < 1024) document.getElementById('sidebar').classList.add('-translate-x-full');
         }
-
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); }
 
-        // ==========================================
-        // 6. CLOCK & TIME
-        // ==========================================
+        // CLOCK
         function buildClockTicks() {
-            const generateTicks = (container) => {
-                if(!container) return;
-                container.innerHTML = '';
-                for (let i = 0; i < 12; i++) {
-                    const angle = (i * 30) * Math.PI / 180;
-                    const x1 = 100 + 85 * Math.sin(angle), y1 = 100 - 85 * Math.cos(angle);
-                    const x2 = 100 + 92 * Math.sin(angle), y2 = 100 - 92 * Math.cos(angle);
-                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', x1); line.setAttribute('y1', y1); line.setAttribute('x2', x2); line.setAttribute('y2', y2);
-                    line.setAttribute('stroke', 'var(--gold)'); line.setAttribute('stroke-width', '3'); line.setAttribute('stroke-linecap', 'round');
-                    container.appendChild(line);
-                }
-            };
-            generateTicks(document.getElementById('clock-ticks-lg'));
+            const c = document.getElementById('clock-ticks-lg'); if(!c) return; c.innerHTML = '';
+            for (let i = 0; i < 12; i++) {
+                const a = (i * 30) * Math.PI / 180;
+                const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                l.setAttribute('x1', 100 + 85 * Math.sin(a)); l.setAttribute('y1', 100 - 85 * Math.cos(a));
+                l.setAttribute('x2', 100 + 92 * Math.sin(a)); l.setAttribute('y2', 100 - 92 * Math.cos(a));
+                l.setAttribute('stroke', 'var(--gold)'); l.setAttribute('stroke-width', '3'); l.setAttribute('stroke-linecap', 'round');
+                c.appendChild(l);
+            }
         }
-
         function updateClock() {
-            const now = new Date();
-            const h = now.getHours() % 12, m = now.getMinutes(), s = now.getSeconds();
-            const secDeg = s * 6, minDeg = m * 6 + s * 0.1, hrDeg = h * 30 + m * 0.5;
-
-            const hh = document.getElementById(`hand-hour-lg`), mh = document.getElementById(`hand-minute-lg`), sh = document.getElementById(`hand-second-lg`);
-            if(hh && mh && sh) { hh.style.transform = `rotate(${hrDeg}deg)`; mh.style.transform = `rotate(${minDeg}deg)`; sh.style.transform = `rotate(${secDeg}deg)`; }
-
-            const timeStr = now.toTimeString().split(' ')[0];
-            if(document.getElementById('live-clock')) document.getElementById('live-clock').textContent = timeStr;
-            if(document.getElementById('digital-time-lg')) document.getElementById('digital-time-lg').textContent = timeStr;
-
-            if(document.getElementById('digital-date-lg')) document.getElementById('digital-date-lg').textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const now = new Date(), h = now.getHours()%12, m = now.getMinutes(), s = now.getSeconds();
+            const sD = s*6, mD = m*6+s*0.1, hD = h*30+m*0.5;
+            const hh = document.getElementById('hand-hour-lg'), mh = document.getElementById('hand-minute-lg'), sh = document.getElementById('hand-second-lg');
+            if(hh && mh && sh) { hh.style.transform = `rotate(${hD}deg)`; mh.style.transform = `rotate(${mD}deg)`; sh.style.transform = `rotate(${sD}deg)`; }
+            const t = now.toTimeString().split(' ')[0];
+            const lc = document.getElementById('live-clock'); if(lc) lc.textContent = t;
+            const dt = document.getElementById('digital-time-lg'); if(dt) dt.textContent = t;
+            const dd = document.getElementById('digital-date-lg'); if(dd) dd.textContent = now.toLocaleDateString('en-US', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
         }
-
-        function switchClockTab(tab) {
+        function switchClockTab(tab, evt) {
             playSound('ui');
             document.querySelectorAll('.clock-panel').forEach(p => p.classList.add('hidden'));
             document.getElementById(`clock-panel-${tab}`).classList.remove('hidden');
             document.querySelectorAll('.clock-tab-btn').forEach(b => { b.classList.remove('bg-cyber-accent/20', 'text-cyber-accent'); b.classList.add('text-gray-400'); });
-            event.target.classList.add('bg-cyber-accent/20', 'text-cyber-accent'); event.target.classList.remove('text-gray-400');
+            (evt || window.event).target.classList.add('bg-cyber-accent/20', 'text-cyber-accent'); (evt || window.event).target.classList.remove('text-gray-400');
         }
 
-        // ==========================================
-        // 7. CALCULATOR
-        // ==========================================
+        // WORLD CLOCKS
+        const cities = [{n:'London', tz:'Europe/London'},{n:'New York', tz:'America/New_York'},{n:'Tokyo', tz:'Asia/Tokyo'},{n:'Dubai', tz:'Asia/Dubai'},{n:'Karachi', tz:'Asia/Karachi'},{n:'Sydney', tz:'Australia/Sydney'}];
+        let activeCities = ['Europe/London', 'America/New_York', 'Asia/Tokyo'];
+        function renderWorldClocks() {
+            const list = document.getElementById('world-clocks-list'); if(!list) return;
+            list.innerHTML = activeCities.map(tz => {
+                const c = cities.find(x => x.tz === tz) || {n: tz, tz};
+                return `<div class="flex justify-between items-center p-3 bg-cyber-black border border-cyber-border rounded-xl">
+                    <div><div class="text-white font-bold text-sm">${c.n}</div><div class="text-[10px] text-gray-500">${tz}</div></div>
+                    <div class="flex items-center gap-2">
+                        <div class="text-cyber-accent font-mono font-bold text-lg" data-tz="${tz}">--:--:--</div>
+                        <button onclick="removeWorldClock('${tz}')" class="text-cyber-danger hover:text-red-400"><i data-lucide="x" class="w-3 h-3"></i></button>
+                    </div>
+                </div>`;
+            }).join('');
+            lucide.createIcons();
+            updateWorldClocks();
+        }
+        function updateWorldClocks() {
+            document.querySelectorAll('#world-clocks-list [data-tz]').forEach(el => {
+                try { el.textContent = new Date().toLocaleTimeString('en-US', { timeZone: el.dataset.tz, hour12: false }); } catch(e){}
+            });
+        }
+        setInterval(updateWorldClocks, 1000);
+        function addWorldClock() {
+            const next = cities.find(c => !activeCities.includes(c.tz));
+            if(next) { activeCities.push(next.tz); renderWorldClocks(); showToast('City added'); } else showToast('All cities added', 'info');
+        }
+        function removeWorldClock(tz) { activeCities = activeCities.filter(c => c !== tz); renderWorldClocks(); showToast('City removed'); }
+
+        // STOPWATCH
+        let swRunning = false, swStart = 0, swElapsed = 0, swInterval = null, swLaps = [];
+        function formatSW(ms) {
+            const s = Math.floor(ms / 1000), cs = Math.floor((ms % 1000) / 10);
+            return `${String(Math.floor(s/3600)).padStart(2,'0')}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;
+        }
+        function toggleStopwatch() {
+            const btn = document.getElementById('stopwatch-btn');
+            if(swRunning) { swRunning = false; clearInterval(swInterval); btn.textContent = 'RESUME'; }
+            else { swRunning = true; swStart = Date.now() - swElapsed; swInterval = setInterval(() => { swElapsed = Date.now() - swStart; document.getElementById('stopwatch-display').textContent = formatSW(swElapsed); }, 33); btn.textContent = 'PAUSE'; }
+            document.getElementById('lap-btn').disabled = !swRunning;
+        }
+        function resetStopwatch() {
+            swRunning = false; clearInterval(swInterval); swElapsed = 0; swLaps = [];
+            document.getElementById('stopwatch-display').textContent = '00:00:00.00';
+            document.getElementById('stopwatch-btn').textContent = 'START';
+            document.getElementById('lap-btn').disabled = true;
+            document.getElementById('laps-list').innerHTML = '';
+        }
+        function recordLap() {
+            if(!swRunning) return;
+            swLaps.push(swElapsed);
+            const list = document.getElementById('laps-list'); list.innerHTML = '';
+            swLaps.slice().reverse().forEach((t, i) => {
+                list.innerHTML += `<div class="flex justify-between p-2 bg-cyber-black/50 rounded border border-cyber-border"><span>Lap ${swLaps.length - i}</span><span>${formatSW(t)}</span></div>`;
+            });
+        }
+
+        // TIMER (NEW)
+        let timerRunning = false, timerEndTime = 0, timerRemaining = 0, timerInterval = null;
+        function setTimerPreset(mins) {
+            document.getElementById('timer-hours').value = Math.floor(mins/60);
+            document.getElementById('timer-mins').value = mins % 60;
+            document.getElementById('timer-secs').value = 0;
+            updateTimerDisplayFromInputs();
+        }
+        function updateTimerDisplayFromInputs() {
+            const h = parseInt(document.getElementById('timer-hours').value) || 0;
+            const m = parseInt(document.getElementById('timer-mins').value) || 0;
+            const s = parseInt(document.getElementById('timer-secs').value) || 0;
+            const total = h*3600 + m*60 + s;
+            document.getElementById('timer-display').textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            timerRemaining = total * 1000;
+        }
+        function startTimer() {
+            if(timerRunning) return;
+            const h = parseInt(document.getElementById('timer-hours').value) || 0;
+            const m = parseInt(document.getElementById('timer-mins').value) || 0;
+            const s = parseInt(document.getElementById('timer-secs').value) || 0;
+            const total = h*3600 + m*60 + s;
+            if(total <= 0) return showToast('Set a time first', 'error');
+            timerRunning = true;
+            timerEndTime = Date.now() + total * 1000;
+            document.getElementById('timer-start-btn').disabled = true;
+            document.getElementById('timer-pause-btn').disabled = false;
+            timerInterval = setInterval(() => {
+                timerRemaining = Math.max(0, timerEndTime - Date.now());
+                const totalSec = Math.ceil(timerRemaining / 1000);
+                const hh = Math.floor(totalSec/3600), mm = Math.floor((totalSec%3600)/60), ss = totalSec%60;
+                document.getElementById('timer-display').textContent = `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+                if(timerRemaining <= 0) {
+                    clearInterval(timerInterval); timerRunning = false;
+                    playSound('timer'); showToast('Timer complete! ⏰', 'success');
+                    resetTimer();
+                }
+            }, 200);
+            showToast('Timer started');
+        }
+        function pauseTimer() {
+            if(!timerRunning) return;
+            clearInterval(timerInterval); timerRunning = false;
+            document.getElementById('timer-start-btn').disabled = false;
+            document.getElementById('timer-pause-btn').disabled = true;
+            showToast('Timer paused', 'info');
+        }
+        function resetTimer() {
+            clearInterval(timerInterval); timerRunning = false;
+            document.getElementById('timer-start-btn').disabled = false;
+            document.getElementById('timer-pause-btn').disabled = true;
+            updateTimerDisplayFromInputs();
+        }
+        ['timer-hours','timer-mins','timer-secs'].forEach(id => { document.getElementById(id)?.addEventListener('input', () => { if(!timerRunning) updateTimerDisplayFromInputs(); }); });
+
+        // ALARMS
+        function renderAlarms() {
+            const list = document.getElementById('alarms-list'); if(!list) return;
+            if(AppState.alarms.length === 0) { list.innerHTML = '<div class="empty-state"><i data-lucide="alarm-clock"></i><p>No alarms set</p></div>'; lucide.createIcons(); return; }
+            list.innerHTML = AppState.alarms.map(a => {
+                const [hour, minute] = a.time.split(':');
+                const h = parseInt(hour); const ampm = h >= 12 ? 'PM' : 'AM'; const h12 = h % 12 || 12;
+                const displayTime = `${String(h12).padStart(2, '0')}:${minute} ${ampm}`;
+                return `<div class="flex justify-between items-center p-3 bg-cyber-black border border-cyber-border rounded-xl">
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" ${a.active ? 'checked' : ''} onchange="toggleAlarm('${a.id}')" class="accent-cyber-accent w-4 h-4 cursor-pointer">
+                        <div>
+                            <div class="text-lg font-bold text-white">${displayTime}</div>
+                            <div class="text-xs text-gray-400">${escapeHtml(a.label)} <span class="text-cyber-gold">(${a.repeat || 'once'})</span></div>
+                        </div>
+                    </div>
+                    <button onclick="deleteAlarm('${a.id}')" class="text-cyber-danger hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                </div>`;
+            }).join('');
+            lucide.createIcons();
+        }
+        function addAlarm(e) {
+            e.preventDefault();
+            const time = document.getElementById('alarm-time').value, label = document.getElementById('alarm-label').value || 'Alarm', repeat = document.getElementById('alarm-repeat').value;
+            if(!time) return;
+            AppState.alarms.push({ id: Date.now().toString(), time, label, repeat, active: true, lastTriggered: '' });
+            saveState(); renderAlarms(); e.target.reset(); showToast('Alarm set');
+        }
+        function toggleAlarm(id) { const a = AppState.alarms.find(a => a.id === id); a.active = !a.active; saveState(); }
+        function deleteAlarm(id) { AppState.alarms = AppState.alarms.filter(a => a.id !== id); saveState(); renderAlarms(); showToast('Alarm deleted', 'error'); }
+        function checkAlarms() {
+            const now = new Date();
+            const current = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            const day = now.getDay();
+            AppState.alarms.forEach(a => {
+                if(!a.active || a.time !== current || a.lastTriggered === current) return;
+                const shouldTrigger = a.repeat === 'daily' || a.repeat === 'once' || (a.repeat === 'weekdays' && day >= 1 && day <= 5) || (a.repeat === 'weekends' && (day === 0 || day === 6));
+                if(shouldTrigger) {
+                    playSound('alarm'); showToast(`⏰ Alarm: ${a.label}`, 'info');
+                    a.lastTriggered = current;
+                    if(a.repeat === 'once') a.active = false;
+                    saveState(); renderAlarms();
+                }
+            });
+        }
+
+        // ============ NOTION WORKSPACE ============
+        const BLOCK_TYPES = [
+            { type: 'text', icon: 'T', label: 'Text' },
+            { type: 'h1', icon: 'H1', label: 'Heading 1' },
+            { type: 'h2', icon: 'H2', label: 'Heading 2' },
+            { type: 'h3', icon: 'H3', label: 'Heading 3' },
+            { type: 'bullet', icon: '•', label: 'Bullet List' },
+            { type: 'number', icon: '1.', label: 'Numbered List' },
+            { type: 'todo', icon: '☐', label: 'To-do' },
+            { type: 'quote', icon: '"', label: 'Quote' },
+            { type: 'code', icon: '{ }', label: 'Code' },
+            { type: 'divider', icon: '—', label: 'Divider' }
+        ];
+
+        function renderNotionPagesList() {
+            const list = document.getElementById('notion-pages-list'); if(!list) return;
+            if(AppState.notionPages.length === 0) {
+                list.innerHTML = '<div class="empty-state text-[10px]"><i data-lucide="file-text" class="w-6 h-6"></i><p>No pages</p></div>';
+                lucide.createIcons(); return;
+            }
+            list.innerHTML = AppState.notionPages.map(p => `
+                <div class="notion-page-item ${p.id === AppState.activeNotionPageId ? 'active' : ''} p-2 rounded-lg flex justify-between items-center group text-xs" onclick="selectNotionPage('${p.id}')">
+                    <div class="flex items-center gap-2 truncate flex-1">
+                        <span>${p.icon || '📄'}</span>
+                        <span class="truncate text-gray-200">${escapeHtml(p.title) || 'Untitled'}</span>
+                    </div>
+                    <button onclick="event.stopPropagation(); deleteNotionPage('${p.id}')" class="opacity-0 group-hover:opacity-100 text-cyber-danger hover:text-red-400 p-1">
+                        <i data-lucide="trash-2" class="w-3 h-3"></i>
+                    </button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function createNotionPage() {
+            const page = {
+                id: Date.now().toString(),
+                title: 'Untitled',
+                icon: '📄',
+                blocks: [{ id: Date.now().toString(), type: 'text', content: '', checked: false }],
+                createdAt: new Date().toISOString()
+            };
+            AppState.notionPages.unshift(page);
+            AppState.activeNotionPageId = page.id;
+            saveState(); renderNotionPagesList(); loadActiveNotionPage();
+            showToast('Page created');
+        }
+
+        function selectNotionPage(id) { AppState.activeNotionPageId = id; saveState(); renderNotionPagesList(); loadActiveNotionPage(); }
+
+        function deleteNotionPage(id) {
+            customConfirm('DELETE PAGE', 'Delete this page permanently?', () => {
+                AppState.notionPages = AppState.notionPages.filter(p => p.id !== id);
+                if(AppState.activeNotionPageId === id) AppState.activeNotionPageId = AppState.notionPages.length > 0 ? AppState.notionPages[0].id : null;
+                saveState(); renderNotionPagesList(); loadActiveNotionPage(); showToast('Page deleted');
+            });
+        }
+
+        function deleteAllNotionPages() {
+            customConfirm('DELETE ALL PAGES', 'Delete all Notion pages?', () => {
+                AppState.notionPages = []; AppState.activeNotionPageId = null;
+                saveState(); renderNotionPagesList(); loadActiveNotionPage(); showToast('All pages deleted');
+            });
+        }
+
+        function saveNotionTitle(val) {
+            const page = AppState.notionPages.find(p => p.id === AppState.activeNotionPageId);
+            if(page) { page.title = val || 'Untitled'; saveState(); renderNotionPagesList(); }
+        }
+
+        function loadActiveNotionPage() {
+            const page = AppState.notionPages.find(p => p.id === AppState.activeNotionPageId);
+            const editor = document.getElementById('notion-editor');
+            const titleInput = document.getElementById('notion-page-title');
+            const iconEl = document.getElementById('notion-page-icon');
+
+            if(!page) {
+                editor.innerHTML = '<div class="empty-state"><i data-lucide="file-text"></i><p>Create a new page to start.</p></div>';
+                titleInput.value = '';
+                iconEl.textContent = '📄';
+                lucide.createIcons(); return;
+            }
+
+            titleInput.value = page.title === 'Untitled' ? '' : page.title;
+            iconEl.textContent = page.icon || '📄';
+            renderNotionBlocks(page);
+        }
+
+        function renderNotionBlocks(page) {
+            const editor = document.getElementById('notion-editor');
+            editor.innerHTML = '';
+            page.blocks.forEach((block, idx) => {
+                const row = document.createElement('div');
+                row.className = 'notion-block-row';
+                row.dataset.blockId = block.id;
+                
+                const handle = document.createElement('div');
+                handle.className = 'notion-block-handle';
+                handle.innerHTML = `
+                    <button onclick="showBlockTypeMenu('${block.id}', event)" title="Change type"><i data-lucide="grip-vertical" class="w-3 h-3"></i></button>
+                    <button onclick="addNotionBlockAt('${block.id}')" title="Add block below"><i data-lucide="plus" class="w-3 h-3"></i></button>
+                `;
+                row.appendChild(handle);
+
+                if(block.type === 'divider') {
+                    const content = document.createElement('div');
+                    content.className = 'notion-block-content';
+                    content.innerHTML = '<hr class="border-cyber-border my-2">';
+                    content.contentEditable = false;
+                    row.appendChild(content);
+                } else if(block.type === 'todo') {
+                    const checkbox = document.createElement('div');
+                    checkbox.className = `notion-todo-checkbox ${block.checked ? 'checked' : ''}`;
+                    checkbox.onclick = () => { block.checked = !block.checked; saveNotionData(); renderNotionBlocks(page); };
+                    row.appendChild(checkbox);
+                    
+                    const content = document.createElement('div');
+                    content.className = `notion-block-content ${block.checked ? 'done' : ''}`;
+                    content.contentEditable = true;
+                    content.textContent = block.content || '';
+                    content.dataset.placeholder = 'To-do';
+                    content.oninput = () => { block.content = content.textContent; saveNotionData(); };
+                    content.onkeydown = (e) => handleBlockKeydown(e, block, page);
+                    row.appendChild(content);
+                } else {
+                    const content = document.createElement('div');
+                    content.className = `notion-block-content block-${block.type}`;
+                    content.contentEditable = true;
+                    content.textContent = block.content || '';
+                    content.dataset.placeholder = getPlaceholder(block.type);
+                    content.oninput = () => { block.content = content.textContent; saveNotionData(); };
+                    content.onkeydown = (e) => handleBlockKeydown(e, block, page);
+                    row.appendChild(content);
+                }
+                editor.appendChild(row);
+            });
+            lucide.createIcons();
+
+            // Focus first block if empty
+            if(page.blocks.length === 1 && !page.blocks[0].content) {
+                const firstContent = editor.querySelector('.notion-block-content[contenteditable="true"]');
+                if(firstContent) setTimeout(() => firstContent.focus(), 100);
+            }
+        }
+
+        function getPlaceholder(type) {
+            return { text: 'Type / for commands or start writing...', h1: 'Heading 1', h2: 'Heading 2', h3: 'Heading 3', bullet: 'List item', number: 'List item', todo: 'To-do', quote: 'Quote', code: 'Code...' }[type] || '';
+        }
+
+        function handleBlockKeydown(e, block, page) {
+            if(e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const currentIndex = page.blocks.findIndex(b => b.id === block.id);
+                const newBlock = { id: Date.now().toString(), type: block.type === 'bullet' || block.type === 'number' || block.type === 'todo' ? block.type : 'text', content: '', checked: false };
+                page.blocks.splice(currentIndex + 1, 0, newBlock);
+                saveNotionData(); renderNotionBlocks(page);
+                setTimeout(() => {
+                    const newRow = document.querySelector(`[data-block-id="${newBlock.id}"] .notion-block-content[contenteditable="true"]`);
+                    if(newRow) newRow.focus();
+                }, 50);
+            } else if(e.key === 'Backspace' && block.content === '') {
+                e.preventDefault();
+                const currentIndex = page.blocks.findIndex(b => b.id === block.id);
+                if(page.blocks.length > 1) {
+                    page.blocks.splice(currentIndex, 1);
+                    saveNotionData(); renderNotionBlocks(page);
+                    setTimeout(() => {
+                        const prevBlock = page.blocks[Math.max(0, currentIndex - 1)];
+                        const prevEl = document.querySelector(`[data-block-id="${prevBlock.id}"] .notion-block-content[contenteditable="true"]`);
+                        if(prevEl) { prevEl.focus(); const range = document.createRange(); range.selectNodeContents(prevEl); range.collapse(false); const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range); }
+                    }, 50);
+                }
+            }
+        }
+
+        function addNotionBlock(type = 'text') {
+            const page = AppState.notionPages.find(p => p.id === AppState.activeNotionPageId);
+            if(!page) return;
+            const newBlock = { id: Date.now().toString(), type, content: '', checked: false };
+            page.blocks.push(newBlock);
+            saveNotionData(); renderNotionBlocks(page);
+            setTimeout(() => {
+                const el = document.querySelector(`[data-block-id="${newBlock.id}"] .notion-block-content[contenteditable="true"]`);
+                if(el) el.focus();
+            }, 50);
+        }
+
+        function addNotionBlockAt(afterId) {
+            const page = AppState.notionPages.find(p => p.id === AppState.activeNotionPageId);
+            if(!page) return;
+            const idx = page.blocks.findIndex(b => b.id === afterId);
+            const newBlock = { id: Date.now().toString(), type: 'text', content: '', checked: false };
+            page.blocks.splice(idx + 1, 0, newBlock);
+            saveNotionData(); renderNotionBlocks(page);
+            setTimeout(() => {
+                const el = document.querySelector(`[data-block-id="${newBlock.id}"] .notion-block-content[contenteditable="true"]`);
+                if(el) el.focus();
+            }, 50);
+        }
+
+        let activeBlockMenu = null;
+        function showBlockTypeMenu(blockId, evt) {
+            evt.stopPropagation();
+            closeBlockTypeMenu();
+            const btn = evt.currentTarget;
+            const rect = btn.getBoundingClientRect();
+            const menu = document.createElement('div');
+            menu.className = 'block-type-menu';
+            menu.style.left = rect.left + 'px';
+            menu.style.top = (rect.bottom + 5) + 'px';
+            menu.innerHTML = BLOCK_TYPES.map(bt => `
+                <div class="block-type-option" onclick="changeBlockType('${blockId}', '${bt.type}')">
+                    <span class="bt-icon">${bt.icon}</span>
+                    <span>${bt.label}</span>
+                </div>
+            `).join('');
+            document.body.appendChild(menu);
+            activeBlockMenu = menu;
+        }
+
+        function closeBlockTypeMenu() {
+            if(activeBlockMenu) { activeBlockMenu.remove(); activeBlockMenu = null; }
+        }
+        document.addEventListener('click', () => closeBlockTypeMenu());
+
+        function changeBlockType(blockId, newType) {
+            const page = AppState.notionPages.find(p => p.id === AppState.activeNotionPageId);
+            if(!page) return;
+            const block = page.blocks.find(b => b.id === blockId);
+            if(block) { block.type = newType; saveNotionData(); renderNotionBlocks(page); }
+            closeBlockTypeMenu();
+        }
+
+        function saveNotionData() {
+            saveState();
+        }
+
+        // Save current editor state before re-rendering
+        function syncNotionFromDOM() {
+            const page = AppState.notionPages.find(p => p.id === AppState.activeNotionPageId);
+            if(!page) return;
+            const rows = document.querySelectorAll('#notion-editor .notion-block-row');
+            rows.forEach(row => {
+                const blockId = row.dataset.blockId;
+                const block = page.blocks.find(b => b.id === blockId);
+                if(block) {
+                    const contentEl = row.querySelector('.notion-block-content[contenteditable="true"]');
+                    if(contentEl) block.content = contentEl.textContent;
+                }
+            });
+        }
+
+        // ============ OTHER APPS ============
+        // CALCULATOR
         const MathParser = {
             evaluate: function(expression) {
                 if(!expression) return 0;
-                const tokens = this.tokenize(expression);
-                let pos = 0;
+                const tokens = this.tokenize(expression); let pos = 0;
                 const peek = () => tokens[pos];
-                const consume = (type) => { const token = tokens[pos]; if (!token || token.type !== type) throw new Error('Invalid syntax'); pos++; return token.value; };
+                const consume = (type) => { const t = tokens[pos]; if (!t || t.type !== type) throw new Error('Invalid'); pos++; return t.value; };
                 const parsePrimary = () => {
-                    if (peek() && (peek().type === '+' || peek().type === '-')) { const sign = consume(peek().type); const val = parsePrimary(); return sign === '-' ? -val : val; }
+                    if (peek() && (peek().type === '+' || peek().type === '-')) { const s = consume(peek().type); const v = parsePrimary(); return s === '-' ? -v : v; }
                     if (peek() && peek().type === 'NUMBER') return parseFloat(consume('NUMBER'));
-                    if (peek() && peek().type === '(') { consume('('); const val = parseExpression(); consume(')'); return val; }
+                    if (peek() && peek().type === '(') { consume('('); const v = parseExpression(); consume(')'); return v; }
                     throw new Error('Expected number');
                 };
-                const parseTerm = () => {
-                    let val = parsePrimary();
-                    while (peek() && (peek().type === '*' || peek().type === '/')) {
-                        const op = consume(peek().type); const right = parsePrimary();
-                        if (op === '*') val *= right; else { if (right === 0) throw new Error('Divide by zero'); val /= right; }
-                    }
-                    return val;
-                };
-                const parseExpression = () => {
-                    let val = parseTerm();
-                    while (peek() && (peek().type === '+' || peek().type === '-')) {
-                        const op = consume(peek().type); const right = parseTerm(); if (op === '+') val += right; else val -= right;
-                    }
-                    return val;
-                };
+                const parseTerm = () => { let v = parsePrimary(); while (peek() && (peek().type === '*' || peek().type === '/')) { const op = consume(peek().type); const r = parsePrimary(); if (op === '*') v *= r; else { if (r === 0) throw new Error('Divide by zero'); v /= r; } } return v; };
+                const parseExpression = () => { let v = parseTerm(); while (peek() && (peek().type === '+' || peek().type === '-')) { const op = consume(peek().type); const r = parseTerm(); if (op === '+') v += r; else v -= r; } return v; };
                 return parseExpression();
             },
             tokenize: function(str) {
-                const regex = /\s*([\+\-\*\/\(\)\%]|\d*\.?\d+)/g;
-                const tokens = []; let match; let lastIndex = 0;
+                const regex = /\s*([\+\-\*\/\(\)\%]|\d*\.?\d+)/g; const tokens = []; let match; let lastIndex = 0;
                 while ((match = regex.exec(str)) !== null) {
                     if (match.index > lastIndex) throw new Error('Invalid character');
                     const val = match[1];
@@ -1175,7 +1459,6 @@
             playSound('ui');
             if (char === '*') char = '×';
             if (char === '/') char = '÷';
-
             if (char === 'MC') { AppState.calcMemory = 0; showToast('Memory Cleared'); }
             else if (char === 'MR') { AppState.calcVal = AppState.calcMemory.toString(); }
             else if (char === 'M+') { AppState.calcMemory += parseFloat(AppState.calcVal) || 0; showToast('Added to Memory'); }
@@ -1193,78 +1476,50 @@
                     saveState(); renderCalcLog();
                 } catch(e) { AppState.calcVal = 'Error'; showToast('Invalid Expression', 'error'); }
             } else if (char === '%') {
-                try { 
-                    let evalString = AppState.calcVal.replace(/×/g, '*').replace(/÷/g, '/');
-                    let parsed = MathParser.evaluate(evalString); 
-                    AppState.calcVal = (parsed / 100).toString(); 
-                } catch(e) { AppState.calcVal = 'Error'; }
+                try { let evalString = AppState.calcVal.replace(/×/g, '*').replace(/÷/g, '/'); let parsed = MathParser.evaluate(evalString); AppState.calcVal = (parsed / 100).toString(); } catch(e) { AppState.calcVal = 'Error'; }
             } else {
                 if (AppState.calcVal === '0' && char !== '.') AppState.calcVal = char;
                 else if (AppState.calcVal === 'Error') AppState.calcVal = char;
                 else AppState.calcVal += char;
             }
-            
             const memInd = document.getElementById('calc-memory-indicator');
             const memIndFull = document.getElementById('calc-memory-indicator-full');
             if(memInd) memInd.style.opacity = AppState.calcMemory !== 0 ? '1' : '0';
             if(memIndFull) memIndFull.style.opacity = AppState.calcMemory !== 0 ? '1' : '0';
-
             document.getElementById('calc-display-widget').textContent = AppState.calcVal;
             document.getElementById('calc-history-widget').textContent = AppState.calcHist;
             if(document.getElementById('calc-display-full')) { document.getElementById('calc-display-full').textContent = AppState.calcVal; document.getElementById('calc-history-full').textContent = AppState.calcHist; }
         }
+        function renderCalcLog() { const l = document.getElementById('calc-history-list-modal'); if(l) l.innerHTML = AppState.calcLog.length ? AppState.calcLog.map(x => `<div class="border-b border-cyber-border/30 pb-1 mb-1">${x}</div>`).join('') : '<div class="text-gray-500 text-center py-4">No history.</div>'; }
+        function clearCalcHistory() { AppState.calcHist = ''; AppState.calcLog = []; saveState(); renderCalcLog(); document.getElementById('calc-history-widget').textContent = ''; if(document.getElementById('calc-history-full')) document.getElementById('calc-history-full').textContent = ''; showToast('History Cleared', 'info'); }
 
-        function renderCalcLog() {
-            const list = document.getElementById('calc-history-list-modal');
-            if(list) {
-                list.innerHTML = AppState.calcLog.length ? AppState.calcLog.map(l => `<div class="border-b border-cyber-border/30 pb-1 mb-1">${l}</div>`).join('') : '<div class="text-gray-500 text-center py-4">No history.</div>';
-            }
-        }
-        function clearCalcHistory() { 
-            AppState.calcHist = ''; AppState.calcLog = []; 
-            saveState(); renderCalcLog(); 
-            document.getElementById('calc-history-widget').textContent = ''; 
-            if(document.getElementById('calc-history-full')) document.getElementById('calc-history-full').textContent = ''; 
-            showToast('History Cleared', 'info'); 
-        }
-
-        // ==========================================
-        // 8. WEATHER
-        // ==========================================
-        async function fetchWeatherWidget() {
-            const city = document.getElementById('weather-city-input-widget').value || 'Hyderabad';
-            fetchWeather(city, 'widget');
-        }
-        async function fetchWeatherTab() {
-            const city = document.getElementById('weather-tab-input').value || 'Hyderabad';
-            document.getElementById('weather-city-input-widget').value = city;
-            fetchWeather(city, 'tab');
-        }
+        // WEATHER
+        async function fetchWeatherWidget() { const c = document.getElementById('weather-city-input-widget').value || 'Hyderabad'; fetchWeather(c, 'widget'); }
+        async function fetchWeatherTab() { const c = document.getElementById('weather-tab-input').value || 'Hyderabad'; document.getElementById('weather-city-input-widget').value = c; fetchWeather(c, 'tab'); }
         async function fetchWeather(city, target) {
             try {
-                const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`);
-                const geoData = await geoRes.json();
-                if (!geoData.results || geoData.results.length === 0) { showToast('City not found', 'error'); return; }
-                const { latitude, longitude, name, country_code } = geoData.results[0];
-                const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relative_humidity_2m,precipitation_probability,uv_index&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`);
-                const wData = await wRes.json();
-                const current = wData.current_weather, hourly = wData.hourly, daily = wData.daily;
+                const gr = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`);
+                const gd = await gr.json();
+                if (!gd.results || gd.results.length === 0) { showToast('City not found', 'error'); return; }
+                const { latitude, longitude, name, country_code } = gd.results[0];
+                const wr = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relative_humidity_2m,precipitation_probability,uv_index&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`);
+                const wd = await wr.json();
+                const current = wd.current_weather, hourly = wd.hourly, daily = wd.daily;
                 const now = new Date();
                 const timeStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}T${String(now.getHours()).padStart(2,'0')}:00`;
                 let hIdx = hourly.time.indexOf(timeStr); if (hIdx === -1) hIdx = 0;
-
-                const updateUI = (suffix) => {
-                    if(document.getElementById(`weather-temp-${suffix}`)) {
-                        document.getElementById(`weather-temp-${suffix}`).innerHTML = `${Math.round(current.temperature)}°<span class="text-cyber-accent text-2xl">C</span>`;
-                        document.getElementById(`weather-desc-${suffix}`).textContent = current.weathercode === 0 ? 'Clear Sky' : 'Cloudy';
-                        document.getElementById(`weather-location-${suffix}`).textContent = `${name.toUpperCase()}, ${country_code}`;
-                        document.getElementById(`weather-rain-${suffix}`).textContent = `${hourly.precipitation_probability[hIdx] ?? 0}%`;
-                        document.getElementById(`weather-uv-${suffix}`).textContent = (hourly.uv_index[hIdx] ?? 0).toFixed(1);
-                        document.getElementById(`weather-humidity-${suffix}`).textContent = `${hourly.relative_humidity_2m[hIdx] ?? 0}%`;
-                        document.getElementById(`weather-wind-${suffix}`).textContent = `${current.windspeed} km/h`;
+                const u = (s) => {
+                    if(document.getElementById(`weather-temp-${s}`)) {
+                        document.getElementById(`weather-temp-${s}`).innerHTML = `${Math.round(current.temperature)}°<span class="text-cyber-accent text-2xl">C</span>`;
+                        document.getElementById(`weather-desc-${s}`).textContent = current.weathercode === 0 ? 'Clear Sky' : 'Cloudy';
+                        document.getElementById(`weather-location-${s}`).textContent = `${name.toUpperCase()}, ${country_code}`;
+                        document.getElementById(`weather-rain-${s}`).textContent = `${hourly.precipitation_probability[hIdx] ?? 0}%`;
+                        document.getElementById(`weather-uv-${s}`).textContent = (hourly.uv_index[hIdx] ?? 0).toFixed(1);
+                        document.getElementById(`weather-humidity-${s}`).textContent = `${hourly.relative_humidity_2m[hIdx] ?? 0}%`;
+                        document.getElementById(`weather-wind-${s}`).textContent = `${current.windspeed} km/h`;
                     }
                 };
-                if(target === 'widget') updateUI('widget');
+                if(target === 'widget') u('widget');
                 if(target === 'tab') {
                     if(document.getElementById('tab-weather-temp')) {
                         document.getElementById('tab-weather-temp').textContent = `${Math.round(current.temperature)}°C`;
@@ -1281,335 +1536,260 @@
                         return `<div class="flex justify-between items-center p-2 bg-cyber-black border border-cyber-border rounded-xl font-mono text-xs"><span>${d}</span><span class="text-cyber-accent">${Math.round(daily.temperature_2m_max[i])}° / ${Math.round(daily.temperature_2m_min[i])}°</span></div>`;
                     }).join('');
                 }
-            } catch(e) { console.error(e); showToast('Error fetching weather', 'error'); }
+            } catch(e) { showToast('Error fetching weather', 'error'); }
         }
 
-        // ==========================================
-        // 9. NOTES, TODOS, GALLERY
-        // ==========================================
+        // GALLERY
+        let galleryImages = [], currentLightboxIndex = 0;
         function renderGallery() {
-            const grid = document.getElementById('gallery-grid');
-            grid.innerHTML = `
-                <div class="glass-card rounded-xl overflow-hidden border border-cyber-border group cursor-pointer relative" onclick="openLightbox('ZJPP.jpeg')">
-                    <img src="ZJPP.jpeg" alt="ZJ Portrait" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80'">
-                    <div class="p-3 font-mono text-xs"><div class="text-cyber-accent font-bold text-sm">ZJ PORTRAIT</div><div class="text-gray-400 mt-1">Neural Interface</div></div>
-                </div>
-                <div class="glass-card rounded-xl overflow-hidden border border-cyber-border group cursor-pointer relative" onclick="openLightbox('BMW.jpeg')">
-                    <img src="BMW.jpeg" alt="BMW Car" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=600&q=80'">
-                    <div class="p-3 font-mono text-xs"><div class="text-cyber-gold font-bold text-sm">BMW M-SERIES</div><div class="text-gray-400 mt-1">Cyber Vehicle</div></div>
-                </div>
-            ` + AppState.customImages.map((img, i) => `
-                <div class="glass-card rounded-xl overflow-hidden border border-cyber-border group cursor-pointer relative" onclick="openLightbox('${img.url}')">
-                    <img src="${img.url}" alt="${img.title}" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
-                    <div class="p-3 font-mono text-xs flex justify-between items-center">
-                        <div><div class="text-cyber-accent font-bold text-sm">${img.title}</div></div>
-                        <button onclick="event.stopPropagation(); deleteCustomImage(${i})" class="text-cyber-danger hover:text-red-400 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            const grid = document.getElementById('gallery-grid'); if(!grid) return;
+            const defaults = [
+                { title: 'ZJ PORTRAIT', url: 'ZJPP.jpeg', desc: 'Neural Interface', fallback: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80' },
+                { title: 'BMW M-SERIES', url: 'BMW.jpeg', desc: 'Cyber Vehicle', fallback: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=600&q=80' }
+            ];
+            galleryImages = [...defaults, ...AppState.customImages.map(img => ({ title: img.title, url: img.url, desc: 'Custom', fallback: img.url }))];
+            grid.innerHTML = galleryImages.map((img, i) => `
+                <div class="glass-card rounded-xl overflow-hidden border border-cyber-border group cursor-pointer gallery-item relative" style="animation-delay:${i*0.1}s" onclick="openLightboxByIndex(${i})">
+                    <img src="${img.url}" alt="${img.title}" class="gallery-img w-full h-48 object-cover" onerror="this.src='${img.fallback}'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-end gallery-overlay">
+                        <div class="font-orbitron font-bold text-cyber-accent text-sm">${img.title}</div>
+                        <div class="text-gray-400 text-xs font-mono mt-1">${img.desc}</div>
                     </div>
+                    ${i >= 2 ? `<button onclick="event.stopPropagation(); deleteCustomImage(${i-2})" class="absolute top-2 right-2 bg-black/70 text-cyber-danger p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : ''}
                 </div>
             `).join('');
             lucide.createIcons();
         }
-
         function addCustomImage() {
-            const title = document.getElementById('image-title-input').value;
-            const url = document.getElementById('image-url-input').value;
+            const title = document.getElementById('image-title-input').value.trim();
+            const url = document.getElementById('image-url-input').value.trim();
             if (!title || !url) return showToast('Title and URL required', 'error');
             AppState.customImages.push({ title, url });
             saveState(); renderGallery();
             document.getElementById('add-image-modal').close();
+            document.getElementById('image-title-input').value = '';
+            document.getElementById('image-url-input').value = '';
             showToast('Image added');
         }
+        function deleteCustomImage(i) { customConfirm('DELETE IMAGE', 'Remove this image?', () => { AppState.customImages.splice(i, 1); saveState(); renderGallery(); showToast('Image deleted'); }); }
+        function openLightboxByIndex(i) { currentLightboxIndex = i; const lb = document.getElementById('lightbox'); document.getElementById('lightbox-img').src = galleryImages[i].fallback; lb.classList.remove('hidden'); lb.classList.add('flex'); }
+        function openLightbox(src) { const idx = galleryImages.findIndex(img => img.url === src || img.fallback === src); openLightboxByIndex(idx >= 0 ? idx : 0); }
+        function closeLightbox() { document.getElementById('lightbox').classList.add('hidden'); document.getElementById('lightbox').classList.remove('flex'); }
+        function nextImage() { currentLightboxIndex = (currentLightboxIndex + 1) % galleryImages.length; document.getElementById('lightbox-img').src = galleryImages[currentLightboxIndex].fallback; }
+        function prevImage() { currentLightboxIndex = (currentLightboxIndex - 1 + galleryImages.length) % galleryImages.length; document.getElementById('lightbox-img').src = galleryImages[currentLightboxIndex].fallback; }
 
-        function deleteCustomImage(i) {
-            customConfirm('DELETE IMAGE', 'Remove this image?', () => {
-                AppState.customImages.splice(i, 1);
-                saveState(); renderGallery();
-            });
-        }
-
-        // ==========================================
-        // 10. MULTI-CHAT CHATBOT
-        // ==========================================
-        function renderChatSidebar() {
-            const list = document.getElementById('chat-list-container');
-            if(!list) return;
-            if(AppState.chats.length === 0) {
-                list.innerHTML = `<div class="text-gray-500 text-xs text-center py-4">No chats yet.</div>`;
-                return;
-            }
-            list.innerHTML = AppState.chats.map(chat => `
-                <div class="chat-sidebar-item ${chat.id === AppState.activeChatId ? 'active' : ''} p-3 rounded-lg cursor-pointer flex justify-between items-center group" onclick="switchChat('${chat.id}')">
-                    <div class="truncate text-xs font-mono text-gray-200 pr-2">
-                        <i data-lucide="message-square" class="w-3 h-3 inline mr-1 text-cyber-accent"></i> ${chat.title || 'New Chat'}
+        // NOTES
+        function renderNotes() {
+            const grid = document.getElementById('notes-grid'); if(!grid) return;
+            if(AppState.notes.length === 0) { grid.innerHTML = '<div class="col-span-full empty-state"><i data-lucide="sticky-note"></i><p>No notes yet</p></div>'; lucide.createIcons(); return; }
+            grid.innerHTML = AppState.notes.map(n => `
+                <div class="glass-card p-4 rounded-xl border border-cyber-border group">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="font-orbitron font-bold text-cyber-accent text-sm">${escapeHtml(n.title)}</div>
+                        <button onclick="deleteNote('${n.id}')" class="text-cyber-danger opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                     </div>
-                    <button onclick="event.stopPropagation(); deleteChat('${chat.id}')" class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-cyber-danger transition-all p-1">
-                        <i data-lucide="trash-2" class="w-3 h-3"></i>
-                    </button>
+                    <div class="font-mono text-xs text-gray-300 leading-relaxed whitespace-pre-wrap">${escapeHtml(n.content)}</div>
                 </div>
             `).join('');
             lucide.createIcons();
         }
+        function openNoteModal() { customNoteModal((t, c) => { AppState.notes.unshift({ id: Date.now().toString(), title: t, content: c, createdAt: new Date().toISOString() }); saveState(); renderNotes(); showToast('Note created'); }); }
+        function deleteNote(id) { customConfirm('DELETE NOTE', 'Delete this note?', () => { AppState.notes = AppState.notes.filter(n => n.id !== id); saveState(); renderNotes(); showToast('Note deleted', 'error'); }); }
 
-        function createNewChat() {
-            const newChat = {
-                id: Date.now().toString(),
-                title: "New Chat",
-                messages: []
-            };
-            AppState.chats.unshift(newChat);
-            AppState.activeChatId = newChat.id;
-            saveState();
-            renderChatSidebar();
-            renderChatBox();
-            showToast('New chat created');
+        // TODO
+        function renderTodos() {
+            const list = document.getElementById('todo-list'); if(!list) return;
+            let filtered = AppState.todos;
+            if(AppState.todoFilter === 'active') filtered = filtered.filter(t => !t.done);
+            if(AppState.todoFilter === 'done') filtered = filtered.filter(t => t.done);
+            if(filtered.length === 0) { list.innerHTML = `<div class="empty-state"><i data-lucide="check-square"></i><p>No tasks</p></div>`; lucide.createIcons(); return; }
+            list.innerHTML = filtered.map(t => {
+                const pc = t.priority === 'high' ? 'border-l-4 border-l-cyber-danger' : t.priority === 'medium' ? 'border-l-4 border-l-cyber-gold' : 'border-l-4 border-l-cyber-silver';
+                return `<div class="flex items-center justify-between p-3 glass-card rounded-xl ${pc}">
+                    <div class="flex items-center gap-3 flex-1 cursor-pointer" onclick="toggleTodo('${t.id}')">
+                        <div class="w-5 h-5 rounded border ${t.done ? 'bg-cyber-gold border-cyber-gold' : 'border-gray-500'} flex items-center justify-center flex-shrink-0">
+                            ${t.done ? '<i data-lucide="check" class="w-3 h-3 text-black"></i>' : ''}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="${t.done ? 'line-through text-gray-500' : 'text-gray-200'} font-mono text-sm truncate">${escapeHtml(t.text)}</div>
+                            <div class="text-[10px] font-bold mt-1 ${t.priority === 'high' ? 'text-cyber-danger' : t.priority === 'medium' ? 'text-cyber-gold' : 'text-cyber-silver'}">${t.priority.toUpperCase()}</div>
+                        </div>
+                    </div>
+                    <button onclick="deleteTodo('${t.id}')" class="text-gray-500 hover:text-cyber-danger p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                </div>`;
+            }).join('');
+            lucide.createIcons();
+        }
+        function addTodo(e) {
+            e.preventDefault();
+            const input = document.getElementById('todo-input');
+            if(input.value.trim()) { AppState.todos.unshift({ id: Date.now().toString(), text: input.value.trim(), done: false, priority: document.getElementById('todo-priority').value }); input.value = ''; saveState(); renderTodos(); showToast('Task added'); }
+        }
+        function toggleTodo(id) { AppState.todos = AppState.todos.map(t => t.id === id ? { ...t, done: !t.done } : t); saveState(); renderTodos(); }
+        function deleteTodo(id) { customConfirm('DELETE TASK', 'Remove this task?', () => { AppState.todos = AppState.todos.filter(t => t.id !== id); saveState(); renderTodos(); showToast('Task deleted', 'error'); }); }
+        function filterTodos(filter) { AppState.todoFilter = filter; document.querySelectorAll('.todo-filter-btn').forEach(b => { b.classList.remove('text-cyber-accent', 'border-b-2', 'border-cyber-accent'); b.classList.add('text-gray-400'); }); event.target.classList.add('text-cyber-accent', 'border-b-2', 'border-cyber-accent'); event.target.classList.remove('text-gray-400'); renderTodos(); }
+
+        // POMODORO
+        function startPomodoro() {
+            if (AppState.pomoRunning) return;
+            AppState.pomoRunning = true; AppState.pomoEndTime = Date.now() + AppState.pomoTime * 1000;
+            AppState.pomoInterval = setInterval(() => {
+                const rem = Math.max(0, Math.round((AppState.pomoEndTime - Date.now()) / 1000));
+                AppState.pomoTime = rem;
+                const m = String(Math.floor(rem/60)).padStart(2,'0'), s = String(rem%60).padStart(2,'0');
+                document.getElementById('pomo-display').textContent = `${m}:${s}`;
+                const ring = document.getElementById('pomo-ring'); if(ring) ring.style.strokeDashoffset = 552 - (rem/(25*60))*552;
+                if (rem <= 0) { clearInterval(AppState.pomoInterval); AppState.pomoRunning = false; playSound('timer'); showToast('Pomodoro complete! 🎉', 'success'); resetPomodoro(); }
+            }, 250);
+        }
+        function pausePomodoro() { clearInterval(AppState.pomoInterval); AppState.pomoRunning = false; showToast('Paused', 'info'); }
+        function resetPomodoro() { pausePomodoro(); AppState.pomoTime = 25 * 60; document.getElementById('pomo-display').textContent = '25:00'; const r = document.getElementById('pomo-ring'); if(r) r.style.strokeDashoffset = 0; }
+
+        // CONVERTER
+        function runConversion() {
+            const v = parseFloat(document.getElementById('convert-val').value) || 0;
+            const f = document.getElementById('convert-from').value, t = document.getElementById('convert-to').value;
+            let r = v;
+            if (f === 'km' && t === 'miles') r = v * 0.621371;
+            else if (f === 'miles' && t === 'km') r = v / 0.621371;
+            else if (f === 'gb' && t === 'tb') r = v / 1024;
+            else if (f === 'tb' && t === 'gb') r = v * 1024;
+            else if (f === 'kg' && t === 'lbs') r = v * 2.20462;
+            else if (f === 'lbs' && t === 'kg') r = v / 2.20462;
+            document.getElementById('convert-result').textContent = `${r.toFixed(4)} ${t.toUpperCase()}`;
         }
 
-        function switchChat(id) {
-            AppState.activeChatId = id;
-            saveState();
-            renderChatSidebar();
-            renderChatBox();
+        // CHATBOT
+        function renderChatSidebar() {
+            const list = document.getElementById('chat-list-container'); if(!list) return;
+            if(AppState.chats.length === 0) { list.innerHTML = `<div class="empty-state"><i data-lucide="message-square"></i><p class="text-xs">No chats</p></div>`; lucide.createIcons(); return; }
+            list.innerHTML = AppState.chats.map(chat => `
+                <div class="chat-sidebar-item ${chat.id === AppState.activeChatId ? 'active' : ''} p-3 rounded-lg cursor-pointer flex justify-between items-center group" onclick="switchChat('${chat.id}')">
+                    <div class="truncate text-xs font-mono text-gray-200 pr-2"><i data-lucide="message-square" class="w-3 h-3 inline mr-1 text-cyber-accent"></i> ${chat.title || 'New Chat'}</div>
+                    <button onclick="event.stopPropagation(); deleteChat('${chat.id}')" class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-cyber-danger p-1"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+                </div>
+            `).join('');
+            lucide.createIcons();
         }
-
-        function deleteChat(id) {
-            customConfirm('DELETE CHAT', 'Delete this conversation permanently?', () => {
-                AppState.chats = AppState.chats.filter(c => c.id !== id);
-                if(AppState.activeChatId === id) {
-                    AppState.activeChatId = AppState.chats.length > 0 ? AppState.chats[0].id : null;
-                }
-                saveState();
-                renderChatSidebar();
-                renderChatBox();
-                showToast('Chat deleted');
-            });
-        }
-
-        function clearActiveChat() {
-            const chat = AppState.chats.find(c => c.id === AppState.activeChatId);
-            if(chat) {
-                customConfirm('CLEAR CHAT', 'Wipe messages in this chat?', () => {
-                    chat.messages = [];
-                    saveState();
-                    renderChatBox();
-                    showToast('Chat cleared');
-                });
-            }
-        }
-
-        function clearAllChats() {
-            customConfirm('CLEAR ALL CHATS', 'Delete ALL conversations?', () => {
-                AppState.chats = [];
-                AppState.activeChatId = null;
-                saveState();
-                renderChatSidebar();
-                renderChatBox();
-                showToast('All chats cleared');
-            });
-        }
-
+        function createNewChat() { const c = { id: Date.now().toString(), title: 'New Chat', messages: [] }; AppState.chats.unshift(c); AppState.activeChatId = c.id; saveState(); renderChatSidebar(); renderChatBox(); showToast('New chat'); }
+        function switchChat(id) { AppState.activeChatId = id; saveState(); renderChatSidebar(); renderChatBox(); }
+        function deleteChat(id) { customConfirm('DELETE CHAT', 'Delete this chat?', () => { AppState.chats = AppState.chats.filter(c => c.id !== id); if(AppState.activeChatId === id) AppState.activeChatId = AppState.chats.length > 0 ? AppState.chats[0].id : null; saveState(); renderChatSidebar(); renderChatBox(); showToast('Deleted'); }); }
+        function clearActiveChat() { const c = AppState.chats.find(c => c.id === AppState.activeChatId); if(c) customConfirm('CLEAR CHAT', 'Wipe messages?', () => { c.messages = []; saveState(); renderChatBox(); showToast('Cleared'); }); }
+        function clearAllChats() { customConfirm('CLEAR ALL', 'Delete ALL chats?', () => { AppState.chats = []; AppState.activeChatId = null; saveState(); renderChatSidebar(); renderChatBox(); showToast('All cleared'); }); }
         function renderChatBox() {
-            const box = document.getElementById('chat-box');
-            const titleEl = document.getElementById('active-chat-title');
+            const box = document.getElementById('chat-box'), titleEl = document.getElementById('active-chat-title');
             const activeChat = AppState.chats.find(c => c.id === AppState.activeChatId);
-
-            if(!activeChat) {
-                box.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-gray-500"><i data-lucide="message-square" class="w-12 h-12 mb-4 opacity-50"></i><p>Create a new chat to start.</p></div>`;
-                titleEl.textContent = "No Chat Selected";
-                lucide.createIcons();
-                return;
-            }
-
+            if(!activeChat) { box.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-gray-500 empty-state"><i data-lucide="message-square"></i><p>Create a new chat.</p></div>`; titleEl.textContent = 'No Chat'; lucide.createIcons(); return; }
             titleEl.textContent = activeChat.title;
             box.innerHTML = activeChat.messages.map((msg, i) => `
                 <div class="flex items-start gap-3 chat-msg-anim ${msg.role === 'user' ? 'justify-end' : ''} group">
                     ${msg.role === 'bot' ? `<div class="w-8 h-8 rounded-lg bg-cyber-accent/20 border border-cyber-accent flex items-center justify-center text-cyber-accent text-xs font-bold font-orbitron flex-shrink-0">ZJ</div>` : ''}
                     <div class="${msg.role === 'user' ? 'bg-cyber-accent/20 border border-cyber-accent text-cyber-accent' : 'bg-cyber-dark/80 border border-cyber-border text-gray-200 markdown-body'} px-4 py-3 rounded-2xl max-w-md shadow-lg relative">
-                        ${msg.role === 'bot' ? parseMarkdown(msg.content) : msg.content}
-                        ${msg.role === 'bot' ? `<button onclick="copyMessage(${i})" class="absolute -right-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-cyber-accent transition-all p-1"><i data-lucide="copy" class="w-4 h-4"></i></button>` : ''}
+                        ${msg.role === 'bot' ? parseMarkdown(msg.content) : escapeHtml(msg.content)}
+                        ${msg.role === 'bot' ? `<button onclick="copyMessage(${i})" class="absolute -right-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-cyber-accent p-1"><i data-lucide="copy" class="w-4 h-4"></i></button>` : ''}
                     </div>
                 </div>
             `).join('');
             box.scrollTop = box.scrollHeight;
             lucide.createIcons();
         }
-
-        function copyMessage(index) {
-            const activeChat = AppState.chats.find(c => c.id === AppState.activeChatId);
-            if(activeChat && activeChat.messages[index]) {
-                navigator.clipboard.writeText(activeChat.messages[index].content);
-                showToast('Copied to clipboard');
-            }
-        }
-
+        function copyMessage(i) { const c = AppState.chats.find(c => c.id === AppState.activeChatId); if(c && c.messages[i]) { navigator.clipboard.writeText(c.messages[i].content); showToast('Copied'); } }
         let currentAbortController = null;
-
         async function sendChatMessage(e) {
             e.preventDefault();
-            const input = document.getElementById('chat-input');
-            const msg = input.value.trim();
+            const input = document.getElementById('chat-input'), msg = input.value.trim();
             if (!msg) return;
-            
             let activeChat = AppState.chats.find(c => c.id === AppState.activeChatId);
             if(!activeChat) { createNewChat(); activeChat = AppState.chats[0]; }
-
-            // Auto-title
-            if(activeChat.messages.length === 0) {
-                activeChat.title = msg.substring(0, 20) + (msg.length > 20 ? '...' : '');
-                renderChatSidebar();
-            }
-
+            if(activeChat.messages.length === 0) { activeChat.title = msg.substring(0, 20) + (msg.length > 20 ? '...' : ''); renderChatSidebar(); }
             activeChat.messages.push({ role: 'user', content: msg });
             saveState(); renderChatBox(); input.value = '';
-            
             const box = document.getElementById('chat-box');
-            const typingId = 'typing-' + Date.now();
-            box.innerHTML += `<div class="flex items-start gap-3 chat-msg-anim" id="${typingId}"><div class="w-8 h-8 rounded-lg bg-cyber-accent/20 border border-cyber-accent flex items-center justify-center text-cyber-accent text-xs font-bold font-orbitron flex-shrink-0">ZJ</div><div class="bg-cyber-dark/80 border border-cyber-border px-4 py-3 rounded-2xl flex gap-1 items-center"><span class="w-1.5 h-1.5 bg-cyber-accent rounded-full typing-dot"></span><span class="w-1.5 h-1.5 bg-cyber-accent rounded-full typing-dot"></span><span class="w-1.5 h-1.5 bg-cyber-accent rounded-full typing-dot"></span></div></div>`;
+            const tid = 'typing-' + Date.now();
+            box.innerHTML += `<div class="flex items-start gap-3 chat-msg-anim" id="${tid}"><div class="w-8 h-8 rounded-lg bg-cyber-accent/20 border border-cyber-accent flex items-center justify-center text-cyber-accent text-xs font-bold font-orbitron flex-shrink-0">ZJ</div><div class="bg-cyber-dark/80 border border-cyber-border px-4 py-3 rounded-2xl flex gap-1 items-center"><span class="w-1.5 h-1.5 bg-cyber-accent rounded-full typing-dot"></span><span class="w-1.5 h-1.5 bg-cyber-accent rounded-full typing-dot"></span><span class="w-1.5 h-1.5 bg-cyber-accent rounded-full typing-dot"></span></div></div>`;
             box.scrollTop = box.scrollHeight;
-            
-            // Toggle Buttons
             document.getElementById('chat-send-btn').classList.add('hidden');
             document.getElementById('chat-stop-btn').classList.remove('hidden');
             document.getElementById('chat-stop-btn').classList.add('flex');
-
             currentAbortController = new AbortController();
-            let botReply = "";
-            
+            let botReply = '';
             try {
                 const endpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/chat' : '/api/chat';
-                
-                // 30 Message Context Window
-                const contextWindow = activeChat.messages.slice(-30).map(m => ({
-                    role: m.role === 'bot' ? 'assistant' : 'user',
-                    content: m.content
-                }));
-
-                const response = await fetch(endpoint, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ 
-                        message: msg, 
-                        messages: contextWindow 
-                    }),
-                    signal: currentAbortController.signal
-                });
-                
+                const contextWindow = activeChat.messages.slice(-30).map(m => ({ role: m.role === 'bot' ? 'assistant' : 'user', content: m.content }));
+                const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: msg, messages: contextWindow }), signal: currentAbortController.signal });
                 if (!response.ok) throw new Error("Backend offline");
                 const data = await response.json();
                 botReply = data.reply;
             } catch (err) {
-                if (err.name === 'AbortError') {
-                    botReply = "⚠️ Generation stopped by user.";
-                } else {
-                    await new Promise(r => setTimeout(r, 1000));
-                    botReply = "I am currently in simulation mode. The backend API is offline. How can I assist you locally?";
-                }
+                if (err.name === 'AbortError') botReply = "⚠️ Stopped.";
+                else { await new Promise(r => setTimeout(r, 1000)); botReply = "I'm in simulation mode. The backend is offline."; }
             } finally {
-                document.getElementById(typingId).remove();
+                document.getElementById(tid).remove();
                 document.getElementById('chat-send-btn').classList.remove('hidden');
                 document.getElementById('chat-stop-btn').classList.add('hidden');
                 document.getElementById('chat-stop-btn').classList.remove('flex');
-                
-                if(botReply) {
-                    activeChat.messages.push({ role: 'bot', content: botReply });
-                    saveState(); renderChatBox();
-                }
+                if(botReply) { activeChat.messages.push({ role: 'bot', content: botReply }); saveState(); renderChatBox(); }
                 currentAbortController = null;
             }
         }
+        document.getElementById('chat-stop-btn').addEventListener('click', () => { if(currentAbortController) currentAbortController.abort(); });
 
-        // Abort Functionality
-        document.getElementById('chat-stop-btn').addEventListener('click', () => {
-            if(currentAbortController) currentAbortController.abort();
-        });
-
-        // ==========================================
-        // 11. SETTINGS & DATA
-        // ==========================================
+        // SETTINGS
         function exportJSONData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(AppState));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "ZJ_Titan_Backup.json"); a.click(); showToast('Exported successfully');
+            const a = document.createElement('a'); a.href = dataStr; a.download = 'ZJ_Backup.json'; a.click(); showToast('Exported');
         }
         function importJSONData() {
             customImportModal((json) => {
-                try { 
-                    const p = JSON.parse(json); 
-                    if(p.notes) AppState.notes = p.notes; 
-                    if(p.todos) AppState.todos = p.todos; 
-                    if(p.chats) AppState.chats = p.chats; 
-                    if(p.customImages) AppState.customImages = p.customImages;
-                    saveState(); renderNotes(); renderTodos(); renderChatSidebar(); renderChatBox(); renderGallery(); showToast('Imported successfully'); 
-                } catch(e) { showToast('Invalid JSON', 'error'); }
+                try { const p = JSON.parse(json); Object.assign(AppState, p); saveState(); location.reload(); } catch(e) { showToast('Invalid JSON', 'error'); }
             });
         }
-        function clearAllData() {
-            customConfirm('CLEAR DATA', 'This will delete all notes, todos, settings, images and chats permanently.', () => {
-                localStorage.clear(); location.reload();
-            });
-        }
+        function clearAllData() { customConfirm('CLEAR ALL', 'Delete ALL data permanently?', () => { localStorage.clear(); location.reload(); }); }
+        document.getElementById('toggle-ui-sound').addEventListener('change', e => { AppState.audio.ui = e.target.checked; saveState(); });
+        document.getElementById('toggle-timer-sound').addEventListener('change', e => { AppState.audio.timer = e.target.checked; saveState(); });
+        document.getElementById('toggle-bg-3d').addEventListener('change', e => { AppState.bg3d = e.target.checked; saveState(); if(AppState.bg3d) location.reload(); else document.getElementById('bg-canvas').style.display = 'none'; });
 
-        document.getElementById('toggle-ui-sound').addEventListener('change', (e) => { AppState.audio.ui = e.target.checked; saveState(); });
-        document.getElementById('toggle-timer-sound').addEventListener('change', (e) => { AppState.audio.timer = e.target.checked; saveState(); });
-        document.getElementById('toggle-alarm-sound').addEventListener('change', (e) => { AppState.audio.alarm = e.target.checked; saveState(); });
-        document.getElementById('toggle-bg-3d').addEventListener('change', (e) => { 
-            AppState.bg3d = e.target.checked; saveState(); 
-            if(AppState.bg3d) location.reload(); else document.getElementById('bg-canvas').style.display = 'none';
-        });
-
-        function openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').classList.remove('hidden'); document.getElementById('lightbox').classList.add('flex'); }
-        function closeLightbox() { document.getElementById('lightbox').classList.add('hidden'); document.getElementById('lightbox').classList.remove('flex'); }
-
-        // ==========================================
-        // 12. THREE.JS BACKGROUND
-        // ==========================================
+        // THREE.JS
         function initThreeJSBackground() {
             const canvas = document.getElementById('bg-canvas'); if(!canvas) return;
-            const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 200); camera.position.set(0, 0, 9.4);
-            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true }); renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(window.innerWidth, window.innerHeight);
+            const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(42, innerWidth/innerHeight, 0.1, 200);
+            camera.position.set(0, 0, 9.4);
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(innerWidth, innerHeight);
             renderer.outputEncoding = THREE.sRGBEncoding; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.10;
-            
             scene.add(new THREE.AmbientLight(0x2a3340, 1.05));
             const key = new THREE.DirectionalLight(0xffffff, 2.3); key.position.set(6, 9, 7); scene.add(key);
-            const cyanLight = new THREE.PointLight(0x00f3ff, 2.6, 70); cyanLight.position.set(-9, 2, 6); scene.add(cyanLight);
-            const goldLight = new THREE.PointLight(0xffcf5c, 2.2, 70); goldLight.position.set(9, -3, 5); scene.add(goldLight);
-
-            const knotGeo = new THREE.TorusKnotGeometry(1.62, 0.48, 220, 34);
-            const knotMat = new THREE.MeshStandardMaterial({ color: 0xd4dde6, metalness: 1.0, roughness: 0.15 });
-            const knot = new THREE.Mesh(knotGeo, knotMat); knot.position.set(0, 0.1, 0); scene.add(knot);
-
+            const cyanL = new THREE.PointLight(0x00f3ff, 2.6, 70); cyanL.position.set(-9, 2, 6); scene.add(cyanL);
+            const goldL = new THREE.PointLight(0xffcf5c, 2.2, 70); goldL.position.set(9, -3, 5); scene.add(goldL);
+            const knot = new THREE.Mesh(new THREE.TorusKnotGeometry(1.62, 0.48, 220, 34), new THREE.MeshStandardMaterial({ color: 0xd4dde6, metalness: 1, roughness: 0.15 }));
+            scene.add(knot);
             const rings = new THREE.Group();
-            [ { radius:3.0, tube:0.020, color:0x00f3ff }, { radius:3.85, tube:0.024, color:0xaab6c4 }, { radius:4.7, tube:0.018, color:0xffcf5c } ].forEach((d, i) => {
-                const m = new THREE.MeshStandardMaterial({ color: d.color, metalness: 0.8, roughness: 0.3, emissive: d.color, emissiveIntensity: 0.2 });
-                const ring = new THREE.Mesh(new THREE.TorusGeometry(d.radius, d.tube, 10, 200), m);
-                ring.rotation.x = Math.PI/2.4 + i * 0.55; ring.rotation.y = i * 0.7; rings.add(ring);
+            [{r:3.0,t:0.020,c:0x00f3ff},{r:3.85,t:0.024,c:0xaab6c4},{r:4.7,t:0.018,c:0xffcf5c}].forEach((d,i)=>{
+                const m = new THREE.MeshStandardMaterial({ color: d.c, metalness: 0.8, roughness: 0.3, emissive: d.c, emissiveIntensity: 0.2 });
+                const r = new THREE.Mesh(new THREE.TorusGeometry(d.r, d.t, 10, 200), m);
+                r.rotation.x = Math.PI/2.4 + i*0.55; r.rotation.y = i*0.7; rings.add(r);
             });
             scene.add(rings);
-
-            const COUNT = 700; const pos = new Float32Array(COUNT * 3); const col = new Float32Array(COUNT * 3);
-            for (let i = 0; i < COUNT; i++) {
-                pos[i*3] = (Math.random() - 0.5) * 32; pos[i*3+1] = (Math.random() - 0.5) * 32; pos[i*3+2] = (Math.random() - 0.5) * 32;
-                if (Math.random() > 0.5) { col[i*3]=0.55; col[i*3+1]=0.98; col[i*3+2]=1.0; } else { col[i*3]=1.0; col[i*3+1]=0.85; col[i*3+2]=0.42; }
-            }
-            const dGeo = new THREE.BufferGeometry(); dGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3)); dGeo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-            const dMat = new THREE.PointsMaterial({ size: 0.045, vertexColors: true, transparent: true, opacity: 0.75, depthWrite: false, blending: THREE.AdditiveBlending });
-            const dust = new THREE.Points(dGeo, dMat); scene.add(dust);
-
-            let pointer = { x:0, y:0 }; let smooth = { x:0, y:0 };
-            window.addEventListener('mousemove', e => { pointer.x = (e.clientX / innerWidth) - 0.5; pointer.y = (e.clientY / innerHeight) - 0.5; });
-            window.addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
-
-            function animate() {
-                requestAnimationFrame(animate);
-                smooth.x += (pointer.x - smooth.x) * 0.05; smooth.y += (pointer.y - smooth.y) * 0.05;
+            const CNT = 700, pos = new Float32Array(CNT*3), col = new Float32Array(CNT*3);
+            for(let i=0;i<CNT;i++){ pos[i*3]=(Math.random()-0.5)*32; pos[i*3+1]=(Math.random()-0.5)*32; pos[i*3+2]=(Math.random()-0.5)*32;
+                if(Math.random()>0.5){col[i*3]=0.55;col[i*3+1]=0.98;col[i*3+2]=1;}else{col[i*3]=1;col[i*3+1]=0.85;col[i*3+2]=0.42;} }
+            const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+            const dust = new THREE.Points(g, new THREE.PointsMaterial({ size: 0.045, vertexColors: true, transparent: true, opacity: 0.75, depthWrite: false, blending: THREE.AdditiveBlending }));
+            scene.add(dust);
+            let p = {x:0,y:0}, sm = {x:0,y:0};
+            window.addEventListener('mousemove', e => { p.x = (e.clientX/innerWidth)-0.5; p.y = (e.clientY/innerHeight)-0.5; });
+            window.addEventListener('resize', () => { camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+            (function anim(){ requestAnimationFrame(anim);
+                sm.x += (p.x - sm.x)*0.05; sm.y += (p.y - sm.y)*0.05;
                 knot.rotation.y += 0.003; knot.rotation.x += 0.001;
-                knot.position.x = smooth.x * 0.8; knot.position.y = -smooth.y * 0.55 + 0.1;
-                rings.rotation.z += 0.0014; rings.rotation.y = smooth.x * 0.45; rings.rotation.x = smooth.y * 0.30;
-                dust.rotation.y += 0.00026; dust.rotation.x = smooth.y * 0.20;
-                camera.position.x += (smooth.x * 1.1 - camera.position.x) * 0.06;
-                camera.position.y += (-smooth.y * 0.8 - camera.position.y) * 0.06;
-                camera.lookAt(0, 0, 0);
+                knot.position.x = sm.x * 0.8; knot.position.y = -sm.y * 0.55 + 0.1;
+                rings.rotation.z += 0.0014; rings.rotation.y = sm.x * 0.45; rings.rotation.x = sm.y * 0.30;
+                dust.rotation.y += 0.00026; dust.rotation.x = sm.y * 0.20;
+                camera.position.x += (sm.x*1.1 - camera.position.x)*0.06;
+                camera.position.y += (-sm.y*0.8 - camera.position.y)*0.06;
+                camera.lookAt(0,0,0);
                 renderer.render(scene, camera);
-            }
-            animate();
+            })();
         }
     </script>
 </body>
