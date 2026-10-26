@@ -579,6 +579,343 @@
         .copyright-bar { text-align: center; padding: 16px; font-size: 10px; color: var(--text-dim); letter-spacing: 0.05em; border-top: 1px solid var(--border-soft); margin-top: 20px; flex-shrink: 0; }
         .copyright-bar span { color: var(--text-muted); font-weight: 600; }
         .copyright-bar .sep { margin: 0 8px; opacity: 0.4; }
+        /* ============================================================
+   MOBILE FIXES — Comprehensive responsive overrides
+   ============================================================ */
+
+/* Prevent horizontal overflow globally */
+html, body { max-width: 100vw; overflow-x: hidden; }
+.main-container { max-width: 100vw; overflow-x: hidden; }
+.content-area { overflow-x: hidden; }
+
+/* ============ TABLETS (≤1024px) ============ */
+@media (max-width: 1024px) {
+    .sidebar { width: 240px; }
+    .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ============ PHONES (≤768px) ============ */
+@media (max-width: 768px) {
+    /* --- Topbar: compact and non-overflowing --- */
+    .topbar {
+        padding: 8px 10px;
+        gap: 6px;
+        flex-wrap: nowrap;
+    }
+    .topbar-left { gap: 6px; min-width: 0; }
+    .topbar-right { gap: 4px; flex-shrink: 0; }
+    .menu-btn { display: flex; width: 32px; height: 32px; }
+
+    .search-pill {
+        max-width: none;
+        width: auto;
+        flex: 1;
+        min-width: 0;
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+    .search-pill span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .search-pill kbd { display: none; }
+
+    /* Hide mode-switch on mobile — use theme button instead */
+    #mode-switch { display: none; }
+
+    .btn-icon { width: 32px; height: 32px; }
+    .btn-icon i { width: 14px; height: 14px; }
+
+    /* --- Content area --- */
+    .content-area { padding: 10px; }
+
+    /* --- Hero --- */
+    .hero { padding: 16px 10px; margin-bottom: 12px; }
+    .hero h1 { font-size: 20px; line-height: 1.2; }
+    .hero p { font-size: 11px; margin-bottom: 10px; }
+    .hero-time { padding: 6px 12px; font-size: 12px; }
+
+    /* --- DASHBOARD GRID — the critical fix --- */
+    .dashboard-grid { grid-template-columns: 1fr; gap: 10px; }
+    .widget {
+        height: auto;
+        min-height: 0;
+        max-height: none;
+    }
+
+    /* --- Cards: reduce padding --- */
+    .card { padding: 12px; border-radius: 10px; }
+    .card-header { padding-bottom: 8px; margin-bottom: 10px; gap: 6px; flex-wrap: wrap; }
+    .card-title { font-size: 10px; }
+
+    /* --- CALCULATOR --- */
+    .calc-display { padding: 10px 12px; margin-bottom: 8px; }
+    .calc-value { font-size: 22px; }
+    .calc-history { font-size: 10px; min-height: 14px; }
+    .calc-grid { gap: 4px; }
+    .calc-btn {
+        font-size: 13px;
+        min-height: 42px;
+        padding: 4px 0;
+    }
+    .calc-btn.fn { font-size: 10px; }
+    .calc-btn.eq { font-size: 14px; }
+
+    /* --- WEATHER --- */
+    .weather-search { gap: 4px; margin-bottom: 8px; }
+    .weather-input { padding: 6px 10px; font-size: 12px; }
+    .weather-search-btn { width: 30px; height: 30px; }
+    .weather-main { padding: 4px 0; }
+    .weather-icon { width: 36px; height: 36px; margin-bottom: 4px; }
+    .weather-temp { font-size: 42px; }
+    .weather-temp-unit { font-size: 18px; }
+    .weather-desc { font-size: 11px; }
+    .weather-loc { font-size: 9px; }
+    .weather-stats { gap: 4px; }
+    .weather-stat { padding: 6px 8px; }
+    .weather-stat-label { font-size: 8px; }
+    .weather-stat-value { font-size: 11px; }
+    .weather-saved-cities { gap: 3px; }
+    .city-chip { font-size: 10px; padding: 3px 8px; }
+
+    /* --- GALLERY --- */
+    .gallery-grid { gap: 6px; }
+    #gallery-full-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 6px !important;
+    }
+    .gallery-item { height: 130px !important; }
+    .gallery-overlay-text { font-size: 10px; }
+    .gallery-overlay-caption { font-size: 9px; }
+
+    /* --- TABS: allow horizontal scroll --- */
+    .tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab { padding: 5px 10px; font-size: 10px; white-space: nowrap; }
+
+    /* --- BUTTONS --- */
+    .btn { padding: 6px 10px; font-size: 11px; border-radius: 6px; }
+    .btn-sm { padding: 4px 8px; font-size: 10px; }
+    .btn i { width: 11px; height: 11px; }
+
+    /* --- INPUTS --- */
+    .input { padding: 7px 10px; font-size: 12px; border-radius: 6px; }
+
+    /* --- LIST ITEMS --- */
+    .list-item { padding: 8px 10px; gap: 6px; margin-bottom: 4px; }
+    .list-item-title { font-size: 11px; }
+    .list-item-meta { font-size: 9px; }
+
+    /* --- EMPTY STATES --- */
+    .empty-state { padding: 24px 12px; }
+    .empty-state i { width: 28px; height: 28px; }
+    .empty-state p { font-size: 11px; }
+    .empty-state small { font-size: 9px; }
+
+    /* --- DIALOGS --- */
+    dialog {
+        width: 94% !important;
+        max-width: 94% !important;
+        border-radius: 10px;
+    }
+    .modal-header { padding: 12px 14px; }
+    .modal-title { font-size: 13px; }
+    .modal-body { padding: 14px; max-height: 70vh; }
+    .modal-footer { padding: 10px 14px; gap: 6px; }
+
+    /* --- THEME PICKER: 4 to a row is too tight on small phones --- */
+    .theme-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
+    .theme-swatch { padding: 8px 3px; border-radius: 6px; }
+    .theme-swatch-color { width: 18px; height: 18px; }
+    .theme-swatch-label { font-size: 8px; }
+
+    /* --- STATS --- */
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+    .stat-box { padding: 8px 10px; }
+    .stat-value { font-size: 16px; }
+    .stat-label { font-size: 8px; }
+
+    /* --- TODO FORM: stack everything --- */
+    form[onsubmit*="addTodo"] {
+        grid-template-columns: 1fr !important;
+        gap: 6px !important;
+    }
+    form[onsubmit*="addTodo"] button { width: 100%; }
+    form[onsubmit*="addTodo"] input[type="date"],
+    form[onsubmit*="addTodo"] select { width: 100% !important; }
+
+    /* --- ALARM FORM: stack --- */
+    #clock-panel-alarm form {
+        grid-template-columns: 1fr !important;
+        gap: 6px !important;
+    }
+
+    /* --- CONVERTER: stack 2-col layout --- */
+    #tab-converter .card div[style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* --- WEATHER FULL: stack 2-col layout --- */
+    #tab-weather .card div[style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* --- CLOCK: fix inline sizes --- */
+    .analog-clock,
+    svg[style*="width: 220px"],
+    svg[style*="width: 200px"] {
+        width: 170px !important;
+        height: 170px !important;
+    }
+    div[style*="font-size: 44px"] { font-size: 32px !important; }
+    div[style*="font-size: 52px"] { font-size: 36px !important; }
+    div[style*="font-size: 56px"] { font-size: 38px !important; }
+    div[style*="font-size: 64px"] { font-size: 42px !important; }
+
+    /* Timer inputs smaller */
+    #timer-h, #timer-m, #timer-s { width: 55px !important; padding: 6px !important; }
+
+    /* --- NOTION --- */
+    .notion-layout { height: calc(100vh - 120px); border-radius: 8px; }
+    .notion-sidebar { display: none; }
+    .notion-header { padding: 8px 12px; gap: 6px; }
+    .notion-title { font-size: 15px; }
+    .notion-blocks { padding: 10px 12px; }
+    .notion-block-row { padding: 0; }
+    .block-content { font-size: 13px; padding: 4px 6px; min-height: 20px; }
+    .block-h1 { font-size: 18px; }
+    .block-h2 { font-size: 16px; }
+    .block-h3 { font-size: 14px; }
+    .notion-keyboard-hint { display: none; }
+    .block-type-menu { min-width: 160px; max-height: 300px; }
+    .block-type-option { padding: 6px 8px; font-size: 11px; }
+
+    /* --- CHAT --- */
+    .chat-layout { height: calc(100vh - 120px); border-radius: 8px; }
+    .chat-sidebar { display: none; }
+    .chat-header { padding: 8px 12px; gap: 6px; }
+    .chat-avatar { width: 28px; height: 28px; font-size: 10px; }
+    .chat-name { font-size: 12px; }
+    .chat-status { font-size: 9px; }
+    .chat-messages { padding: 10px 12px; gap: 8px; }
+    .message { max-width: 92%; gap: 6px; }
+    .message-avatar { width: 24px; height: 24px; font-size: 9px; }
+    .message-bubble { padding: 8px 12px; font-size: 12px; border-radius: 10px; }
+    .quick-prompts { padding: 6px 12px 0; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
+    .quick-prompts::-webkit-scrollbar { display: none; }
+    .quick-prompt { font-size: 10px; padding: 3px 8px; white-space: nowrap; flex-shrink: 0; }
+    .chat-input-area { padding: 8px 12px; gap: 4px; }
+    .chat-input { padding: 8px 10px; font-size: 12px; min-height: 36px; max-height: 90px; }
+    .chat-input-area .btn { padding: 6px 10px; font-size: 10px; }
+
+    /* --- POMODORO: shrink ring --- */
+    div[style*="width: 180px; height: 180px"] {
+        width: 150px !important;
+        height: 150px !important;
+    }
+    div[style*="font-size: 34px"] { font-size: 26px !important; }
+
+    /* --- SIDEBAR FOOTER --- */
+    .sidebar-footer { padding-top: 10px; }
+    .status-row { font-size: 10px; }
+    .copyright-mini { font-size: 8px; }
+
+    /* --- COPYRIGHT BAR --- */
+    .copyright-bar {
+        padding: 12px 8px;
+        font-size: 9px;
+        margin-top: 12px;
+    }
+    .copyright-bar .sep { margin: 0 4px; }
+}
+
+/* ============ SMALL PHONES (≤480px) ============ */
+@media (max-width: 480px) {
+    .content-area { padding: 6px; }
+    
+    .hero h1 { font-size: 18px; }
+    .hero-time { font-size: 11px; padding: 4px 10px; }
+    
+    /* Even tighter grids */
+    .dashboard-grid { gap: 6px; }
+    
+    /* Calculator digits */
+    .calc-value { font-size: 20px; }
+    .calc-btn { font-size: 12px; min-height: 38px; padding: 3px 0; }
+    .calc-btn.fn { font-size: 9px; }
+    
+    /* Weather */
+    .weather-temp { font-size: 34px; }
+    .weather-icon { width: 30px; height: 30px; }
+    
+    /* Gallery: 1 column on tiny phones */
+    #gallery-full-grid { grid-template-columns: 1fr !important; }
+    .gallery-item { height: 180px !important; }
+    
+    /* Notes: 1 column */
+    #notes-grid { grid-template-columns: 1fr !important; }
+    
+    /* Search pill: icon only on tiny screens */
+    .search-pill span { display: none; }
+    .search-pill { max-width: 40px; padding: 6px 8px; }
+    
+    /* Hide mode switch on very small phones */
+    .topbar-right .btn-icon { width: 30px; height: 30px; }
+    
+    /* Theme picker: 2 columns */
+    .theme-grid { grid-template-columns: repeat(2, 1fr); }
+    .theme-swatch { padding: 10px 6px; }
+    .theme-swatch-label { font-size: 9px; }
+    
+    /* Copyright: stacked */
+    .copyright-bar .sep { display: none; }
+    .copyright-bar span { display: block; margin: 2px 0; }
+    
+    /* Hide some non-essential labels */
+    .chat-title p { display: none; }
+    
+    /* Small analog clock */
+    .analog-clock, svg[style*="width: 170px"] {
+        width: 140px !important;
+        height: 140px !important;
+    }
+    
+    /* Small timer display */
+    div[style*="font-size: 38px"] { font-size: 30px !important; }
+    
+    /* Sidebar width */
+    .sidebar { width: 85vw; max-width: 280px; }
+    
+    /* Modal: nearly full width */
+    dialog { width: 96% !important; max-width: 96% !important; }
+    
+    /* Chat: full width */
+    .chat-layout { border-radius: 6px; }
+    .message { max-width: 95%; }
+    
+    /* Notion blocks */
+    .notion-title { font-size: 14px; }
+    .block-content { font-size: 12px; }
+}
+
+/* ============ LANDSCAPE PHONES ============ */
+@media (max-width: 900px) and (orientation: landscape) {
+    .sidebar { width: 200px; }
+    .hero { padding: 12px 10px; }
+    .hero h1 { font-size: 20px; }
+    .widget { min-height: 300px; }
+    .chat-layout, .notion-layout { height: calc(100vh - 90px); }
+}
+
+/* ============ REDUCED MOTION ============ */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
     </style>
 </head>
 <body>
