@@ -135,9 +135,13 @@
         .typing-dot:nth-child(2) { animation-delay: -0.16s; }
         
         .markdown-body code { background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; color: var(--gold); font-family: 'JetBrains Mono', monospace; font-size: 0.9em; }
-        .markdown-body pre { background: rgba(0,0,0,0.6); padding: 10px; border-radius: 8px; overflow-x: auto; margin: 8px 0; border: 1px solid var(--border-color); }
+        .markdown-body pre { background: rgba(0,0,0,0.6); padding: 10px; border-radius: 8px; overflow-x: auto; margin: 8px 0; border: 1px solid var(--border-color); position: relative; }
         .markdown-body pre code { background: transparent; padding: 0; color: #e2e8f0; }
         .markdown-body strong { color: var(--accent-color); }
+        
+        .chat-sidebar-item { transition: all 0.2s; }
+        .chat-sidebar-item:hover { background: rgba(255,255,255,0.05); }
+        .chat-sidebar-item.active { background: var(--accent-glow); border-left: 2px solid var(--accent-color); }
     </style>
 </head>
 <body class="relative flex selection:bg-cyber-accent selection:text-cyber-black">
@@ -247,8 +251,8 @@
             <!-- MAIN VIEWS WRAPPER -->
             <div class="flex-1 overflow-hidden relative">
                 
-                <!-- DASHBOARD (NO SCROLL, PERFECT FIT) -->
-                <section id="tab-dashboard" class="tab-content h-full flex flex-col p-6 space-y-6">
+                <!-- DASHBOARD (SCROLLABLE) -->
+                <section id="tab-dashboard" class="tab-content h-full flex flex-col p-6 space-y-6 overflow-y-auto">
                     <div class="text-center py-4 glass-panel rounded-2xl border border-cyber-border relative overflow-hidden flex-shrink-0">
                         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-tr"></div><div class="hud-corner hud-bl"></div><div class="hud-corner hud-br"></div>
                         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -258,7 +262,7 @@
                     </div>
 
                     <!-- 3 WIDGETS -->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-[400px]">
                         <!-- CALCULATOR -->
                         <div class="glass-panel rounded-2xl p-5 border border-cyber-border relative flex flex-col justify-between h-full">
                             <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
@@ -523,7 +527,6 @@
                                     <img src="BMW.jpeg" alt="BMW Car" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=600&q=80'">
                                     <div class="p-3 font-mono text-xs"><div class="text-cyber-gold font-bold text-sm">BMW M-SERIES</div><div class="text-gray-400 mt-1">Cyber Vehicle</div></div>
                                 </div>
-                                <!-- Custom Images Rendered Here -->
                             </div>
                         </div>
                     </section>
@@ -627,29 +630,53 @@
                         </div>
                     </section>
 
-                    <!-- CHATBOT -->
-                    <section id="tab-chatbot" class="hidden h-full flex flex-col glass-panel rounded-2xl border border-cyber-border overflow-hidden relative">
+                    <!-- CHATBOT (New Sidebar Layout) -->
+                    <section id="tab-chatbot" class="hidden h-full flex glass-panel rounded-2xl border border-cyber-border overflow-hidden relative">
                         <div class="hud-corner hud-tl"></div><div class="hud-corner hud-tr"></div><div class="hud-corner hud-bl"></div><div class="hud-corner hud-br"></div>
-                        <div class="bg-cyber-black px-6 py-4 border-b border-cyber-border flex items-center justify-between flex-shrink-0">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-cyber-accent/20 border border-cyber-accent flex items-center justify-center text-cyber-accent font-bold font-orbitron shadow-[0_0_15px_var(--accent-glow)]">ZJ</div>
-                                <div>
-                                    <h3 class="font-orbitron font-bold text-white text-base">ZJ Core AI</h3>
-                                    <div class="flex items-center gap-2 text-xs font-mono text-cyber-gold"><span class="w-2 h-2 rounded-full bg-cyber-gold animate-pulse"></span> Online</div>
-                                </div>
+                        
+                        <!-- Chat Sidebar -->
+                        <div class="w-64 border-r border-cyber-border flex flex-col bg-cyber-black/50 backdrop-blur-md hidden sm:flex">
+                            <div class="p-4 border-b border-cyber-border">
+                                <button onclick="createNewChat()" class="btn-gold w-full py-2 flex items-center justify-center gap-2 text-sm">
+                                    <i data-lucide="plus" class="w-4 h-4"></i> NEW CHAT
+                                </button>
                             </div>
-                            <div class="flex items-center gap-2 font-mono text-xs">
-                                <button onclick="document.getElementById('chat-history-modal').showModal()" class="px-3 py-1.5 rounded-lg border border-cyber-border bg-cyber-dark hover:border-cyber-accent text-gray-300 flex items-center gap-1 transition-all"><i data-lucide="history" class="w-3.5 h-3.5"></i> HISTORY</button>
-                                <button onclick="clearChatMessages()" class="px-3 py-1.5 rounded-lg border border-cyber-border bg-cyber-dark hover:border-cyber-accent text-gray-300 flex items-center gap-1 transition-all"><i data-lucide="plus" class="w-3.5 h-3.5"></i> NEW</button>
+                            <div id="chat-list-container" class="flex-1 overflow-y-auto p-2 space-y-1">
+                                <!-- Chat sessions rendered here -->
+                            </div>
+                            <div class="p-4 border-t border-cyber-border">
+                                <button onclick="clearAllChats()" class="text-cyber-danger text-xs font-mono hover:underline w-full text-center">CLEAR ALL CHATS</button>
                             </div>
                         </div>
-                        <div id="chat-box" class="flex-1 p-6 overflow-y-auto space-y-4 font-sans text-sm"></div>
-                        <form onsubmit="sendChatMessage(event)" class="p-4 bg-cyber-black border-t border-cyber-border flex items-center gap-3 flex-shrink-0">
-                            <div class="relative flex-1">
-                                <input type="text" id="chat-input" placeholder="Initialize command..." autocomplete="off" class="w-full bg-black border border-cyber-border rounded-xl px-4 py-3 pr-10 text-white font-mono text-sm focus:border-cyber-accent">
+
+                        <!-- Chat Main Area -->
+                        <div class="flex-1 flex flex-col min-w-0">
+                            <div class="bg-cyber-black px-6 py-4 border-b border-cyber-border flex items-center justify-between flex-shrink-0">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-cyber-accent/20 border border-cyber-accent flex items-center justify-center text-cyber-accent font-bold font-orbitron shadow-[0_0_15px_var(--accent-glow)]">ZJ</div>
+                                    <div>
+                                        <h3 class="font-orbitron font-bold text-white text-base" id="active-chat-title">New Chat</h3>
+                                        <div class="flex items-center gap-2 text-xs font-mono text-cyber-gold"><span class="w-2 h-2 rounded-full bg-cyber-gold animate-pulse"></span> Online</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 font-mono text-xs">
+                                    <button onclick="clearActiveChat()" class="px-3 py-1.5 rounded-lg border border-cyber-border bg-cyber-dark hover:border-cyber-accent text-gray-300 flex items-center gap-1 transition-all"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i> CLEAR</button>
+                                </div>
                             </div>
-                            <button type="submit" class="btn-metal px-6 py-3 flex items-center gap-2"><span class="font-orbitron font-bold">SEND</span><i data-lucide="send" class="w-4 h-4"></i></button>
-                        </form>
+                            
+                            <div id="chat-box" class="flex-1 p-6 overflow-y-auto space-y-4 font-sans text-sm">
+                                <!-- Messages Render Here -->
+                            </div>
+                            
+                            <form onsubmit="sendChatMessage(event)" class="p-4 bg-cyber-black border-t border-cyber-border flex items-center gap-3 flex-shrink-0">
+                                <div class="relative flex-1">
+                                    <input type="text" id="chat-input" placeholder="Initialize command..." autocomplete="off" maxlength="2000" class="w-full bg-black border border-cyber-border rounded-xl px-4 py-3 pr-10 text-white font-mono text-sm focus:border-cyber-accent">
+                                    <span id="char-count" class="absolute right-3 top-3 text-[10px] text-gray-500 font-mono">0/2000</span>
+                                </div>
+                                <button type="submit" id="chat-send-btn" class="btn-metal px-6 py-3 flex items-center gap-2"><span class="font-orbitron font-bold">SEND</span><i data-lucide="send" class="w-4 h-4"></i></button>
+                                <button type="button" id="chat-stop-btn" class="btn-gold px-6 py-3 hidden items-center gap-2 text-cyber-danger"><span class="font-orbitron font-bold">STOP</span><i data-lucide="square" class="w-4 h-4"></i></button>
+                            </form>
+                        </div>
                     </section>
                 </div>
             </div>
@@ -707,15 +734,6 @@
         <div class="mt-4 flex justify-end">
             <button onclick="clearCalcHistory()" class="btn-metal px-4 py-2 text-sm text-cyber-danger">CLEAR LOG</button>
         </div>
-    </dialog>
-
-    <dialog id="chat-history-modal" class="bg-cyber-panel border border-cyber-border rounded-2xl p-6 w-full max-w-2xl mx-auto mt-[5vh] shadow-[0_0_50px_var(--accent-glow)] font-rajdhani text-white relative">
-        <div class="hud-corner hud-tl"></div><div class="hud-corner hud-br"></div>
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="font-orbitron font-bold text-lg text-cyber-accent">CHAT HISTORY ARCHIVE</h3>
-            <button onclick="document.getElementById('chat-history-modal').close()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-        </div>
-        <div id="chat-history-list-modal" class="bg-cyber-black/50 border border-cyber-border rounded-xl p-4 h-[60vh] overflow-y-auto font-sans text-sm space-y-4"></div>
     </dialog>
 
     <dialog id="theme-modal" class="bg-cyber-panel border border-cyber-border rounded-2xl p-6 w-full max-w-sm mx-auto mt-[15vh] shadow-[0_0_50px_var(--accent-glow)] font-rajdhani text-white relative">
@@ -789,13 +807,12 @@
 
             const loadInterval = setInterval(() => {
                 if (step < loadingTexts.length) { textEl.textContent = loadingTexts[step]; step++; }
-            }, 500); // 5 steps * 500ms = 2.5 seconds
+            }, 500);
 
-            // Force hide after exactly 3.5 seconds, regardless of images loading
             setTimeout(() => { 
                 clearInterval(loadInterval); 
                 preloaderEl.classList.add('fade-out'); 
-                setTimeout(() => preloaderEl.style.display = 'none', 800); // fully remove after fade
+                setTimeout(() => preloaderEl.style.display = 'none', 800); 
             }, 3500); 
         })();
 
@@ -803,14 +820,18 @@
         // 2. STATE & UTILITIES
         // ==========================================
         const AppState = {
-            notes: JSON.parse(localStorage.getItem('zj_notes_v6')) || [],
-            todos: JSON.parse(localStorage.getItem('zj_todos_v6')) || [],
-            alarms: JSON.parse(localStorage.getItem('zj_alarms_v6')) || [],
-            chatHistory: JSON.parse(localStorage.getItem('zj_chat_v6')) || [],
-            customImages: JSON.parse(localStorage.getItem('zj_images_v6')) || [],
-            theme: localStorage.getItem('zj_theme_v6') || 'titan',
-            audio: JSON.parse(localStorage.getItem('zj_audio_v6')) || { ui: true, timer: true, alarm: true },
-            bg3d: JSON.parse(localStorage.getItem('zj_bg3d_v6')) !== false,
+            notes: JSON.parse(localStorage.getItem('zj_notes_v7')) || [],
+            todos: JSON.parse(localStorage.getItem('zj_todos_v7')) || [],
+            alarms: JSON.parse(localStorage.getItem('zj_alarms_v7')) || [],
+            customImages: JSON.parse(localStorage.getItem('zj_images_v7')) || [],
+            
+            // NEW MULTI-CHAT STATE
+            chats: JSON.parse(localStorage.getItem('zj_chats_v7')) || [],
+            activeChatId: localStorage.getItem('zj_active_chat_v7') || null,
+            
+            theme: localStorage.getItem('zj_theme_v7') || 'titan',
+            audio: JSON.parse(localStorage.getItem('zj_audio_v7')) || { ui: true, timer: true, alarm: true },
+            bg3d: JSON.parse(localStorage.getItem('zj_bg3d_v7')) !== false,
             pomoTime: 25 * 60,
             pomoInterval: null,
             pomoRunning: false,
@@ -818,19 +839,31 @@
             calcMemory: 0,
             calcVal: '0',
             calcHist: '',
-            calcLog: JSON.parse(localStorage.getItem('zj_calc_log_v6')) || []
+            calcLog: JSON.parse(localStorage.getItem('zj_calc_log_v7')) || []
         };
 
+        // Migration: If old chat history exists, put it in a chat
+        const oldChatHistory = JSON.parse(localStorage.getItem('zj_chat_v6'));
+        if (oldChatHistory && oldChatHistory.length > 0 && AppState.chats.length === 0) {
+            AppState.chats.push({
+                id: Date.now().toString(),
+                title: "Migrated Chat",
+                messages: oldChatHistory
+            });
+            AppState.activeChatId = AppState.chats[0].id;
+        }
+
         const saveState = () => {
-            localStorage.setItem('zj_notes_v6', JSON.stringify(AppState.notes));
-            localStorage.setItem('zj_todos_v6', JSON.stringify(AppState.todos));
-            localStorage.setItem('zj_alarms_v6', JSON.stringify(AppState.alarms));
-            localStorage.setItem('zj_chat_v6', JSON.stringify(AppState.chatHistory));
-            localStorage.setItem('zj_images_v6', JSON.stringify(AppState.customImages));
-            localStorage.setItem('zj_theme_v6', AppState.theme);
-            localStorage.setItem('zj_audio_v6', JSON.stringify(AppState.audio));
-            localStorage.setItem('zj_bg3d_v6', JSON.stringify(AppState.bg3d));
-            localStorage.setItem('zj_calc_log_v6', JSON.stringify(AppState.calcLog));
+            localStorage.setItem('zj_notes_v7', JSON.stringify(AppState.notes));
+            localStorage.setItem('zj_todos_v7', JSON.stringify(AppState.todos));
+            localStorage.setItem('zj_alarms_v7', JSON.stringify(AppState.alarms));
+            localStorage.setItem('zj_images_v7', JSON.stringify(AppState.customImages));
+            localStorage.setItem('zj_chats_v7', JSON.stringify(AppState.chats));
+            localStorage.setItem('zj_active_chat_v7', AppState.activeChatId || '');
+            localStorage.setItem('zj_theme_v7', AppState.theme);
+            localStorage.setItem('zj_audio_v7', JSON.stringify(AppState.audio));
+            localStorage.setItem('zj_bg3d_v7', JSON.stringify(AppState.bg3d));
+            localStorage.setItem('zj_calc_log_v7', JSON.stringify(AppState.calcLog));
         };
 
         function playSound(type) {
@@ -865,9 +898,15 @@
             html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
             html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-            html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+            html = html.replace(/```([\s\S]*?)```/g, '<pre><button onclick="copyCodeBlock(this)" class="absolute top-2 right-2 text-xs text-gray-400 hover:text-white bg-black/50 px-2 py-1 rounded"><i data-lucide="copy" class="w-3 h-3 inline"></i></button><code>$1</code></pre>');
             html = html.replace(/\n/g, '<br>');
             return html;
+        }
+
+        function copyCodeBlock(btn) {
+            const code = btn.nextElementSibling.innerText;
+            navigator.clipboard.writeText(code);
+            showToast('Code copied!');
         }
 
         // ==========================================
@@ -936,6 +975,7 @@
             updateClock();
             setInterval(updateClock, 1000);
             
+            renderChatSidebar();
             renderChatBox();
             renderNotes();
             renderTodos();
@@ -971,6 +1011,14 @@
                 requestAnimationFrame(cursorLoop);
             }
             cursorLoop();
+
+            // Char Count
+            document.getElementById('chat-input').addEventListener('input', (e) => {
+                const len = e.target.value.length;
+                document.getElementById('char-count').textContent = `${len}/2000`;
+                if(len > 2000) document.getElementById('char-count').classList.add('text-cyber-danger');
+                else document.getElementById('char-count').classList.remove('text-cyber-danger');
+            });
         };
 
         function setTheme(theme, save = true) {
@@ -988,7 +1036,6 @@
             } else { const batEl = document.getElementById('sys-battery'); if(batEl) batEl.textContent = 'BAT: N/A'; }
         }
 
-        // Realistic Vitals (Sine Wave)
         let vitalsTime = 0;
         function pulseVitals() {
             vitalsTime += 0.1;
@@ -1077,10 +1124,8 @@
             event.target.classList.add('bg-cyber-accent/20', 'text-cyber-accent'); event.target.classList.remove('text-gray-400');
         }
 
-        // Stopwatch, Alarms, World Clocks (Keep existing logic)
-
         // ==========================================
-        // 7. CALCULATOR (Memory Functions)
+        // 7. CALCULATOR
         // ==========================================
         const MathParser = {
             evaluate: function(expression) {
@@ -1283,11 +1328,99 @@
         }
 
         // ==========================================
-        // 10. CHATBOT & CONTEXT WINDOW
+        // 10. MULTI-CHAT CHATBOT
         // ==========================================
+        function renderChatSidebar() {
+            const list = document.getElementById('chat-list-container');
+            if(!list) return;
+            if(AppState.chats.length === 0) {
+                list.innerHTML = `<div class="text-gray-500 text-xs text-center py-4">No chats yet.</div>`;
+                return;
+            }
+            list.innerHTML = AppState.chats.map(chat => `
+                <div class="chat-sidebar-item ${chat.id === AppState.activeChatId ? 'active' : ''} p-3 rounded-lg cursor-pointer flex justify-between items-center group" onclick="switchChat('${chat.id}')">
+                    <div class="truncate text-xs font-mono text-gray-200 pr-2">
+                        <i data-lucide="message-square" class="w-3 h-3 inline mr-1 text-cyber-accent"></i> ${chat.title || 'New Chat'}
+                    </div>
+                    <button onclick="event.stopPropagation(); deleteChat('${chat.id}')" class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-cyber-danger transition-all p-1">
+                        <i data-lucide="trash-2" class="w-3 h-3"></i>
+                    </button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function createNewChat() {
+            const newChat = {
+                id: Date.now().toString(),
+                title: "New Chat",
+                messages: []
+            };
+            AppState.chats.unshift(newChat);
+            AppState.activeChatId = newChat.id;
+            saveState();
+            renderChatSidebar();
+            renderChatBox();
+            showToast('New chat created');
+        }
+
+        function switchChat(id) {
+            AppState.activeChatId = id;
+            saveState();
+            renderChatSidebar();
+            renderChatBox();
+        }
+
+        function deleteChat(id) {
+            customConfirm('DELETE CHAT', 'Delete this conversation permanently?', () => {
+                AppState.chats = AppState.chats.filter(c => c.id !== id);
+                if(AppState.activeChatId === id) {
+                    AppState.activeChatId = AppState.chats.length > 0 ? AppState.chats[0].id : null;
+                }
+                saveState();
+                renderChatSidebar();
+                renderChatBox();
+                showToast('Chat deleted');
+            });
+        }
+
+        function clearActiveChat() {
+            const chat = AppState.chats.find(c => c.id === AppState.activeChatId);
+            if(chat) {
+                customConfirm('CLEAR CHAT', 'Wipe messages in this chat?', () => {
+                    chat.messages = [];
+                    saveState();
+                    renderChatBox();
+                    showToast('Chat cleared');
+                });
+            }
+        }
+
+        function clearAllChats() {
+            customConfirm('CLEAR ALL CHATS', 'Delete ALL conversations?', () => {
+                AppState.chats = [];
+                AppState.activeChatId = null;
+                saveState();
+                renderChatSidebar();
+                renderChatBox();
+                showToast('All chats cleared');
+            });
+        }
+
         function renderChatBox() {
             const box = document.getElementById('chat-box');
-            box.innerHTML = AppState.chatHistory.map((msg, i) => `
+            const titleEl = document.getElementById('active-chat-title');
+            const activeChat = AppState.chats.find(c => c.id === AppState.activeChatId);
+
+            if(!activeChat) {
+                box.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-gray-500"><i data-lucide="message-square" class="w-12 h-12 mb-4 opacity-50"></i><p>Create a new chat to start.</p></div>`;
+                titleEl.textContent = "No Chat Selected";
+                lucide.createIcons();
+                return;
+            }
+
+            titleEl.textContent = activeChat.title;
+            box.innerHTML = activeChat.messages.map((msg, i) => `
                 <div class="flex items-start gap-3 chat-msg-anim ${msg.role === 'user' ? 'justify-end' : ''} group">
                     ${msg.role === 'bot' ? `<div class="w-8 h-8 rounded-lg bg-cyber-accent/20 border border-cyber-accent flex items-center justify-center text-cyber-accent text-xs font-bold font-orbitron flex-shrink-0">ZJ</div>` : ''}
                     <div class="${msg.role === 'user' ? 'bg-cyber-accent/20 border border-cyber-accent text-cyber-accent' : 'bg-cyber-dark/80 border border-cyber-border text-gray-200 markdown-body'} px-4 py-3 rounded-2xl max-w-md shadow-lg relative">
@@ -1298,23 +1431,17 @@
             `).join('');
             box.scrollTop = box.scrollHeight;
             lucide.createIcons();
-            
-            const histModalList = document.getElementById('chat-history-list-modal');
-            if(histModalList) {
-                histModalList.innerHTML = AppState.chatHistory.length ? AppState.chatHistory.map(msg => `
-                    <div class="flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : ''}">
-                        <div class="${msg.role === 'user' ? 'text-cyber-accent' : 'text-gray-300'} text-xs font-bold mb-1">${msg.role === 'user' ? 'YOU' : 'ZJ'}</div>
-                        <div class="${msg.role === 'user' ? 'bg-cyber-accent/20 border-cyber-accent' : 'bg-cyber-dark border-cyber-border markdown-body'} border px-3 py-2 rounded-xl max-w-md">${msg.role === 'bot' ? parseMarkdown(msg.content) : msg.content}</div>
-                    </div>
-                `).join('') : '<div class="text-gray-500 text-center py-4">No chat history.</div>';
-            }
         }
 
         function copyMessage(index) {
-            const text = AppState.chatHistory[index].content;
-            navigator.clipboard.writeText(text);
-            showToast('Copied to clipboard');
+            const activeChat = AppState.chats.find(c => c.id === AppState.activeChatId);
+            if(activeChat && activeChat.messages[index]) {
+                navigator.clipboard.writeText(activeChat.messages[index].content);
+                showToast('Copied to clipboard');
+            }
         }
+
+        let currentAbortController = null;
 
         async function sendChatMessage(e) {
             e.preventDefault();
@@ -1322,7 +1449,16 @@
             const msg = input.value.trim();
             if (!msg) return;
             
-            AppState.chatHistory.push({ role: 'user', content: msg });
+            let activeChat = AppState.chats.find(c => c.id === AppState.activeChatId);
+            if(!activeChat) { createNewChat(); activeChat = AppState.chats[0]; }
+
+            // Auto-title
+            if(activeChat.messages.length === 0) {
+                activeChat.title = msg.substring(0, 20) + (msg.length > 20 ? '...' : '');
+                renderChatSidebar();
+            }
+
+            activeChat.messages.push({ role: 'user', content: msg });
             saveState(); renderChatBox(); input.value = '';
             
             const box = document.getElementById('chat-box');
@@ -1330,11 +1466,19 @@
             box.innerHTML += `<div class="flex items-start gap-3 chat-msg-anim" id="${typingId}"><div class="w-8 h-8 rounded-lg bg-cyber-accent/20 border border-cyber-accent flex items-center justify-center text-cyber-accent text-xs font-bold font-orbitron flex-shrink-0">ZJ</div><div class="bg-cyber-dark/80 border border-cyber-border px-4 py-3 rounded-2xl flex gap-1 items-center"><span class="w-1.5 h-1.5 bg-cyber-accent rounded-full typing-dot"></span><span class="w-1.5 h-1.5 bg-cyber-accent rounded-full typing-dot"></span><span class="w-1.5 h-1.5 bg-cyber-accent rounded-full typing-dot"></span></div></div>`;
             box.scrollTop = box.scrollHeight;
             
+            // Toggle Buttons
+            document.getElementById('chat-send-btn').classList.add('hidden');
+            document.getElementById('chat-stop-btn').classList.remove('hidden');
+            document.getElementById('chat-stop-btn').classList.add('flex');
+
+            currentAbortController = new AbortController();
             let botReply = "";
+            
             try {
                 const endpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/chat' : '/api/chat';
                 
-                const contextWindow = AppState.chatHistory.slice(-10).map(m => ({
+                // 30 Message Context Window
+                const contextWindow = activeChat.messages.slice(-30).map(m => ({
                     role: m.role === 'bot' ? 'assistant' : 'user',
                     content: m.content
                 }));
@@ -1345,26 +1489,38 @@
                     body: JSON.stringify({ 
                         message: msg, 
                         messages: contextWindow 
-                    }) 
+                    }),
+                    signal: currentAbortController.signal
                 });
                 
                 if (!response.ok) throw new Error("Backend offline");
                 const data = await response.json();
                 botReply = data.reply;
             } catch (err) {
-                await new Promise(r => setTimeout(r, 1000));
-                botReply = "I am currently in simulation mode. The backend API is offline. How can I assist you locally?";
+                if (err.name === 'AbortError') {
+                    botReply = "⚠️ Generation stopped by user.";
+                } else {
+                    await new Promise(r => setTimeout(r, 1000));
+                    botReply = "I am currently in simulation mode. The backend API is offline. How can I assist you locally?";
+                }
             } finally {
                 document.getElementById(typingId).remove();
-                AppState.chatHistory.push({ role: 'bot', content: botReply });
-                saveState(); renderChatBox();
+                document.getElementById('chat-send-btn').classList.remove('hidden');
+                document.getElementById('chat-stop-btn').classList.add('hidden');
+                document.getElementById('chat-stop-btn').classList.remove('flex');
+                
+                if(botReply) {
+                    activeChat.messages.push({ role: 'bot', content: botReply });
+                    saveState(); renderChatBox();
+                }
+                currentAbortController = null;
             }
         }
 
-        function clearChatMessages() {
-            AppState.chatHistory = [];
-            saveState(); renderChatBox(); showToast('Chat cleared', 'info');
-        }
+        // Abort Functionality
+        document.getElementById('chat-stop-btn').addEventListener('click', () => {
+            if(currentAbortController) currentAbortController.abort();
+        });
 
         // ==========================================
         // 11. SETTINGS & DATA
@@ -1379,14 +1535,14 @@
                     const p = JSON.parse(json); 
                     if(p.notes) AppState.notes = p.notes; 
                     if(p.todos) AppState.todos = p.todos; 
-                    if(p.chatHistory) AppState.chatHistory = p.chatHistory;
+                    if(p.chats) AppState.chats = p.chats; 
                     if(p.customImages) AppState.customImages = p.customImages;
-                    saveState(); renderNotes(); renderTodos(); renderChatBox(); renderGallery(); showToast('Imported successfully'); 
+                    saveState(); renderNotes(); renderTodos(); renderChatSidebar(); renderChatBox(); renderGallery(); showToast('Imported successfully'); 
                 } catch(e) { showToast('Invalid JSON', 'error'); }
             });
         }
         function clearAllData() {
-            customConfirm('CLEAR DATA', 'This will delete all notes, todos, settings, images and chat history permanently.', () => {
+            customConfirm('CLEAR DATA', 'This will delete all notes, todos, settings, images and chats permanently.', () => {
                 localStorage.clear(); location.reload();
             });
         }
