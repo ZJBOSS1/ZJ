@@ -2,13 +2,13 @@
 <html lang="en" data-theme="blue" data-mode="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#080F17">
     <meta name="description" content="ZJ OS — Your Personal Professional Productivity Website">
     <title>ZJ OS </title>
     
     <!-- PWA -->
-    <link rel="manifest" href='data:application/manifest+json,{"name":"ZJ OS","short_name":"ZJ OS","start_url":".","display":"standalone","background_color":"#080F17","theme_color":"#168BFA","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 rx=%2720%27 fill=%27%23168BFA%27/%3E%3Ctext x=%2750%27 y=%2768%27 font-size=%2745%27 font-family=%27Arial%27 font-weight=%27bold%27 text-anchor=%27middle%27 fill=%27white%27%3EZJ%3C/text%3E%3C/svg%3E","sizes":"any","type":"image/svg+xml"}]}'>
+    <link rel="manifest" href="./manifest.json">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -1423,8 +1423,9 @@
             const c = document.getElementById('toast-container');
             const t = document.createElement('div');
             t.className = `toast ${type}`;
-            t.innerHTML = `<i data-lucide="${icons[type] || 'info'}"></i><span>${msg}</span>`;
-            c.appendChild(t); lucide.createIcons();
+            const icon = document.createElement('i'); icon.setAttribute('data-lucide', icons[type] || 'info');
+            const label = document.createElement('span'); label.textContent = String(msg);
+            t.append(icon, label); c.appendChild(t); if (window.lucide) lucide.createIcons();
             setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500);
         }
 
@@ -1662,35 +1663,129 @@
 
         // ==================== WEATHER ====================
         async function fetchWeather(target) {
-            const input = target === 'widget' ? 'weather-widget-input' : 'weather-full-input';
-            const city = document.getElementById(input).value.trim() || 'Hyderabad';
+            const inputId = target === 'widget' ? 'weather-widget-input' : 'weather-full-input';
+            const input = document.getElementById(inputId);
+            if (!input) return;
+
+            const query = input.value.trim() || 'Hyderabad';
+            const tempEl = document.getElementById(`weather-temp-${target}`);
+            const descEl = document.getElementById(`weather-desc-${target}`);
+            const locEl = document.getElementById(`weather-loc-${target}`);
+
+            if (descEl) descEl.textContent = 'Loading weather…';
+
             try {
-                const geo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`).then(r => r.json());
-                if (!geo.results?.length) { toast('City not found', 'error'); return; }
-                const { latitude, longitude, name, country_code } = geo.results[0];
-                const w = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relative_humidity_2m,precipitation_probability,uv_index&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`).then(r => r.json());
-                const now = new Date();
-                const timeStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}T${String(now.getHours()).padStart(2,'0')}:00`;
-                let idx = w.hourly.time.indexOf(timeStr); if (idx === -1) idx = 0;
-                const temp = App.tempUnit === 'C' ? Math.round(w.current_weather.temperature) : Math.round(w.current_weather.temperature * 9/5 + 32);
-                const unit = App.tempUnit === 'C' ? '°C' : '°F';
-                document.getElementById(`weather-temp-${target}`).textContent = temp;
-                document.getElementById(`weather-desc-${target}`).textContent = w.current_weather.weathercode === 0 ? 'Clear Sky' : 'Cloudy';
-                document.getElementById(`weather-loc-${target}`).textContent = `${name}, ${country_code}`;
-                document.getElementById(`weather-rain-${target}`).textContent = `${w.hourly.precipitation_probability[idx] ?? 0}%`;
-                document.getElementById(`weather-humidity-${target}`).textContent = `${w.hourly.relative_humidity_2m[idx] ?? 0}%`;
-                document.getElementById(`weather-wind-${target}`).textContent = `${w.current_weather.windspeed} km/h`;
-                document.getElementById(`weather-uv-${target}`).textContent = (w.hourly.uv_index[idx] ?? 0).toFixed(1);
-                if (target === 'full') {
-                    const fl = document.getElementById('forecast-list');
-                    fl.innerHTML = w.daily.time.slice(0, 7).map((t, i) => {
-                        const d = new Date(t).toLocaleDateString('en-US', { weekday: 'long' });
-                        const hi = App.tempUnit === 'C' ? Math.round(w.daily.temperature_2m_max[i]) : Math.round(w.daily.temperature_2m_max[i] * 9/5 + 32);
-                        const lo = App.tempUnit === 'C' ? Math.round(w.daily.temperature_2m_min[i]) : Math.round(w.daily.temperature_2m_min[i] * 9/5 + 32);
-                        return `<div class="list-item" style="padding: 8px 12px;"><div style="font-size: 12px;">${d}</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent-primary);">${hi}° / ${lo}°</div></div>`;
-                    }).join('');
+                let latitude, longitude, name, country_code;
+
+                // Geolocation stores coordinates in the input, so don't send them to city search.
+                const coords = query.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/);
+                if (coords) {
+                    latitude = Number(coords[1]);
+                    longitude = Number(coords[2]);
+                    if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90 ||
+                        !Number.isFinite(longitude) || longitude < -180 || longitude > 180) {
+                        throw new Error('Invalid coordinates');
+                    }
+                    name = 'Your location';
+                    country_code = '';
+                } else {
+                    const geoResponse = await fetch(
+                        `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=en&format=json`,
+                        { signal: AbortSignal.timeout ? AbortSignal.timeout(10000) : undefined }
+                    );
+                    if (!geoResponse.ok) throw new Error('City search failed');
+                    const geo = await geoResponse.json();
+                    if (!Array.isArray(geo.results) || !geo.results.length) {
+                        if (descEl) descEl.textContent = 'City not found';
+                        toast('City not found. Try another city.', 'error');
+                        return;
+                    }
+                    ({ latitude, longitude, name, country_code } = geo.results[0]);
                 }
-            } catch(e) { toast('Weather error', 'error'); }
+
+                const weatherUrl = new URL('https://api.open-meteo.com/v1/forecast');
+                weatherUrl.search = new URLSearchParams({
+                    latitude: String(latitude),
+                    longitude: String(longitude),
+                    current: 'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m',
+                    hourly: 'relative_humidity_2m,precipitation_probability,uv_index',
+                    daily: 'weather_code,temperature_2m_max,temperature_2m_min',
+                    timezone: 'auto',
+                    forecast_days: '7'
+                }).toString();
+
+                const weatherResponse = await fetch(
+                    weatherUrl.toString(),
+                    { signal: AbortSignal.timeout ? AbortSignal.timeout(12000) : undefined }
+                );
+                if (!weatherResponse.ok) throw new Error('Weather service failed');
+                const w = await weatherResponse.json();
+                if (!w.current || !w.daily) throw new Error('Weather data is incomplete');
+
+                const current = w.current;
+                const unit = App.tempUnit === 'C' ? '°C' : '°F';
+                const celsius = Number(current.temperature_2m);
+                const temp = App.tempUnit === 'C' ? Math.round(celsius) : Math.round(celsius * 9 / 5 + 32);
+                if (tempEl) tempEl.textContent = temp;
+                if (descEl) descEl.textContent = weatherDescription(current.weather_code);
+                if (locEl) locEl.textContent = [name, country_code].filter(Boolean).join(', ');
+
+                const now = new Date();
+                const hourlyTimes = w.hourly?.time || [];
+                let idx = hourlyTimes.findIndex(t => new Date(t).getTime() >= now.getTime());
+                if (idx < 0) idx = Math.max(0, hourlyTimes.length - 1);
+
+                const rain = w.hourly?.precipitation_probability?.[idx];
+                const humidity = current.relative_humidity_2m ?? w.hourly?.relative_humidity_2m?.[idx];
+                const uv = w.hourly?.uv_index?.[idx];
+                const wind = current.wind_speed_10m;
+
+                const rainEl = document.getElementById(`weather-rain-${target}`);
+                const humidityEl = document.getElementById(`weather-humidity-${target}`);
+                const windEl = document.getElementById(`weather-wind-${target}`);
+                const uvEl = document.getElementById(`weather-uv-${target}`);
+                if (rainEl) rainEl.textContent = rain == null ? '—' : `${rain}%`;
+                if (humidityEl) humidityEl.textContent = humidity == null ? '—' : `${humidity}%`;
+                if (windEl) windEl.textContent = wind == null ? '—' : `${wind} km/h`;
+                if (uvEl) uvEl.textContent = uv == null ? '—' : Number(uv).toFixed(1);
+
+                document.querySelectorAll('.weather-temp-unit').forEach(el => { el.textContent = unit; });
+
+                if (target === 'full') {
+                    const forecastList = document.getElementById('forecast-list');
+                    if (forecastList) {
+                        forecastList.innerHTML = (w.daily.time || []).slice(0, 7).map((date, i) => {
+                            const day = new Date(`${date}T12:00:00`).toLocaleDateString('en-US', { weekday: 'long' });
+                            const maxC = Number(w.daily.temperature_2m_max?.[i]);
+                            const minC = Number(w.daily.temperature_2m_min?.[i]);
+                            const high = App.tempUnit === 'C' ? Math.round(maxC) : Math.round(maxC * 9 / 5 + 32);
+                            const low = App.tempUnit === 'C' ? Math.round(minC) : Math.round(minC * 9 / 5 + 32);
+                            const description = weatherDescription(w.daily.weather_code?.[i]);
+                            return `<div class="list-item" style="padding:8px 12px;"><div><div style="font-size:12px;">${day}</div><div style="font-size:11px;color:var(--text-muted);">${description}</div></div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent-primary);">${high}${unit} / ${low}${unit}</div></div>`;
+                        }).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Weather request failed:', error);
+                if (descEl) descEl.textContent = 'Weather unavailable';
+                toast('Could not load weather. Check your connection and try again.', 'error');
+            }
+        }
+
+        function weatherDescription(code) {
+            const descriptions = {
+                0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
+                45: 'Fog', 48: 'Depositing rime fog',
+                51: 'Light drizzle', 53: 'Drizzle', 55: 'Dense drizzle',
+                56: 'Freezing drizzle', 57: 'Heavy freezing drizzle',
+                61: 'Light rain', 63: 'Rain', 65: 'Heavy rain',
+                66: 'Freezing rain', 67: 'Heavy freezing rain',
+                71: 'Light snow', 73: 'Snow', 75: 'Heavy snow', 77: 'Snow grains',
+                80: 'Rain showers', 81: 'Heavy showers', 82: 'Violent showers',
+                85: 'Snow showers', 86: 'Heavy snow showers',
+                95: 'Thunderstorm', 96: 'Thunderstorm with hail', 99: 'Severe thunderstorm'
+            };
+            return descriptions[Number(code)] || 'Current conditions';
         }
 
         function toggleTempUnit() {
@@ -2439,37 +2534,96 @@
         async function sendChatMessage(e) {
             e.preventDefault();
             const input = document.getElementById('chat-input');
+            const sendButton = document.getElementById('chat-send-btn');
+            const stopButton = document.getElementById('chat-stop-btn');
             const msg = input.value.trim();
             if (!msg) return;
-            let c = App.chats.find(c => c.id === App.activeChat);
-            if (!c) { createNewChat(); c = App.chats[0]; }
-            if (c.messages.length === 0) { c.title = msg.substring(0, 30) + (msg.length > 30 ? '...' : ''); renderChatSidebar(); }
+            if (msg.length > 2000) {
+                toast('Message is too long. Keep it under 2,000 characters.', 'error');
+                return;
+            }
+
+            let c = App.chats.find(chat => chat.id === App.activeChat);
+            if (!c) {
+                createNewChat();
+                c = App.chats.find(chat => chat.id === App.activeChat) || App.chats[0];
+            }
+            if (!c) {
+                toast('Could not create a chat. Please try again.', 'error');
+                return;
+            }
+
+            if (!Array.isArray(c.messages)) c.messages = [];
+            if (c.messages.length === 0) {
+                c.title = msg.substring(0, 30) + (msg.length > 30 ? '...' : '');
+                renderChatSidebar();
+            }
+
             c.messages.push({ role: 'user', content: msg });
-            save(); renderChatMessages(); input.value = '';
+            save();
+            renderChatMessages();
+            input.value = '';
             input.style.height = 'auto';
             document.getElementById('char-count').textContent = '0/2000';
+
             const el = document.getElementById('chat-messages');
-            el.innerHTML += `<div class="message" id="typing-ind"><div class="message-avatar">AI</div><div class="message-bubble typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div></div>`;
+            el.insertAdjacentHTML('beforeend',
+                `<div class="message" id="typing-ind"><div class="message-avatar">AI</div><div class="message-bubble typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div></div>`
+            );
             el.scrollTop = el.scrollHeight;
-            document.getElementById('chat-send-btn').classList.add('hidden');
-            document.getElementById('chat-stop-btn').classList.remove('hidden');
+            sendButton.disabled = true;
+            sendButton.classList.add('hidden');
+            stopButton.classList.remove('hidden');
             chatAbort = new AbortController();
+
             let reply = '';
             try {
-                const endpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000/chat' : '/api/chat';
-                const context = c.messages.slice(-20).map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content }));
-                const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: msg, messages: context }), signal: chatAbort.signal });
-                if (!res.ok) throw new Error('Offline');
-                const data = await res.json();
-                reply = data.reply;
-            } catch(err) {
-                if (err.name === 'AbortError') reply = '⚠️ Stopped.';
-                else reply = "I'm in simulation mode. The backend is offline. How can I help?";
+                const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+                const endpoint = isLocal ? 'http://127.0.0.1:5000/api/chat' : '/api/chat';
+                const context = c.messages.slice(-20).map(message => ({
+                    role: message.role === 'assistant' ? 'assistant' : 'user',
+                    content: String(message.content || '').slice(0, 8000)
+                }));
+
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ messages: context }),
+                    signal: chatAbort.signal
+                });
+
+                let data;
+                try {
+                    data = await res.json();
+                } catch (_) {
+                    throw new Error(`Server returned an unreadable response (HTTP ${res.status}).`);
+                }
+
+                if (!res.ok) {
+                    throw new Error(data.error || data.reply || `AI request failed (HTTP ${res.status}).`);
+                }
+                if (typeof data.reply !== 'string' || !data.reply.trim()) {
+                    throw new Error('The AI service returned an empty response.');
+                }
+                reply = data.reply.trim();
+            } catch (err) {
+                if (err.name === 'AbortError') {
+                    reply = 'Generation stopped.';
+                } else {
+                    console.error('Chat request failed:', err);
+                    reply = `I couldn't connect to the AI service. ${err.message || 'Please try again later.'}`;
+                    toast('AI request failed. Check the API configuration and server logs.', 'error');
+                }
             } finally {
                 document.getElementById('typing-ind')?.remove();
-                document.getElementById('chat-send-btn').classList.remove('hidden');
-                document.getElementById('chat-stop-btn').classList.add('hidden');
-                if (reply) { c.messages.push({ role: 'assistant', content: reply }); save(); renderChatMessages(); }
+                sendButton.disabled = false;
+                sendButton.classList.remove('hidden');
+                stopButton.classList.add('hidden');
+                if (reply) {
+                    c.messages.push({ role: 'assistant', content: reply });
+                    save();
+                    renderChatMessages();
+                }
                 chatAbort = null;
             }
         }
@@ -2684,29 +2838,58 @@
         }
 
         // ==================== DATA MANAGEMENT ====================
+        const BACKUP_VERSION = 1;
+        const BACKUP_FIELDS = [
+            'notes', 'todos', 'alarms', 'images', 'chats', 'notionPages', 'habits',
+            'bookmarks', 'cities', 'recentColors', 'activeChat', 'activePage', 'theme',
+            'mode', 'sound', 'bg3d', 'shape', 'tempUnit', 'clock24h', 'calcLog',
+            'pomoSessions', 'pomoLastDate'
+        ];
+
         function exportData() {
-            const data = { notes: App.notes, todos: App.todos, alarms: App.alarms, images: App.images, chats: App.chats, notionPages: App.notionPages, habits: App.habits, bookmarks: App.bookmarks, calcLog: App.calcLog, exportedAt: new Date().toISOString() };
+            const data = { schema: 'zj-os-backup', version: BACKUP_VERSION, exportedAt: new Date().toISOString(), data: {} };
+            BACKUP_FIELDS.forEach(key => { data.data[key] = App[key]; });
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url; a.download = 'zj-os-backup-' + new Date().toISOString().split('T')[0] + '.json'; a.click();
-            URL.revokeObjectURL(url);
-            toast('Exported successfully', 'success');
+            a.href = url;
+            a.download = 'zj-os-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            toast('Backup exported successfully', 'success');
         }
 
         function importData() {
             const input = document.createElement('input');
-            input.type = 'file'; input.accept = '.json';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
+            input.type = 'file'; input.accept = 'application/json,.json';
+            input.onchange = () => {
+                const file = input.files && input.files[0];
                 if (!file) return;
+                if (file.size > 10 * 1024 * 1024) { toast('Backup is too large (maximum 10 MB).', 'error'); return; }
                 const reader = new FileReader();
-                reader.onload = (ev) => {
+                reader.onerror = () => toast('Could not read the selected backup.', 'error');
+                reader.onload = () => {
                     try {
-                        const data = JSON.parse(ev.target.result);
-                        Object.keys(data).forEach(k => { if (k in App) App[k] = data[k]; });
-                        save(); toast('Imported — reloading...', 'success'); setTimeout(() => location.reload(), 1000);
-                    } catch(err) { toast('Invalid file', 'error'); }
+                        const parsed = JSON.parse(String(reader.result || ''));
+                        const payload = parsed && parsed.schema === 'zj-os-backup' ? parsed.data : parsed;
+                        if (!payload || typeof payload !== 'object' || Array.isArray(payload)) throw new Error('Backup format is invalid.');
+                        if (parsed.schema === 'zj-os-backup' && parsed.version !== BACKUP_VERSION) throw new Error('This backup version is not supported.');
+                        const allowed = new Set(BACKUP_FIELDS);
+                        const keys = Object.keys(payload).filter(key => allowed.has(key));
+                        if (!keys.length) throw new Error('No supported ZJ OS data was found in this file.');
+                        const arrayFields = ['notes','todos','alarms','images','chats','notionPages','habits','bookmarks','cities','recentColors','calcLog'];
+                        for (const key of keys) {
+                            if (arrayFields.includes(key) && !Array.isArray(payload[key])) throw new Error('Invalid data for ' + key + '.');
+                        }
+                        confirmAction('Import Backup', 'Import ' + keys.length + ' data categories? Existing values in those categories will be replaced.', () => {
+                            keys.forEach(key => { App[key] = payload[key]; });
+                            save();
+                            toast('Backup imported. Reloading workspace…', 'success');
+                            setTimeout(() => location.reload(), 700);
+                        });
+                    } catch (error) {
+                        toast(error && error.message ? error.message : 'Invalid backup file.', 'error');
+                    }
                 };
                 reader.readAsText(file);
             };
@@ -2714,8 +2897,15 @@
         }
 
         function clearAllData() {
-            confirmAction('Clear All Data', 'Delete all data permanently? This cannot be undone.', () => {
-                localStorage.clear(); location.reload();
+            confirmAction('Clear All Data', 'Delete ZJ OS data stored in this browser? Export a backup first if you may need it later.', () => {
+                try {
+                    Object.keys(localStorage).filter(key => key.startsWith('zj_')).forEach(key => localStorage.removeItem(key));
+                } catch (error) {
+                    console.error('Could not clear ZJ OS data:', error);
+                    toast('Could not clear local data in this browser.', 'error');
+                    return;
+                }
+                location.reload();
             });
         }
 
@@ -2815,5 +3005,53 @@
             if (App.bg3d) location.reload();
         }
     </script>
+
+    <style id="zj-pwa-enhancements">
+        #zj-network-status { position: fixed; z-index: 100000; left: 50%; top: 12px; transform: translateX(-50%); padding: 8px 14px; border-radius: 999px; background: #92400e; color: #fff; font: 600 12px Inter, sans-serif; box-shadow: 0 8px 24px rgba(0,0,0,.25); display: none; max-width: calc(100vw - 24px); text-align: center; }
+        #zj-install-button { position: fixed; z-index: 9990; right: 16px; bottom: 16px; border: 1px solid var(--border, #30465c); border-radius: 999px; padding: 10px 14px; background: var(--accent-primary, #168bfa); color: #07111d; font: 700 12px Inter, sans-serif; box-shadow: 0 8px 24px rgba(0,0,0,.25); display: none; cursor: pointer; }
+        #zj-install-button:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+    </style>
+    <div id="zj-network-status" role="status" aria-live="polite">You are offline. Saved local data remains available; online services may not work.</div>
+    <button id="zj-install-button" type="button" aria-label="Install ZJ OS app">Install ZJ OS</button>
+    <script>
+        (() => {
+            const status = document.getElementById('zj-network-status');
+            const installButton = document.getElementById('zj-install-button');
+            let installPrompt = null;
+            const updateNetworkStatus = () => {
+                status.style.display = navigator.onLine ? 'none' : 'block';
+                document.documentElement.dataset.connection = navigator.onLine ? 'online' : 'offline';
+            };
+            window.addEventListener('online', updateNetworkStatus);
+            window.addEventListener('offline', updateNetworkStatus);
+            updateNetworkStatus();
+            window.addEventListener('beforeinstallprompt', event => {
+                event.preventDefault(); installPrompt = event; installButton.style.display = 'block';
+            });
+            installButton.addEventListener('click', async () => {
+                if (!installPrompt) return;
+                installPrompt.prompt();
+                try { await installPrompt.userChoice; } catch (_) {}
+                installPrompt = null; installButton.style.display = 'none';
+            });
+            window.addEventListener('appinstalled', () => {
+                installButton.style.display = 'none'; installPrompt = null;
+                if (typeof toast === 'function') toast('ZJ OS installed successfully.', 'success');
+            });
+            if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('./sw.js').catch(error => {
+                        console.warn('PWA offline support could not be registered:', error);
+                    });
+                }, { once: true });
+            }
+            // Honor the OS motion preference for the decorative 3D animation.
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.documentElement.dataset.reducedMotion = 'true';
+            }
+        })();
+    </script>
+
 </body>
 </html> 
