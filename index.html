@@ -747,9 +747,7 @@
                         <button class="dashboard-action" type="button" onclick="switchTab('todo'); document.getElementById('todo-input')?.focus()"><span class="action-icon"><i data-lucide="check-square"></i></span><span><strong>Quick task</strong><small>Open your task list</small></span></button>
                         <button class="dashboard-action" type="button" onclick="switchTab('notes'); openNoteDialog()"><span class="action-icon"><i data-lucide="sticky-note"></i></span><span><strong>New note</strong><small>Capture an idea</small></span></button>
                         <button class="dashboard-action" type="button" onclick="switchTab('weather'); document.getElementById('weather-full-input')?.focus()"><span class="action-icon"><i data-lucide="cloud-sun"></i></span><span><strong>World weather</strong><small>Choose the exact city</small></span></button>
-                        <button class="kill-switch" type="button" onclick="emergencyStop()" title="Stops active processes only. Does not delete your data."><i data-lucide="octagon-x"></i> STOP ALL ACTIVE PROCESSES</button>
                     </div>
-                    <p id="zj-kill-status" role="status">Emergency stop pauses active AI generation and timers. Your saved data will not be deleted.</p>
 
                     <div class="dashboard-grid">
                         <div class="card widget">
@@ -1341,6 +1339,11 @@
                 </select>
                 <button class="btn btn-secondary" onclick="exportData()" style="justify-content: flex-start;"><i data-lucide="download"></i> Export Data</button>
                 <button class="btn btn-secondary" onclick="importData()" style="justify-content: flex-start;"><i data-lucide="upload"></i> Import Data</button>
+                <div class="settings-emergency">
+                    <div class="list-item-content"><div class="list-item-title" style="font-size:13px;color:var(--danger);">Emergency Stop</div><div class="list-item-meta">Stop active AI generation, timers, sounds and animated background. Saved data is kept.</div></div>
+                    <button class="kill-switch" type="button" onclick="emergencyStop()" title="Stops active processes only. Does not delete your data."><i data-lucide="octagon-x"></i><span>STOP</span></button>
+                    <p id="zj-kill-status" role="status" aria-live="polite">Emergency stop pauses active AI generation and timers. Your saved data will not be deleted.</p>
+                </div>
                 <button class="btn btn-danger" onclick="clearAllData()" style="justify-content: flex-start;"><i data-lucide="trash-2"></i> Clear All Data</button>
                 <div style="font-size: 10px; color: var(--text-dim); text-align: center; margin-top: 8px;">ZJ OS v2.0 · Built with care</div>
             </div>
@@ -3049,6 +3052,71 @@
             if (App.bg3d) location.reload();
         }
     </script>
+
+    <style id="zj-mobile-ux-and-motion">
+        /* Ambient motion: restrained, GPU-friendly and automatically reduced for accessibility. */
+        .bg-grid { overflow:hidden; }
+        .bg-grid::after {
+            content:""; position:absolute; inset:-25%; pointer-events:none;
+            background:
+              radial-gradient(ellipse at 18% 28%, color-mix(in srgb, var(--accent-primary) 17%, transparent), transparent 34%),
+              radial-gradient(ellipse at 82% 72%, color-mix(in srgb, var(--accent-secondary) 13%, transparent), transparent 32%);
+            opacity:.72; transform:translate3d(0,0,0); animation:zjAmbientDrift 22s ease-in-out infinite alternate;
+        }
+        @keyframes zjAmbientDrift { 0%{transform:translate3d(-2%, -1%, 0) scale(1)} 50%{transform:translate3d(2%, 1.5%, 0) scale(1.04)} 100%{transform:translate3d(-1%, 2%, 0) scale(1.01)} }
+        .settings-emergency { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px 12px; align-items:center; padding:12px; border:1px solid rgba(239,68,68,.28); border-radius:12px; background:linear-gradient(135deg, var(--danger-dim), transparent 80%); }
+        .settings-emergency #zj-kill-status { grid-column:1/-1; margin:0; font-size:11px; line-height:1.5; color:var(--text-muted); }
+        .settings-emergency .kill-switch { min-height:40px; white-space:nowrap; }
+        .chat-header { min-width:0; }
+        .chat-header > div:last-child { min-width:0; }
+        .chat-context-row { min-width:0; }
+        .chat-context-select { width:min(100%, 340px); }
+        .chat-input-area { min-width:0; }
+        .chat-input { min-width:0; }
+        @media (max-width:768px) {
+            .topbar { gap:7px; padding:9px 10px; }
+            .topbar-left { min-width:0; flex:1; gap:8px; }
+            .search-pill { min-width:0; width:100%; max-width:none; padding:9px 10px; }
+            .search-pill span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+            .search-pill kbd { display:none; }
+            .topbar-right { gap:6px; }
+            .topbar-right .btn-icon { width:38px; height:38px; }
+            .mode-switch { padding:3px; }
+            .mode-switch button { padding:7px 9px; }
+            .content-area { padding:12px 10px calc(22px + env(safe-area-inset-bottom)); }
+            #tab-chatbot .chat-layout { height:calc(100dvh - 145px); min-height:0; max-height:calc(100dvh - 145px); border-radius:14px; }
+            #tab-chatbot .chat-header { align-items:flex-start; gap:8px; padding:10px; }
+            #tab-chatbot .chat-identity { min-width:90px; gap:7px; }
+            #tab-chatbot .chat-header > div:last-child { display:grid !important; grid-template-columns:repeat(3, minmax(32px, 38px)); gap:5px !important; }
+            #tab-chatbot .chat-header input { grid-column:1/-1; grid-row:1; width:100% !important; min-width:0; height:34px; }
+            #tab-chatbot .chat-header .btn-icon { width:36px; height:36px; }
+            #tab-chatbot .chat-context-row { display:grid; grid-template-columns:1fr; gap:5px; padding:8px 10px 0; }
+            #tab-chatbot .chat-context-select { width:100%; max-width:none; min-height:40px; font-size:12px; }
+            #tab-chatbot .chat-context-note { line-height:1.4; }
+            #tab-chatbot .quick-prompts { padding:8px 10px 0; gap:5px; }
+            #tab-chatbot .quick-prompt { padding:6px 10px; font-size:11px; }
+            #tab-chatbot .chat-messages { padding:12px 9px; gap:10px; }
+            #tab-chatbot .message { max-width:100%; }
+            #tab-chatbot .message-bubble { padding:9px 11px; font-size:13px; }
+            #tab-chatbot .chat-input-area { padding:8px; gap:7px; align-items:flex-end; }
+            #tab-chatbot .chat-input { min-height:44px; max-height:100px; padding:11px; font-size:14px; }
+            #tab-chatbot .chat-input-area > div { flex-direction:row !important; align-items:center; }
+            #tab-chatbot .chat-input-area .btn { min-height:40px; padding:0 12px; }
+            #tab-chatbot #char-count { padding-bottom:calc(6px + env(safe-area-inset-bottom)) !important; }
+            body:has(#tab-chatbot.active) #zj-assistant-fab { display:none; }
+            #zj-assistant-fab { right:12px; bottom:calc(14px + env(safe-area-inset-bottom)); padding:10px 12px; }
+            #zj-install-button { right:12px; bottom:calc(12px + env(safe-area-inset-bottom)); }
+            .modal-body { max-height:72dvh; overflow-y:auto; }
+            #settings-dialog { width:min(94vw, 500px); max-height:90dvh; }
+        }
+        @media (max-width:380px) {
+            .topbar-right .btn-icon { width:34px; height:34px; }
+            .mode-switch button { padding:6px 7px; font-size:11px; }
+            #tab-chatbot .chat-identity .chat-name { max-width:82px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+            #tab-chatbot .chat-header > div:last-child { grid-template-columns:repeat(3, 32px); }
+        }
+        @media (prefers-reduced-motion:reduce) { .bg-grid::after { animation:none; } }
+    </style>
 
     <style id="zj-pwa-enhancements">
         #zj-network-status { position: fixed; z-index: 100000; left: 50%; top: 12px; transform: translateX(-50%); padding: 8px 14px; border-radius: 999px; background: #92400e; color: #fff; font: 600 12px Inter, sans-serif; box-shadow: 0 8px 24px rgba(0,0,0,.25); display: none; max-width: calc(100vw - 24px); text-align: center; }
