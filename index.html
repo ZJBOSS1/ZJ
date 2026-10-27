@@ -3115,7 +3115,56 @@
             #tab-chatbot .chat-identity .chat-name { max-width:82px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
             #tab-chatbot .chat-header > div:last-child { grid-template-columns:repeat(3, 32px); }
         }
-        @media (prefers-reduced-motion:reduce) { .bg-grid::after { animation:none; } }
+        /* ZJ OS Future Glass: Aurora background, living cards, and assistant motion */
+        .bg-grid::before {
+            content:""; position:absolute; inset:-35%; pointer-events:none;
+            background:
+              radial-gradient(ellipse at 22% 42%, rgba(22,139,250,.19), transparent 29%),
+              radial-gradient(ellipse at 74% 35%, rgba(22,184,176,.14), transparent 27%),
+              radial-gradient(ellipse at 58% 82%, rgba(99,102,241,.10), transparent 30%);
+            filter:blur(22px); opacity:.78; transform:translate3d(0,0,0);
+            animation:zjAuroraFlow 30s ease-in-out infinite alternate;
+        }
+        @keyframes zjAuroraFlow {
+            0% { transform:translate3d(-2%,1%,0) rotate(-2deg) scale(1); }
+            50% { transform:translate3d(2%,-1.5%,0) rotate(1deg) scale(1.06); }
+            100% { transform:translate3d(-1%,2%,0) rotate(2deg) scale(1.02); }
+        }
+        /* Dashboard widgets feel responsive without distracting perpetual motion. */
+        .dashboard-actions .dashboard-action, .dashboard-grid > .card, .dashboard-grid > .widget {
+            transform:translateZ(0); transition:transform .24s cubic-bezier(.2,.7,.2,1),
+            border-color .24s ease, box-shadow .24s ease, background-color .24s ease;
+        }
+        .dashboard-actions .dashboard-action { position:relative; overflow:hidden; }
+        .dashboard-actions .dashboard-action::after {
+            content:""; position:absolute; inset:0; pointer-events:none; opacity:0;
+            background:linear-gradient(115deg, transparent 15%, rgba(255,255,255,.07) 45%, transparent 70%);
+            transform:translateX(-110%); transition:transform .55s ease, opacity .2s ease;
+        }
+        .dashboard-actions .dashboard-action:hover::after { opacity:1; transform:translateX(110%); }
+        .dashboard-actions .dashboard-action .action-icon { transition:transform .24s ease, box-shadow .24s ease; }
+        .dashboard-actions .dashboard-action:hover .action-icon { transform:translateY(-2px) scale(1.04); box-shadow:0 0 20px var(--accent-primary-dim); }
+        .card:hover, .dashboard-grid > .widget:hover { border-color:color-mix(in srgb, var(--accent-primary) 38%, var(--border)); }
+        /* Assistant presence reacts to real generation state; no fake activity. */
+        .chat-avatar { transition:box-shadow .25s ease, transform .25s ease; }
+        #tab-chatbot:has(#typing-ind) .chat-avatar {
+            box-shadow:0 0 0 4px var(--accent-primary-dim), 0 0 22px var(--accent-primary-dim);
+            animation:zjAssistantPulse 1.8s ease-in-out infinite;
+        }
+        #tab-chatbot:has(#typing-ind) .chat-status::before { animation:pulseDot .85s ease-in-out infinite; }
+        .chat-message-actions button, .quick-prompt { transition:transform .16s ease, border-color .2s ease, color .2s ease, background-color .2s ease; }
+        .chat-message-actions button:active, .quick-prompt:active { transform:scale(.97); }
+        @keyframes zjAssistantPulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.045); } }
+        [data-mode="light"] .bg-grid::before { opacity:.38; }
+        @media (hover:none) {
+            .dashboard-actions .dashboard-action:hover::after { display:none; }
+            .dashboard-actions .dashboard-action:hover { transform:none; }
+        }
+        @media (prefers-reduced-motion:reduce) {
+            .bg-grid::after, .bg-grid::before, #tab-chatbot:has(#typing-ind) .chat-avatar { animation:none !important; }
+            .dashboard-actions .dashboard-action, .dashboard-actions .dashboard-action::after,
+            .dashboard-actions .dashboard-action .action-icon, .chat-message-actions button, .quick-prompt { transition:none !important; }
+        }
     </style>
 
     <style id="zj-pwa-enhancements">
