@@ -866,6 +866,16 @@
                                 <button class="calc-btn" onclick="calcInput('.')">.</button>
                                 <button class="calc-btn eq" onclick="calcInput('=')">=</button>
                             </div>
+                            <details class="card" style="margin-top:12px;padding:12px" open>
+                                <summary style="cursor:pointer;font-weight:600;margin-bottom:10px">Scientific tools · <span id="calc-angle-label">Degrees</span></summary>
+                                <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px">
+                                  <button class="calc-btn fn" onclick="scientificCalc('sin')">sin</button><button class="calc-btn fn" onclick="scientificCalc('cos')">cos</button><button class="calc-btn fn" onclick="scientificCalc('tan')">tan</button><button class="calc-btn fn" onclick="scientificCalc('sqrt')">√x</button>
+                                  <button class="calc-btn fn" onclick="scientificCalc('log')">log</button><button class="calc-btn fn" onclick="scientificCalc('ln')">ln</button><button class="calc-btn fn" onclick="scientificCalc('square')">x²</button><button class="calc-btn fn" onclick="scientificCalc('reciprocal')">1/x</button>
+                                  <button class="calc-btn fn" onclick="scientificCalc('abs')">|x|</button><button class="calc-btn fn" onclick="scientificCalc('factorial')">x!</button><button class="calc-btn fn" onclick="calcInput('(')">(</button><button class="calc-btn fn" onclick="calcInput(')')">)</button>
+                                </div>
+                                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn btn-secondary btn-sm" onclick="toggleCalcAngle()">Toggle degrees/radians</button><button class="btn btn-secondary btn-sm" onclick="calcInput(Math.PI.toString())">Insert π</button><button class="btn btn-secondary btn-sm" onclick="calcInput(Math.E.toString())">Insert e</button><button class="btn btn-secondary btn-sm" onclick="exportCalcHistory()">Export history</button></div>
+                                <p class="text-xs text-muted" style="margin:8px 0 0">Scientific buttons calculate the current displayed number. This is not a graphing/CAS engine.</p>
+                            </details>
                             <div style="margin-top: 12px; font-size: 11px; color: var(--text-dim); text-align: center;">
                                 💡 Tip: Keyboard works — type numbers and operators directly
                             </div>
@@ -904,7 +914,7 @@
                                 </div>
                                 <div>
                                     <div class="nav-label" style="padding: 0; margin-bottom: 10px;">7-Day Forecast</div>
-                                    <div id="forecast-list" style="display: flex; flex-direction: column; gap: 4px;"></div>
+                                    <div id="forecast-list" style="display: flex; flex-direction: column; gap: 4px;"></div><div class="card" style="padding:12px;margin-top:12px"><div class="card-title">Weather tools</div><div class="text-xs text-muted" id="weather-freshness">Forecast updates when a location is loaded.</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><button class="btn btn-secondary btn-sm" onclick="fetchWeather('full')">Refresh forecast</button><button class="btn btn-secondary btn-sm" onclick="exportWeatherSnapshot()">Export snapshot</button></div></div>
                                 </div>
                             </div>
                         </div>
@@ -1011,7 +1021,7 @@
                                 <input type="file" id="image-upload" accept="image/*" multiple style="display: none;" onchange="handleImageUpload(event)">
                             </div>
                         </div>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;" id="gallery-full-grid"></div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><input class="input" id="gallery-search" placeholder="Search photos by title or caption" oninput="filterGalleryItems(this.value)" style="flex:1;min-width:180px"><select class="input" id="gallery-sort" onchange="sortGalleryItems(this.value)" style="max-width:180px"><option value="default">Default order</option><option value="name">Name A–Z</option></select><button class="btn btn-secondary btn-sm" onclick="exportGalleryIndex()">Export index</button></div><div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;" id="gallery-full-grid"></div>
                     </div>
                 </section>
 
@@ -1067,6 +1077,7 @@
                             <div class="card-title"><i data-lucide="target"></i> Habits</div>
                             <button class="btn btn-primary btn-sm" onclick="document.getElementById('habit-dialog').showModal()"><i data-lucide="plus"></i> New Habit</button>
                         </div>
+                        <div class="card" style="padding:12px;margin-bottom:12px"><div class="card-title" style="margin-bottom:8px">Progress insights</div><div id="habit-insights" class="text-xs text-muted">Track habits to see your progress.</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><button class="btn btn-secondary btn-sm" onclick="exportHabitData('json')">Export JSON</button><button class="btn btn-secondary btn-sm" onclick="exportHabitData('csv')">Export CSV</button><button class="btn btn-secondary btn-sm" onclick="openHabitReflection()">Weekly reflection</button></div><div id="habit-reflection" class="text-xs" style="margin-top:8px"></div></div>
                         <div class="habit-grid" id="habit-list"></div>
                     </div>
                 </section>
@@ -1089,6 +1100,7 @@
                         <div class="card-header">
                             <div class="card-title"><i data-lucide="key"></i> Password Generator</div>
                         </div>
+                        <div class="mb-3" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><label class="text-xs"><input type="checkbox" id="pwd-ambiguous" checked> Exclude ambiguous characters</label><label class="text-xs"><input type="checkbox" id="pwd-no-repeat"> Avoid repeated characters</label><button class="btn btn-secondary btn-sm" onclick="generatePassphrase()">Generate passphrase</button></div>
                         <div class="password-display">
                             <span class="pwd" id="pwd-output">Click "Generate"</span>
                             <button class="btn-icon" onclick="copyPassword()" title="Copy"><i data-lucide="copy" style="width: 14px; height: 14px;"></i></button>
@@ -1128,6 +1140,7 @@
                             <div class="card-title"><i data-lucide="palette"></i> Color Picker</div>
                         </div>
                         <div class="color-preview" id="color-preview" style="background: #168BFA;"></div>
+                        <div class="card" style="padding:12px;margin-bottom:12px"><div class="card-title" style="margin-bottom:8px">Palette & accessibility</div><div id="generated-palette" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:10px"></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-secondary btn-sm" onclick="generateColorPalette()">Generate harmony</button><button class="btn btn-secondary btn-sm" onclick="exportColorPalette()">Export CSS</button><button class="btn btn-secondary btn-sm" onclick="checkColorContrast()">Check contrast</button></div><div id="color-contrast-result" class="text-xs text-muted" style="margin-top:8px">Generate a palette or check contrast against white and black.</div></div>
                         <input type="color" class="custom-color-input mb-3" id="color-input" value="#168BFA" oninput="updateColor(this.value)">
                         <div class="color-values">
                             <div class="color-value-row"><span class="color-value-label">HEX</span><span id="color-hex" style="flex: 1;">#168BFA</span><button class="btn-icon" style="width: 24px; height: 24px;" onclick="copyColor('hex')"><i data-lucide="copy" style="width: 10px; height: 10px;"></i></button></div>
@@ -1200,8 +1213,10 @@
                 <section id="tab-notion" class="tab-content">
                     <div class="notion-layout">
                         <div class="notion-sidebar">
-                            <div style="padding: 8px; border-bottom: 1px solid var(--border);">
+                            <div style="padding: 8px; border-bottom: 1px solid var(--border);display:grid;gap:6px">
                                 <button class="btn btn-primary btn-sm w-full" onclick="createNotionPage()"><i data-lucide="plus"></i> New Page</button>
+                                <input class="input" id="notion-page-search" placeholder="Search pages…" oninput="filterNotionPages(this.value)" aria-label="Search workspace pages">
+                                <div style="display:flex;gap:5px"><button class="btn btn-secondary btn-sm" onclick="duplicateActiveNotionPage()">Duplicate</button><button class="btn btn-secondary btn-sm" onclick="exportAllNotionPages()">Export all</button></div>
                             </div>
                             <div class="notion-pages" id="notion-pages-list"></div>
                         </div>
@@ -3238,5 +3253,70 @@
 })();
 </script>
 
+<script>
+
+        // ===== ZJ OS Advanced local-first utilities =====
+        function secureRandomIndex(max) { const a=new Uint32Array(1); crypto.getRandomValues(a); return a[0] % max; }
+        function generatePassphrase(){
+          const words=['amber','orbit','river','maple','cobalt','tiger','comet','harbor','velvet','meadow','pixel','thunder','willow','lantern','summit','coral','planet','silver','forest','rocket','puzzle','breeze','copper','falcon','canvas','sunset','marble','signal','ocean','bright'];
+          const phrase=Array.from({length:4},()=>words[secureRandomIndex(words.length)]).join('-')+'-'+(100+secureRandomIndex(900));
+          document.getElementById('pwd-output').textContent=phrase;
+          document.getElementById('pwd-strength-label').textContent='Passphrase generated locally';
+          document.getElementById('pwd-strength').style.width='85%';
+        }
+        function generateColorPalette(){
+          const hex=document.getElementById('color-input')?.value||'#168BFA';
+          const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+          const mx=Math.max(r,g,b)/255,mn=Math.min(r,g,b)/255,d=mx-mn; let h=0;
+          if(d){if(mx===r/255)h=60*(((g-b)/255/d)%6);else if(mx===g/255)h=60*((b-r)/255/d+2);else h=60*((r-g)/255/d+4)}
+          h=(h+360)%360;
+          const palette=[0,35,180,210,330].map((offset,i)=>{const hh=(h+offset)%360;return `hsl(${hh}, ${Math.max(35,Math.min(85,Math.round((mx-mn)*100+45)))}%, ${[42,52,62,38,72][i]}%)`});
+          const el=document.getElementById('generated-palette'); if(el)el.innerHTML=palette.map(c=>`<button title="${c}" aria-label="Copy ${c}" onclick="navigator.clipboard.writeText('${c}');toast('Color copied','success')" style="height:54px;border:1px solid var(--border);border-radius:8px;background:${c};cursor:pointer"></button>`).join('');
+          window.zjColorPalette=palette;
+        }
+        function exportColorPalette(){const pal=window.zjColorPalette||[document.getElementById('color-input')?.value||'#168BFA'];const css=':root {\n'+pal.map((c,i)=>`  --zj-color-${i+1}: ${c};`).join('\n')+'\n}\n';downloadText('zj-color-palette.css',css);}
+        function luminance(hex){const rgb=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return .2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2]}
+        function checkColorContrast(){const c=document.getElementById('color-input')?.value||'#168BFA';const l=luminance(c),white=1.05/(l+.05),black=(l+.05)/.05;const el=document.getElementById('color-contrast-result');if(el)el.textContent=`Contrast with white: ${white.toFixed(2)}:1 (${white>=4.5?'AA text pass':'AA text fail'}). Contrast with black: ${black.toFixed(2)}:1 (${black>=4.5?'AA text pass':'AA text fail'}).`;}
+        function downloadText(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+        function filterGalleryItems(q){const query=(q||'').toLowerCase();document.querySelectorAll('#gallery-full-grid .gallery-item').forEach(el=>{el.style.display=el.innerText.toLowerCase().includes(query)?'':'none'});}
+        function sortGalleryItems(mode){if(mode!=='name')return;const grid=document.getElementById('gallery-full-grid');if(!grid)return;[...grid.children].sort((a,b)=>a.innerText.localeCompare(b.innerText)).forEach(el=>grid.appendChild(el));}
+        function exportGalleryIndex(){const items=(window.galleryImages||[]).map(x=>({title:x.title,caption:x.caption||'',source:x.url}));downloadText('zj-gallery-index.json',JSON.stringify(items,null,2));}
+        function exportWeatherSnapshot(){const data={exportedAt:new Date().toISOString(),location:document.getElementById('weather-loc-full')?.textContent||'',temperature:document.getElementById('weather-temp-full')?.textContent||'',condition:document.getElementById('weather-desc-full')?.textContent||'',rain:document.getElementById('weather-rain-full')?.textContent||'',humidity:document.getElementById('weather-humidity-full')?.textContent||'',wind:document.getElementById('weather-wind-full')?.textContent||'',uv:document.getElementById('weather-uv-full')?.textContent||''};downloadText('zj-weather-snapshot.json',JSON.stringify(data,null,2));}
+        // Respect the optional password rules without changing the default generator UX.
+        const _zjOriginalGeneratePassword=generatePassword;
+        generatePassword=function(){
+          _zjOriginalGeneratePassword();
+          const out=document.getElementById('pwd-output');let pwd=out?.textContent||'';
+          if(document.getElementById('pwd-ambiguous')?.checked && !['Click "Generate"','Select options'].includes(pwd)) { pwd=pwd.replace(/[O0Il1]/g,''); if(!pwd) return _zjOriginalGeneratePassword(); }
+          if(document.getElementById('pwd-no-repeat')?.checked && !['Click "Generate"','Select options'].includes(pwd)) {let clean='';for(const ch of pwd)if(!clean.includes(ch))clean+=ch;pwd=clean;}
+          if(out && pwd && !['Click "Generate"','Select options'].includes(pwd))out.textContent=pwd;
+        };
+        document.addEventListener('DOMContentLoaded',()=>{try{generateColorPalette();}catch(e){}});
+
+        // ===== Additional practical local-first tools =====
+        let zjCalcRadians = false;
+        function toggleCalcAngle(){zjCalcRadians=!zjCalcRadians;const e=document.getElementById('calc-angle-label');if(e)e.textContent=zjCalcRadians?'Radians':'Degrees';}
+        function scientificCalc(kind){
+          const x=Number(App.calcVal); if(!Number.isFinite(x)){toast('Enter a valid number first','error');return;}
+          let y;
+          const a=zjCalcRadians?x:x*Math.PI/180;
+          switch(kind){case 'sin':y=Math.sin(a);break;case 'cos':y=Math.cos(a);break;case 'tan':y=Math.tan(a);break;case 'sqrt':if(x<0)return toast('Square root requires a non-negative number','error');y=Math.sqrt(x);break;case 'log':if(x<=0)return toast('Log requires a positive number','error');y=Math.log10(x);break;case 'ln':if(x<=0)return toast('Natural log requires a positive number','error');y=Math.log(x);break;case 'square':y=x*x;break;case 'reciprocal':if(x===0)return toast('Cannot divide by zero','error');y=1/x;break;case 'abs':y=Math.abs(x);break;case 'factorial':if(x<0||!Number.isInteger(x)||x>170)return toast('Factorial supports integers from 0 to 170','error');y=1;for(let i=2;i<=x;i++)y*=i;break;default:return;}
+          if(!Number.isFinite(y))return toast('Result is outside supported numeric range','error');
+          App.calcHist=`${kind}(${App.calcVal}) =`;App.calcVal=Number(y.toPrecision(12)).toString();App.calcLog.unshift({expr:App.calcHist,result:App.calcVal,ts:Date.now()});App.calcLog=App.calcLog.slice(0,100);save();
+          ['calc-val-widget','calc-val-full'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=App.calcVal});['calc-hist-widget','calc-hist-full'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=App.calcHist});renderCalcLog();
+        }
+        function exportCalcHistory(){const rows=[['expression','result','timestamp'],...(App.calcLog||[]).map(x=>[x.expr,x.result,new Date(x.ts||Date.now()).toISOString()])];const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');downloadText('zj-calculator-history.csv',csv);}
+        function exportHabitData(format){const habits=App.habits||[];if(format==='json')return downloadText('zj-habits.json',JSON.stringify(habits,null,2));const rows=[['name','icon','streak','lastDone','history'],...habits.map(h=>[h.name,h.icon||'',h.streak||0,h.lastDone||'',(h.history||[]).join(';')])];downloadText('zj-habits.csv',rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n'));}
+        function openHabitReflection(){const el=document.getElementById('habit-reflection');if(!el)return;const hs=App.habits||[];const today=new Date().toDateString();const done=hs.filter(h=>h.lastDone===today).length;const top=[...hs].sort((a,b)=>(b.streak||0)-(a.streak||0))[0];el.innerHTML=`<strong>This week, reflect:</strong> What made habits easier or harder? You completed ${done} of ${hs.length} habits today.${top?` Your longest current streak is “${escapeHtml(top.name)}” at ${top.streak||0} days.`:''} Choose one small adjustment for tomorrow.`;}
+        function updateHabitInsights(){const el=document.getElementById('habit-insights');if(!el)return;const hs=App.habits||[];const today=new Date().toDateString();const done=hs.filter(h=>h.lastDone===today).length;const completions=hs.reduce((n,h)=>n+(h.history||[]).length,0);const best=hs.reduce((a,h)=>(h.streak||0)>(a?.streak||0)?h:a,null);el.textContent=hs.length?`${done}/${hs.length} habits completed today · ${completions} total recorded completions · ${best?`longest active streak: ${best.streak||0} days (${best.name})`:'start a streak today'}. Data stays in this browser profile.`:'Create your first habit to start tracking. Data stays in this browser profile.';}
+        const _zjRenderHabits=renderHabits;renderHabits=function(){_zjRenderHabits();updateHabitInsights();};
+        function filterNotionPages(q){const query=(q||'').toLowerCase();document.querySelectorAll('#notion-pages-list .notion-page-item').forEach(el=>el.style.display=el.innerText.toLowerCase().includes(query)?'':'none');}
+        function duplicateActiveNotionPage(){const p=(App.notionPages||[]).find(x=>x.id===App.activePage);if(!p)return toast('Select a page first','error');const clone=JSON.parse(JSON.stringify(p));clone.id=Date.now().toString();clone.title=(p.title||'Untitled')+' (copy)';clone.blocks=(clone.blocks||[]).map((b,i)=>({...b,id:`${Date.now()}-${i}`}));App.notionPages.unshift(clone);App.activePage=clone.id;save();renderNotionPages();loadActivePage();toast('Page duplicated','success');}
+        function exportAllNotionPages(){const pages=App.notionPages||[];const md=pages.map(p=>`# ${p.title||'Untitled'}\n\n${(p.blocks||[]).map(b=>{if(b.type==='divider')return '---';if(b.type==='todo')return `- [${b.checked?'x':' '}] ${b.content||''}`;if(b.type==='h1')return `# ${b.content||''}`;if(b.type==='h2')return `## ${b.content||''}`;if(b.type==='h3')return `### ${b.content||''}`;if(b.type==='bullet')return `- ${b.content||''}`;if(b.type==='number')return `1. ${b.content||''}`;if(b.type==='quote')return `> ${b.content||''}`;if(b.type==='code')return '```\n'+(b.content||'')+'\n```';return b.content||''}).join('\n\n')}`).join('\n\n---\n\n');downloadText('zj-workspace-export.md',md);}
+        // Re-render new local insights after the initial application boot.
+        document.addEventListener('DOMContentLoaded',()=>{try{generateColorPalette();updateHabitInsights();}catch(e){}});
+
+
+</script>
 </body>
 </html> 
