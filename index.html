@@ -2214,10 +2214,8 @@ body.zj-alarm-flash{animation:zjAlarmFlash .65s ease-in-out infinite}
     </script>
 
 
-    <!-- Legacy storage adapter.
-         Do not replace or mutate the browser's native Storage object. Some browsers
-         expose Storage as a non-extensible constructor, so Storage.get() is not a
-         reliable API. Legacy code should use window.ZJStorageCompat instead. -->
+    <!-- Storage compatibility bridge. Keep the native localStorage object intact,
+         but support legacy code that calls window.Storage.get/set/remove. -->
     <script>
     (() => {
       const read = (key, fallback = null) => {
@@ -2230,7 +2228,6 @@ body.zj-alarm-flash{animation:zjAlarmFlash .65s ease-in-out infinite}
           return fallback;
         }
       };
-
       const write = (key, value) => {
         try {
           window.localStorage.setItem(String(key), JSON.stringify(value));
@@ -2240,7 +2237,6 @@ body.zj-alarm-flash{animation:zjAlarmFlash .65s ease-in-out infinite}
           return false;
         }
       };
-
       const remove = (key) => {
         try {
           window.localStorage.removeItem(String(key));
@@ -2251,7 +2247,26 @@ body.zj-alarm-flash{animation:zjAlarmFlash .65s ease-in-out infinite}
         }
       };
 
-      // Explicit, safe compatibility API for any legacy module.
+      // The browser's Storage constructor normally has no get/set methods.
+      // Install the legacy methods on that constructor before any app module runs.
+      const nativeStorage = window.Storage;
+      if (nativeStorage) {
+        try {
+          if (typeof nativeStorage.get !== 'function') {
+            Object.defineProperty(nativeStorage, 'get', { configurable: true, value: read });
+          }
+          if (typeof nativeStorage.set !== 'function') {
+            Object.defineProperty(nativeStorage, 'set', { configurable: true, value: write });
+          }
+          if (typeof nativeStorage.remove !== 'function') {
+            Object.defineProperty(nativeStorage, 'remove', { configurable: true, value: remove });
+          }
+        } catch (error) {
+          // A few hardened webviews make Storage non-extensible. In that case,
+          // legacy code must use the explicit adapter below instead.
+          console.warn('ZJ OS: native Storage legacy methods unavailable; use ZJStorageCompat.', error);
+        }
+      }
       window.ZJStorageCompat = Object.freeze({ get: read, set: write, remove });
     })();
     </script>
@@ -2294,6 +2309,9 @@ setTimeout(() => {
             }
           },
         };
+        // Public alias for legacy non-module scripts; all reads/writes still use the
+        // app's zj_ key namespace through this wrapper.
+        window.ZJStorage = ZJStorage;
 
         const App = {
           notes:        ZJStorage.get('notes', []),
