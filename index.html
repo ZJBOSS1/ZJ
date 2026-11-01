@@ -7,7 +7,6 @@
     <meta name="description" content="ZJ OS — Your Personal Neon Productivity Workspace">
     <title>ZJ OS | Neon Workspace</title>
 
-    <link rel="manifest" href="./manifest.json">
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2200,7 +2199,7 @@ body.zj-alarm-flash{animation:zjAlarmFlash .65s ease-in-out infinite}
                 installButton.style.display = 'none'; installPrompt = null;
                 if (typeof toast === 'function') toast('ZJ OS installed successfully.', 'success');
             });
-            if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+            if (false && 'serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('./sw.js').catch(error => {
                         console.warn('PWA offline support could not be registered:', error);
@@ -2213,70 +2212,6 @@ body.zj-alarm-flash{animation:zjAlarmFlash .65s ease-in-out infinite}
         })();
     </script>
 
-
-    <!-- Definitive storage compatibility layer. -->
-    <script>
-    (() => {
-      'use strict';
-      const parse = (value, fallback) => {
-        if (value === null || value === undefined) return fallback;
-        try { return JSON.parse(value); } catch (_) { return value; }
-      };
-      const get = (key, fallback = null) => {
-        try { return parse(window.localStorage.getItem(String(key)), fallback); }
-        catch (error) { console.warn('Storage read failed:', error); return fallback; }
-      };
-      const set = (key, value) => {
-        try { window.localStorage.setItem(String(key), JSON.stringify(value)); return true; }
-        catch (error) { console.warn('Storage write failed:', error); return false; }
-      };
-      const remove = (key) => {
-        try { window.localStorage.removeItem(String(key)); return true; }
-        catch (error) { console.warn('Storage remove failed:', error); return false; }
-      };
-
-      // Explicit API used by this application and by any external legacy module.
-      const api = Object.freeze({ get, set, remove });
-      window.ZJStorageCompat = api;
-
-      // Also make the exact legacy expression safe. First try the native
-      // constructor; if a hardened webview rejects that, install a compatible
-      // constructor while preserving the native constructor's prototype/statics.
-      const nativeCtor = window.Storage;
-      if (nativeCtor && typeof nativeCtor.get !== 'function') {
-        let installed = false;
-        try {
-          Object.defineProperties(nativeCtor, {
-            get: { configurable: true, value: get },
-            set: { configurable: true, value: set },
-            remove: { configurable: true, value: remove }
-          });
-          installed = typeof nativeCtor.get === 'function';
-        } catch (_) {}
-        if (!installed) {
-          try {
-            const compatibleCtor = function Storage() {
-              return Reflect.construct(nativeCtor, arguments, new.target || compatibleCtor);
-            };
-            Object.setPrototypeOf(compatibleCtor, nativeCtor);
-            compatibleCtor.prototype = nativeCtor.prototype;
-            Object.defineProperties(compatibleCtor, {
-              get: { configurable: true, value: get },
-              set: { configurable: true, value: set },
-              remove: { configurable: true, value: remove }
-            });
-            Object.defineProperty(window, 'Storage', {
-              configurable: true,
-              writable: true,
-              value: compatibleCtor
-            });
-          } catch (error) {
-            console.warn('Legacy Storage API could not be installed:', error);
-          }
-        }
-      }
-    })();
-    </script>
 
     <script type="module">
         // Failsafe + timing
@@ -2316,7 +2251,6 @@ setTimeout(() => {
             }
           },
         };
-        window.ZJStorage = ZJStorage;
 
         const App = {
           notes:        ZJStorage.get('notes', []),
@@ -7644,7 +7578,7 @@ setTimeout(() => {
             setPomoDuration, startPomodoro, pausePomodoro, resetPomodoro,
             updateClock, buildClockTicks, toggleClockFormat, switchClockTab,
             renderWorldClocks, updateWorldClocks, addWorldClock, removeCity2,
-            toggleStopwatch, resetStopwatch, recordLap, updateTimerDisplay,
+            toggleStopwatch, resetStopwatch, resetStopwatchLaps, recordLap, updateTimerDisplay,
             setTimerPreset, startTimer, pauseTimer, resetTimer, renderAlarms,
             addAlarm, toggleAlarm, deleteAlarm, checkAlarms,
             fetchWeather, selectWeatherCity, saveCurrentWeatherCity, autoLocate,
@@ -8322,7 +8256,14 @@ setTimeout(() => {
         window.addEventListener('online', () => { try { toast('Connection restored','success'); } catch (_) {} });
 
         try { const t=JSON.parse(localStorage.getItem('zj_activeTimer')||'null'); if(t&&t.end>Date.now()){const rem=Math.ceil((t.end-Date.now())/1000);const h=document.getElementById('timer-h'),m=document.getElementById('timer-m'),ss=document.getElementById('timer-s');if(h)h.value=String(Math.floor(rem/3600));if(m)m.value=String(Math.floor((rem%3600)/60));if(ss)ss.value=String(rem%60);setTimeout(()=>{try{startTimer()}catch(_){}},250);}else if(t){localStorage.removeItem('zj_activeTimer');} } catch (_) {}
-        window.resetStopwatchLaps = resetStopwatchLaps;
+        if (typeof window.resetStopwatchLaps !== 'function') {
+          window.resetStopwatchLaps = function () {
+            try { localStorage.setItem('zj_clockStopwatch', JSON.stringify({ elapsed: 0, laps: [] })); } catch (_) {}
+            const list = document.getElementById('laps-list');
+            if (list) list.replaceChildren();
+            if (typeof window.toast === 'function') window.toast('Lap history cleared', 'success');
+          };
+        }
 </script>
 
 
