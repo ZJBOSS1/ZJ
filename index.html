@@ -2214,15 +2214,13 @@ body.zj-alarm-flash{animation:zjAlarmFlash .65s ease-in-out infinite}
     </script>
 
 
-    <!-- Compatibility bridge: older ZJ OS modules may call window.Storage.get().
-         Keep the browser's native Storage/localStorage API intact and add safe
-         static helpers that delegate to localStorage. -->
+    <!-- Legacy storage adapter.
+         Do not replace or mutate the browser's native Storage object. Some browsers
+         expose Storage as a non-extensible constructor, so Storage.get() is not a
+         reliable API. Legacy code should use window.ZJStorageCompat instead. -->
     <script>
     (() => {
-      const nativeStorage = window.Storage;
-      if (!nativeStorage) return;
-
-      const safeRead = (key, fallback = null) => {
+      const read = (key, fallback = null) => {
         try {
           const raw = window.localStorage.getItem(String(key));
           if (raw === null) return fallback;
@@ -2233,7 +2231,7 @@ body.zj-alarm-flash{animation:zjAlarmFlash .65s ease-in-out infinite}
         }
       };
 
-      const safeWrite = (key, value) => {
+      const write = (key, value) => {
         try {
           window.localStorage.setItem(String(key), JSON.stringify(value));
           return true;
@@ -2243,24 +2241,18 @@ body.zj-alarm-flash{animation:zjAlarmFlash .65s ease-in-out infinite}
         }
       };
 
-      // Compatibility for legacy calls such as window.Storage.get(key, fallback).
-      try {
-        if (typeof nativeStorage.get !== 'function') {
-          Object.defineProperty(nativeStorage, 'get', {
-            configurable: true,
-            value: safeRead
-          });
+      const remove = (key) => {
+        try {
+          window.localStorage.removeItem(String(key));
+          return true;
+        } catch (error) {
+          console.warn('ZJ OS storage remove failed:', error);
+          return false;
         }
-        if (typeof nativeStorage.set !== 'function') {
-          Object.defineProperty(nativeStorage, 'set', {
-            configurable: true,
-            value: safeWrite
-          });
-        }
-      } catch (error) {
-        // The app's own ZJStorage wrapper remains the primary storage API.
-        console.warn('ZJ OS legacy Storage compatibility could not be installed:', error);
-      }
+      };
+
+      // Explicit, safe compatibility API for any legacy module.
+      window.ZJStorageCompat = Object.freeze({ get: read, set: write, remove });
     })();
     </script>
 
