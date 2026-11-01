@@ -7,6 +7,7 @@
     <meta name="description" content="ZJ OS — Your Personal Neon Productivity Workspace">
     <title>ZJ OS | Neon Workspace</title>
 
+    <link rel="manifest" href="./manifest.json">
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2199,11 +2200,23 @@ body.zj-alarm-flash{animation:zjAlarmFlash .65s ease-in-out infinite}
                 installButton.style.display = 'none'; installPrompt = null;
                 if (typeof toast === 'function') toast('ZJ OS installed successfully.', 'success');
             });
-            if (false && 'serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('./sw.js').catch(error => {
-                        console.warn('PWA offline support could not be registered:', error);
-                    });
+            if ('serviceWorker' in navigator && window.isSecureContext) {
+                window.addEventListener('load', async () => {
+                    try {
+                        const swUrl = new URL('./sw.js', location.href);
+                        const check = await fetch(swUrl.href, { cache: 'no-store' });
+                        const mime = (check.headers.get('content-type') || '').toLowerCase();
+                        const isJavaScript = /(?:text|application)\/(?:java|ecma)script/.test(mime);
+
+                        if (!check.ok || !isJavaScript) {
+                            console.info('zj-os: offline caching is unavailable here because ./sw.js is missing or is not served as JavaScript.');
+                            return;
+                        }
+
+                        await navigator.serviceWorker.register(swUrl.href);
+                    } catch (error) {
+                        console.info('zj-os: service worker was not registered; the app can still run online.', error);
+                    }
                 }, { once: true });
             }
             if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -2211,7 +2224,6 @@ body.zj-alarm-flash{animation:zjAlarmFlash .65s ease-in-out infinite}
             }
         })();
     </script>
-
 
     <script type="module">
         // Failsafe + timing
@@ -4071,11 +4083,67 @@ setTimeout(() => {
         const ZJ_GALLERY_TRANSPARENT = 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
 
         let zjGalleryIdbPromise = null;
+
+        // Native IndexedDB adapter: avoids relying on an external CDN module.
+        // It provides the same get/set/del/keys methods used by the Gallery.
         function zjGalleryLoadIdb() {
           if (!zjGalleryIdbPromise) {
-            zjGalleryIdbPromise = import('https://unpkg.com/idb-keyval@6/+esm')
-              .then((m) => ({ get: m.get, set: m.set, del: m.del, keys: m.keys }))
-              .catch((err) => { console.warn('zj-os: idb-keyval could not be loaded', err); return null; });
+            zjGalleryIdbPromise = new Promise((resolve) => {
+              if (!('indexedDB' in window)) {
+                console.warn('zj-os: IndexedDB is unavailable; Gallery will use its small-image fallback.');
+                resolve(null);
+                return;
+              }
+
+              let request;
+              try {
+                request = window.indexedDB.open('zj-os-gallery', 1);
+              } catch (err) {
+                console.warn('zj-os: could not open Gallery storage:', err);
+                resolve(null);
+                return;
+              }
+
+              request.onupgradeneeded = () => {
+                const db = request.result;
+                if (!db.objectStoreNames.contains('images')) {
+                  db.createObjectStore('images');
+                }
+              };
+
+              request.onsuccess = () => {
+                const db = request.result;
+                const run = (mode, operation) => new Promise((resolveOp, rejectOp) => {
+                  let tx;
+                  try {
+                    tx = db.transaction('images', mode);
+                    const req = operation(tx.objectStore('images'));
+                    req.onsuccess = () => resolveOp(req.result);
+                    req.onerror = () => rejectOp(req.error || new Error('IndexedDB request failed'));
+                    tx.onerror = () => rejectOp(tx.error || new Error('IndexedDB transaction failed'));
+                    tx.onabort = () => rejectOp(tx.error || new Error('IndexedDB transaction aborted'));
+                  } catch (err) {
+                    rejectOp(err);
+                  }
+                });
+
+                resolve({
+                  get: (key) => run('readonly', (store) => store.get(key)),
+                  set: (key, value) => run('readwrite', (store) => store.put(value, key)).then(() => true),
+                  del: (key) => run('readwrite', (store) => store.delete(key)).then(() => true),
+                  keys: () => run('readonly', (store) => store.getAllKeys())
+                });
+              };
+
+              request.onerror = () => {
+                console.warn('zj-os: native IndexedDB could not be opened:', request.error);
+                resolve(null);
+              };
+
+              request.onblocked = () => {
+                console.warn('zj-os: Gallery storage upgrade is blocked by another open tab.');
+              };
+            });
           }
           return zjGalleryIdbPromise;
         }
@@ -8239,7 +8307,7 @@ setTimeout(() => {
   updateDailyQuote(true);
 })();
 
-        /* ZJ OS brand + reliability patch */
+        /* ZJ OS brand + reliability patch — v3 runtime fixes */
         try {
           const savedSW = JSON.parse(localStorage.getItem('zj_clockStopwatch') || 'null');
           if (savedSW && Number.isFinite(savedSW.elapsed)) {
@@ -8256,14 +8324,6 @@ setTimeout(() => {
         window.addEventListener('online', () => { try { toast('Connection restored','success'); } catch (_) {} });
 
         try { const t=JSON.parse(localStorage.getItem('zj_activeTimer')||'null'); if(t&&t.end>Date.now()){const rem=Math.ceil((t.end-Date.now())/1000);const h=document.getElementById('timer-h'),m=document.getElementById('timer-m'),ss=document.getElementById('timer-s');if(h)h.value=String(Math.floor(rem/3600));if(m)m.value=String(Math.floor((rem%3600)/60));if(ss)ss.value=String(rem%60);setTimeout(()=>{try{startTimer()}catch(_){}},250);}else if(t){localStorage.removeItem('zj_activeTimer');} } catch (_) {}
-        if (typeof window.resetStopwatchLaps !== 'function') {
-          window.resetStopwatchLaps = function () {
-            try { localStorage.setItem('zj_clockStopwatch', JSON.stringify({ elapsed: 0, laps: [] })); } catch (_) {}
-            const list = document.getElementById('laps-list');
-            if (list) list.replaceChildren();
-            if (typeof window.toast === 'function') window.toast('Lap history cleared', 'success');
-          };
-        }
 </script>
 
 
