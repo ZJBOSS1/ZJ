@@ -43,6 +43,10 @@ STRICT_CSP = os.environ.get("ENABLE_STRICT_CSP") == "1"
 
 _ALLOWED_ORIGINS = [o.strip() for o in os.environ.get("ALLOWED_ORIGINS", "").split(",") if o.strip()]
 
+# Absolute path to the directory containing this file. Used so static files
+# resolve correctly on Vercel where CWD may differ from the function dir.
+_HERE = os.path.dirname(os.path.abspath(__file__))
+
 CSP = (
     "default-src 'self'; "
     "script-src 'self' https://unpkg.com https://cdn.tailwindcss.com; "
@@ -216,7 +220,7 @@ _DYNAMIC_RE = re.compile(r"^(js|styles)/[A-Za-z0-9_.-]+\.(js|css)$")
 
 @app.get("/")
 def root() -> Response:
-    return send_from_directory(".", "index.html")
+    return send_from_directory(_HERE, "index.html")
 
 
 @app.get("/<path:filename>")
@@ -225,7 +229,7 @@ def static_file(filename: str) -> Response:
         return _err(404, "Not found")
     if filename in _TOP_FILES or _DYNAMIC_RE.match(filename):
         try:
-            return send_from_directory(".", filename)
+            return send_from_directory(_HERE, filename)
         except Exception:
             return _err(404, "Not found")
     return _err(404, "Not found")
