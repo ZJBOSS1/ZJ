@@ -1,7 +1,22 @@
 {
+  "version": 2,
   "functions": {
     "app.py": {
-      "maxDuration": 60
+      "maxDuration": 60,
+      "includeFiles": [
+        "index.html",
+        "manifest.json",
+        "sw.js",
+        "favicon.ico",
+        "zj-enhancements.js",
+        "ZJPP.jpeg",
+        "bmw.jpeg",
+        "js/**",
+        "styles/**"
+      ]
     }
-  }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/app.py" }
+  ]
 }
