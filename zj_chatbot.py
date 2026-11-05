@@ -39,7 +39,7 @@ from openai import OpenAI
 BASE_DIR = Path(__file__).resolve().parent
 AI_API_KEY = os.environ.get("AI_API_KEY") or os.environ.get("GROQ_API_KEY", "")
 AI_BASE_URL = os.environ.get("AI_BASE_URL", "https://api.groq.com/openai/v1")
-AI_MODEL = os.environ.get("AI_MODEL", "llama-3.3-70b-versatile")
+AI_MODEL = os.environ.get("AI_MODEL", "openai/gpt-oss-120b")
 
 
 def _bounded_int(value: str | None, default: int, minimum: int, maximum: int) -> int:
