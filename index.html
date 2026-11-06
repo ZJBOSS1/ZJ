@@ -6771,105 +6771,122 @@ setTimeout(() => {
           toast('Generation stopped.', 'info');
         }
 
-        async function sendChatMessage(e) {
+                async function sendChatMessage(e) {
           e?.preventDefault?.();
           const input = document.getElementById('chat-input');
           if (!input) return;
           const msg = input.value.trim();
           if (!msg) return;
-          if (msg.length > ZJ_CHAT_MAX_INPUT_LEN) { toast('Message is too long. Keep it under ' + ZJ_CHAT_MAX_INPUT_LEN + ' characters.', 'error'); return; }
+          if (msg.length > ZJ_CHAT_MAX_INPUT_LEN) {
+            toast('Message is too long. Keep it under ' + ZJ_CHAT_MAX_INPUT_LEN + ' characters.', 'error');
+            return;
+          }
+
           let chat = App.chats.find((x) => x.id === App.activeChat);
-          if (!chat) { createNewChat(); chat = App.chats.find((x) => x.id === App.activeChat); }
+          if (!chat) {
+            createNewChat();
+            chat = App.chats.find((x) => x.id === App.activeChat);
+          }
           if (!chat) return toast('Could not create a chat. Please try again.', 'error');
           if (!Array.isArray(chat.messages)) chat.messages = [];
+
           if (chat.messages.length === 0 || chat.title === 'New Chat') {
             chat.title = msg.substring(0, 38) + (msg.length > 38 ? '…' : '');
             renderChatSidebar(document.getElementById('chat-history-filter')?.value || '');
           }
+
           chat.messages.push({ role: 'user', content: msg, timestamp: Date.now() });
           chat.updatedAt = Date.now();
           save();
           renderChatMessages();
+
           input.value = '';
           input.style.height = 'auto';
           const counter = document.getElementById('char-count');
           if (counter) counter.textContent = '0/' + ZJ_CHAT_MAX_INPUT_LEN;
+
           const sendBtn = document.getElementById('chat-send-btn');
           const stopBtn = document.getElementById('chat-stop-btn');
           if (sendBtn) { sendBtn.disabled = true; sendBtn.classList.add('hidden'); }
           if (stopBtn) stopBtn.classList.remove('hidden');
+
           zjChatShowTypingIndicator();
+
           const generationId = ++zjChatGenerationId;
           const controller = new AbortController();
           zjChatAbort = controller;
+
           let timedOut = false;
-          const timeoutId = setTimeout(() => { timedOut = true; try { controller.abort(); } catch (_) {} }, ZJ_CHAT_STREAM_TIMEOUT_MS);
-          let accumulated = '';
-          let streamError = null;
-          let gotDone = false;
+          const timeoutId = setTimeout(() => {
+            timedOut = true;
+            try { controller.abort(); } catch (_) {}
+          }, ZJ_CHAT_STREAM_TIMEOUT_MS);
+
+          // Backend /chat accepts a single "message" string. We prepend
+          // any selected ZJ OS context so the AI still sees tasks/notes/etc.
+          // Cap the combined payload safely below the backend's 4000-char limit.
+          const MAX_TOTAL = 3500;
+          const mode = document.getElementById('chat-context-mode')?.value || 'off';
+          const appContext = zjChatBuildAssistantContext(mode);
+          let fullMessage = msg;
+          if (appContext) {
+            const prefix = '[Context]\n';
+            const suffix = '\n\n[User]\n' + msg;
+            const maxContextLen = MAX_TOTAL - prefix.length - suffix.length;
+            if (maxContextLen > 100) {
+              const trimmedContext = appContext.length > maxContextLen
+                ? appContext.slice(0, maxContextLen) + '…'
+                : appContext;
+              fullMessage = prefix + trimmedContext + suffix;
+            }
+          }
+
           try {
-            const context = chat.messages.slice(-20).map((m) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: String(m.content || '').slice(0, 8000) }));
-            const mode = document.getElementById('chat-context-mode')?.value || 'off';
-            const appContext = zjChatBuildAssistantContext(mode);
-            const res = await fetch('/api/chat', {
+            const res = await fetch('/chat', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Accept': 'text/event-stream' },
-              body: JSON.stringify({ messages: context, app_context: appContext }),
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ message: fullMessage }),
               signal: controller.signal,
             });
+
+            const body = await res.json().catch(() => ({}));
+
             if (!res.ok) {
-              const body = await res.json().catch(() => ({}));
-              const retry = body.retry_after;
-              const base = body.error || ('AI service returned ' + res.status);
-              throw new Error(retry ? base + ' (retry in ' + retry + 's)' : base);
+              const base = body.reply || body.error || ('AI service returned ' + res.status);
+              throw new Error(base);
             }
-            const ct = res.headers.get('content-type') || '';
-            if (!ct.includes('text/event-stream')) {
-              const body = await res.json().catch(() => ({}));
-              throw new Error(body.error || 'Unexpected response from AI service');
-            }
-            if (!res.body) throw new Error('Stream not available');
-            const reader = res.body.getReader();
-            const decoder = new TextDecoder();
-            let buffer = '';
-            while (true) {
-              const readResult = await reader.read();
-              if (readResult.done) break;
-              buffer += decoder.decode(readResult.value, { stream: true });
-              const blocks = buffer.split('\n\n');
-              buffer = blocks.pop() || '';
-              for (const block of blocks) {
-                if (!block.startsWith('data: ')) continue;
-                let ev;
-                try { ev = JSON.parse(block.slice(6)); } catch (_) { continue; }
-                if (ev.type === 'token' && typeof ev.delta === 'string') { accumulated += ev.delta; zjChatAppendStreamingToken(accumulated); }
-                else if (ev.type === 'error') { streamError = ev.message || 'AI service error'; }
-                else if (ev.type === 'done') { gotDone = true; }
-              }
-              if (generationId !== zjChatGenerationId) { try { reader.cancel(); } catch (_) {} break; }
-            }
-            if (generationId !== zjChatGenerationId) return;
-            if (streamError) throw new Error(streamError);
-            if (!gotDone && !accumulated) throw new Error('AI service returned an empty response');
-            const finalContent = accumulated.trim() || 'No response received.';
+
+            const finalContent = String(body.reply || '').trim();
+            if (!finalContent) throw new Error('AI service returned an empty response');
+
             chat.messages.push({ role: 'assistant', content: finalContent, timestamp: Date.now() });
             chat.updatedAt = Date.now();
             saveNow();
-            zjChatFinalizeStreamingBubble(chat.id, finalContent);
+
+            document.getElementById('typing-ind')?.remove();
+            renderChatMessages();
             renderChatSidebar(document.getElementById('chat-history-filter')?.value || '');
+
           } catch (err) {
             if (generationId !== zjChatGenerationId) return;
-            zjChatDropStreamingBubble();
             document.getElementById('typing-ind')?.remove();
+
             let errorMsg;
-            if (err?.name === 'AbortError') errorMsg = timedOut ? 'AI service is taking too long.' : 'Generation stopped.';
-            else { console.error('zj-os: chat request failed', err); errorMsg = err?.message || 'Could not connect to the AI service.'; }
+            if (err?.name === 'AbortError') {
+              errorMsg = timedOut ? 'AI service is taking too long.' : 'Generation stopped.';
+            } else {
+              console.error('zj-os: chat request failed', err);
+              errorMsg = err?.message || 'Could not connect to the AI service.';
+            }
+
             chat.messages.push({ role: 'assistant', content: errorMsg, timestamp: Date.now(), error: true });
             chat.updatedAt = Date.now();
             save();
             renderChatMessages();
+
             if (timedOut) toast('AI service is taking too long. Try again.', 'error');
             else if (err?.name !== 'AbortError') toast('AI request failed. Check the API configuration and server logs.', 'error');
+
           } finally {
             clearTimeout(timeoutId);
             if (generationId === zjChatGenerationId) {
@@ -6879,7 +6896,7 @@ setTimeout(() => {
             }
           }
         }
-
+        
         function zjChatShowTypingIndicator() {
           const el = document.getElementById('chat-messages');
           if (!el) return;
@@ -6922,23 +6939,6 @@ setTimeout(() => {
           if (content) content.textContent = accumulated;
           const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100;
           if (nearBottom) el.scrollTop = el.scrollHeight;
-        }
-
-        function zjChatFinalizeStreamingBubble(chatId, finalContent) {
-          const el = document.getElementById('chat-messages');
-          if (!el) return;
-          const bubble = el.querySelector('.message.assistant.streaming');
-          if (!bubble) return;
-          bubble.classList.remove('streaming');
-          const content = bubble.querySelector('.streaming-content');
-          if (content) {
-            content.classList.remove('streaming-content');
-            content.innerHTML = parseMd(finalContent);
-            const chat = App.chats.find((x) => x.id === chatId);
-            if (chat) zjChatAddMessageActions(content, chatId, chat.messages.length - 1);
-          }
-          if (window.lucide) window.lucide.createIcons();
-          el.scrollTop = el.scrollHeight;
         }
 
         function zjChatDropStreamingBubble() {
