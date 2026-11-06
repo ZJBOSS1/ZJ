@@ -9,7 +9,8 @@ Every log line is structured JSON. Message content is never logged.
 Env vars (see .env.example):
   AI_API_KEY        required — Groq key
   AI_BASE_URL       default https://api.groq.com/openai/v1
-  AI_MODEL          default llama-3.3-70b-versatile
+  # zj_chatbot.py
+AI_MODEL = os.environ.get("AI_MODEL", "openai/gpt-oss-120b")
   GROQ_MAX_TOKENS   default 800
   ALLOWED_ORIGINS   comma-separated; empty = same-origin only
   RATELIMIT_STORAGE_URI  default memory:// (per-instance on Vercel;
