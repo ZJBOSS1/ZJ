@@ -17,10 +17,18 @@ from flask import Flask, Response, jsonify, request, send_from_directory, stream
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from openai import OpenAI
-from dotenv import load_dotenv
+
+# python-dotenv is useful for local development, but Vercel provides
+# environment variables directly. Keep it optional so a missing optional
+# package cannot prevent the entire Flask function from starting.
+try:
+    from dotenv import load_dotenv
+except ImportError:  # pragma: no cover - used in deployments without the optional package
+    load_dotenv = None
 
 BASE_DIR = Path(__file__).resolve().parent
-load_dotenv(BASE_DIR / ".env", override=False)
+if load_dotenv is not None:
+    load_dotenv(BASE_DIR / ".env", override=False)
 MAX_MESSAGE_CHARS = 8_000
 MAX_CONTEXT_CHARS = 12_000
 MAX_MESSAGES = 20
