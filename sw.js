@@ -3,14 +3,15 @@
  * Bump CACHE_NAME whenever the app shell changes.
  */
 const CACHE_PREFIX = 'zj-os-shell-';
-const CACHE_NAME = `${CACHE_PREFIX}v14`;
+const CACHE_NAME = `${CACHE_PREFIX}v15`;
 
 const CORE_ASSETS = [
   './',
   './index.html',
   './style.css',
   './script.js',
-  './manifest.json'
+  './manifest.json',
+  './assets/embedded/image-001.webp'
 ];
 
 // Third-party assets the shell needs offline (icon library + fonts). Cached at runtime.
