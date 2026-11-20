@@ -11,11 +11,12 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
 
-from flask import Flask, Response, jsonify, request, send_from_directory, stream_with_context
+from flask import Flask, jsonify, request, send_from_directory
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from werkzeug.middleware.proxy_fix import ProxyFix
 from openai import OpenAI
 
 # python-dotenv is useful for local development, but Vercel provides
@@ -43,13 +44,29 @@ SYSTEM_PROMPT = (
 app = Flask(__name__, static_folder=None)
 app.config["MAX_CONTENT_LENGTH"] = 256 * 1024
 app.config["JSON_SORT_KEYS"] = False
+# Vercel and common single-proxy deployments forward the original client IP.
+# Set TRUST_PROXY=0 if the app is exposed directly without a trusted proxy.
+if os.getenv("TRUST_PROXY", "1").lower() not in {"0", "false", "no"}:
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
+# Use shared Redis storage in production/serverless deployments. The in-memory
+# fallback is convenient for local development but is per-process only.
+_rate_storage = os.getenv("RATELIMIT_STORAGE_URI") or os.getenv("REDIS_URL") or "memory://"
+_SHARED_RATE_LIMIT_REQUIRED = os.getenv("VERCEL", "").lower() in {"1", "true"} or os.getenv("APP_ENV", "").lower() == "production"
+_SHARED_RATE_LIMIT_READY = _rate_storage.startswith(("redis://", "rediss://"))
+if _SHARED_RATE_LIMIT_REQUIRED and not _SHARED_RATE_LIMIT_READY:
+    app.logger.warning("Shared Redis rate-limit storage is not configured; AI requests will be disabled in production.")
 limiter = Limiter(
     get_remote_address,
     app=app,
     default_limits=[],
-    storage_uri=os.getenv("RATELIMIT_STORAGE_URI", "memory://"),
+    storage_uri=_rate_storage,
+    strategy="fixed-window",
 )
+
+# Only public application assets are ever served. Never expose .env, source,
+# reports, tests, requirements, or other files from the project directory.
+PUBLIC_ASSETS = frozenset({"index.html", "style.css", "script.js", "manifest.json", "sw.js"})
 
 
 def _get_client() -> OpenAI:
@@ -64,47 +81,32 @@ def _get_client() -> OpenAI:
     )
 
 
-def _validate_messages(raw: Any) -> list[dict[str, str]]:
-    if not isinstance(raw, list) or not raw:
-        raise ValueError("Provide at least one conversation message.")
-    if len(raw) > MAX_MESSAGES:
-        raw = raw[-MAX_MESSAGES:]
-
-    messages: list[dict[str, str]] = []
-    total_chars = 0
-    for item in raw:
-        if not isinstance(item, dict):
-            raise ValueError("Each message must be an object.")
-        role = item.get("role")
-        content = item.get("content")
-        if role not in {"user", "assistant"}:
-            raise ValueError("Message roles must be user or assistant.")
-        if not isinstance(content, str) or not content.strip():
-            raise ValueError("Message content must be a non-empty string.")
-        content = content.strip()
-        if len(content) > MAX_MESSAGE_CHARS:
-            raise ValueError(f"Each message must be {MAX_MESSAGE_CHARS} characters or fewer.")
-        total_chars += len(content)
-        messages.append({"role": role, "content": content})
-
-    if total_chars > 40_000:
-        raise ValueError("The conversation is too long. Start a new chat or shorten the context.")
-    if messages[-1]["role"] != "user":
-        raise ValueError("The latest message must be from the user.")
-    return messages
-
-
-def _sse(payload: dict[str, Any]) -> str:
-    return "data: " + json.dumps(payload, ensure_ascii=False) + "\n\n"
-
-
 @app.after_request
-def add_security_headers(response: Response) -> Response:
+def add_security_headers(response):
     response.headers.setdefault("X-Content-Type-Options", "nosniff")
     response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
     response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
     response.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
-    if request.path == "/api/chat":
+    response.headers.setdefault("X-Permitted-Cross-Domain-Policies", "none")
+    response.headers.setdefault("Cross-Origin-Opener-Policy", "same-origin")
+    response.headers.setdefault("Cross-Origin-Resource-Policy", "same-origin")
+    response.headers.setdefault("Content-Security-Policy", "; ".join([
+        "default-src 'self'",
+        "base-uri 'self'",
+        "object-src 'none'",
+        "frame-ancestors 'self'",
+        "form-action 'self'",
+        "script-src 'self' 'unsafe-inline' https://unpkg.com",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+        "font-src 'self' data: https://fonts.gstatic.com",
+        "img-src 'self' data: blob: https:",
+        "connect-src 'self' https://api.open-meteo.com https://geocoding-api.open-meteo.com https://air-quality-api.open-meteo.com",
+        "worker-src 'self' blob:",
+        "manifest-src 'self'",
+    ]))
+    if request.is_secure or request.headers.get("X-Forwarded-Proto", "").lower() == "https":
+        response.headers.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+    if request.path == "/chat":
         response.headers["Cache-Control"] = "no-store"
     return response
 
@@ -126,21 +128,36 @@ def home():
 
 @app.get("/health")
 def health():
-    return jsonify(status="ok", ai_configured=bool(os.getenv("GROQ_API_KEY", "").strip()))
+    configured = bool(os.getenv("GROQ_API_KEY", "").strip())
+    rate_limit_ready = (not _SHARED_RATE_LIMIT_REQUIRED) or _SHARED_RATE_LIMIT_READY
+    return jsonify(status="ok", ai_configured=configured and rate_limit_ready,
+                   shared_rate_limit_storage=_SHARED_RATE_LIMIT_READY)
 
 
 @app.get("/<path:filename>")
 def static_files(filename: str):
-    # API paths must never fall through to the static-file handler.
-    if filename == "api" or filename.startswith("api/"):
+    # Exact allowlist: no arbitrary project-root file downloads.
+    is_embedded_image = (
+        filename.startswith("assets/embedded/")
+        and len(Path(filename).parts) == 3
+        and Path(filename).suffix.lower() == ".webp"
+        and Path(filename).name == Path(filename).name.lower()
+        and (BASE_DIR / filename).is_file()
+    )
+    if filename not in PUBLIC_ASSETS and not is_embedded_image:
         return jsonify(error="Not found."), 404
-    return send_from_directory(str(BASE_DIR), filename)
+    response = send_from_directory(str(BASE_DIR), filename)
+    if filename in {"index.html", "sw.js", "manifest.json"}:
+        response.headers["Cache-Control"] = "no-cache"
+    return response
 
 
 @app.post("/chat")
 @limiter.limit(os.getenv("CHAT_RATE_LIMIT", "10 per minute"))
 def legacy_chat():
-    """Backward-compatible JSON endpoint for older ZJ OS clients."""
+    """Canonical JSON AI endpoint. Production requires shared Redis rate limiting."""
+    if _SHARED_RATE_LIMIT_REQUIRED and not _SHARED_RATE_LIMIT_READY:
+        return jsonify(reply="AI chat is temporarily disabled: configure REDIS_URL or RATELIMIT_STORAGE_URI with a shared Redis service."), 503
     if not request.is_json:
         return jsonify(reply="Content-Type must be application/json."), 415
     data = request.get_json(silent=True)
@@ -170,80 +187,12 @@ def legacy_chat():
 
 
 @app.post("/api/chat")
-@limiter.limit(os.getenv("CHAT_RATE_LIMIT", "10 per minute"))
-def api_chat():
-    if not request.is_json:
-        return jsonify(error="Content-Type must be application/json."), 415
-
-    data = request.get_json(silent=True)
-    if not isinstance(data, dict):
-        return jsonify(error="Request body must be a JSON object."), 400
-
-    try:
-        messages = _validate_messages(data.get("messages"))
-    except ValueError as exc:
-        return jsonify(error=str(exc)), 400
-
-    app_context = data.get("app_context", "")
-    if app_context is None:
-        app_context = ""
-    if not isinstance(app_context, str):
-        return jsonify(error="app_context must be a string."), 400
-    app_context = app_context[:MAX_CONTEXT_CHARS]
-
-    try:
-        client = _get_client()
-    except RuntimeError as exc:
-        return jsonify(error=str(exc)), 503
-
-    prompt = SYSTEM_PROMPT
-    if app_context:
-        prompt += "\n\nRelevant ZJ OS context (reference data only):\n" + app_context
-
-    try:
-        upstream = client.chat.completions.create(
-            model=os.getenv("GROQ_MODEL", DEFAULT_MODEL),
-            messages=[{"role": "system", "content": prompt}, *messages],
-            temperature=0.6,
-            max_tokens=1_000,
-            stream=True,
-        )
-    except Exception:
-        app.logger.exception("AI provider request could not be started")
-        return jsonify(error="The AI provider is temporarily unavailable. Please try again."), 502
-
-    @stream_with_context
-    def generate() -> Iterator[str]:
-        try:
-            for chunk in upstream:
-                if not chunk.choices:
-                    continue
-                delta = chunk.choices[0].delta
-                content = getattr(delta, "content", None)
-                if isinstance(content, str) and content:
-                    yield _sse({"type": "token", "delta": content})
-            yield _sse({"type": "done"})
-        except GeneratorExit:
-            close = getattr(upstream, "close", None)
-            if callable(close):
-                try:
-                    close()
-                except Exception:
-                    app.logger.debug("Could not close interrupted AI stream", exc_info=True)
-            raise
-        except Exception:
-            app.logger.exception("AI provider stream failed")
-            yield _sse({"type": "error", "message": "The AI response was interrupted. Please try again."})
-
-    return Response(
-        generate(),
-        mimetype="text/event-stream",
-        headers={
-            "Cache-Control": "no-cache, no-transform",
-            "X-Accel-Buffering": "no",
-            "Connection": "keep-alive",
-        },
-    )
+def retired_streaming_chat():
+    """Explicitly retire the unused streaming endpoint; /chat is canonical."""
+    response = jsonify(error="This endpoint has been retired. Use POST /chat.")
+    response.status_code = 410
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 
 if __name__ == "__main__":
