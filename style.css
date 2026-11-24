@@ -824,7 +824,6 @@ dialog[open] { animation:dialogIn .3s cubic-bezier(.2,.8,.2,1); }
   #tab-chatbot .message { max-width:100%; }
   #tab-chatbot .chat-input-area { padding:8px; gap:7px; }
   #tab-chatbot #char-count { padding-bottom:calc(6px + env(safe-area-inset-bottom)) !important; }
-  body:has(#tab-chatbot.active) #zj-assistant-fab { display:none; }
   .modal-body { max-height:72dvh; overflow-y:auto; }
   #settings-dialog { width:min(94vw,500px); max-height:90dvh; }
 }
@@ -854,13 +853,9 @@ dialog[open] { animation:dialogIn .3s cubic-bezier(.2,.8,.2,1); }
 /* PWA chrome */
 #zj-network-status { position:fixed; z-index:100000; left:50%; top:12px; transform:translateX(-50%); padding:8px 14px; border-radius:999px; background:#92400e; color:#fff; font:600 12px Inter, sans-serif; box-shadow:0 8px 24px rgba(0,0,0,.25); display:none; max-width:calc(100vw - 24px); text-align:center; }
 #zj-install-button { position:fixed; z-index:9990; right:16px; bottom:16px; border:1px solid var(--border,#30465c); border-radius:999px; padding:10px 14px; background:var(--accent-primary,var(--color-secondary)); color:var(--color-sidebar); font:700 12px Inter, sans-serif; box-shadow:0 8px 24px rgba(0,0,0,.25); display:none; cursor:pointer; }
-#zj-assistant-fab { position:fixed; z-index:9988; right:16px; bottom:72px; display:flex; align-items:center; gap:8px; border:1px solid var(--border,#30465c); border-radius:999px; padding:10px 14px; background:var(--bg-card,var(--color-surface)); color:var(--text-main,var(--color-text-secondary)); font:700 12px Inter, sans-serif; box-shadow:0 8px 24px rgba(0,0,0,.25); cursor:pointer; }
-#zj-assistant-fab svg { width:16px; height:16px; color:var(--accent-primary,var(--color-secondary)); }
-#zj-assistant-fab:hover { border-color:var(--accent-primary,var(--color-secondary)); transform:translateY(-1px); }
 #zj-install-button:focus-visible { outline:3px solid currentColor; outline-offset:3px; }
 
 @media (max-width:768px) {
-  #zj-assistant-fab { right:12px; bottom:calc(14px + env(safe-area-inset-bottom)); padding:10px 12px; }
   #zj-install-button { right:12px; bottom:calc(12px + env(safe-area-inset-bottom)); }
 }
 
@@ -1528,7 +1523,6 @@ body:has(dialog[open]) .content-area { overflow: hidden !important; }
   body.zj-sheet-open { overflow: hidden; }
 
   /* Floating controls clear the bottom nav */
-  #zj-assistant-fab { display: none !important; }
   #zj-install-button { bottom: calc(var(--zj-nav-h) + var(--safe-bottom) + 12px) !important; right: 12px; min-height: 44px; }
   .toast-container { bottom: calc(var(--zj-nav-h) + var(--safe-bottom) + 12px); width: min(92vw, 420px); }
   #zj-network-status { top: calc(var(--safe-top) + 8px); max-width: 92vw; text-align: center; }
