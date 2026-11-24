@@ -4710,6 +4710,11 @@ setTimeout(() => {
         /* ============ js/chatbot.js ============ */
         const ZJ_CHAT_STREAM_TIMEOUT_MS = 60000;
         const ZJ_CHAT_MAX_INPUT_LEN = 2000;
+        const ZJ_CHAT_CONTEXT_WINDOW_MESSAGES = 18;
+        const ZJ_CHAT_SUMMARY_KEEP_MESSAGES = 12;
+        const ZJ_CHAT_SUMMARY_BATCH_MIN = 4;
+        const ZJ_CHAT_SUMMARY_MAX_CHARS = 6000;
+        const zjChatSummaryInFlight = new Set();
 
         let zjChatSearchQuery = '';
         let zjChatAbort = null;
@@ -4772,7 +4777,7 @@ setTimeout(() => {
 
         function createNewChat() {
           const id = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Date.now().toString();
-          const chat = { id, title: 'New Chat', messages: [], starred: false, createdAt: Date.now(), updatedAt: Date.now() };
+          const chat = { id, title: 'New Chat', messages: [], contextSummary: '', contextSummaryCount: 0, contextSummaryUpdatedAt: null, contextRevision: 0, starred: false, createdAt: Date.now(), updatedAt: Date.now() };
           App.chats.unshift(chat);
           App.activeChat = id;
           zjChatSearchQuery = '';
@@ -4810,6 +4815,10 @@ setTimeout(() => {
           if (!chat) return toast('Choose a chat first.', 'error');
           confirmAction('Clear messages', 'Remove all messages from this chat? The conversation itself will remain in history.', () => {
             chat.messages = [];
+            chat.contextSummary = '';
+            chat.contextSummaryCount = 0;
+            chat.contextSummaryUpdatedAt = null;
+            chat.contextRevision = (Number(chat.contextRevision) || 0) + 1;
             chat.title = 'New Chat';
             chat.updatedAt = Date.now();
             saveNow();
@@ -5039,7 +5048,89 @@ setTimeout(() => {
           toast('Generation stopped.', 'info');
         }
 
-                async function sendChatMessage(e) {
+        function zjChatGetContextMessages(chat, limit = ZJ_CHAT_CONTEXT_WINDOW_MESSAGES) {
+          const valid = (Array.isArray(chat?.messages) ? chat.messages : [])
+            .filter((m) => m && !m.error && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim())
+            .map((m) => ({ role: m.role, content: String(m.content).slice(0, 8000) }));
+          const selected = [];
+          let totalChars = 0;
+          // Stay below the server's 40,000-character validation ceiling with headroom.
+          for (let i = valid.length - 1; i >= 0 && selected.length < limit; i--) {
+            const item = valid[i];
+            if (totalChars + item.content.length > 32000) break;
+            selected.push(item);
+            totalChars += item.content.length;
+          }
+          return selected.reverse();
+        }
+
+        async function zjChatMaybeUpdateSummary(chat) {
+          if (!chat?.id || zjChatSummaryInFlight.has(chat.id)) return;
+          const valid = (Array.isArray(chat.messages) ? chat.messages : [])
+            .filter((m) => m && !m.error && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim());
+          const alreadySummarized = Math.max(0, Math.min(valid.length, Number(chat.contextSummaryCount) || 0));
+          const desiredCount = Math.max(0, valid.length - ZJ_CHAT_SUMMARY_KEEP_MESSAGES);
+          let targetCount = alreadySummarized;
+          let batchChars = 0;
+          // Summarize complete turns in bounded batches under the API's 40k-char limit.
+          while (targetCount < desiredCount && targetCount - alreadySummarized < 20) {
+            const nextLength = String(valid[targetCount].content).slice(0, 8000).length;
+            if (batchChars + nextLength > 32000) break;
+            batchChars += nextLength;
+            targetCount++;
+          }
+          targetCount -= (targetCount - alreadySummarized) % 2;
+          const pendingCount = targetCount - alreadySummarized;
+          if (pendingCount < ZJ_CHAT_SUMMARY_BATCH_MIN) return;
+
+          const batch = valid.slice(alreadySummarized, targetCount).map((m) => ({
+            role: m.role,
+            content: String(m.content).slice(0, 8000)
+          }));
+          if (!batch.length) return;
+
+          const summaryRevision = Number(chat.contextRevision) || 0;
+          zjChatSummaryInFlight.add(chat.id);
+          let summaryUpdated = false;
+          try {
+            const response = await fetch('/api/chat/summarize', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              cache: 'no-store',
+              body: JSON.stringify({
+                summary: String(chat.contextSummary || '').slice(0, ZJ_CHAT_SUMMARY_MAX_CHARS),
+                messages: batch
+              })
+            });
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(body.error || 'Memory summary request failed (' + response.status + ').');
+            if (typeof body.summary !== 'string') throw new Error('Memory summary response was invalid.');
+
+            // The chat may have been deleted while the summary request was running.
+            const current = App.chats.find((item) => item.id === chat.id);
+            if (!current || (Number(current.contextRevision) || 0) !== summaryRevision) return;
+            current.contextSummary = body.summary.slice(0, ZJ_CHAT_SUMMARY_MAX_CHARS);
+            current.contextSummaryCount = alreadySummarized + batch.length;
+            current.contextSummaryUpdatedAt = Date.now();
+            saveNow();
+            summaryUpdated = true;
+          } catch (error) {
+            console.warn('zj-os: conversation memory summary was not updated:', error);
+          } finally {
+            zjChatSummaryInFlight.delete(chat.id);
+            if (summaryUpdated) {
+              const current = App.chats.find((item) => item.id === chat.id);
+              if (current) {
+                const remaining = (Array.isArray(current.messages) ? current.messages : [])
+                  .filter((m) => m && !m.error && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim()).length
+                  - (Number(current.contextSummaryCount) || 0) - ZJ_CHAT_SUMMARY_KEEP_MESSAGES;
+                if (remaining >= ZJ_CHAT_SUMMARY_BATCH_MIN) void zjChatMaybeUpdateSummary(current);
+              }
+            }
+          }
+        }
+
+        async function sendChatMessage(e) {
           e?.preventDefault?.();
           const input = document.getElementById('chat-input');
           if (!input) return;
@@ -5079,64 +5170,101 @@ setTimeout(() => {
           if (stopBtn) stopBtn.classList.remove('hidden');
 
           zjChatShowTypingIndicator();
-
           const generationId = ++zjChatGenerationId;
           const controller = new AbortController();
           zjChatAbort = controller;
-
           let timedOut = false;
           const timeoutId = setTimeout(() => {
             timedOut = true;
             try { controller.abort(); } catch (_) {}
           }, ZJ_CHAT_STREAM_TIMEOUT_MS);
+          let responseSucceeded = false;
 
-          // Backend /chat accepts a single "message" string. We prepend
-          // any selected ZJ OS context so the AI still sees tasks/notes/etc.
-          // Cap the combined payload safely below the backend's 4000-char limit.
-          const MAX_TOTAL = 3500;
           const mode = document.getElementById('chat-context-mode')?.value || 'off';
           const appContext = zjChatBuildAssistantContext(mode);
-          let fullMessage = msg;
-          if (appContext) {
-            const prefix = '[Context]\n';
-            const suffix = '\n\n[User]\n' + msg;
-            const maxContextLen = MAX_TOTAL - prefix.length - suffix.length;
-            if (maxContextLen > 100) {
-              const trimmedContext = appContext.length > maxContextLen
-                ? appContext.slice(0, maxContextLen) + '…'
-                : appContext;
-              fullMessage = prefix + trimmedContext + suffix;
-            }
-          }
+          const contextMessages = zjChatGetContextMessages(chat, chat.contextSummary ? ZJ_CHAT_SUMMARY_KEEP_MESSAGES : ZJ_CHAT_CONTEXT_WINDOW_MESSAGES);
 
           try {
-            const res = await fetch('/chat', {
+            const res = await fetch('/api/chat', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ message: fullMessage }),
-              signal: controller.signal,
+              headers: { 'Content-Type': 'application/json', 'Accept': 'text/event-stream' },
+              cache: 'no-store',
+              body: JSON.stringify({
+                messages: contextMessages,
+                summary: String(chat.contextSummary || '').slice(0, ZJ_CHAT_SUMMARY_MAX_CHARS),
+                app_context: appContext
+              }),
+              signal: controller.signal
             });
 
-            const body = await res.json().catch(() => ({}));
-
             if (!res.ok) {
-              const base = body.reply || body.error || ('AI service returned ' + res.status);
-              throw new Error(base);
+              const body = await res.json().catch(() => ({}));
+              throw new Error(body.error || body.reply || ('AI service returned ' + res.status));
+            }
+            if (!res.body || typeof res.body.getReader !== 'function') {
+              throw new Error('This browser cannot read the AI response stream. Please update your browser.');
             }
 
-            const finalContent = String(body.reply || '').trim();
-            if (!finalContent) throw new Error('AI service returned an empty response');
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            let accumulated = '';
+            let streamDone = false;
+
+            while (true) {
+              const part = await reader.read();
+              if (part.done) break;
+              buffer += decoder.decode(part.value, { stream: true });
+              const events = buffer.split(/\r?\n\r?\n/);
+              buffer = events.pop() || '';
+
+              for (const eventText of events) {
+                const dataLine = eventText.split(/\r?\n/).find((line) => line.startsWith('data:'));
+                if (!dataLine) continue;
+                let event;
+                try { event = JSON.parse(dataLine.slice(5).trim()); }
+                catch (_) { continue; }
+                if (event.type === 'token' && typeof event.delta === 'string') {
+                  accumulated += event.delta;
+                  zjChatAppendStreamingToken(accumulated);
+                } else if (event.type === 'error') {
+                  throw new Error(event.message || 'The AI response was interrupted.');
+                } else if (event.type === 'done') {
+                  streamDone = true;
+                }
+              }
+            }
+            buffer += decoder.decode();
+            if (buffer.trim()) {
+              const dataLine = buffer.split(/\r?\n/).find((line) => line.startsWith('data:'));
+              if (dataLine) {
+                try {
+                  const event = JSON.parse(dataLine.slice(5).trim());
+                  if (event.type === 'token' && typeof event.delta === 'string') accumulated += event.delta;
+                  if (event.type === 'error') throw new Error(event.message || 'The AI response was interrupted.');
+                  if (event.type === 'done') streamDone = true;
+                } catch (error) {
+                  if (error instanceof Error && error.message !== 'Unexpected end of JSON input') throw error;
+                }
+              }
+            }
+
+            const finalContent = accumulated.trim();
+            if (!finalContent) throw new Error('AI service returned an empty response.');
+            if (!streamDone) console.warn('zj-os: AI stream ended without a done event; preserving received text.');
 
             chat.messages.push({ role: 'assistant', content: finalContent, timestamp: Date.now() });
+            responseSucceeded = true;
             chat.updatedAt = Date.now();
             saveNow();
-
+            zjChatDropStreamingBubble();
             document.getElementById('typing-ind')?.remove();
             renderChatMessages();
             renderChatSidebar(document.getElementById('chat-history-filter')?.value || '');
 
           } catch (err) {
             if (generationId !== zjChatGenerationId) return;
+            zjChatDropStreamingBubble();
             document.getElementById('typing-ind')?.remove();
 
             let errorMsg;
@@ -5149,7 +5277,7 @@ setTimeout(() => {
 
             chat.messages.push({ role: 'assistant', content: errorMsg, timestamp: Date.now(), error: true });
             chat.updatedAt = Date.now();
-            save();
+            saveNow();
             renderChatMessages();
 
             if (timedOut) toast('AI service is taking too long. Try again.', 'error');
@@ -5162,9 +5290,11 @@ setTimeout(() => {
               if (sendBtn) { sendBtn.disabled = false; sendBtn.classList.remove('hidden'); }
               if (stopBtn) stopBtn.classList.add('hidden');
             }
+            // Summarization runs separately and never blocks the completed answer.
+            if (responseSucceeded) void zjChatMaybeUpdateSummary(chat);
           }
         }
-        
+
         function zjChatShowTypingIndicator() {
           const el = document.getElementById('chat-messages');
           if (!el) return;
