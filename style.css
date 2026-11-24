@@ -746,6 +746,37 @@ dialog[open] { animation:dialogIn .3s cubic-bezier(.2,.8,.2,1); }
 .message-bubble pre { background:var(--bg-main); padding:10px; border-radius:6px; border:1px solid var(--border); overflow-x:auto; margin:6px 0; position:relative; }
 .message-bubble pre code { background:transparent; padding:0; color:var(--text-main); }
 .message-bubble strong { color:var(--accent-primary); }
+/* ZJ Bot Markdown typography and responsive content */
+.message-bubble.markdown-body > :first-child { margin-top: 0; }
+.message-bubble.markdown-body > :last-child { margin-bottom: 0; }
+.message-bubble.markdown-body p { margin: 0 0 9px; }
+.message-bubble.markdown-body h1,
+.message-bubble.markdown-body h2,
+.message-bubble.markdown-body h3,
+.message-bubble.markdown-body h4,
+.message-bubble.markdown-body h5,
+.message-bubble.markdown-body h6 { color:var(--text-main); line-height:1.3; margin:14px 0 7px; font-weight:700; }
+.message-bubble.markdown-body h1 { font-size:1.45em; }
+.message-bubble.markdown-body h2 { font-size:1.3em; }
+.message-bubble.markdown-body h3 { font-size:1.15em; }
+.message-bubble.markdown-body ul,
+.message-bubble.markdown-body ol { margin:6px 0 10px; padding-left:22px; }
+.message-bubble.markdown-body li { margin:3px 0; }
+.message-bubble.markdown-body li > ul,
+.message-bubble.markdown-body li > ol { margin:3px 0; }
+.message-bubble.markdown-body blockquote { margin:9px 0; padding:7px 11px; border-left:3px solid var(--accent-primary); background:var(--bg-main); color:var(--text-muted); border-radius:0 5px 5px 0; }
+.message-bubble.markdown-body blockquote > :last-child { margin-bottom:0; }
+.message-bubble.markdown-body a { color:var(--accent-electric); text-decoration:underline; text-underline-offset:2px; overflow-wrap:anywhere; }
+.message-bubble.markdown-body del { opacity:.75; }
+.message-bubble.markdown-body hr { border:0; border-top:1px solid var(--border); margin:12px 0; }
+.message-bubble.markdown-body .zj-md-table-wrap { max-width:100%; overflow-x:auto; margin:8px 0; }
+.message-bubble.markdown-body table { border-collapse:collapse; width:100%; font-size:.95em; }
+.message-bubble.markdown-body th,
+.message-bubble.markdown-body td { border:1px solid var(--border); padding:5px 8px; text-align:left; vertical-align:top; }
+.message-bubble.markdown-body th { background:var(--bg-main); color:var(--text-main); }
+.message-bubble.markdown-body pre { white-space:pre; }
+.message-bubble.markdown-body pre code { display:block; white-space:pre; overflow-wrap:normal; }
+
 .chat-message-actions { display:flex; gap:4px; margin-top:6px; opacity:0; transition:opacity var(--transition); }
 .message:hover .chat-message-actions { opacity:1; }
 .chat-message-actions button { font-size:10px; background:var(--bg-input); border:1px solid var(--border); color:var(--text-muted); border-radius:3px; padding:2px 6px; cursor:pointer; font-family:inherit; }
