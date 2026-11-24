@@ -611,15 +611,170 @@ setTimeout(() => {
           return d.innerHTML;
         }
 
+        // Safe Markdown renderer for ZJ Bot. It intentionally supports a useful
+        // CommonMark-style subset without allowing raw HTML or executable URLs.
+        // All text is HTML-escaped; only tags emitted by this renderer reach innerHTML.
+        function zjMarkdownEscapeHtml(value) {
+          return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+          })[char]);
+        }
+
+        function zjMarkdownSafeUrl(value) {
+          const raw = String(value || '').trim();
+          if (!raw || /[\u0000-\u001f\u007f]/.test(raw)) return null;
+          try {
+            const parsed = new URL(raw, window.location.href);
+            if (!['http:', 'https:', 'mailto:'].includes(parsed.protocol)) return null;
+            return parsed.href;
+          } catch (_) {
+            return null;
+          }
+        }
+
+        function zjMarkdownInline(value) {
+          const codeTokens = [];
+          const linkTokens = [];
+          let source = String(value ?? '').replace(/`([^`]+)`/g, (_, code) => {
+            const token = `\u0000ZJCODE${codeTokens.length}\u0000`;
+            codeTokens.push('<code>' + zjMarkdownEscapeHtml(code) + '</code>');
+            return token;
+          });
+
+          // Images are deliberately rendered as alt text; chat must not fetch remote images.
+          source = source.replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1');
+          source = source.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, label, destination) => {
+            const safeUrl = zjMarkdownSafeUrl(destination);
+            if (!safeUrl) return label;
+            const token = `\u0000ZJLINK${linkTokens.length}\u0000`;
+            linkTokens.push('<a href="' + zjMarkdownEscapeHtml(safeUrl) + '" target="_blank" rel="noopener noreferrer">' + zjMarkdownInline(label) + '</a>');
+            return token;
+          });
+
+          source = zjMarkdownEscapeHtml(source);
+          source = source
+            .replace(/\*\*(?=\S)(.+?\S)\*\*/g, '<strong>$1</strong>')
+            .replace(/__(?=\S)(.+?\S)__/g, '<strong>$1</strong>')
+            .replace(/~~(?=\S)(.+?\S)~~/g, '<del>$1</del>')
+            .replace(/(?<!\*)\*(?!\s)(.+?)(?<!\s)\*(?!\*)/g, '<em>$1</em>')
+            .replace(/(?<!_)_(?!\s)(.+?)(?<!\s)_(?!_)/g, '<em>$1</em>');
+
+          source = source.replace(/\u0000ZJCODE(\d+)\u0000/g, (_, index) => codeTokens[Number(index)] || '');
+          return source.replace(/\u0000ZJLINK(\d+)\u0000/g, (_, index) => linkTokens[Number(index)] || '');
+        }
+
+        function zjMarkdownSplitTableRow(line) {
+          return String(line).trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((cell) => cell.trim());
+        }
+
+        function zjMarkdownRenderBlocks(markdown) {
+          const lines = String(markdown ?? '').replace(/\r\n?/g, '\n').split('\n');
+          const output = [];
+          let i = 0;
+
+          const isListLine = (line) => /^\s*(?:[-+*]|\d+[.)])\s+/.test(line);
+          const isSpecial = (line) => !line.trim() || /^\s{0,3}(#{1,6})\s+/.test(line) || /^\s{0,3}```/.test(line) || /^\s{0,3}>/.test(line) || /^\s{0,3}(?:[-*_]\s*){3,}$/.test(line) || isListLine(line);
+
+          function renderList(start) {
+            const first = lines[start];
+            const baseIndent = (first.match(/^\s*/) || [''])[0].length;
+            const ordered = /^\s*\d+[.)]\s+/.test(first);
+            const tag = ordered ? 'ol' : 'ul';
+            const items = [];
+            let cursor = start;
+
+            while (cursor < lines.length) {
+              const line = lines[cursor];
+              const indent = (line.match(/^\s*/) || [''])[0].length;
+              const match = line.match(/^\s*(?:([-+*])|(\d+[.)]))\s+(.*)$/);
+              if (!match || indent !== baseIndent || Boolean(match[2]) !== ordered) break;
+              let itemText = match[3];
+              cursor++;
+              const continuation = [];
+              while (cursor < lines.length) {
+                const next = lines[cursor];
+                if (!next.trim()) {
+                  if (cursor + 1 < lines.length && (lines[cursor + 1].match(/^\s*/) || [''])[0].length > baseIndent) {
+                    continuation.push(''); cursor++; continue;
+                  }
+                  break;
+                }
+                const nextIndent = (next.match(/^\s*/) || [''])[0].length;
+                if (nextIndent <= baseIndent && isListLine(next)) break;
+                if (nextIndent <= baseIndent) break;
+                continuation.push(next.slice(Math.min(nextIndent, baseIndent + 2)));
+                cursor++;
+              }
+              let nested = '';
+              const nestedStart = continuation.findIndex((part) => isListLine(part));
+              if (nestedStart >= 0) {
+                const nestedLines = continuation.slice(nestedStart).join('\n');
+                nested = zjMarkdownRenderBlocks(nestedLines);
+                continuation.length = nestedStart;
+              }
+              const detail = continuation.join('\n').trim();
+              items.push('<li>' + zjMarkdownInline(itemText) + (detail ? '<br>' + zjMarkdownRenderBlocks(detail) : '') + nested + '</li>');
+            }
+            return { html: '<' + tag + '>' + items.join('') + '</' + tag + '>', next: cursor };
+          }
+
+          while (i < lines.length) {
+            const line = lines[i];
+            if (!line.trim()) { i++; continue; }
+
+            const fence = line.match(/^\s{0,3}```\s*([\w+-]*)\s*$/);
+            if (fence) {
+              const code = [];
+              i++;
+              while (i < lines.length && !/^\s{0,3}```\s*$/.test(lines[i])) code.push(lines[i++]);
+              if (i < lines.length) i++;
+              const language = fence[1] ? ' class="language-' + zjMarkdownEscapeHtml(fence[1]) + '"' : '';
+              output.push('<pre><code' + language + '>' + zjMarkdownEscapeHtml(code.join('\n')) + '</code></pre>');
+              continue;
+            }
+
+            const heading = line.match(/^\s{0,3}(#{1,6})\s+(.*?)\s*#*\s*$/);
+            if (heading) {
+              const level = heading[1].length;
+              output.push('<h' + level + '>' + zjMarkdownInline(heading[2]) + '</h' + level + '>');
+              i++; continue;
+            }
+
+            if (/^\s{0,3}(?:[-*_]\s*){3,}$/.test(line)) {
+              output.push('<hr>'); i++; continue;
+            }
+
+            if (/^\s{0,3}>/.test(line)) {
+              const quote = [];
+              while (i < lines.length && /^\s{0,3}>/.test(lines[i])) quote.push(lines[i++].replace(/^\s{0,3}>\s?/, ''));
+              output.push('<blockquote>' + zjMarkdownRenderBlocks(quote.join('\n')) + '</blockquote>');
+              continue;
+            }
+
+            if (isListLine(line)) {
+              const list = renderList(i);
+              output.push(list.html); i = Math.max(list.next, i + 1); continue;
+            }
+
+            if (i + 1 < lines.length && line.includes('|') && /^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(lines[i + 1])) {
+              const headers = zjMarkdownSplitTableRow(line);
+              i += 2;
+              const rows = [];
+              while (i < lines.length && lines[i].includes('|') && lines[i].trim()) rows.push(zjMarkdownSplitTableRow(lines[i++]));
+              output.push('<div class="zj-md-table-wrap"><table><thead><tr>' + headers.map((cell) => '<th>' + zjMarkdownInline(cell) + '</th>').join('') + '</tr></thead><tbody>' + rows.map((row) => '<tr>' + headers.map((_, index) => '<td>' + zjMarkdownInline(row[index] || '') + '</td>').join('') + '</tr>').join('') + '</tbody></table></div>');
+              continue;
+            }
+
+            const paragraph = [line.trim()];
+            i++;
+            while (i < lines.length && !isSpecial(lines[i])) paragraph.push(lines[i++].trim());
+            output.push('<p>' + paragraph.map(zjMarkdownInline).join('<br>') + '</p>');
+          }
+          return output.join('\n');
+        }
+
         function parseMd(text) {
-          let h = String(text ?? '')
-            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-          h = h.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-          h = h.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-          h = h.replace(/\*(.*?)\*/g, '<em>$1</em>');
-          h = h.replace(/`([^`]+)`/g, '<code>$1</code>');
-          h = h.replace(/\n/g, '<br>');
-          return h;
+          return zjMarkdownRenderBlocks(String(text ?? ''));
         }
 
         function downloadText(filename, content, type = 'text/plain') {
@@ -5044,12 +5199,12 @@ setTimeout(() => {
             avatar.className = 'message-avatar';
             avatar.textContent = 'AI';
             const content = document.createElement('div');
-            content.className = 'message-bubble streaming-content';
+            content.className = 'message-bubble markdown-body streaming-content';
             bubble.append(avatar, content);
             el.appendChild(bubble);
           }
           const content = bubble.querySelector('.streaming-content');
-          if (content) content.textContent = accumulated;
+          if (content) content.innerHTML = parseMd(accumulated);
           const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100;
           if (nearBottom) el.scrollTop = el.scrollHeight;
         }
@@ -5065,7 +5220,7 @@ setTimeout(() => {
           avatar.className = 'message-avatar';
           avatar.textContent = msg.role === 'user' ? 'YOU' : 'AI';
           const bubble = document.createElement('div');
-          bubble.className = 'message-bubble';
+          bubble.className = 'message-bubble' + (msg.role === 'assistant' ? ' markdown-body' : '');
           bubble.innerHTML = msg.role === 'assistant' ? parseMd(String(msg.content || '')) : escapeHtml(String(msg.content || ''));
           if (index >= 0) zjChatAddMessageActions(bubble, chatId, index);
           row.append(avatar, bubble);
