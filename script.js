@@ -5231,8 +5231,19 @@ setTimeout(() => {
                   throw new Error(event.message || 'The AI response was interrupted.');
                 } else if (event.type === 'done') {
                   streamDone = true;
+                  // Restore the composer as soon as the server signals completion;
+                  // do not wait for the HTTP reader to close or chat rendering to finish.
+                  if (sendBtn) { sendBtn.disabled = false; sendBtn.classList.remove('hidden'); }
+                  if (stopBtn) stopBtn.classList.add('hidden');
+                  break;
                 }
               }
+              if (streamDone) break;
+            }
+            if (streamDone) {
+              // The completion event is authoritative; release the reader without
+              // blocking the UI on a potentially slow connection teardown.
+              try { void reader.cancel().catch(() => {}); } catch (_) {}
             }
             buffer += decoder.decode();
             if (buffer.trim()) {
