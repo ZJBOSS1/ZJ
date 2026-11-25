@@ -664,6 +664,7 @@
                                 <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="createNewChat()"><i data-lucide="plus"></i> New</button>
                                 <button class="btn-icon" onclick="exportAllChats()" title="Export all chats"><i data-lucide="download" style="width: 12px; height: 12px;"></i></button>
                             </div>
+                            <div style="padding:6px 10px 0;border-bottom:1px solid var(--border-soft);"><select id="zj-chat-folder-filter" class="input" style="width:100%;font-size:11px;padding:7px 9px;" aria-label="Filter chats by folder" onchange="renderChatSidebar(document.getElementById('chat-history-filter')?.value || '')"><option value="">All folders</option><option value="Work">Work</option><option value="Study">Study</option><option value="Personal">Personal</option><option value="Ideas">Ideas</option><option value="__none">Unfiled</option></select></div>
                             <div style="padding:6px 10px;border-bottom:1px solid var(--border-soft);"><input class="input" id="chat-history-filter" style="width:100%;font-size:11px;padding:7px 9px;" placeholder="Find a conversation…" oninput="renderChatSidebar(this.value)" aria-label="Search chat history"></div>
                             <div class="chat-list" id="chat-list"></div>
                         </div>
@@ -679,6 +680,8 @@
                                 <div style="display:flex;gap:4px;align-items:center;">
                                     <button class="btn-icon chat-sidebar-toggle" type="button" onclick="toggleChatHistory()" title="Chat history" aria-label="Open chat history"><i data-lucide="panel-left"></i></button>
                                     <input type="text" class="input" style="width:120px;padding:4px 8px;font-size:11px;" placeholder="Find message…" oninput="searchChat(this.value)" aria-label="Search messages">
+                                    <button class="btn-icon" onclick="zjShowSavedMessages()" title="Saved AI messages" aria-label="Saved AI messages"><i data-lucide="bookmark"></i></button>
+                                    <button class="btn-icon" onclick="cycleActiveChatFolder()" title="Move chat between folders" aria-label="Organize chat"><i data-lucide="folder"></i></button>
                                     <button class="btn-icon" onclick="renameActiveChat()" title="Rename chat" aria-label="Rename chat"><i data-lucide="pencil" style="width:12px;height:12px;"></i></button>
                                     <button class="btn-icon" onclick="exportActiveChat()" title="Export chat" aria-label="Export chat"><i data-lucide="download" style="width:12px;height:12px;"></i></button>
                                     <button class="btn-icon" onclick="clearActiveChat()" title="Clear messages" aria-label="Clear messages"><i data-lucide="eraser" style="width:12px;height:12px;"></i></button>
@@ -688,11 +691,11 @@
                             <div class="chat-context-row">
                                 <label for="chat-context-mode" style="font-size:11px;color:var(--text-muted);">Connect apps:</label>
                                 <select id="chat-context-mode" class="chat-context-select" aria-label="Choose ZJ OS app context">
+                                    <option value="off" selected>Off (send chat only)</option>
                                     <option value="all">All ZJ OS apps (include relevant saved data)</option>
                                     <option value="tasks">Tasks and habits</option>
                                     <option value="notes">Notes and workspace</option>
                                     <option value="weather">Weather and dashboard</option>
-                                    <option value="off">Off (send chat only)</option>
                                 </select>
                                 <span class="chat-context-note">Selected context is sent with your message to the AI service.</span>
                             </div>
@@ -704,8 +707,10 @@
                             </div>
                             <div class="chat-messages" id="chat-messages"></div>
                             <form class="chat-input-area" onsubmit="sendChatMessage(event)">
-                                <textarea id="chat-input" class="chat-input" placeholder="Type a message... (Shift+Enter for new line)" maxlength="2000" rows="1" onkeydown="handleChatKey(event)" oninput="autoResizeChat(this)"></textarea>
+                                <div class="chat-composer-main"><div id="zj-slash-menu" class="zj-slash-menu" role="listbox" aria-label="AI commands" hidden></div><textarea id="chat-input" class="chat-input" placeholder="Message ZJ AI… Type / for commands" maxlength="2000" rows="1" onkeydown="handleChatKey(event)" oninput="autoResizeChat(this); zjSlashInput(this)"></textarea></div>
                                 <div style="display: flex; flex-direction: column; gap: 4px;">
+                                    <button type="button" class="btn-icon" onclick="zjShowQuickActions()" title="Quick AI actions" aria-label="Quick AI actions"><i data-lucide="sparkles" style="width:12px;height:12px;"></i></button>
+                                    <select id="zj-voice-speed" class="input" aria-label="Voice playback speed" title="Voice playback speed" style="width:54px;padding:4px;font-size:10px;"><option value="0.8">0.8×</option><option value="1" selected>1×</option><option value="1.2">1.2×</option><option value="1.5">1.5×</option></select>
                                     <button type="button" class="btn-icon" onclick="startVoiceInput()" title="Voice input"><i data-lucide="mic" style="width: 12px; height: 12px;"></i></button>
                                     <button type="submit" class="btn btn-primary btn-sm" id="chat-send-btn">Send</button>
                                     <button type="button" class="btn btn-danger btn-sm hidden" id="chat-stop-btn" onclick="stopGeneration()">Stop</button>
