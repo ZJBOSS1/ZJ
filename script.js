@@ -4884,10 +4884,13 @@ setTimeout(() => {
           const list = document.getElementById('chat-list');
           if (!list) return;
           const q = String(filter || '').trim().toLowerCase();
-          const chats = App.chats.filter((c) =>
-            !q || String(c.title || '').toLowerCase().includes(q) ||
-            (c.messages || []).some((m) => String(m.content || '').toLowerCase().includes(q))
-          );
+          const folderFilter = document.getElementById('zj-chat-folder-filter')?.value || '';
+          const chats = App.chats.filter((c) => {
+            const folderMatch = !folderFilter || (folderFilter === '__none' ? !c.folder : c.folder === folderFilter);
+            const textMatch = !q || String(c.title || '').toLowerCase().includes(q) ||
+              (c.messages || []).some((m) => String(m.content || '').toLowerCase().includes(q));
+            return folderMatch && textMatch;
+          });
           list.replaceChildren();
           if (chats.length === 0) {
             const wrap = document.createElement('div');
@@ -4905,7 +4908,7 @@ setTimeout(() => {
             const title = document.createElement('span');
             title.className = 'chat-title';
             title.title = String(chat.title || 'New Chat');
-            title.textContent = (chat.starred ? '⭐ ' : '') + String(chat.title || 'New Chat');
+            title.textContent = (chat.starred ? '⭐ ' : '') + (chat.folder ? '[' + chat.folder + '] ' : '') + String(chat.title || 'New Chat');
             const actions = document.createElement('span');
             actions.className = 'chat-actions';
             const star = document.createElement('button');
@@ -5005,6 +5008,7 @@ setTimeout(() => {
         }
 
         function handleChatKey(e) {
+          if (zjSlashHandleKey(e)) return;
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             document.querySelector('#tab-chatbot .chat-input-area')?.requestSubmit();
@@ -5134,10 +5138,15 @@ setTimeout(() => {
           e?.preventDefault?.();
           const input = document.getElementById('chat-input');
           if (!input) return;
-          const msg = input.value.trim();
+          let msg = input.value.trim();
           if (!msg) return;
           if (msg.length > ZJ_CHAT_MAX_INPUT_LEN) {
             toast('Message is too long. Keep it under ' + ZJ_CHAT_MAX_INPUT_LEN + ' characters.', 'error');
+            return;
+          }
+          msg = zjExpandSlashCommand(msg);
+          if (msg.length > 8000) {
+            toast('This command expands to too much text. Shorten the content and try again.', 'error');
             return;
           }
 
@@ -5318,6 +5327,7 @@ setTimeout(() => {
           avatar.textContent = 'AI';
           const bubble = document.createElement('div');
           bubble.className = 'message-bubble typing-indicator';
+          const status = document.createElement('span'); status.className = 'zj-ai-thinking-label'; status.textContent = ['Thinking through your request…', 'Connecting the ideas…', 'Preparing a clear answer…', 'Checking the details…'][Math.floor(Math.random() * 4)]; bubble.appendChild(status);
           for (let i = 0; i < 3; i++) {
             const dot = document.createElement('span');
             dot.className = 'typing-dot';
@@ -5370,21 +5380,25 @@ setTimeout(() => {
 
         function zjChatAddMessageActions(bubble, chatId, index) {
           if (bubble.querySelector('.chat-message-actions')) return;
-          const actions = document.createElement('div');
-          actions.className = 'chat-message-actions';
-          const copy = document.createElement('button');
-          copy.type = 'button';
-          copy.textContent = 'Copy';
-          copy.dataset.action = 'chat-copy:' + chatId + ':' + index;
-          actions.appendChild(copy);
           const chat = App.chats.find((x) => x.id === chatId);
           const msg = chat?.messages?.[index];
-          if (msg && msg.role === 'assistant' && !msg.error) {
-            const reuse = document.createElement('button');
-            reuse.type = 'button';
-            reuse.textContent = 'Use as prompt';
-            reuse.dataset.action = 'chat-reuse:' + chatId + ':' + index;
-            actions.appendChild(reuse);
+          if (!msg) return;
+          const actions = document.createElement('div');
+          actions.className = 'chat-message-actions';
+          const add = (label, fn, title) => {
+            const b = document.createElement('button');
+            b.type = 'button'; b.textContent = label; b.title = title || label;
+            b.addEventListener('click', (event) => { event.preventDefault(); event.stopPropagation(); fn(); });
+            actions.appendChild(b);
+          };
+          add('Copy', () => copyChatMessage(chatId, index));
+          if (msg.error) add('Retry', () => zjRetryChatFromError(chatId, index), 'Retry the previous request');
+          if (msg.role === 'assistant' && !msg.error) {
+            add('Listen', () => zjSpeakMessage(chatId, index), 'Read this response aloud');
+            add('Translate', () => zjPrepareMessageAction(chatId, index, 'translate'), 'Translate this response');
+            add('Summarize', () => zjPrepareMessageAction(chatId, index, 'summarize'), 'Summarize this response');
+            add(msg.bookmarked ? 'Saved' : 'Bookmark', () => zjToggleMessageBookmark(chatId, index), 'Save this response on this device');
+            add('Use as prompt', () => reuseChatReply(chatId, index));
           }
           bubble.appendChild(actions);
         }
@@ -6013,6 +6027,162 @@ setTimeout(() => {
           });
         }
 
+
+        // ===== ZJ AI experience upgrade (A-J) =====
+        const ZJ_AI_COMMANDS = [
+          {cmd:'/summarize',cat:'Writing',desc:'Summarize the conversation or supplied text',example:'/summarize'},
+          {cmd:'/translate',cat:'Language',desc:'Translate to a language or between two languages',example:'/translate Urdu'},
+          {cmd:'/explain',cat:'Learning',desc:'Explain a topic clearly with examples',example:'/explain quantum computing'},
+          {cmd:'/rewrite',cat:'Writing',desc:'Rewrite in a chosen tone or style',example:'/rewrite professionally'},
+          {cmd:'/shorten',cat:'Writing',desc:'Make the text shorter without losing key meaning',example:'/shorten'},
+          {cmd:'/expand',cat:'Writing',desc:'Expand with useful detail',example:'/expand'},
+          {cmd:'/steps',cat:'Learning',desc:'Turn a task into step-by-step instructions',example:'/steps launch a website'},
+          {cmd:'/compare',cat:'Thinking',desc:'Compare options with pros and cons',example:'/compare React vs Vue'},
+          {cmd:'/code',cat:'Development',desc:'Generate code with explanation',example:'/code Python CSV reader'},
+          {cmd:'/debug',cat:'Development',desc:'Find likely bugs and suggest fixes',example:'/debug'},
+          {cmd:'/review',cat:'Development',desc:'Review code for quality and risks',example:'/review'},
+          {cmd:'/table',cat:'Formatting',desc:'Format the answer as a table',example:'/table compare plans'},
+          {cmd:'/help',cat:'Help',desc:'Show all available commands',example:'/help'}
+        ];
+        let zjSlashItems = [], zjSlashIndex = 0;
+        function zjSlashInput(input) {
+          const menu = document.getElementById('zj-slash-menu');
+          if (!menu) return;
+          const before = input.value.slice(0, input.selectionStart);
+          const match = before.match(/(?:^|\s)(\/[a-z-]*)$/i);
+          if (!match) { menu.hidden = true; return; }
+          const query = match[1].toLowerCase();
+          zjSlashItems = ZJ_AI_COMMANDS.filter(x => x.cmd.startsWith(query));
+          zjSlashIndex = 0;
+          menu.replaceChildren();
+          if (!zjSlashItems.length) { menu.hidden = true; return; }
+          zjSlashItems.forEach((item, i) => {
+            const b = document.createElement('button'); b.type='button'; b.className='zj-slash-option' + (i===0?' active':'');
+            b.setAttribute('role','option'); b.innerHTML = '<strong>' + escapeHtml(item.cmd) + '</strong><span>' + escapeHtml(item.desc) + '</span><small>' + escapeHtml(item.cat) + '</small>';
+            b.addEventListener('mousedown', ev => { ev.preventDefault(); zjSlashChoose(i); });
+            menu.appendChild(b);
+          });
+          menu.hidden = false;
+        }
+        function zjSlashChoose(i) {
+          const input=document.getElementById('chat-input'), menu=document.getElementById('zj-slash-menu');
+          if (!input || !zjSlashItems[i]) return;
+          const before=input.value.slice(0,input.selectionStart), after=input.value.slice(input.selectionEnd);
+          const match=before.match(/(?:^|\s)(\/[a-z-]*)$/i);
+          if (!match) return;
+          const start=before.length-match[1].length;
+          input.value=before.slice(0,start)+zjSlashItems[i].cmd+' '+after;
+          input.focus(); input.setSelectionRange(start+zjSlashItems[i].cmd.length+1,start+zjSlashItems[i].cmd.length+1);
+          menu.hidden=true; autoResizeChat(input);
+        }
+        function zjSlashHandleKey(e) {
+          const menu=document.getElementById('zj-slash-menu');
+          if (!menu || menu.hidden) return false;
+          if (e.key==='Escape') { menu.hidden=true; return true; }
+          if (e.key==='ArrowDown' || e.key==='ArrowUp') {
+            e.preventDefault(); zjSlashIndex=(zjSlashIndex+(e.key==='ArrowDown'?1:-1)+zjSlashItems.length)%zjSlashItems.length;
+            [...menu.children].forEach((el,i)=>el.classList.toggle('active',i===zjSlashIndex)); return true;
+          }
+          if ((e.key==='Enter' || e.key==='Tab') && zjSlashItems.length) { e.preventDefault(); zjSlashChoose(zjSlashIndex); return true; }
+          return false;
+        }
+        function zjExpandSlashCommand(raw) {
+          const m=raw.match(/^\/([a-z-]+)(?:\s+([\s\S]*))?$/i);
+          if (!m) return raw;
+          const cmd=m[1].toLowerCase(), rawArg=(m[2]||'').trim();
+          const argParts=rawArg.split(/\n\s*\n/); const option=(argParts.shift()||'').trim(); const content=argParts.join('\n\n').trim();
+          const arg=content || option;
+          if (cmd==='help') return 'List the available ZJ AI slash commands, grouped by category, with a brief explanation and example: '+ZJ_AI_COMMANDS.map(x=>x.cmd+' — '+x.desc+' (example: '+x.example+')').join('; ');
+          const prompts={
+            summarize:'Summarize the following conversation or content. Preserve important facts, decisions, and action items. If no content follows, summarize the conversation so far.',
+            translate: option.includes(' to ') ? 'Translate the following text from '+option.split(/\s+to\s+/i)[0]+' into '+option.split(/\s+to\s+/i)[1]+'. Preserve meaning, names, code, and Markdown.' : 'Translate the following text into '+(option||'Urdu')+'. Preserve meaning, names, code, and Markdown.',
+            explain:'Explain '+(content? 'the following content':(option||'the topic'))+' clearly, step by step, with a simple example. If no topic is supplied, ask what to explain.',
+            rewrite:'Rewrite the following text '+(option||'clearly and naturally')+'. Preserve its meaning.',
+            shorten:'Shorten the following text while preserving all essential meaning.',
+            expand:'Expand the following text with useful detail, examples, and structure.',
+            steps:'Give clear, actionable, numbered steps for '+(arg||'the task described in the conversation')+'.',
+            compare:'Compare '+arg+' with a balanced table, pros, cons, and a practical recommendation.',
+            code:'Help with code for '+(arg||'the request described in the conversation')+'. Include complete, runnable code and explain assumptions.',
+            debug:'Debug the following code or issue. Identify the root cause, explain it, and provide a corrected version.',
+            review:'Review the following code for correctness, security, accessibility, performance, and maintainability. Prioritize findings.',
+            table:'Present the following information as a clear Markdown table.'
+          };
+          if (!prompts[cmd]) return raw;
+          const needsBody=['translate','rewrite','summarize','shorten','expand','debug','review','table'].includes(cmd);
+          return prompts[cmd]+(needsBody && (content || (cmd!=='translate' && cmd!=='rewrite' ? option : '')) ? '\n\n'+(content || option) : '');
+        }
+        function zjShowQuickActions() {
+          const input=document.getElementById('chat-input'); if(!input) return;
+          const choices=['/summarize ','/translate Urdu ','/explain ','/rewrite professionally ','/steps ','/compare ','/code ','/debug ','/review ','/help'];
+          const picked=window.prompt('Quick AI action:\n'+choices.join('\n')+'\n\nEnter a command (or cancel):','/summarize ');
+          if (picked===null) return;
+          input.value=picked; autoResizeChat(input); input.focus(); zjSlashInput(input);
+        }
+        function zjSpeakMessage(chatId,index) {
+          const chat=App.chats.find(x=>x.id===chatId), msg=chat?.messages?.[index];
+          if(!msg || !('speechSynthesis' in window)) return toast('Voice playback is not supported by this browser.','error');
+          if(window.speechSynthesis.speaking) { window.speechSynthesis.cancel(); return; }
+          const text=String(msg.content||'').replace(/```[\s\S]*?```/g,' code block omitted ').replace(/`([^`]+)`/g,'$1').replace(/https?:\/\/\S+/g,' link omitted ').replace(/[#>*_~-]/g,' ').slice(0,12000);
+          const utterance=new SpeechSynthesisUtterance(text);
+          const speed=Number(document.getElementById('zj-voice-speed')?.value||1);
+          utterance.rate=speed; utterance.lang=document.documentElement.lang||navigator.language||'en-US';
+          window.speechSynthesis.speak(utterance);
+        }
+        function zjPrepareMessageAction(chatId,index,action) {
+          const chat=App.chats.find(x=>x.id===chatId), msg=chat?.messages?.[index]; if(!msg) return;
+          const input=document.getElementById('chat-input'); if(!input) return;
+          input.value=action==='translate' ? '/translate Urdu\n\n'+msg.content : '/summarize\n\n'+msg.content;
+          autoResizeChat(input); input.focus();
+        }
+        function zjToggleMessageBookmark(chatId,index) {
+          const chat=App.chats.find(x=>x.id===chatId), msg=chat?.messages?.[index]; if(!msg) return;
+          msg.bookmarked=!msg.bookmarked; chat.updatedAt=Date.now(); saveNow(); renderChatMessages();
+          toast(msg.bookmarked?'Message saved on this device.':'Message bookmark removed.','success');
+        }
+        function cycleActiveChatFolder() {
+          const chat=App.chats.find(x=>x.id===App.activeChat); if(!chat) return;
+          const folders=['','Work','Study','Personal','Ideas']; const idx=folders.indexOf(chat.folder||'');
+          chat.folder=folders[(idx+1)%folders.length]||''; chat.updatedAt=Date.now(); saveNow();
+          renderChatSidebar(document.getElementById('chat-history-filter')?.value||'');
+          toast(chat.folder?'Moved chat to '+chat.folder+'.':'Chat moved to Unfiled.','success');
+        }
+        function zjGetBookmarkedMessages() {
+          return (App.chats||[]).flatMap(c=>(c.messages||[]).map((m,i)=>({chat:c,index:i,msg:m}))).filter(x=>x.msg.bookmarked);
+        }
+        function zjSetVoiceSpeed(v) { const el=document.getElementById('zj-voice-speed'); if(el) el.value=String(v); }
+
+        function zjRetryChatFromError(chatId,index) {
+          const chat=App.chats.find(x=>x.id===chatId); if(!chat) return;
+          const prior=chat.messages.slice(0,index).reverse().find(m=>m.role==='user'&&!m.error);
+          if(!prior) return toast('No earlier request was found to retry.','error');
+          if(App.activeChat!==chatId) { window.switchChat?.(chatId); }
+          const input=document.getElementById('chat-input'); if(!input) return;
+          input.value=String(prior.content||''); autoResizeChat(input); input.focus(); setTimeout(()=>document.querySelector('#tab-chatbot .chat-input-area')?.requestSubmit(),120);
+        }
+        function zjShowSavedMessages() {
+          const saved=zjGetBookmarkedMessages();
+          const old=document.getElementById('zj-saved-messages-dialog'); old?.remove();
+          const dlg=document.createElement('dialog'); dlg.id='zj-saved-messages-dialog'; dlg.className='zj-saved-dialog';
+          const head=document.createElement('div'); head.className='modal-header';
+          const title=document.createElement('div'); title.className='modal-title'; title.textContent='Saved AI messages';
+          const close=document.createElement('button'); close.type='button'; close.className='btn-icon'; close.textContent='×'; close.addEventListener('click',()=>dlg.close());
+          head.append(title,close); dlg.appendChild(head);
+          const body=document.createElement('div'); body.className='modal-body';
+          if(!saved.length){const empty=document.createElement('p');empty.textContent='No saved messages yet. Use Bookmark on an AI response to save it on this device.';body.appendChild(empty);}
+          saved.forEach(({chat,index,msg})=>{
+            const item=document.createElement('button'); item.type='button'; item.className='zj-saved-item';
+            const name=document.createElement('strong');name.textContent=chat.title||'New Chat';
+            const excerpt=document.createElement('span');excerpt.textContent=String(msg.content||'').slice(0,180);
+            item.append(name,excerpt);item.addEventListener('click',()=>{dlg.close();window.switchChat?.(chat.id);setTimeout(()=>{const rows=[...document.querySelectorAll('#chat-messages .message')];rows[index]?.scrollIntoView({behavior:'smooth',block:'center'});},80);});
+            body.appendChild(item);
+          });
+          dlg.appendChild(body); document.body.appendChild(dlg); dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close();}); dlg.showModal();
+        }
+
+        // Ensure chat context is opt-in on every page load, including restored DOM state.
+        document.addEventListener('DOMContentLoaded',()=>{const c=document.getElementById('chat-context-mode');if(c)c.value='off';},{once:true});
+        document.addEventListener('visibilitychange',()=>{if(document.hidden && window.speechSynthesis?.speaking) window.speechSynthesis.pause();});
+
         function zjExposeGlobalHandlers() {
           // CRITICAL FIX: expose the module-scoped state and utility functions on window.
           // Without these, `window.save()`, `window.toast()`, `window.App.*`, `window.playSound()`,
@@ -6056,6 +6226,7 @@ setTimeout(() => {
             openAssistant, toggleChatHistory, createNewChat, switchChat, toggleStarChat,
             clearActiveChat, deleteChat, deleteActiveChat, renameActiveChat, exportActiveChat,
             exportAllChats, searchChat, sendChatMessage, stopGeneration, handleChatKey,
+            zjSlashInput, zjShowQuickActions, zjSpeakMessage, zjPrepareMessageAction, zjToggleMessageBookmark, cycleActiveChatFolder, zjSetVoiceSpeed, zjShowSavedMessages, zjRetryChatFromError,
             autoResizeChat, startVoiceInput, useQuickPrompt, copyChatMessage, reuseChatReply,
             renderChatSidebar, renderChatMessages,
             calcInput: zjWrapCalcInput,
