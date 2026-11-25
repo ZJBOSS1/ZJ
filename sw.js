@@ -3,7 +3,7 @@
  * Bump CACHE_NAME whenever the app shell changes.
  */
 const CACHE_PREFIX = 'zj-os-shell-';
-const CACHE_NAME = `${CACHE_PREFIX}v16`;
+const CACHE_NAME = `${CACHE_PREFIX}v17`;
 
 const CORE_ASSETS = [
   './',
