@@ -53,6 +53,18 @@ limiter = Limiter(
 )
 
 
+
+@app.after_request
+def add_security_headers(response: Response) -> Response:
+    """Apply conservative browser security headers to app and API responses."""
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault("X-Frame-Options", "DENY")
+    response.headers.setdefault("Permissions-Policy", "camera=(), microphone=(self), geolocation=(self)")
+    response.headers.setdefault("Cross-Origin-Resource-Policy", "same-origin")
+    return response
+
+
 def _get_client() -> OpenAI:
     api_key = os.getenv("GROQ_API_KEY", "").strip()
     if not api_key:
